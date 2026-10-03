@@ -2,14 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="P&amp;L">
 <meta name="theme-color" content="#0E0C2B">
 <title>P&amp;L</title>
-<meta http-equiv="refresh" content="0; url=https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec">
-<script>location.replace("https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec");</script>
-<style>html,body{margin:0;height:100%;background:#0E0C2B;color:#C7CCF9;font:16px system-ui,sans-serif;display:flex;align-items:center;justify-content:center}a{color:#fff}</style>
+<style>html,body{margin:0;height:100%;background:#0E0C2B;color:#C7CCF9;font:15px system-ui,sans-serif;display:flex;align-items:center;justify-content:center}a{color:#fff}</style>
 </head>
 <body>
-<a href="https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec">Open P&amp;L</a>
+<span id="m">Opening…</span>
+<script>
+var E = "https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec";
+fetch(E + "?ui=1").then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (h) {
+  h = h.replace("<head>", "<head><script>window.EXEC_URL=\"" + E + "\";<\/script>");
+  document.open(); document.write(h); document.close();
+}).catch(function () { document.getElementById("m").innerHTML = "Could not open. <a href=\"" + location.href + "\">Try again</a>"; });
+</script>
 </body>
 </html>
