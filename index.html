@@ -7,17 +7,18 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="P&amp;L">
 <link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/icon-192.png">
+<link rel="icon" href="/icon-96.png">
 <link rel="apple-touch-icon" href="/icon-180.png">
 <title>P&amp;L</title>
-<style>html,body{margin:0;height:100%;background:#0E0C2B;color:#C7CCF9;font:15px system-ui,sans-serif;display:flex;align-items:center;justify-content:center}a{color:#fff}</style>
+<style>html,body{margin:0;height:100%;background:#FFFFFF;color:#3730A3;font:15px system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}a{color:#2563EB}#lg{width:96px;height:96px;animation:p 1.4s ease-in-out infinite}@keyframes p{50%{opacity:.55;transform:scale(.96)}}</style>
 </head>
 <body>
-<span id="m">Opening…</span>
+<img id="lg" src="/icon-192.png" alt="">
+<span id="m"></span>
 <script>
 var E = "https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec";
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(function () {});
-var HEAD = '<link rel="manifest" href="/manifest.json"><link rel="icon" href="/icon-192.png"><link rel="apple-touch-icon" href="/icon-180.png"><meta name="theme-color" content="#0E0C2B"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">';
+var HEAD = '<link rel="manifest" href="/manifest.json"><link rel="icon" href="/icon-96.png"><link rel="apple-touch-icon" href="/icon-180.png"><meta name="theme-color" content="#0E0C2B"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">';
 fetch(E + "?ui=1").then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (h) {
   h = h.replace("<head>", "<head>" + HEAD + "<script>window.EXEC_URL=\"" + E + "\";<\/script>");
   document.open(); document.write(h); document.close();
