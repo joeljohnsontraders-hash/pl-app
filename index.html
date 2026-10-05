@@ -1,28 +1,1436 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E0C2B">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="P&amp;L">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icon-96.png">
 <link rel="apple-touch-icon" href="/icon-180.png">
+<script>window.EXEC_URL="https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec";if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});</script>
+<base target="_top"><meta charset="utf-8">
 <title>P&amp;L</title>
-<style>html,body{margin:0;height:100%;background:#FFFFFF;color:#3730A3;font:15px system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}a{color:#2563EB}#lg{width:96px;height:96px;animation:p 1.4s ease-in-out infinite}@keyframes p{50%{opacity:.55;transform:scale(.96)}}</style>
-</head>
-<body>
-<img id="lg" src="/icon-192.png" alt="">
-<span id="m"></span>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"></noscript>
+<style>
+/* Owner P&L app — Naveen's design: dark indigo headers, white cards, Instrument Serif figures, Geist text, Geist Mono labels */
+:root{
+  --ink:#0E0C2B; --bg:#F6F7FB; --card:#FFFFFF; --muted:#6B6F8C; --line:#EEF0F7; --soft:#EEF1FF; --soft2:#E0E7FF; --peri:#C7D2FE; --lav:#A5B4FC;
+  --accent:#4F46E5; --deep:#3730A3; --blue:#2563EB; --sky:#60A5FA; --ice:#DBEAFE; --lite:#B9C0F5;
+  --bad:#C2410C; --badsoft:#FFEDD5; --good:#15803D; --goodsoft:#DCFCE7;
+  --serif:'Instrument Serif',Georgia,serif; --sans:'Geist',system-ui,-apple-system,sans-serif; --mono:'Geist Mono',ui-monospace,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#E7E9F3}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+#root{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow-x:hidden}
+@media (min-width:520px){#root{box-shadow:0 0 0 1px rgba(14,12,43,.06),0 30px 80px -30px rgba(14,12,43,.35)}}
+.tn{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+.serif{font-family:var(--serif);font-weight:400}
+.muted{color:var(--muted)}
+.eb{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lav)}
+.ebd{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ix{font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+.tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;padding:3px 8px;border-radius:8px;white-space:nowrap;text-transform:uppercase}
+.tag.own{background:var(--soft);color:var(--deep)}
+.tag.dark{background:var(--ink);color:#fff}
+.tag.blue{background:var(--sky);color:var(--ink)}
+.tag.bad{background:var(--badsoft);color:var(--bad)}
+.tag.good{background:var(--goodsoft);color:var(--good)}
+/* dark header */
+.hd{position:relative;overflow:hidden;background:var(--ink);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 22px 92px;border-radius:0 0 44px 44px;display:flex;flex-direction:column;gap:22px}
+.hd.short{padding-bottom:72px}
+.hd.flat{padding-bottom:30px}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1.2px);background-size:18px 18px;pointer-events:none}
+.o1{position:absolute;right:-100px;top:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.6),rgba(91,91,247,0) 68%);pointer-events:none}
+.o2{position:absolute;left:-120px;bottom:-180px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.3),rgba(56,189,248,0) 68%);pointer-events:none}
+.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.glass{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);color:#fff}
+.back{height:44px;min-width:44px;padding:0 14px 0 10px;border-radius:22px;display:flex;align-items:center;gap:4px;font-size:14px;font-weight:500}
+.back svg{width:18px;height:18px}
+.pick{height:38px;padding:0 30px 0 14px;border-radius:19px;font:inherit;font-size:13px;font-weight:500;appearance:none;-webkit-appearance:none;
+  background:rgba(255,255,255,.07) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border:1px solid rgba(255,255,255,.13);color:#fff}
+.pick option{color:var(--ink)}
+.rlab{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--lav)}
+.big{font-family:var(--serif);font-weight:400;font-size:60px;line-height:1;letter-spacing:-1.5px}
+.big.m{font-size:52px}
+.cur{font-size:.5em;vertical-align:.75em;margin-right:4px;opacity:.6}
+.lite{color:var(--lite)}
+.ttl{margin:0;font-family:var(--serif);font-weight:400;font-size:52px;line-height:.95;letter-spacing:-1.5px}
+.ttl em{color:var(--lav)}
+.hk3{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hk2{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hk{padding:12px 14px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:3px;min-width:0}
+.hk .v{font-family:var(--serif);font-size:26px;line-height:1.05;white-space:nowrap}
+.hk .v small{font-size:15px;color:var(--lite)}
+.hk .s{font-size:11.5px;color:var(--lite)}
+/* body */
+.main{position:relative;margin-top:-58px;padding:0 16px 48px;display:flex;flex-direction:column;gap:14px}
+.main.lo{margin-top:-40px}
+.main.flat{margin-top:16px}
+.card{background:var(--card);border-radius:28px;border:1px solid rgba(14,12,43,.06);box-shadow:0 1px 2px rgba(14,12,43,.04),0 22px 44px -22px rgba(14,12,43,.22)}
+.pad{padding:8px 20px}
+.sh{display:flex;align-items:baseline;gap:10px;margin:20px 6px 2px}
+.sh .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.sh h2{margin:0;font-family:var(--serif);font-weight:400;font-size:28px;letter-spacing:-.3px}
+.sh .r{margin-left:auto;font-size:12px;color:var(--muted)}
+.sh .r.mono{font-size:11px}
+.rowx{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px;padding:14px 0;border-bottom:1px solid var(--line);width:100%;color:var(--ink)}
+.rowx:last-child{border-bottom:0}
+.rowx .l{display:flex;align-items:center;gap:8px;min-width:0}
+.rowx .a{font-weight:500;white-space:nowrap}
+.rowx .chev{color:var(--lav);margin-left:4px}
+.rowx.tot{padding:16px 0 12px;border-bottom:0}
+.rowx.tot .l{font-weight:600}
+.rowx.tot .a{font-family:var(--serif);font-size:24px;font-weight:400}
+.rowx.sub{padding:9px 0 9px 14px;font-size:13.5px;color:var(--muted)}
+.neg{color:var(--bad)}
+.pos{color:var(--good)}
+.li{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);width:100%;color:var(--ink)}
+.li:last-child{border-bottom:0}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);flex-shrink:0;color:#fff}
+.lt{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;flex-shrink:0}
+.dc{width:46px;height:52px;border-radius:16px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;color:var(--deep)}
+.dc span{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dc b{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1}
+.dc.today{background:var(--ink);color:#fff}.dc.today span{color:var(--lav)}
+.meta{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.trk{height:6px;border-radius:99px;background:var(--soft);overflow:hidden;display:flex;gap:2px}
+.trk i{display:block;height:100%;border-radius:99px}
+.kpi3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kpi{padding:14px;border-radius:22px;display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid rgba(14,12,43,.06);box-shadow:0 1px 2px rgba(14,12,43,.04),0 22px 44px -22px rgba(14,12,43,.22);min-width:0}
+.kpi .v{font-family:var(--serif);font-size:26px;line-height:1.05;white-space:nowrap}
+.kpi .v small{font-size:15px;color:var(--muted)}
+.kpi.acc{background:var(--accent);color:#fff;box-shadow:0 24px 44px -18px rgba(79,70,229,.6)}
+.kpi.acc .ebd{color:var(--peri)}
+.pill{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 4px;border-radius:15px;background:var(--soft);font-size:13px}
+.pill .av{width:22px;height:22px;font-size:12px}
+.pill.dark{background:var(--ink);color:#fff}
+.pill.blue{background:var(--ice)}
+.more{height:42px;padding:0 18px;border-radius:21px;background:#fff;border:1px solid rgba(14,12,43,.08);font-size:13px;font-weight:500;align-self:flex-end}
+.note{padding:16px 18px;border-radius:22px;background:var(--soft2);color:var(--deep);font-size:13.5px;line-height:1.5;display:flex;gap:10px}
+.empty{padding:26px 20px;text-align:center;color:var(--muted);font-size:14px}
+/* home tiles */
+.tiles{position:relative;margin-top:-58px;padding:0 16px 48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:148px;gap:12px}
+.tile{position:relative;overflow:hidden;padding:18px;border-radius:30px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;transition:transform .15s ease}
+.tile:active{transform:scale(.97)}
+.tt{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1;letter-spacing:-.3px}
+.td{font-size:12px;line-height:1.4}
+.lift{background:#fff;border:1px solid rgba(14,12,43,.06);box-shadow:0 1px 2px rgba(14,12,43,.04),0 22px 44px -22px rgba(14,12,43,.22)}
+.ic{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.livep{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 13px;border-radius:17px}
+.livep i{width:6px;height:6px;border-radius:3px;background:var(--sky);box-shadow:0 0 0 4px rgba(96,165,250,.22)}
+.round{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center}
+/* waterfall */
+.wf{height:180px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.wf>div{position:relative}
+.wf .b{position:absolute;left:0;right:0;border-radius:12px}
+.wf .t{position:absolute;left:0;right:0;text-align:center;font-family:var(--mono);font-size:12px;font-weight:500}
+.wf .d{position:absolute;left:-12px;right:0;border-top:1px dashed var(--peri)}
+.wfl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;text-align:center;font-size:11px;font-weight:500;color:var(--muted)}
+/* strip of days in sales header */
+.strip{position:relative;height:84px;display:flex;align-items:flex-end;gap:4px}
+.strip i{flex:1;border-radius:6px 6px 2px 2px;background:rgba(165,180,252,.35);min-height:3px}
+.strip i.hi{background:var(--sky)}
+.strip i.z{background:rgba(255,255,255,.06)}
+/* week strip in day header */
+.wk{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wk button{height:62px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13)}
+.wk button span{font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--lav)}
+.wk button b{font-family:var(--serif);font-weight:400;font-size:21px}
+.wk button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.wk button[aria-pressed="true"] span{color:var(--deep)}
+.wk button:disabled{opacity:.3}
+/* podium */
+.pod{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:end;gap:8px;margin-bottom:-92px}
+.pod .p{display:flex;flex-direction:column;align-items:center;gap:6px}
+.pod .ring{border-radius:50%;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--serif);box-shadow:0 0 0 4px rgba(165,180,252,.35)}
+.pod .nm{font-size:14px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pod .st{width:100%;border-radius:22px 22px 0 0;display:flex;justify-content:center;padding-top:12px;font-family:var(--serif);font-size:28px}
+/* staff cards */
+.sc{padding:16px;display:flex;flex-direction:column;gap:14px;width:100%;text-align:left}
+.sc .top{display:flex;align-items:center;gap:12px}
+.sc .go{margin-left:auto;width:36px;height:36px;border-radius:18px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--deep)}
+.mini3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mini3>div{padding:10px 12px;border-radius:16px;background:var(--bg);display:flex;flex-direction:column;gap:3px;min-width:0}
+.mini3 b{font-size:15.5px;font-weight:600;white-space:nowrap}
+.mini3 span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* attendance grid + calendar */
+.ag{display:grid;gap:4px;align-items:center;font-size:13px}
+.ag .c{height:22px;border-radius:6px;background:var(--soft2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:600}
+.ag .c.O{background:var(--sky);color:var(--ink)}.ag .c.L{background:var(--ink);color:#fff}.ag .c.B{background:#14B8A6;color:#fff}.ag .c.F{background:#F1F2F8}
+.ag .h{font-family:var(--mono);font-size:9.5px;text-align:center;color:var(--muted)}.ag .h.we{color:var(--accent);font-weight:600}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}
+.cal .h{font-family:var(--mono);font-size:10px;color:var(--muted);padding-bottom:4px}
+.cal .d{height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--soft);color:var(--deep)}
+.cal .d.O{background:var(--sky);color:var(--ink)}.cal .d.L{background:var(--ink);color:#fff}.cal .d.B{background:#14B8A6;color:#fff}
+.cal .d.fu{background:transparent;color:#C3C6D9}.cal .d.no{background:transparent}
+.cal .d.today{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--accent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+/* tabs inside a profile */
+.tabs{display:flex;gap:6px;padding:5px;border-radius:20px;background:#fff;border:1px solid rgba(14,12,43,.06);box-shadow:0 1px 2px rgba(14,12,43,.04),0 22px 44px -22px rgba(14,12,43,.22);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1;height:38px;border-radius:15px;font-size:12.5px;font-weight:500;color:var(--deep);white-space:nowrap;padding:0 10px}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.g5{display:grid;grid-template-columns:42px minmax(0,1fr) 54px 60px 26px;gap:8px;align-items:center}
+.drow{padding:10px 0;border-bottom:1px solid var(--line);width:100%;color:var(--ink)}
+.drow:last-child{border-bottom:0}
+.dl{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;line-height:1.2}
+.dl b{display:block;font-family:var(--serif);font-weight:400;font-size:19px;color:var(--ink);letter-spacing:0}
+.chk{width:22px;height:22px;border-radius:11px;background:var(--soft);display:flex;align-items:center;justify-content:center}
+.chk.on{background:var(--accent);color:#fff}
+.dchips{display:flex;flex-wrap:wrap;gap:6px}
+.dchips span{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;border:1px dashed rgba(165,180,252,.35);color:var(--lav)}
+.dchips span.on{background:#fff;color:var(--ink);border:0;font-weight:600}
+/* stock */
+.seg{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.seg button{height:44px;border-radius:14px;font-size:14px;font-weight:500;color:var(--lite);text-align:center}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink)}
+.sg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.st{padding:16px 18px;border-radius:28px;display:flex;flex-direction:column;gap:10px;min-height:150px}
+.st .q{font-family:var(--serif);font-size:44px;line-height:.95}
+.st .nm{font-size:13.5px;line-height:1.3;min-height:35px}
+.st.low{background:var(--ink);color:#fff;box-shadow:0 22px 44px -22px rgba(14,12,43,.5)}
+.st.low .meta{color:var(--lav)}
+.srch{width:100%;height:46px;border-radius:16px;border:1px solid rgba(14,12,43,.08);background:#fff;padding:0 16px;font:inherit;font-size:15px;color:var(--ink)}
+.fch{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.fch::-webkit-scrollbar{display:none}
+.fch button{height:34px;padding:0 14px;border-radius:17px;background:#fff;border:1px solid rgba(14,12,43,.08);font-size:12.5px;font-weight:500;white-space:nowrap;color:var(--deep)}
+.fch button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* charts */
+.chart{width:100%;height:auto;display:block}
+/* login */
+.login{position:relative;min-height:100vh;overflow:hidden;background:var(--ink);color:#fff}
+.login .sheetw{position:absolute;left:0;right:0;bottom:0;padding:30px 26px calc(30px + env(safe-area-inset-bottom));background:#fff;border-radius:40px 40px 0 0;display:flex;flex-direction:column;gap:14px;color:var(--ink)}
+.pinrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pinrow span{height:58px;border-radius:18px;border:1px solid #E4E7F2;background:#F6F7FB;display:flex;align-items:center;justify-content:center;font-size:26px}
+.pinrow span.on{border-color:var(--accent);background:var(--soft)}
+.keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.keys button{height:52px;border-radius:16px;background:#F6F7FB;font-size:21px;font-weight:500;text-align:center}
+.keys button:active{background:var(--soft2)}
+.keys .blank{visibility:hidden}
+.err{color:var(--bad);font-size:13px;text-align:center;min-height:18px}
+.loading{padding:120px 20px;text-align:center;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* sign-in, forms, owner tools */
+.login .sheetw{position:relative;margin-top:auto;left:auto;right:auto;bottom:auto;gap:12px}
+.grab{align-self:center;width:40px;height:4px;border-radius:2px;background:#E4E7F2;margin:-14px 0 2px}
+.fl{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fl>span{font-size:12.5px;font-weight:500;color:var(--muted)}
+.fl input,.fl select{height:52px;border-radius:16px;border:1px solid #E4E7F2;background:#F6F7FB;padding:0 16px;font:inherit;font-size:16px;font-weight:500;color:var(--ink);width:100%;appearance:none;-webkit-appearance:none}
+.fl select{background:#F6F7FB url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6F8C' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center;padding-right:38px}
+.fl input:focus,.fl select:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 4px rgba(79,70,229,.12)}
+.fl input.pin{font-size:24px;letter-spacing:14px}
+.fl small{font-size:11.5px;color:var(--muted);line-height:1.4}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.fgrid .fl{grid-column:span 2}.fgrid .fl.half{grid-column:span 1}
+.infov{height:52px;border-radius:16px;background:var(--soft);display:flex;align-items:center;padding:0 16px;font-weight:600;color:var(--deep)}
+.cta{height:56px;border-radius:20px;background:var(--ink);color:#fff;font-size:16px;font-weight:500;text-align:center;margin-top:2px}
+.cta:disabled{opacity:.6}
+.lnk{font-size:14px;font-weight:500;color:var(--accent);text-align:center;padding:6px}
+.segl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:18px;background:#F1F2F8}
+.segl button{height:42px;border-radius:14px;font-size:14px;font-weight:600;color:var(--muted);text-align:center}
+.segl button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(14,12,43,.1)}
+.hint{font-size:12px;line-height:1.55;color:var(--muted);text-align:center;background:#F6F7FB;border-radius:14px;padding:10px 12px}
+.okmsg{font-size:13.5px;color:var(--good);background:var(--goodsoft);border-radius:14px;padding:10px 12px;text-align:center}
+.err:empty{display:none}
+.sheetbg{position:fixed;inset:0;z-index:50;background:rgba(14,12,43,0);display:flex;align-items:flex-end;justify-content:center;transition:background .2s}
+.sheetbg.on{background:rgba(14,12,43,.45)}
+.sheetc{width:100%;max-width:480px;max-height:92vh;overflow:auto;background:#fff;border-radius:32px 32px 0 0;padding:26px 22px calc(26px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;transform:translateY(30px);transition:transform .2s}
+.sheetbg.on .sheetc{transform:none}
+.edbar{display:flex;gap:8px;flex-wrap:wrap}
+.edb{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;border-radius:18px;background:#fff;border:1px solid rgba(79,70,229,.25);color:var(--deep);font-size:12.5px;font-weight:600}
+.edb svg{flex-shrink:0}
+[data-ed]{cursor:pointer}
+.li[data-ed]:active,.rowx[data-ed]:active,.pill[data-ed]:active{opacity:.6}
+.badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#F97316;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink)}
+.pillbtn{height:34px;padding:0 14px;border-radius:17px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600}
+.pillbtn.ghost{background:var(--soft);color:var(--deep)}
+.pinchip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:12px;background:var(--ice);color:#1E3A8A;font-family:var(--mono);font-size:11px;letter-spacing:.06em}
+.pinchip b{font-size:15px;letter-spacing:.2em}
+.lnk.danger,.pillbtn.danger{color:var(--bad)}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:60;background:var(--ink);color:#fff;padding:12px 18px;border-radius:16px;font-size:14px;max-width:90vw;transition:all .2s;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast.bad{background:var(--bad)}
+</style>
+#pdays button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+
+</head><body>
+<div id="root"></div>
 <script>
-var E = "https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec";
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(function () {});
-var HEAD = '<link rel="manifest" href="/manifest.json"><link rel="icon" href="/icon-96.png"><link rel="apple-touch-icon" href="/icon-180.png"><meta name="theme-color" content="#0E0C2B"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">';
-fetch(E + "?ui=1").then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (h) {
-  h = h.replace("<head>", "<head>" + HEAD + "<script>window.EXEC_URL=\"" + E + "\";<\/script>");
-  document.open(); document.write(h); document.close();
-}).catch(function () { document.getElementById("m").innerHTML = "Could not open. <a href=\"" + location.href + "\">Try again</a>"; });
+(function(){
+/* ================= data: live from Google Sheets (Apps Script), or the preview's stand-in server ================= */
+const EXEC = window.EXEC_URL || "";
+const LIVE = EXEC || (typeof google !== "undefined" && google.script && google.script.run);
+const PREVIEW = window.PREVIEW_DATA || null;
+let BOOKS = [], cur = 0, D = null, M = null, TOKEN = "", ME = null, lastLoad = null, stack = [{ v: "home" }];
+const call = (fn, ...a) => EXEC ? fetch(EXEC, { method: "POST", body: JSON.stringify({ fn: fn, args: a }) }).then(r => r.json()).then(j => { if (j.error) throw new Error(j.error); return j.result; })
+  : new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a));
+const api = (fn, ...a) => LIVE ? call(fn, ...a) : new Promise((ok, no) => setTimeout(() => { try { ok(window.MOCK_API[fn](...a)); } catch (e) { no(e); } }, 120));
+const KEY = "plbook_session", CK = "plbook_cache";
+const keep = t => { if ((t || "") !== TOKEN) try { localStorage.removeItem(CK); } catch (e) {} TOKEN = t || ""; try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {} };
+const readCache = () => { try { return JSON.parse(localStorage.getItem(CK) || "null"); } catch (e) { return null; } };
+const saveCache = raw => { try { localStorage.setItem(CK, JSON.stringify({ t: Date.now(), me: ME, books: BOOKS, cur: cur, data: raw })); } catch (e) {} };
+function useData(raw) { D = JSON.parse(raw); ME = D.me; lastLoad = new Date(); M = model(D); saveCache(raw); }
+try { TOKEN = localStorage.getItem(KEY) || ""; } catch (e) {}
+const msgOf = e => String(e && e.message || e).replace(/^Error:\s*/, "").replace(/^Exception:\s*/, "");
+async function loadBook() {
+  useData(await api("getBook", TOKEN, BOOKS[cur].i));
+}
+async function refresh() {
+  try { await loadBook(); if (!$("#sheet")) draw(); }
+  catch (e) { const m = msgOf(e); if (/SESSION/.test(m)) { keep(""); D = null; login(); } else fail(m); }
+}
+setInterval(() => { if (!document.hidden && D && TOKEN && !$("#sheet")) refresh(); }, 60000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden && D && TOKEN && !$("#sheet")) refresh(); });
+const isOwner = () => ME && ME.role === "owner";
+const canEdit = () => ME && (ME.role === "owner" || ME.edit);
+let toastT;
+function toast(t, bad) {
+  let el = $("#toast"); if (!el) { el = document.createElement("div"); el.id = "toast"; document.body.appendChild(el); }
+  el.textContent = t; el.className = bad ? "bad on" : "on"; clearTimeout(toastT); toastT = setTimeout(() => el.className = "", 2600);
+}
+
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const root = () => $("#root");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ind = v => Math.abs(Math.round(v || 0)).toLocaleString("en-IN");
+const inr = v => (v < 0 ? "−" : "") + "₹" + ind(v);
+const sgn = v => (v > 0 ? "+ " : v < 0 ? "− " : "") + "₹" + ind(v);
+const cpt = v => { const a = Math.abs(v || 0), s = v < 0 ? "−" : ""; return a >= 1e5 ? s + "₹" + (a / 1e5).toFixed(2) + "L" : a >= 1e3 ? s + "₹" + (a / 1e3).toFixed(1) + "K" : s + "₹" + Math.round(a); };
+const hero = (v, cls = "big") => `<span class="${cls} tn">${v < 0 ? "−" : ""}<span class="cur">₹</span>${ind(v)}</span>`;
+const pct = (v, b) => b ? (v / b * 100).toFixed(1) + "%" : "–";
+const sum = (a, f = x => x) => a.reduce((s, x) => s + (f(x) || 0), 0);
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const WD = { Sun: "Sunday", Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday" };
+const COLS = ["#4F46E5", "#2563EB", "#0E0C2B", "#3B82F6", "#3730A3", "#6366F1", "#1D4ED8", "#312E81"];
+const avc = name => COLS[[...String(name)].reduce((a, c) => a + c.charCodeAt(0), 0) % COLS.length];
+const av = (name, size = 44) => `<span class="av" style="width:${size}px;height:${size}px;font-size:${Math.round(size * .45)}px;background:${avc(name)}">${esc(String(name || "?")[0])}</span>`;
+const IC = {
+  back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+  arrow: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>',
+  chev: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+  bell: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>',
+  pen: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
+  plus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  user: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'
+};
+
+/* ================= the model: everything the screens need, worked out once per load ================= */
+const ENTRYCAT = { "Daily incentives (paid in cash)": "Staff incentive", "Consumables used": "Consumables", "Retail products sold (at cost)": "Stock for resale" };
+const LABEL = { "Billing sales (net)": "Services (billing, net)", "Products sold": "Retail products", "Other income": "Other income",
+  "Less: refunds, dummy and cancelled bills": "Less: dummy & cancelled bills", "Salaries": "Staff salary", "Daily incentives (paid in cash)": "Daily 10K incentive",
+  "Incentives (salary)": "Service & retail incentive", "Consumables used": "Products used (salon)", "Retail products sold (at cost)": "Retail stock sold (cost)",
+  "Royalty / franchise fee": "Royalty", "Less: staff lent to other branch": "Less: staff lent to other branch", "Cash short / (excess)": "Cash short / (excess)" };
+const lab = k => k === "Salaries" && M && M.salTD !== null ? "Staff salary (days so far)" : LABEL[k] || k;
+const INCOME = ["Billing sales (net)", "Products sold", "Other income", "Less: refunds, dummy and cancelled bills"];
+const FIXED = ["Salaries", "Less: staff lent to other branch", "Shop rent", "Accommodation rent", "Staff lunch (owner)", "Insurance", "Loan interest",
+  "Professional fees", "Phone & internet", "Licences & taxes", "Depreciation"];
+const NOTDAY = ["NET SALES", "GROSS PROFIT", "TOTAL EXPENSES", "OPERATING PROFIT", "NET PROFIT", "Net margin", "SALES", "COST OF SALES", "STAFF COSTS", "PREMISES",
+  "DAILY RUNNING", "ADMIN & FINANCE", "YOUR OWN HEADS"];
+const NONEXP = ["Given to owner", "Bank deposit", "Staff advance", "Salary paid", "Tips to staff", "Loan repayment", "Savings / RD", "Cash from owner", "Staff incentive"];
+
+function model(D) {
+  const m = { PL: {}, order: [] };
+  D.pl.forEach(([k, v]) => { if (v !== null) { m.PL[k] = v; m.order.push(k); } });
+  // salary counted day by day until the month is complete
+  m.doneDays = (D.daily || []).filter(x => x.done && x.sal !== null).map(x => x.d);
+  m.salTD = m.doneDays.length && m.doneDays.length < D.days.length ? -sum((D.daily || []).filter(x => x.done && x.sal !== null), x => x.sal) : null;
+  if (m.salTD !== null) {
+    const full = (m.PL["Salaries"] || 0) + (m.PL["Less: staff lent to other branch"] || 0);
+    m.PL["NET PROFIT"] = (m.PL["NET PROFIT"] || 0) + full - m.salTD;
+    m.PL["Salaries"] = m.salTD; delete m.PL["Less: staff lent to other branch"];
+    if (!m.order.includes("Salaries")) m.order.push("Salaries");
+  }
+  m.INFO = Object.fromEntries(D.info); m.C = D.calc;
+  const [mon, yr] = String(D.month).split(" ");
+  m.mi = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].indexOf(mon); m.year = +yr;
+  m.MON = (mon || "").toUpperCase(); m.Month = MONTHS[m.mi] || D.month;
+  m.dim = D.days.length;
+  const now = new Date();
+  m.todayD = (now.getMonth() === m.mi && now.getFullYear() === m.year) ? now.getDate() : null;
+  m.retailDay = d => sum(D.prods.filter(p => p.d === d && p.out !== "Other branch"), p => p.amt);
+  m.days = D.days.map(x => ({ ...x, retail: m.retailDay(x.d), total: x.gross + m.retailDay(x.d) }));
+  m.entered = m.days.filter(x => x.gross > 0);
+  m.lastDay = m.entered.length ? Math.max(...m.entered.map(x => x.d)) : 0;
+  // P&L split: income, fixed (full month), day-to-day
+  const own = (D.ownHeads = []);
+  const ix = D.pl.findIndex(x => x[0] === "YOUR OWN HEADS"), iy = D.pl.findIndex(x => x[0] === "Total own heads");
+  if (ix >= 0) D.pl.slice(ix + 1, iy).forEach(x => { if (!/^Own head \d$/.test(x[0])) own.push(x[0]); });
+  const costLines = m.order.filter(k => !INCOME.includes(k) && !NOTDAY.includes(k) && !/^Total /.test(k) && !/^Own head \d$/.test(k));
+  m.fixed = FIXED.filter(k => m.PL[k] && !(k === "Salaries" && m.salTD !== null));
+  m.daily = costLines.filter(k => !FIXED.includes(k) && m.PL[k]);
+  if (m.salTD !== null && m.PL["Salaries"]) m.daily.unshift("Salaries");
+  m.income = INCOME.filter(k => m.PL[k]);
+  m.netSales = m.PL["NET SALES"] || 0; m.net = m.PL["NET PROFIT"] || 0;
+  m.fixedT = sum(m.fixed, k => m.PL[k]); m.dailyT = sum(m.daily, k => m.PL[k]);
+  const gap = Math.round(m.netSales - m.net - m.fixedT - m.dailyT);
+  if (gap) { m.PL["Other"] = gap; m.daily.push("Other"); m.dailyT += gap; }
+  m.costs = m.fixedT + m.dailyT;
+  // staff: daily service sales, retail, 10K, attendance status worked out with the book's week-off rule
+  const sal = Object.fromEntries(D.salary.map(s => [s.Staff, s]));
+  const dowOf = d => (m.days[d - 1] || {}).dow;
+  const WF = new Set((D.att || []).filter(a => a.type === "WFH").map(a => a.staff + "|" + a.d));
+  m.staff = (D.staffSales || []).map(x => {
+    const s = sal[x.name] || {};
+    let wk = 0;
+    const st = x.att.slice(0, m.dim).map((a, k) => {
+      const d = k + 1, we = ["Sat", "Sun"].includes(dowOf(d));
+      if (a === "LEAVE") return "leave";
+      if (a === "OFF") { if (we) return "weekend"; wk++; return wk > (x.allowed ?? 4) ? "extra" : "off"; }
+      if (a === "OB") return "ob";
+      return d <= m.lastDay ? "in" : "";
+    });
+    const retail = D.prods.filter(p => p.staff === x.name && p.out !== "Own use");
+    const tenk = D.cash.filter(c => c.cat === "Staff incentive" && c.staff === x.name);
+    const o = {
+      name: x.name, role: x.role, s, st, svc: x.days.slice(0, m.dim).map(v => v || 0),
+      ret: m.days.map(dd => sum(retail.filter(p => p.d === dd.d), p => p.amt)),
+      obret: m.days.map(dd => sum(retail.filter(p => p.d === dd.d && p.out === "Other branch"), p => p.amt)),
+      tk: m.days.map(dd => sum(tenk.filter(c => c.d === dd.d), c => c.out)),
+      off: x.off || 0, leave: x.leave || 0, allowed: x.allowed ?? 4, ob: x.ob || 0, wfh: m.days.map(dd => WF.has(x.name + "|" + dd.d))
+    };
+    o.svcT = sum(o.svc); o.retT = sum(o.ret); o.total = o.svcT + o.retT; o.tkT = sum(o.tk);
+    o.inc = o.tkT + (s["Service incentive"] || 0) + (s["Product incentive"] || 0);
+    o.worked = st.filter((v, k) => k < m.lastDay && (v === "in" || v === "ob")).length;
+    return o;
+  });
+  m.byName = Object.fromEntries(m.staff.map(x => [x.name, x]));
+  m.ranked = m.staff.slice().sort((a, b) => b.total - a.total);
+  m.daily_ = (D.daily || []);
+  return m;
+}
+const dayOf = d => M.days[d - 1];
+const isToday = d => M.todayD === d;
+const range = () => M.lastDay ? `1–${M.lastDay} ${M.MON}` : M.MON;
+
+/* ================= navigation ================= */
+function go(v, p = {}) { stack.push({ v, ...p }); draw(); window.scrollTo(0, 0); }
+function back() { if (stack.length > 1) stack.pop(); draw(); window.scrollTo(0, 0); }
+function home() { stack = [{ v: "home" }]; draw(); window.scrollTo(0, 0); }
+const backBtn = label => `<button class="back glass" data-back>${IC.back}<span>${esc(label)}</span></button>`;
+const monthPick = () => {
+  const br = BOOKS[cur].branch, list = BOOKS.map((b, k) => [b, k]).filter(([b]) => b.branch === br);
+  return list.length > 1 ? `<select class="pick" id="mpick" aria-label="Month">${list.map(([b, k]) => `<option value="${k}" ${k === cur ? "selected" : ""}>${esc(b.month)}</option>`).join("")}</select>`
+    : `<span class="pick" style="display:inline-flex;align-items:center;padding-right:14px;background-image:none">${esc(M.Month)}</span>`;
+};
+const header = (left, right, inner, cls = "") => `<header class="hd ${cls}"><div class="dots"></div><div class="o1"></div><div class="o2"></div>
+  <div class="bar">${left}${right || ""}</div>${inner}</header>`;
+const sh = (n, t, r = "") => `<div class="sh"><span class="n">${String(n).padStart(2, "0")}</span><h2>${t}</h2>${r ? `<span class="r">${r}</span>` : ""}</div>`;
+const rowx = (l, a, go_ = "", cls = "", tags = "") => `<${go_ ? "button" : "div"} class="rowx ${cls}" ${go_}><span class="l">${l}${tags}</span><span class="a tn">${a}${go_ ? '<span class="chev">›</span>' : ""}</span></${go_ ? "button" : "div"}>`;
+
+const VIEWS = {};
+function draw() {
+  if (!D) return;
+  const s = stack[stack.length - 1];
+  root().innerHTML = (VIEWS[s.v] || VIEWS.home)(s);
+  root().querySelectorAll("[data-back]").forEach(b => b.onclick = back);
+  root().querySelectorAll("[data-go]").forEach(b => b.onclick = () => { const p = b.dataset.p ? JSON.parse(b.dataset.p) : {}; go(b.dataset.go, p); });
+  root().querySelectorAll("[data-ed]").forEach(b => b.onclick = e => { e.stopPropagation(); EDIT[b.dataset.ed](b.dataset.p ? JSON.parse(b.dataset.p) : {}); });
+  const mp = $("#mpick"); if (mp) mp.onchange = async e => { cur = +e.target.value; root().innerHTML = '<div class="loading">Loading…</div>'; await refresh(); };
+  (s.after || (() => {}))();
+  if (VIEWS[s.v + "_bind"]) VIEWS[s.v + "_bind"](s);
+}
+const gp = (v, p) => `data-go="${v}"${p ? ` data-p='${JSON.stringify(p).replace(/'/g, "&#39;")}'` : ""}`;
+
+/* ================= sign in: owners (mobile + email + password) · viewers (mobile + their own 4-digit PIN) ================= */
+const loginTop = (eb, title, sub) => `<div class="dots"></div>
+  <div style="position:absolute;right:-140px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.65),rgba(91,91,247,0) 68%)"></div>
+  <div style="position:absolute;left:-160px;top:220px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.28),rgba(56,189,248,0) 68%)"></div>
+  <svg width="460" height="460" viewBox="0 0 460 460" fill="none" style="position:absolute;right:-200px;top:-150px"><circle cx="230" cy="230" r="228" stroke="rgba(165,180,252,0.18)"/><circle cx="230" cy="230" r="170" stroke="rgba(165,180,252,0.18)"/><circle cx="230" cy="230" r="112" stroke="rgba(165,180,252,0.18)"/><path d="M2 230A228 228 0 0 1 230 2" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/></svg>
+  <div style="position:relative;padding:calc(56px + env(safe-area-inset-top)) 30px 34px;display:flex;flex-direction:column;gap:14px">
+    <span class="eb">${eb}</span><h1 class="serif" style="margin:0;font-size:52px;line-height:.95;letter-spacing:-1.5px">${title}</h1>
+    ${sub ? `<p style="margin:0;font-size:15px;line-height:1.55;color:var(--lite);max-width:300px">${sub}</p>` : ""}</div>`;
+const fld = (id, label, type = "text", extra = "") => `<label class="fl"><span>${label}</span><input id="${id}" type="${type}" ${extra}></label>`;
+function authPage(top, sheet) {
+  root().innerHTML = `<section class="login" style="display:flex;flex-direction:column;justify-content:space-between">${top}
+    <div class="sheetw" style="position:relative">${sheet}
+    </div></section>`;
+}
+const busy = (b, on, t) => { if (!b) return; b.disabled = on; if (t) b.dataset.t = b.dataset.t || b.textContent; b.textContent = on ? "Please wait…" : (b.dataset.t || b.textContent); };
+/* opens at once with the figures saved on this phone, then brings the latest from the sheet */
+async function start() {
+  const c = TOKEN ? readCache() : null;
+  if (c && c.data) try { BOOKS = c.books || []; cur = c.cur || 0; ME = c.me; D = JSON.parse(c.data); M = model(D); lastLoad = new Date(c.t); stack = [{ v: "home" }]; draw(); } catch (e) { D = null; }
+  if (!D) root().innerHTML = '<div class="loading">Opening…</div>';
+  await openBook(c ? c.cur || 0 : 0, !!D);
+}
+async function openBook(i, quiet) {
+  let r; try { r = await api("start", TOKEN, i); } catch (e) { if (quiet) return toast("No connection — showing the last saved figures", 1); return fail(msgOf(e)); }
+  if (r.setup) { D = null; return setupPage(); }
+  if (!r.me) { keep(""); D = null; return login(); }
+  ME = r.me; BOOKS = r.books || [];
+  if (!BOOKS.length || !r.data) return fail("No branch books set up yet. Add them at the top of Code.gs.");
+  const first = !D; cur = Math.max(0, BOOKS.findIndex(b => b.i === i));
+  useData(r.data);
+  if (first) { stack = [{ v: "home" }]; if (!quiet && [...new Set(BOOKS.map(b => b.branch))].length > 1) return pickBranch(); }
+  if (!$("#sheet")) draw();
+}
+async function enter() {
+  root().innerHTML = '<div class="loading">Loading the book…</div>'; D = null;
+  await openBook(0, false);
+}
+/* first visit only: the main owner's login */
+function setupPage(err = "") {
+  const keepV = id => { const e = $("#" + id); return e ? e.value : ""; };
+  const old = { sn: keepV("sn"), sp: keepV("sp"), se: keepV("se"), sk: keepV("sk") };
+  authPage(loginTop("First time", `Set up the<br><em style="color:var(--lav)">owner login.</em>`, ""),
+    `<span class="grab"></span>${fld("sn", "Your name")}${fld("sp", "Mobile number", "tel", 'inputmode="tel" autocomplete="tel"')}${fld("se", "Email (the Gmail that runs this app)", "email", 'autocomplete="email"')}
+     ${fld("sk", "Your 4-digit PIN", "password", 'inputmode="numeric" maxlength="4" pattern="[0-9]*" class="pin"')}
+     ${fld("sw", "Owner password (8 or more characters)", "password", 'autocomplete="new-password"')}${fld("sw2", "Password again", "password", 'autocomplete="new-password"')}
+     <div class="err">${esc(err)}</div><button class="cta" id="go">Create owner login</button>`);
+  Object.entries(old).forEach(([k, v]) => { if (v) $("#" + k).value = v; });
+  $("#go").onclick = async e => {
+    if ($("#sw").value !== $("#sw2").value) return setupPage("The two passwords are not the same.");
+    busy(e.target, true, 1);
+    try { const r = await api("setupOwner", { name: $("#sn").value, phone: $("#sp").value, email: $("#se").value, pin: $("#sk").value, password: $("#sw").value }); keep(r.token); ME = r.me; enter(); }
+    catch (x) { setupPage(msgOf(x)); }
+  };
+}
+/* everyone: mobile number + 4-digit PIN, nothing else */
+function login(err = "", info = "", phone = "") {
+  authPage(loginTop("P&amp;L Book", `Your salon,<br><em style="color:var(--lav)">at a glance.</em>`, ""),
+    `<span class="grab"></span>${fld("lp", "Mobile number", "tel", 'inputmode="tel" autocomplete="tel"')}${fld("lw", "4-digit PIN", "password", 'inputmode="numeric" maxlength="4" pattern="[0-9]*" autocomplete="off" class="pin"')}
+     <div class="err">${esc(err)}</div>${info ? `<div class="okmsg">${info}</div>` : ""}<button class="cta" id="go">Sign in</button>`);
+  if (phone) $("#lp").value = phone;
+  const go = async () => {
+    const b = $("#go"), ph = $("#lp").value; busy(b, true, 1);
+    try {
+      const r = await api("login", ph, $("#lw").value);
+      if (r.state === "ok") { keep(r.token); ME = r.me; return enter(); }
+      if (r.state === "password") return pwPage(r.ticket, r.name);
+      if (r.state === "waiting") return login("", "Not on the list yet. Try again after the owner lets you in.", ph);
+      return login("This number does not have access.", "", ph);
+    } catch (x) { login(msgOf(x), "", ph); }
+  };
+  $("#go").onclick = go;
+  root().querySelectorAll("input").forEach(i => i.onkeydown = e => { if (e.key === "Enter") go(); });
+}
+/* owners: one more step */
+function pwPage(ticket, name, err = "") {
+  authPage(loginTop("Owner", `Hello,<br><em style="color:var(--lav)">${esc(name)}.</em>`, ""),
+    `<span class="grab"></span>${fld("pw", "Owner password", "password", 'autocomplete="current-password"')}<div class="err">${esc(err)}</div>
+     <button class="cta" id="go">Enter</button><button class="lnk" id="bk">Back</button>`);
+  $("#bk").onclick = () => login();
+  const go = async () => { const b = $("#go"); busy(b, true, 1);
+    try { const r = await api("ownerPassword", ticket, $("#pw").value); keep(r.token); ME = r.me; enter(); }
+    catch (x) { const m = msgOf(x); if (/too long/i.test(m)) return login(m); pwPage(ticket, name, m); } };
+  $("#go").onclick = go; $("#pw").onkeydown = e => { if (e.key === "Enter") go(); }; $("#pw").focus();
+}
+async function signOut() { try { await api("logout", TOKEN); } catch (e) {} keep(""); D = null; ME = null; login(); }
+function fail(msg) { root().innerHTML = `<div class="loading"><b class="serif" style="font-size:28px;color:var(--ink)">Something went wrong</b><br><br>${esc(msg)}<br><br><button class="more" id="retry">Try again</button></div>`; $("#retry").onclick = start; }
+function pickBranch() {
+  const br = [...new Set(BOOKS.map(b => b.branch))];
+  root().innerHTML = header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live from the sheets</span></span>`, "",
+    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Pick a branch</span><h1 class="ttl">One branch<br><em>at a time.</em></h1></div>`, "short")
+    + `<main class="main lo">${br.map((b, i) => `<button class="card" data-b="${esc(b)}" style="padding:22px;display:flex;justify-content:space-between;align-items:center;${i === 0 ? "background:var(--accent);color:#fff" : ""}">
+       <span><span class="serif" style="font-size:32px">${esc(b)}</span><br><span class="ebd" style="${i === 0 ? "color:var(--peri)" : ""}">${esc(BOOKS.find(x => x.branch === b).month)}</span></span>${IC.chev}</button>`).join("")}</main>`;
+  root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; root().innerHTML = '<div class="loading">Loading the book…</div>'; await refresh(); });
+}
+
+/* ================= bottom-sheet form used for every change ================= */
+// fields: {k, label, type: num|text|select|pin, value, options:[[value,label]], hint, half}
+function sheet(title, fields, onSave, opts = {}) {
+  closeSheet();
+  const el = document.createElement("div"); el.id = "sheet"; el.className = "sheetbg";
+  const inp = f => {
+    const v = f.value ?? "";
+    if (f.type === "select") return `<select id="f_${f.k}">${f.options.map(([a, b]) => `<option value="${esc(a)}" ${String(a) === String(v) ? "selected" : ""}>${esc(b)}</option>`).join("")}</select>`;
+    if (f.type === "info") return `<div class="infov">${f.value}</div>`;
+    return `<input id="f_${f.k}" type="${f.type === "num" ? "text" : f.type === "pin" ? "text" : f.type || "text"}" ${f.type === "num" ? 'inputmode="decimal"' : f.type === "pin" ? 'inputmode="numeric" maxlength="4"' : ""} value="${esc(v)}" ${f.ph ? `placeholder="${esc(f.ph)}"` : ""}>`;
+  };
+  el.innerHTML = `<div class="sheetc"><span class="grab"></span><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 class="serif" style="margin:0;font-size:28px;font-weight:400">${esc(title)}</h3><button class="lnk" id="sx">Close</button></div>
+    ${opts.note ? `<div class="hint" style="text-align:left">${opts.note}</div>` : ""}
+    <div class="fgrid">${fields.map(f => `<label class="fl ${f.half ? "half" : ""}"><span>${esc(f.label)}</span>${inp(f)}${f.hint ? `<small>${f.hint}</small>` : ""}</label>`).join("")}</div>
+    <div class="err" id="ferr"></div>
+    ${onSave ? `<button class="cta" id="fsave">${esc(opts.saveText || "Save")}</button>` : ""}${opts.onDelete ? `<button class="lnk danger" id="fdel">${esc(opts.delText || "Delete this entry")}</button>` : ""}${opts.extra || ""}</div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("on"));
+  el.onclick = e => { if (e.target === el) closeSheet(); };
+  $("#sx").onclick = closeSheet;
+  const vals = () => Object.fromEntries(fields.filter(f => f.type !== "info").map(f => [f.k, $("#f_" + f.k).value.trim()]));
+  const run = async (fn, btn) => { busy(btn, true, 1); $("#ferr").textContent = ""; try { await fn(vals()); } catch (x) { $("#ferr").textContent = msgOf(x); busy(btn, false); } };
+  if (onSave) $("#fsave").onclick = e => run(onSave, e.target);
+  if (opts.onDelete) $("#fdel").onclick = e => { if (e.target.dataset.sure) run(opts.onDelete, e.target); else { e.target.dataset.sure = 1; e.target.textContent = "Tap again to confirm"; } };
+  if (opts.bind) opts.bind(el);
+  return el;
+}
+function closeSheet() { const s = $("#sheet"); if (s) s.remove(); }
+const numv = (v, label) => { if (v === "") return ""; const n = Number(String(v).replace(/[₹,\s]/g, "")); if (!isFinite(n)) throw new Error(label + ": numbers only."); return n; };
+/* send changes to the sheet; the book recalculates and comes back */
+async function write(ops, summary) {
+  if (!LIVE) { closeSheet(); toast("Saved — in the live app the sheet recalculates and this screen updates"); return; }
+  const res = await api("save", TOKEN, BOOKS[cur].i, ops, summary);
+  useData(res);
+  closeSheet(); draw(); toast("Saved");
+}
+
+/* ================= notifications (owners) ================= */
+VIEWS.notes = s => {
+  const N = s.list || [];
+  const ic = { request: "?", login: "→", pin: "#", alert: "!", info: "i" };
+  return header(backBtn("Home"), "", `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Notifications</span><h1 class="ttl">${s.loading ? "Loading…" : N.filter(n => n.type === "request" && n.open).length ? "Someone wants<br><em>to log in.</em>" : "All<br><em>caught up.</em>"}</h1></div>`, "short")
+  + `<main class="main lo"><div class="card pad">${N.map(n => `<div class="li" style="align-items:flex-start">
+      <span class="lt" style="background:${n.type === "request" ? "var(--accent)" : n.type === "alert" ? "var(--badsoft)" : "var(--soft)"};color:${n.type === "request" ? "#fff" : n.type === "alert" ? "var(--bad)" : "var(--deep)"};font-family:var(--mono);font-size:16px">${ic[n.type] || "i"}</span>
+      <span style="flex:1;min-width:0"><span style="font-size:14.5px;${n.unread ? "font-weight:600" : ""}">${esc(n.text)}</span><div class="meta">${new Date(n.t).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}</div>
+      ${n.type === "request" && n.open ? `<div style="display:flex;gap:8px;margin-top:10px"><button class="pillbtn" data-acc="${n.u}">Let in as viewer</button><button class="pillbtn ghost" data-rej="${n.u}">Refuse</button></div>` : ""}</span></div>`).join("") || (s.loading ? "" : '<div class="empty">No notifications yet.</div>')}</div></main>`;
+};
+VIEWS.notes_bind = s => {
+  if (!s.list && !s.loading) { s.loading = true; api("notes", TOKEN).then(l => { s.list = l; s.loading = false; draw(); api("markRead", TOKEN).then(() => { D.unread = 0; }); }).catch(e => toast(msgOf(e), 1)); }
+  root().querySelectorAll("[data-acc]").forEach(b => b.onclick = () => letIn(b.dataset.acc, async () => { s.list = await api("notes", TOKEN); draw(); }));
+  root().querySelectorAll("[data-rej]").forEach(b => b.onclick = async () => {
+    busy(b, true, 1);
+    try { await api("decide", TOKEN, b.dataset.rej, false); s.list = await api("notes", TOKEN); draw(); toast("Refused"); }
+    catch (e) { toast(msgOf(e), 1); busy(b, false); }
+  });
+};
+
+function letIn(id, after) {
+  sheet("Let this number in", [{ k: "name", label: "Their name" }], async v => {
+    if (!v.name) throw new Error("Write their name."); await api("decide", TOKEN, id, true, v.name); closeSheet(); await after(); toast(v.name + " can now sign in"); }, { saveText: "Let in as viewer" });
+}
+/* ================= people (owners): who can open the app ================= */
+VIEWS.people = s => {
+  const P = s.list || [], O = P.filter(p => p.role === "owner" && p.status === "active"), V = P.filter(p => p.role === "viewer" && p.status === "active"), Q = P.filter(p => p.status === "pending");
+  const when = t => t ? new Date(t).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "never";
+  const ph = p => p.phone.replace(/(\d{5})(\d{5})/, "$1 $2");
+  return header(backBtn("Home"), "", `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">People · ${O.length + V.length}</span><h1 class="ttl">Who can<br><em>see the book.</em></h1></div>`, "flat")
+  + `<main class="main flat">
+    ${Q.length ? `${sh(1, "Trying to log in")}<div class="card pad">${Q.map(p => `<div class="li" style="align-items:flex-start">${av(p.name || "?", 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${p.name ? esc(p.name) : "Unknown number"}</span><div class="meta">${ph(p)} · PIN typed ${esc(p.pin || "–")}</div>
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="pillbtn" data-acc="${p.id}">Let in as viewer</button><button class="pillbtn ghost" data-rej="${p.id}">Refuse</button></div></span></div>`).join("")}</div>` : ""}
+    ${sh(Q.length ? 2 : 1, "Owners", `${O.length} of 2`)}
+    <div class="card pad">${O.map(p => `<div class="li">${av(p.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(p.name)}</span> ${p.core ? '<span class="tag dark">Main</span>' : ""}${p.id === ME.id ? ' <span class="tag own">You</span>' : ""}
+      <div class="meta">${ph(p)} · ${esc(p.email)}</div><div class="meta">Last in ${when(p.lastLogin)}</div></span>${!p.core && p.id !== ME.id ? `<button class="pillbtn ghost" data-rm="${p.id}" data-n="${esc(p.name)}">Remove</button>` : ""}</div>`).join("")}
+      ${O.length < 2 ? `<button class="rowx" id="addO" style="color:var(--accent);font-weight:600">+ Add the second owner</button>` : ""}</div>
+    ${sh(Q.length ? 3 : 2, "Viewers")}
+    <div class="card pad">${V.map(p => `<div class="li" style="align-items:flex-start">${av(p.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(p.name)}</span>
+      <div class="meta">${ph(p)}${p.email ? " · " + esc(p.email) : ""}</div><div class="meta">${p.addedBy ? "Added by " + esc(p.addedBy) + " · " : ""}last in ${when(p.lastLogin)}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><span class="pinchip">PIN ${p.pin ? `<b>${esc(p.pin)}</b>` : "not chosen yet"}</span>
+        <button class="pillbtn ${p.edit ? "" : "ghost"}" data-ce="${p.id}" data-on="${p.edit ? "" : "1"}" data-n="${esc(p.name)}">${p.edit ? "Can make changes ✓" : "Allow changes"}</button><button class="pillbtn ghost" data-rp="${p.id}" data-n="${esc(p.name)}">Reset PIN</button><button class="pillbtn ghost danger" data-rm="${p.id}" data-n="${esc(p.name)}">Remove</button></div></span></div>`).join("") || '<div class="empty">No viewers yet.</div>'}
+      <button class="rowx" id="addV" style="color:var(--accent);font-weight:600">+ Add a viewer</button></div>
+  </main>`;
+};
+VIEWS.people_bind = s => {
+  const reload = async () => { s.list = await api("people", TOKEN); draw(); };
+  if (!s.list) { reload().catch(e => toast(msgOf(e), 1)); return; }
+  const act = async (b, fn, msg) => { busy(b, true, 1); try { s.list = await fn(); draw(); toast(msg); } catch (e) { toast(msgOf(e), 1); busy(b, false); } };
+  root().querySelectorAll("[data-acc]").forEach(b => b.onclick = () => letIn(b.dataset.acc, reload));
+  root().querySelectorAll("[data-rej]").forEach(b => b.onclick = () => act(b, () => api("decide", TOKEN, b.dataset.rej, false), "Refused"));
+  root().querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to remove"; return; } act(b, () => api("removePerson", TOKEN, b.dataset.rm), b.dataset.n + " removed"); });
+  root().querySelectorAll("[data-ce]").forEach(b => b.onclick = () => act(b, () => api("setEdit", TOKEN, b.dataset.ce, !!b.dataset.on), b.dataset.on ? b.dataset.n + " can now make changes" : b.dataset.n + " is view-only again"));
+  root().querySelectorAll("[data-rp]").forEach(b => b.onclick = () => act(b, () => api("resetPin", TOKEN, b.dataset.rp), b.dataset.n + " will choose a new PIN"));
+  const aV = $("#addV"); if (aV) aV.onclick = () => sheet("Add a viewer", [{ k: "name", label: "Name" }, { k: "phone", label: "Mobile number", type: "tel" }, { k: "email", label: "Email (optional)", type: "email" },
+    { k: "pin", label: "4-digit PIN (optional)", type: "pin" }],
+    async v => { s.list = await api("addPerson", TOKEN, Object.assign(v, { role: "viewer" })); closeSheet(); draw(); toast(v.name + " added"); }, { saveText: "Add viewer" });
+  const aO = $("#addO"); if (aO) aO.onclick = () => sheet("Add the second owner", [{ k: "name", label: "Name" }, { k: "phone", label: "Mobile number", type: "tel" }, { k: "email", label: "Email", type: "email" },
+    { k: "pin", label: "4-digit PIN", type: "pin", half: 1 }, { k: "password", label: "Password (8+)", type: "password", half: 1 }],
+    async v => { s.list = await api("addPerson", TOKEN, Object.assign(v, { role: "owner" })); closeSheet(); draw(); toast(v.name + " added as owner"); }, { saveText: "Add owner" });
+};
+function changePw() {
+  sheet("Change my password or PIN", [{ k: "o", label: "Current password", type: "password" }, { k: "pin", label: "New 4-digit PIN (optional)", type: "pin", half: 1 },
+    { k: "n", label: "New password (optional)", type: "password", half: 1 }, { k: "n2", label: "New password again", type: "password" }],
+    async v => { if (v.n !== v.n2) throw new Error("The two new passwords are not the same."); if (!v.n && !v.pin) throw new Error("Enter a new PIN or a new password.");
+      await api("changeSecret", TOKEN, v.o, v.n, v.pin); closeSheet(); toast("Saved"); });
+}
+
+/* ================= owners change the book: every form writes to input cells only, then the sheet recalculates ================= */
+const ed = (name, p) => canEdit() ? `data-ed="${name}" data-p='${JSON.stringify(p || {}).replace(/'/g, "&#39;")}'` : "";
+const edBtn = (name, p, label) => canEdit() ? `<button class="edb" ${ed(name, p)}>${label.startsWith("+") ? IC.plus : IC.pen}<span>${esc(label.replace(/^\+\s*/, ""))}</span></button>` : "";
+const DB = "DAY BOOK", LY = () => D.layout;
+const blkRow = d => LY().B0 + (d - 1) * LY().BLK;
+const isExtra = r => r >= LY().XC0;
+const opt = (list, blank) => (blank ? [["", blank]] : []).concat(list.map(x => Array.isArray(x) ? x : [x, x]));
+const dayOpts = () => [["", "No day (whole month)"]].concat(M.days.map(x => [String(x.d), `${x.d} ${M.MON} · ${x.dow}`]));
+const money = v => v === null || v === undefined || v === "" ? "" : String(v);
+/* only the fields that really changed are written */
+function diffOps(sheetName, row, cols, before, after) {
+  const ops = [];
+  Object.entries(cols).forEach(([k, c]) => { const a = before[k] ?? "", b = after[k] ?? ""; if (String(a) !== String(b)) ops.push({ s: sheetName, r: row, c: c, v: b }); });
+  return ops;
+}
+function freeRow(kind, d) {
+  const list = D.free[kind] || [];
+  const own = list.find(x => x[1] === d); if (own) return [own[0], false];
+  const ex = list.find(x => x[1] === "x"); if (ex) return [ex[0], true];
+  throw new Error("No empty line left in the DAY BOOK for this. Add it in the sheet's MORE LINES.");
+}
+const EDIT = { settings_go: () => go("settings") };
+
+/* ---- the day's typed figures ---- */
+EDIT.dayfig = ({ d }) => {
+  const x = dayOf(d), raw = x.raw || [null, null, null, null, null], k = ["gross", "net", "card", "upi", "cnt"], lab = ["Billing gross ₹", "Billing net ₹", "Card ₹", "UPI / GPay ₹", "Cash counted ₹"];
+  const before = Object.fromEntries(k.map((n, i) => [n, money(raw[i])]));
+  sheet(`Day ${d} · sales & cash`, k.map((n, i) => ({ k: n, label: lab[i], type: "num", value: before[n], half: i < 4 })), async v => {
+    const after = Object.fromEntries(k.map(n => [n, numv(v[n], lab[k.indexOf(n)])]));
+    const ops = diffOps(DB, blkRow(d) + 2, { gross: 2, net: 3, card: 4, upi: 5, cnt: 6 }, before, after);
+    if (!ops.length) return closeSheet();
+    await write(ops, `day ${d} sales figures`);
+  });
+};
+
+/* ---- money in / out lines of the cash book ---- */
+EDIT.cash = ({ r, d }) => {
+  const c = r ? D.cash.find(x => x.r === r) : null; d = d || (c && c.d);
+  const before = c ? { t: c.t, out: money(c.out || ""), inn: money(c.inn || ""), pf: c.pf === "Cash" ? "Cash" : c.pf, pick: c.pick, sp: c.sp, day: String(c.d || "") } : { t: "", out: "", inn: "", pf: "Cash", pick: "", sp: "", day: String(d || "") };
+  const fields = [{ k: "t", label: "Details (as the manager writes it)", value: before.t },
+    { k: "out", label: "Paid out ₹", type: "num", value: before.out, half: 1 }, { k: "inn", label: "Received ₹", type: "num", value: before.inn, half: 1 },
+    { k: "pf", label: "Paid from", type: "select", value: before.pf, options: opt(["Cash", "Bank / UPI"]), half: 1 },
+    { k: "sp", label: "Counts for", type: "select", value: before.sp, options: opt(D.lists.spread, "This month"), half: 1 },
+    { k: "pick", label: "Category", type: "select", value: before.pick, options: opt(D.lists.cats, c && !c.pick ? `Automatic — ${c.cat || "from the words"}` : "Automatic (from the words)") }];
+  if (r ? isExtra(r) : false) fields.push({ k: "day", label: "Day", type: "select", value: before.day, options: dayOpts().slice(1) });
+  sheet(c ? "Change this entry" : `Day ${d} · add money in / out`, fields, async v => {
+    v.out = numv(v.out, "Paid out"); v.inn = numv(v.inn, "Received");
+    if (!v.t) throw new Error("Write the details."); if ((v.out === "") === (v.inn === "")) throw new Error("Fill either Paid out or Received (one of them).");
+    let row = r, extra = r ? isExtra(r) : false;
+    if (!row) { [row, extra] = freeRow("C", d); v.day = String(d); }
+    const ops = diffOps(DB, row, { t: 2, out: 3, inn: 4, pf: 5, pick: 7, sp: 9 }, c ? before : {}, v);
+    if (extra) ops.push(...diffOps(DB, row, { day: 1 }, c ? before : {}, { day: v.day ? Number(v.day) : "" }));
+    if (!ops.length) return closeSheet();
+    await write(ops, `day ${v.day || d}: "${v.t}" ${inr(v.out || v.inn)}${c ? " (changed)" : " (added)"}`);
+  }, { onDelete: c ? async () => write([2, 3, 4, 5, 7, 9].concat(isExtra(r) ? [1] : []).map(col => ({ s: DB, r: r, c: col, v: "" })), `day ${c.d}: deleted "${c.t}" ${inr(c.out || c.inn)}`) : null });
+};
+
+/* ---- retail sold ---- */
+EDIT.prod = ({ r, d }) => {
+  const p = r ? D.prods.find(x => x.r === r) : null; d = d || (p && p.d);
+  const before = p ? { item: p.item, qty: money(p.qty), price: money(p.price), staff: p.staff, type: p.out === "Own use" || p.out === "Other branch" ? p.out : "", mode: p.mode, day: String(p.d || "") } : { item: "", qty: "1", price: "", staff: "", type: "", mode: "UPI", day: String(d) };
+  sheet(p ? "Change this sale" : `Day ${d} · add retail sold`, [
+    { k: "item", label: "Product", type: "select", value: before.item, options: opt(D.lists.retail, "Pick the product") },
+    { k: "qty", label: "Pieces", type: "num", value: before.qty, half: 1 }, { k: "price", label: "Price per piece ₹", type: "num", value: before.price, half: 1 },
+    { k: "staff", label: "Sold by", type: "select", value: before.staff, options: [["", "Pick the staff"], ["Walk-in", "Walk-in (no staff)"]].concat(opt(D.lists.staff)), half: 1 },
+    { k: "mode", label: "Paid by", type: "select", value: before.mode, options: opt(["Cash", "Card", "UPI"]), half: 1 },
+    { k: "type", label: "Type", type: "select", value: before.type, options: [["", "Sold here"], ["Own use", "Own use (staff bought it)"], ["Other branch", "Sold at the other branch"]] }], async v => {
+    v.qty = numv(v.qty, "Pieces"); v.price = numv(v.price, "Price");
+    if (!v.item || !v.qty || v.price === "" || !v.staff) throw new Error("Fill product, pieces, price and staff.");
+    let row = r, extra = r ? isExtra(r) : false;
+    if (!row) [row, extra] = freeRow("P", d);
+    const ops = diffOps(DB, row, { item: 2, qty: 3, price: 4, staff: 6, type: 7, mode: 8 }, p ? before : {}, v);
+    if (extra && !p) ops.push({ s: DB, r: row, c: 1, v: d });
+    if (!ops.length) return closeSheet();
+    await write(ops, `day ${d}: ${v.staff} sold ${v.item} × ${v.qty}${p ? " (changed)" : " (added)"}`);
+  }, { onDelete: p ? async () => write([2, 3, 4, 6, 7, 8].concat(isExtra(r) ? [1] : []).map(col => ({ s: DB, r: r, c: col, v: "" })), `day ${p.d}: deleted sale of ${p.item}`) : null });
+};
+
+/* ---- stock received / used ---- */
+EDIT.move = ({ r, d }) => {
+  const m = r ? D.moves.find(x => x.r === r) : null; d = d || (m && m.d);
+  const before = m ? { item: m.item, qty: money(m.qty), type: m.type, remark: m.remark } : { item: "", qty: "", type: "Used", remark: "" };
+  sheet(m ? "Change stock line" : `Day ${d} · stock received / used`, [
+    { k: "item", label: "Item", type: "select", value: before.item, options: opt(D.lists.items, "Pick the item") },
+    { k: "qty", label: "Pieces", type: "num", value: before.qty, half: 1 }, { k: "type", label: "Received or used", type: "select", value: before.type, options: opt(["Received", "Used"]), half: 1 },
+    { k: "remark", label: "Bill / remarks", value: before.remark }], async v => {
+    v.qty = numv(v.qty, "Pieces"); if (!v.item || !v.qty) throw new Error("Pick the item and the pieces.");
+    let row = r, extra = r ? isExtra(r) : false;
+    if (!row) [row, extra] = freeRow("M", d);
+    const ops = diffOps(DB, row, { item: 2, qty: 3, type: 4, remark: 5 }, m ? before : {}, v);
+    if (extra && !m) ops.push({ s: DB, r: row, c: 1, v: d });
+    if (!ops.length) return closeSheet();
+    await write(ops, `day ${d}: ${v.item} × ${v.qty} ${v.type.toLowerCase()}`);
+  }, { onDelete: m ? async () => write([2, 3, 4, 5].map(col => ({ s: DB, r: r, c: col, v: "" })), `day ${m.d}: deleted stock line ${m.item}`) : null });
+};
+
+/* ---- attendance of one person on one day ---- */
+EDIT.att = ({ d, n }) => {
+  const a = D.att.find(x => x.d === d && x.staff === n), cur_ = a ? a.type : "";
+  sheet(`${n} · day ${d}`, [{ k: "type", label: "On this day", type: "select", value: cur_, options: [["", "Worked here"], ["WFH", "Work from home"], ["OFF", "Week off"], ["LEAVE", "Leave"], ["Other branch", "Worked at the other branch"]] }], async v => {
+    if (v.type === cur_) return closeSheet();
+    let ops;
+    if (a) ops = v.type ? [{ s: DB, r: a.r, c: 8, v: v.type }] : [{ s: DB, r: a.r, c: 7, v: "" }, { s: DB, r: a.r, c: 8, v: "" }];
+    else { const [row, extra] = freeRow("A", d); ops = [{ s: DB, r: row, c: 7, v: n }, { s: DB, r: row, c: 8, v: v.type }]; if (extra) ops.push({ s: DB, r: row, c: 1, v: d }); }
+    await write(ops, `day ${d}: ${n} — ${v.type || "worked"}`);
+  });
+};
+
+/* ---- staff-wise service sales for a day ---- */
+EDIT.ssales = ({ d }) => {
+  const S = D.staffSales;
+  const before = Object.fromEntries(S.map(x => ["s" + x.k, money(x.days[d - 1])]));
+  sheet(`Day ${d} · service sales by staff`, S.map(x => ({ k: "s" + x.k, label: x.name, type: "num", value: before["s" + x.k], half: 1 })), async v => {
+    const ops = []; S.forEach(x => { const b = before["s" + x.k], a = numv(v["s" + x.k], x.name); if (String(b) !== String(a)) ops.push({ s: "STAFF SALES", r: LY().SS1 + x.k, c: d + 2, v: a }); });
+    if (!ops.length) return closeSheet();
+    await write(ops, `day ${d}: staff service sales`);
+  });
+};
+
+/* ---- owner bills (OWNER sheet) ---- */
+const SECN = { A: "Paid this month", B: "For this month, not paid yet", C: "Other income" };
+EDIT.owner = ({ r, sec, d }) => {
+  const o = r ? D.ownerRows.find(x => x.r === r) : null;
+  const before = o ? { sec: o.sec, cat: o.cat, amt: money(o.amt), sp: o.sp, day: o.day ? String(o.day) : "", remark: o.remark } : { sec: sec || "A", cat: "", amt: "", sp: "", day: d ? String(d) : "", remark: "" };
+  const fields = [];
+  if (!o) fields.push({ k: "sec", label: "Which part", type: "select", value: before.sec, options: Object.entries(SECN) });
+  fields.push(o && !o.free ? { k: "cat", label: "Category", type: "info", value: esc(o.cat) } : { k: "cat", label: "Category", type: "select", value: before.cat, options: opt(D.lists.ownCats, "Pick the category") },
+    { k: "amt", label: "Amount ₹", type: "num", value: before.amt, half: 1 }, { k: "sp", label: "Counts for", type: "select", value: before.sp, options: opt(D.lists.spread, "This month"), half: 1 },
+    { k: "day", label: "Day (shown as minus on that day)", type: "select", value: before.day, options: dayOpts() }, { k: "remark", label: "Remarks", value: before.remark });
+  sheet(o ? `${o.cat || "Owner bill"}` : "Add an owner bill", fields, async v => {
+    v.amt = numv(v.amt, "Amount"); if (v.amt === "") throw new Error("Enter the amount.");
+    v.day = v.day ? Number(v.day) : "";
+    let row = r, writeCat = o ? o.free : false;
+    if (!o) {
+      if (!v.cat) throw new Error("Pick the category.");
+      const rows = D.ownerRows.filter(x => x.sec === v.sec);
+      const fixed = rows.find(x => !x.free && x.cat === v.cat && x.empty), free = rows.find(x => x.free && !x.cat && x.empty);
+      if (fixed) row = fixed.r; else if (free) { row = free.r; writeCat = true; } else throw new Error("No empty line left in this part of the OWNER sheet.");
+    }
+    const cols = { amt: 3, sp: 4, remark: 6, day: 7 }; if (writeCat) cols.cat = 2;
+    const ops = diffOps("OWNER", row, cols, o ? Object.assign({}, before, { day: o.day || "" }) : {}, v);
+    if (!ops.length) return closeSheet();
+    await write(ops, `owner bill ${v.cat || o.cat} ${inr(v.amt)}${v.day ? " on day " + v.day : ""}${o ? " (changed)" : " (added)"}`);
+  }, { onDelete: o ? async () => write([3, 4, 6, 7].concat(o.free ? [2] : []).map(col => ({ s: "OWNER", r: o.r, c: col, v: "" })), `owner bill ${o.cat} deleted`) : null });
+};
+
+/* ---- staff details ---- */
+EDIT.staff = ({ k }) => {
+  const S = D.staffRows, x = k !== undefined ? S[k] : S.find(y => !y.name); if (!x) return toast("All 20 staff lines are used.", 1);
+  const kk = S.indexOf(x), otv = (D.meOT || [])[kk];
+  const before = { name: x.name, role: x.role, salary: money(x.salary), target: money(x.target), level: money(x.level), old: money(x.old), remark: x.remark, ot: money(otv && otv.ot) };
+  sheet(x.name ? `${x.name} · details` : "Add a staff member", [
+    { k: "name", label: "Name", value: before.name },
+    { k: "role", label: "Role", type: "select", value: before.role, options: opt(["Staff", "Manager", "Helper", "Visiting"]), half: 1 },
+    { k: "salary", label: "Fixed salary ₹", type: "num", value: before.salary, half: 1 },
+    { k: "target", label: "Service target ₹", type: "num", value: before.target, half: 1 },
+    { k: "level", label: "Retail level ₹", type: "num", value: before.level, half: 1 },
+    { k: "old", label: "Old advance ₹", type: "num", value: before.old, half: 1 }, { k: "ot", label: "Overtime this month ₹", type: "num", value: before.ot, half: 1 },
+    { k: "remark", label: "Remarks", value: before.remark }], async v => {
+    ["salary", "target", "level", "old", "ot"].forEach(f => v[f] = numv(v[f], f));
+    if (!v.name) throw new Error("Enter the name.");
+    const ops = diffOps("STAFF", x.r, { name: 2, role: 3, salary: 4, target: 5, level: 6, old: 7, remark: 8 }, before, v)
+      .concat(diffOps("MONTH END", LY().MS1 + kk, { ot: 5 }, before, v));
+    if (!ops.length) return closeSheet();
+    await write(ops, `staff ${v.name} details`);
+  });
+};
+
+/* ---- stock items ---- */
+EDIT.stock = ({ r, type }) => {
+  const i = r ? D.stock.find(x => x.r === r) : null;
+  const row = r || (D.stockFree[type] || [])[0]; if (!row) return toast("No empty line left for this kind of item.", 1);
+  const before = i ? { item: i.item, unit: i.unit, cost: money(i.cost), mrp: money(i.mrp), open: money(i.open), count: money(i.count) } : {};
+  sheet(i ? i.item : `Add ${type === "Retail" ? "a product for sale" : "a salon-use item"}`, [
+    { k: "item", label: "Name", value: before.item || "" }, { k: "unit", label: "Unit / size", value: before.unit || "", half: 1 },
+    { k: "cost", label: "Cost price ₹", type: "num", value: before.cost || "", half: 1 },
+    ...(type === "Consumable" || (i && i.type === "Consumable") ? [] : [{ k: "mrp", label: "MRP ₹", type: "num", value: before.mrp || "", half: 1 }]),
+    { k: "open", label: "Pieces on the 1st", type: "num", value: before.open || "", half: 1 },
+    { k: "count", label: "Counted at month end", type: "num", value: before.count || "", half: 1, hint: i ? `Book: ${i.inhand ?? "–"}` : "" }], async v => {
+    ["cost", "mrp", "open", "count"].forEach(f => { if (f in v) v[f] = numv(v[f], f); });
+    if (!v.item) throw new Error("Enter the name.");
+    const ops = diffOps("STOCK", row, { item: 2, unit: 4, cost: 5, mrp: 6, open: 7, count: 11 }, before, v);
+    if (!ops.length) return closeSheet();
+    await write(ops, `stock ${v.item}${i ? "" : " (added)"}`);
+  });
+};
+
+/* ---- book settings: rates, rules, own heads, opening cash, month-end figures ---- */
+const PCT_ROWS = [8, 9, 11, 12, 25, 26, 28, 29], YN_ROWS = [10, 16];
+EDIT.set = ({ r }) => {
+  const x = D.setup.find(y => y.r === r), pc = PCT_ROWS.includes(r), yn = YN_ROWS.includes(r), head = r >= 33;
+  const v0 = pc ? (x.v === "" || x.v === null ? "" : +(x.v * 100).toFixed(3)) : (x.v ?? "");
+  const fields = head ? [{ k: "v", label: "Head name", value: x.v || "" }, { k: "w", label: "Words in the details (comma between)", value: x.words }]
+    : [yn ? { k: "v", label: x.label, type: "select", value: x.v, options: opt(["No", "Yes"]) } : { k: "v", label: x.label + (pc ? " (%)" : ""), type: r === 5 ? "text" : "num", value: v0 }];
+  sheet(head ? x.label : "Change setting", fields, async v => {
+    let nv = v.v; if (!yn && r !== 5 && !head) { nv = numv(nv, x.label); if (pc && nv !== "") nv = nv / 100; }
+    const ops = []; if (String(nv) !== String(x.v ?? "")) ops.push({ s: "SETUP", r: r, c: 3, v: nv });
+    if (head && v.w !== x.words) ops.push({ s: "SETUP", r: r, c: 4, v: v.w });
+    if (!ops.length) return closeSheet();
+    await write(ops, `setting "${x.label}"`);
+  });
+};
+EDIT.cash1 = () => {
+  const N = D.notesCash.slice(0, 9);
+  sheet("Cash in the box on the 1st", N.map(n => ({ k: "n" + n.r, label: `₹${n.note} notes / coins`, type: "num", value: money(n.pieces), half: 1 })), async v => {
+    const ops = []; N.forEach(n => { const a = numv(v["n" + n.r], "Pieces"), b = money(n.pieces); if (String(a) !== String(b)) ops.push({ s: "SETUP", r: n.r, c: 7, v: a }); });
+    if (!ops.length) return closeSheet();
+    await write(ops, "opening cash notes");
+  });
+};
+EDIT.mebill = () => {
+  const lab = ["Gross sales (billing report)", "Net sales (billing report)", "UPI received (GPay / bank statement)", "Card total (card machine report)"];
+  const before = Object.fromEntries(lab.map((l, i) => ["m" + i, money(D.meBill[i])]));
+  sheet("Month-end reports", lab.map((l, i) => ({ k: "m" + i, label: l + " ₹", type: "num", value: before["m" + i] })), async v => {
+    const ops = []; lab.forEach((l, i) => { const a = numv(v["m" + i], l); if (String(a) !== String(before["m" + i])) ops.push({ s: "MONTH END", r: 6 + i, c: 3, v: a }); });
+    if (!ops.length) return closeSheet();
+    await write(ops, "month-end report figures");
+  });
+};
+VIEWS.settings = () => {
+  const S = D.setup, row = x => { const pc = PCT_ROWS.includes(x.r), v = x.v === "" || x.v === null ? "–" : pc ? (x.v * 100).toFixed(2).replace(/\.?0+$/, "") + "%" : typeof x.v === "number" ? (x.r === 14 || x.r === 15 || x.r === 27 ? inr(x.v) : x.v) : esc(x.v);
+    return `<button class="rowx" ${ed("set", { r: x.r })}><span class="l" style="font-size:14px;text-align:left">${esc(x.r >= 33 ? (x.v || x.label) : x.label)}${x.r >= 33 && x.words ? `<span class="meta" style="margin-left:6px">${esc(x.words)}</span>` : ""}</span><span class="a tn">${x.r >= 33 ? (x.v ? "" : "not used") : v}<span class="chev">›</span></span></button>`; };
+  const g = (a, b) => S.filter(x => x.r >= a && x.r <= b).map(row).join("");
+  const cashT = sum(D.notesCash.slice(0, 9), n => n.amt);
+  return header(backBtn("Home"), "", `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Book settings · ${esc(D.branch)} · ${M.Month}</span><h1 class="ttl">Rates &amp;<br><em>rules.</em></h1></div>`, "flat")
+  + `<main class="main flat">
+    ${sh(1, "Branch &amp; rates")}<div class="card pad">${g(5, 16)}</div>
+    ${sh(2, "Salary &amp; incentive rules")}<div class="card pad">${g(20, 29)}</div>
+    ${sh(3, "Your own expense heads")}<div class="card pad">${g(33, 38)}</div>
+    ${sh(4, "Money")}<div class="card pad"><button class="rowx" ${ed("cash1")}><span class="l">Cash in the box on the 1st</span><span class="a tn">${inr(cashT)}<span class="chev">›</span></span></button>
+      <button class="rowx" ${ed("mebill")}><span class="l">Month-end billing, UPI and card reports</span><span class="a tn">${D.meBill.filter(x => x !== null).length} of 4<span class="chev">›</span></span></button></div>
+  </main>`;
+};
+
+/* ================= 0 · dashboard: numbered tiles, no figures ================= */
+VIEWS.home = () => {
+  const h = new Date().getHours(), greet = h < 12 ? "Good morning," : h < 17 ? "Good afternoon," : "Good evening,";
+  const t = lastLoad ? lastLoad.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
+  const now = new Date(), dateL = M.todayD ? `${WD[["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][now.getDay()]]} · ${now.getDate()} ${M.Month}` : `${M.Month} ${M.year} · ${M.lastDay} of ${M.dim} days`;
+  const branches = [...new Set(BOOKS.map(b => b.branch))].length;
+  const fx = (D.checks || []).filter(c => c[1].startsWith("✗") || c[1] === "Pending").length;
+  return header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live · updated ${esc(t)}</span></span>`,
+    `<span style="display:flex;gap:8px">${isOwner() ? `<button class="round glass" ${gp("notes")} aria-label="Notifications" style="position:relative">${IC.bell}${D.unread ? `<span class="badge">${D.unread > 9 ? "9+" : D.unread}</span>` : ""}</button>` : ""}<button class="round glass" id="acct" aria-label="Menu">${IC.user}</button></span>`,
+    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${esc(dateL)}${ME ? ` · ${esc(ME.name)} · ${isOwner() ? "owner" : ME.edit ? "can change" : "viewer"}` : ""}</span>
+     <h1 class="serif" style="margin:0;font-size:56px;line-height:.95;letter-spacing:-1.5px">${greet}<br><em style="color:var(--lav)">${esc(D.branch)}.</em></h1></div>`)
+  + `<main class="tiles">
+  <button ${gp("pnl")} class="tile" style="grid-column:span 2;background:var(--accent);color:#fff;box-shadow:0 24px 44px -18px rgba(79,70,229,.6)">
+    <svg width="190" height="190" viewBox="0 0 190 190" fill="none" style="position:absolute;right:-30px;top:-21px"><circle cx="95" cy="95" r="64" stroke="rgba(255,255,255,0.16)" stroke-width="18"/><circle cx="95" cy="95" r="64" stroke="#BFDBFE" stroke-width="18" stroke-linecap="round" stroke-dasharray="160 402" transform="rotate(-90 95 95)"/><circle cx="95" cy="95" r="88" stroke="rgba(255,255,255,0.14)"/></svg>
+    <div style="position:relative;display:flex;align-items:center;gap:10px"><span class="ix" style="color:#C7D2FE">01</span><span style="width:18px;height:1px;background:rgba(255,255,255,.4)"></span></div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:32px">Profit &amp; <em>Loss</em></span></div></button>
+  <button ${gp("sales")} class="tile lift" style="grid-row:span 2">
+    <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">02</span><span style="width:18px;height:1px;background:#D5D9EA"></span></div>
+    <div style="height:120px;display:flex;align-items:flex-end;gap:5px">${[38, 56, 46, 74, 100].map((h, i) => `<span style="flex-grow:1;height:${h}%;border-radius:8px 8px 3px 3px;background:${["#E0E7FF","#C7D2FE","#E0E7FF","#A5B4FC","#2563EB"][i]}"></span>`).join("")}</div>
+    <div style="display:flex;flex-direction:column;gap:6px"><span class="tt">Daily <em>Sales</em></span></div></button>
+  <button ${gp("exp")} class="tile" style="background:var(--ink);color:#fff">
+    <div style="position:absolute;right:-50px;bottom:-60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.4),rgba(96,165,250,0) 70%)"></div>
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:center"><span class="ix" style="color:var(--lav)">03</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg></div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:4px"><span class="tt">Expenses</span></div></button>
+  <button ${gp("stock")} class="tile" style="background:var(--ice)">
+    <div style="display:flex;justify-content:space-between;align-items:center"><span class="ix" style="color:#1E3A8A">04</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span class="tt">Stock</span></div></button>
+  <button ${gp("staff")} class="tile lift" style="grid-column:span 2;flex-direction:row;align-items:center">
+    <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
+      <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">05</span><span style="width:18px;height:1px;background:#D5D9EA"></span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Staff</span></div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px">
+      <span style="display:flex">${M.ranked.slice(0, 5).map(x => `<span class="av" style="width:42px;height:42px;margin-left:-12px;border:3px solid #fff;font-size:19px;background:${avc(x.name)}">${esc(x.name[0])}</span>`).join("")}</span>
+      <span class="round" style="width:40px;height:40px;background:var(--ink);color:#fff">${IC.arrow}</span></div></button>
+  <button ${gp("att")} class="tile lift">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="ix muted">06</span>
+      <span style="display:grid;grid-template-columns:repeat(5,9px);gap:4px">${["C7D2FE","C7D2FE","60A5FA","C7D2FE","C7D2FE","C7D2FE","0E0C2B","C7D2FE","C7D2FE","60A5FA"].map(c => `<span style="height:9px;border-radius:3px;background:#${c}"></span>`).join("")}</span></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span class="tt">Attendance</span></div></button>
+  <button ${gp("salary")} class="tile" style="background:var(--blue);color:#fff">
+    <div style="position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;border:16px solid rgba(255,255,255,.12)"></div>
+    <div style="position:relative"><span class="ix" style="color:var(--ice)">07</span></div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:4px"><span class="tt">Salary</span></div></button>
+  <button ${gp("inc")} class="tile" style="grid-column:span 2;background:var(--soft2);flex-direction:row;align-items:center;justify-content:flex-start;gap:18px">
+    <svg width="170" height="170" viewBox="0 0 24 24" fill="none" stroke="#C7D2FE" stroke-width="0.8" stroke-linejoin="round" style="position:absolute;right:-30px;bottom:-44px"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
+    <span class="ic" style="position:relative;width:58px;height:58px;border-radius:20px;background:var(--ink);color:#fff"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
+    <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="ix" style="color:var(--deep)">08</span><span class="tt" style="font-size:30px">Incentives</span></div></button>
+  <button ${gp("pday")} class="tile" style="grid-column:span 2;background:linear-gradient(135deg,#1E1B4B,#312E81 55%,#4F46E5);color:#fff;box-shadow:0 24px 44px -18px rgba(49,46,129,.55)">
+    <svg width="170" height="78" viewBox="0 0 230 120" fill="none" style="position:absolute;right:14px;top:16px"><path d="M4 100 L36 92 L68 96 L100 70 L132 74 L164 46 L196 52 L226 22" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 100 L36 92 L68 96 L100 70 L132 74 L164 46 L196 52 L226 22 L226 120 L4 120Z" fill="rgba(96,165,250,0.14)"/>${[[36,92],[100,70],[164,46],[226,22]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="#fff"/>`).join("")}</svg>
+    <div style="position:relative;display:flex;align-items:center;gap:10px"><span class="ix" style="color:var(--lav)">09</span><span style="width:18px;height:1px;background:rgba(255,255,255,.4)"></span></div>
+    <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Profit <em>by day</em></span></div></button>
+  <button ${gp("checks")} class="tile lift" style="grid-column:span 2;grid-row:span 1;flex-direction:row;align-items:center;justify-content:space-between">
+    <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%"><span class="ix muted">10</span>
+      <div style="display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Checks</span></div></div>
+    <span class="round" style="width:58px;height:58px;border-radius:20px;background:${fx ? "var(--badsoft)" : "var(--goodsoft)"};color:${fx ? "var(--bad)" : "var(--good)"}">${fx ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 7v6M12 17v.5"/><circle cx="12" cy="12" r="9.5"/></svg>' : IC.tick.replace(/12/g, "24")}</span></button>
+  </main>`;
+};
+VIEWS.home_bind = () => {
+  const a = $("#acct"); if (!a) return;
+  a.onclick = () => {
+    const ex = $("#menu"); if (ex) return ex.remove();
+    const multi = [...new Set(BOOKS.map(b => b.branch))].length > 1;
+    const it = (id, t) => `<button class="rowx" style="padding:12px 14px" id="${id}">${t}</button>`;
+    a.parentElement.insertAdjacentHTML("afterend", `<div id="menu" class="card" style="position:absolute;right:0;top:52px;z-index:5;padding:6px;min-width:210px;color:var(--ink)">
+      ${it("m-r", "Refresh now")}${multi ? it("m-b", "Change branch") : ""}${isOwner() ? it("m-p", "People & PINs") + it("m-s", "Book settings") + it("m-w", "Change my password or PIN") : ""}${it("m-l", "Sign out")}</div>`);
+    $("#m-r").onclick = () => refresh();
+    $("#m-l").onclick = signOut;
+    const on = (id, f) => { const x = $("#" + id); if (x) x.onclick = f; };
+    on("m-b", pickBranch); on("m-p", () => go("people")); on("m-s", () => go("settings")); on("m-w", () => { $("#menu").remove(); changePw(); });
+  };
+};
+
+/* ================= 1 · profit & loss ================= */
+const ownerTag = k => { const cat = ENTRYCAT[k] || k; return D.owner.some(o => o.cat === cat && o.month) ? ' <span class="tag own">Owner</span>' : ""; };
+/* one day's profit, line by line (used in the P&L tab and in the day report) */
+const prowG = (l, v, note = "") => v === null || v === undefined || !v ? "" : `<div class="rowx" style="flex-wrap:wrap;row-gap:2px"><span>${l}</span><b class="tn ${v < 0 ? "neg" : ""}">${sgn(v)}</b>${note ? `<span style="flex-basis:100%;font-size:12px;color:var(--muted)">${note}</span>` : ""}</div>`;
+function dayPLLines(P, d) {
+  const x = dayOf(d), owners = D.owner.filter(o => o.day === d);
+  return `
+      ${prowG("Sales", P.sales, x && x.gross > 0 && x.net === null ? "<b style='color:var(--bad)'>Billing net not entered</b>" : "")}
+      ${prowG("Products & stock used", P.stock, [P.retail ? `retail sold at cost ${inr(P.retail)}` : "", P.cons ? `salon products used ${inr(P.cons)}` : ""].filter(Boolean).join(" · "))}
+      ${prowG("Royalty", P.roy)}
+      ${prowG("Staff salary for the day", P.sal)}
+      ${prowG("Retail incentive", P.inc)}
+      ${prowG("Shop expenses", P.shop, [P.cashexp ? `paid by the shop ${inr(P.cashexp)}` : "", P.card ? `card charges ${inr(P.card)}` : "", P.cashdiff ? (P.cashdiff < 0 ? `cash short ${inr(-P.cashdiff)}` : `cash excess ${inr(P.cashdiff)}`) : ""].filter(Boolean).join(" · "))}
+      ${prowG("Owner bills", P.own, owners.filter(o => o.sec !== "C").map(o => esc(o.cat) + " " + inr(o.month)).join(" · "))}
+      ${prowG("Depreciation", P.dep)}
+      <div class="rowx tot"><span class="l">Profit for the day</span><span class="a tn ${P.profit < 0 ? "neg" : ""}" style="color:${P.profit < 0 ? "var(--bad)" : "var(--accent)"}">${sgn(P.profit)}</span></div>
+`;
+}
+const pnlSeg = s => `<div class="seg" id="pseg" style="position:relative"><button data-pm="month" aria-pressed="${s.mode !== "day"}">Month</button><button data-pm="day" aria-pressed="${s.mode === "day"}">Day by day</button></div>`;
+function pnlDay(s) {
+  const L = M.daily_.filter(x => x.profit !== null);
+  if (!L.length) return header(backBtn("Home"), monthPick(), `${pnlSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Profit by day</span><h1 class="ttl">No days<br><em>yet.</em></h1></div>`, "flat")
+    + `<main class="main flat"><div class="empty">The first day shows here as soon as its sales are entered.</div></main>`;
+  const d = L.some(x => x.d === s.d) ? s.d : L[L.length - 1].d; s.d = d;
+  const P = L.find(x => x.d === d), x = dayOf(d);
+  return header(backBtn("Home"), monthPick(),
+    `${pnlSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Profit &amp; loss · ${WD[x.dow]} ${d} ${M.Month}</span>${hero(P.profit)}
+     <span style="font-size:14px;color:#E0E7FF">Profit for the day · month so far ${sgn(P.run)}</span></div>
+     <div class="fch" id="pdays" style="position:relative">${L.map(y => `<button data-pd="${y.d}" aria-pressed="${y.d === d}">${y.d} ${y.dow}</button>`).join("")}</div>`, "short")
+  + `<main class="main lo">
+    <div class="card pad">${dayPLLines(P, d)}</div>
+    <button class="more" ${gp("day", { d })} style="align-self:flex-start">Full day report ›</button>
+    ${sh(1, "Every day", "Tap a day")}
+    <div class="card pad">${L.slice().reverse().map(y => `<button class="rowx" data-pd="${y.d}"><span class="l">${y.d} ${M.MON} · ${y.dow}</span><span class="a tn" style="color:${y.profit < 0 ? "var(--bad)" : "var(--ink)"}">${sgn(y.profit)}<span class="chev">›</span></span></button>`).join("")}</div>
+  </main>`;
+}
+VIEWS.pnl_bind = s => {
+  root().querySelectorAll("[data-pm]").forEach(b => b.onclick = () => { s.mode = b.dataset.pm; draw(); });
+  root().querySelectorAll("[data-pd]").forEach(b => b.onclick = () => { s.d = +b.dataset.pd; draw(); window.scrollTo(0, 0); });
+  const c = $("#pdays"), a = c && c.querySelector('[aria-pressed="true"]'); if (a) c.scrollLeft = a.offsetLeft - c.clientWidth / 2 + a.offsetWidth / 2;
+};
+VIEWS.pnl = s => {
+  if (s.mode === "day") return pnlDay(s);
+  const ns = M.netSales || 1, f = M.fixedT / ns * 100, d = M.dailyT / ns * 100, p = M.net / ns * 100;
+  const clamp = v => Math.max(0, Math.min(100, v));
+  const line = k => rowx(esc(lab(k)), (M.PL[k] < 0 ? "− " : "") + "₹" + ind(M.PL[k]), gp("head", { k }), "", ownerTag(k));
+  return header(backBtn("Home"), monthPick(),
+    `${pnlSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Profit &amp; loss · ${range()}</span>${hero(M.net)}
+     <span style="font-size:14px;color:#E0E7FF">Net profit so far · <b>${pct(M.net, M.netSales)}</b> margin</span></div>
+     <div class="hk2"><div class="hk"><span class="eb" style="font-size:10px">Income</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(M.netSales)}</span></div>
+       <div class="hk"><span class="eb" style="font-size:10px">Costs</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(M.costs)}</span></div></div>`)
+  + `<main class="main">
+    ${M.netSales <= 0 ? `<div class="card empty">The ₹100 split shows once sales are entered.</div>` : `<div class="card" style="padding:20px 20px 16px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">How ₹100 earned was used</span><span class="mono muted" style="font-size:11px">of ${cpt(M.netSales)}</span></div>
+      <div class="wf">
+        <div><div class="b" style="bottom:0;height:100%;background:var(--peri)"></div><span class="t" style="top:8px;color:#1E1B4B">100</span></div>
+        <div><div class="b" style="top:0;height:${clamp(f)}%;background:var(--ink)"></div><span class="t" style="top:8px;color:#fff">−${f.toFixed(1)}</span><div class="d" style="top:${clamp(f)}%"></div></div>
+        <div><div class="b" style="top:${clamp(f)}%;height:${clamp(Math.min(d, 100 - f))}%;background:var(--sky)"></div><span class="t" style="top:calc(${clamp(f)}% + 8px)">−${d.toFixed(1)}</span><div class="d" style="top:${clamp(f + d)}%"></div></div>
+        <div><div class="b" style="bottom:0;height:${clamp(Math.abs(p))}%;background:${p < 0 ? "var(--bad)" : "var(--accent)"};box-shadow:0 12px 24px -10px rgba(79,70,229,.6)"></div><span class="t" style="bottom:calc(${clamp(Math.abs(p))}% + 6px);color:var(--ink)">${p.toFixed(1)}</span></div>
+      </div>
+      <div class="wfl"><span>Income</span><span>Fixed</span><span>Day-to-day</span><span style="color:var(--ink)">Profit</span></div>
+    </div>`}
+    ${sh(1, "Income")}<div class="card pad">${M.income.map(line).join("")}${rowx("Total income", `<span style="color:var(--accent)">${inr(M.netSales)}</span>`, "", "tot")}</div>
+    ${sh(2, "Fixed costs", '<span class="mono">FULL MONTH</span>')}<div class="card pad">${M.fixed.map(line).join("") || '<div class="empty">Nothing yet</div>'}${rowx("Total fixed", inr(M.fixedT), "", "tot")}</div>
+    ${sh(3, "Day-to-day costs")}<div class="card pad">${M.daily.map(line).join("") || '<div class="empty">Nothing yet</div>'}${rowx("Total day-to-day", inr(M.dailyT), "", "tot")}</div>
+    <div style="position:relative;overflow:hidden;margin-top:8px;padding:22px;border-radius:28px;background:var(--ink);color:#fff;display:flex;flex-direction:column;gap:10px">
+      <div style="position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.55),rgba(91,91,247,0) 68%)"></div>
+      <span class="eb" style="position:relative">Net profit</span><span class="serif tn" style="position:relative;font-size:44px;line-height:1;color:${M.net < 0 ? "#FDBA74" : "#fff"}">${inr(M.net)}</span>
+      <span class="mono" style="position:relative;font-size:12px;color:var(--lite)">${ind(M.netSales)} − ${ind(M.fixedT)} − ${ind(M.dailyT)}</span></div>
+    ${sh(4, "Not profit", "for information")}<div class="card pad">${D.info.filter(x => x[1]).map(([k, v]) => rowx(esc(k), inr(v))).join("") || '<div class="empty">Nothing yet</div>'}</div>
+  </main>`;
+};
+
+/* ================= 2 · daily sales ================= */
+VIEWS.sales = s => {
+  const E = M.entered, tot = sum(E, x => x.total), svc = sum(E, x => x.gross), ret = sum(E, x => x.retail);
+  const best = E.slice().sort((a, b) => b.total - a.total)[0], mx = Math.max(1, ...M.days.map(x => x.total));
+  const list = M.days.filter(x => x.total > 0).reverse(), show = s.all ? list : list.slice(0, 10);
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Daily sales · ${range()}</span>${hero(tot)}
+     <span class="lite" style="font-size:14px">Service ${inr(svc)} · Retail ${inr(ret)}</span></div>
+     <div style="position:relative;display:flex;flex-direction:column;gap:6px"><div class="strip">${M.days.map(x => `<i class="${x.total ? (x.d === M.lastDay ? "hi" : "") : "z"}" style="height:${Math.max(3, x.total / mx * 100)}%" title="Day ${x.d}"></i>`).join("")}</div>
+     <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:10px;color:var(--lav)">1 ${M.MON}</span><span style="font-size:10px;color:var(--lav)">${M.dim}</span></div></div>`, "short")
+  + `<main class="main lo">
+    <div class="kpi3"><div class="kpi"><span class="ebd">Avg / day</span><span class="v tn">${cpt(E.length ? tot / E.length : 0)}</span></div>
+      <div class="kpi"><span class="ebd">Best day</span><span class="v tn">${best ? cpt(best.total) : "–"}</span><span class="mono muted" style="font-size:10px">${best ? best.dow.toUpperCase() + " " + best.d : ""}</span></div>
+      <div class="kpi acc"><span class="ebd">Retail share</span><span class="v tn">${pct(ret, tot)}</span></div></div>
+    ${sh(1, "Closing reports", "Tap a day")}
+    <div class="card pad">${show.map(x => `<button class="li" ${gp("day", { d: x.d })}>
+       <span class="dc ${isToday(x.d) ? "today" : ""}"><span>${isToday(x.d) ? "Today" : x.dow}</span><b>${x.d}</b></span>
+       <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px"><span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b class="tn" style="font-size:16px">${inr(x.total)}</b>
+         <span class="meta" style="margin:0">${x.retail ? "Retail " + inr(x.retail) : ""}${x.status && x.status !== "OK" ? ` · <span style="color:${/^Short|Not/.test(x.status) ? "var(--bad)" : "var(--deep)"}">${esc(x.status)}</span>` : ""}</span></span>
+         <span class="trk" style="width:${Math.max(8, x.total / mx * 100)}%"><i style="flex:${x.gross};background:var(--accent)"></i>${x.retail ? `<i style="flex:${x.retail};background:var(--sky)"></i>` : ""}</span></span>
+       <span style="color:var(--lav)">${IC.chev}</span></button>`).join("") || '<div class="empty">No days entered yet.</div>'}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="legend"><span><i style="background:var(--accent)"></i>Service</span><span><i style="background:var(--sky)"></i>Retail</span></span>
+      ${list.length > 10 && !s.all ? `<button class="more" id="all">All ${list.length} days</button>` : ""}</div>
+  </main>`;
+};
+VIEWS.sales_bind = s => { const a = $("#all"); if (a) a.onclick = () => { s.all = true; draw(); }; };
+
+/* ================= 2a · one day: full report ================= */
+const STATUS = { in: ["In", ""], ob: ["Other branch", "blue"], off: ["Week off", "blue"], weekend: ["Leave", "dark"], extra: ["Leave", "dark"], leave: ["Leave", "dark"] };
+VIEWS.day = s => {
+  const d = s.d, x = dayOf(d), P = M.daily_.find(y => y.d === d);
+  const wd = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].indexOf(x.dow), start = d - wd;
+  const week = [...Array(7)].map((_, k) => start + k);
+  const rank = M.entered.slice().sort((a, b) => b.total - a.total).findIndex(y => y.d === d) + 1;
+  const ord = n => n + (["th","st","nd","rd"][(n % 100 - 20) % 10] || ["th","st","nd","rd"][n % 100] || "th");
+  const cash = D.cash.filter(c => c.d === d);
+  const exps = cash.filter(c => c.out > 0 && !NONEXP.includes(c.cat));
+  const ins = cash.filter(c => c.inn > 0);
+  const tenk = cash.filter(c => c.cat === "Staff incentive"), advs = cash.filter(c => ["Staff advance", "Salary paid", "Tips to staff"].includes(c.cat));
+  const owners = D.owner.filter(o => o.day === d), prods = D.prods.filter(p => p.d === d), mvs = D.moves.filter(m => m.d === d);
+  const people = M.staff.map(p => ({ p, st: p.st[d - 1], svc: p.svc[d - 1], ret: p.ret[d - 1], ob: p.obret[d - 1], tk: p.tk[d - 1], wfh: p.wfh[d - 1] }));
+  const sold = people.filter(r => r.svc || r.ret).sort((a, b) => (b.svc + b.ret) - (a.svc + a.ret));
+  const away = people.filter(r => !(r.svc || r.ret) && ["leave", "off", "weekend", "extra", "ob"].includes(r.st));
+  const mx = Math.max(1, ...sold.map(r => r.svc + r.ret));
+  const staffIn = people.filter(r => r.st === "in" || r.st === "ob").length;
+  const entered = x.gross > 0;
+  const notes = people.filter(r => r.st === "weekend" || r.st === "extra").map(r => `${esc(r.p.name)} was off on a ${r.st === "weekend" ? (x.dow === "Sat" ? "Saturday" : "Sunday") + " — no week off on weekends" : "weekday after using all week offs earned"}, so it counts as leave.`);
+  const prow = (l, v, note = "", cls = "") => v === null || v === undefined || (!v && cls !== "keep") ? "" : `<div class="rowx" style="flex-wrap:wrap;row-gap:2px"><span>${l}</span><b class="tn ${v < 0 ? "neg" : ""}">${sgn(v)}</b>${note ? `<span style="flex-basis:100%;font-size:12px;color:var(--muted)">${note}</span>` : ""}</div>`;
+  return header(backBtn("Daily Sales"), `<span class="rlab">Day report</span>`,
+    `<div class="wk">${week.map(k => { const y = dayOf(k); return `<button ${y ? `data-wd="${k}"` : "disabled"} aria-pressed="${k === d}"><span>${y ? y.dow.toUpperCase() : ""}</span><b>${y ? k : ""}</b></button>`; }).join("")}</div>
+     <div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">${WD[x.dow]} · ${d} ${M.Month}</span>${hero(x.total)}
+     <span class="lite" style="font-size:14px">${entered ? `Service ${inr(x.gross)} · Retail ${inr(x.retail)}${rank ? ` · ${rank === 1 ? "best day" : ord(rank) + " best day"}` : ""}` : "Not entered yet"}</span></div>`, "short")
+  + `<main class="main lo">
+    <div class="kpi3"><div class="kpi"><span class="ebd">Staff in</span><span class="v tn">${staffIn}<small> / ${M.staff.length}</small></span></div>
+      <div class="kpi"><span class="ebd">Spent</span><span class="v tn">${cpt(sum(exps, c => c.out))}</span></div>
+      <div class="kpi acc"><span class="ebd">10K paid</span><span class="v tn">${cpt(sum(tenk, c => c.out))}</span></div></div>
+    ${canEdit() ? `<div class="edbar">${edBtn("dayfig", { d }, "Sales & cash figures")}${edBtn("cash", { d }, "+ Money in / out")}${edBtn("prod", { d }, "+ Retail sold")}${edBtn("ssales", { d }, "Staff sales")}${edBtn("owner", { d }, "+ Owner bill")}${edBtn("move", { d }, "+ Stock line")}</div>` : ""}
+    ${P && P.profit !== null ? `${sh(1, "Profit for the day", `so far ${inr(P.run)}`)}
+    <div class="card pad">
+      ${dayPLLines(P, d)}
+    </div>` : ""}
+    ${sh(2, "Who sold what")}
+    <div class="card pad">${sold.map(r => `<button class="li" ${gp("person", { n: r.p.name })}>${av(r.p.name, 44)}
+      <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+        <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b>${r.tk ? '<span class="tag dark">10K</span>' : ""}${r.st === "ob" ? '<span class="tag blue">Other branch</span>' : ""}</span><b class="tn" style="font-size:15px">${inr(r.svc + r.ret)}</b></span>
+        <span class="trk" style="width:${(r.svc + r.ret) / mx * 100}%"><i style="flex:${r.svc || 0.0001};background:var(--accent)"></i>${r.ret ? `<i style="flex:${r.ret};background:var(--sky)"></i>` : ""}</span>
+        <span class="meta" style="margin:0">Service ${inr(r.svc)} · Retail ${inr(r.ret)}${r.ob ? " · at other branch" : ""}</span></span></button>`).join("")}
+      ${away.map(r => `<div class="li" style="opacity:.75">${av(r.p.name, 44)}<span style="flex:1"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b><br><span class="meta">${r.st === "ob" ? "At the other branch" : r.st === "off" ? "Week off" : r.st === "leave" ? "Leave" : "Off · counted as leave"}</span></span><span class="tag ${STATUS[r.st][1]}">${STATUS[r.st][0]}</span></div>`).join("")}
+      ${!sold.length && !away.length ? '<div class="empty">No staff sales entered for this day.</div>' : ""}</div>
+    ${sh(3, "Attendance")}
+    <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px"><div style="display:flex;flex-wrap:wrap;gap:8px">${people.filter(r => r.st || canEdit()).map(r => `<span class="pill ${!r.st || r.st === "in" ? "" : STATUS[r.st][1] === "dark" ? "dark" : "blue"}" ${ed("att", { d, n: r.p.name })}>${av(r.p.name, 22)}${esc(r.p.name)} · ${r.st ? (r.wfh && r.st === "in" ? "WFH" : STATUS[r.st][0]) : "–"}${canEdit() ? ' <span style="opacity:.5">' + IC.pen + "</span>" : ""}</span>`).join("") || '<span class="muted">Not entered yet.</span>'}</div>
+</div>
+    ${sh(4, "Money in &amp; out")}
+    <div class="card pad">${exps.concat(ins).map(c => `<div class="li" ${ed("cash", { r: c.r })}><span class="lt" style="background:${c.inn ? "var(--goodsoft)" : "var(--soft)"};color:${c.inn ? "var(--good)" : "var(--deep)"}">${esc((c.cat || c.t || "?")[0])}</span>
+        <span style="flex:1;min-width:0"><span style="font-size:15px">${esc(c.t)}</span><div class="meta">${esc(c.cat || "No category")} · ${c.pf === "Cash" ? "Cash" : "Bank / UPI"} · Manager${c.sp ? " · " + esc(c.sp) : ""}</div></span>
+        <b class="tn" style="color:${c.inn ? "var(--good)" : "var(--ink)"}">${c.inn ? "+ " : ""}${inr(c.out || c.inn)}</b></div>`).join("")}
+      ${owners.map(o => `<div class="li" ${ed("owner", { r: o.r })}><span class="lt" style="background:var(--soft2);color:var(--deep)">${esc(o.cat[0])}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(o.cat)}</span> <span class="tag own">Owner</span><div class="meta">${esc(o.remark || "")}${o.sp ? " · " + esc(o.sp) : ""}${o.sec === "B" ? " · not paid yet" : ""}</div></span><b class="tn">${inr(o.amt)}</b></div>`).join("")}
+      ${!exps.length && !ins.length && !owners.length ? '<div class="empty">Nothing entered.</div>' : ""}</div>
+    ${prods.length || mvs.length ? `${sh(5, "Retail sold &amp; stock lines")}
+    <div class="card pad">${prods.map(p => `<div class="li" ${ed("prod", { r: p.r })}><span class="lt" style="background:var(--ice);color:#1E3A8A">${esc(p.item[0] || "?")}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(p.item)} × ${p.qty}</span><div class="meta">${esc(p.staff || "no staff")} · ${p.out === "Other branch" ? "other branch" : p.out === "Own use" ? "own use" : "sold here"}${p.mode ? " · " + esc(p.mode) : ""}${p.check && p.check !== "✓" ? ` · <span style="color:var(--bad)">${esc(p.check)}</span>` : ""}</div></span><b class="tn">${inr(p.amt)}</b></div>`).join("")}
+      ${mvs.map(m => `<div class="li" ${ed("move", { r: m.r })}><span class="lt" style="background:var(--soft);color:var(--deep)">${m.type === "Used" ? "−" : "+"}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(m.item)}</span><div class="meta">${esc(m.type)}${m.remark ? " · " + esc(m.remark) : ""}</div></span><b class="tn">${m.type === "Used" ? "−" : "+"}${m.qty}</b></div>`).join("")}</div>` : ""}
+    ${sh(6, "Incentives &amp; advances")}
+    <div class="card pad">${tenk.map(c => rowx(`10K incentive · ${esc(c.staff || c.t)}`, inr(c.out), ed("cash", { r: c.r }))).join("")}${advs.map(c => rowx(`${c.cat === "Staff advance" ? "Advance" : c.cat === "Salary paid" ? "Salary paid" : "Tips"} · ${esc(c.staff || c.t)}`, inr(c.out), ed("cash", { r: c.r }))).join("")}
+      ${!tenk.length && !advs.length ? '<div class="empty">None on this day.</div>' : ""}</div>
+    ${entered ? `${sh(7, "Cash drawer")}<div class="card pad">${rowx("Opening cash", inr(x.open))}${rowx("Card · UPI", inr(x.card) + " · " + inr(x.upi))}${rowx("Received · paid out", inr(x.recv) + " · " + inr(x.paid))}${rowx("Expected in drawer", inr(x.exp))}${rowx("Counted", x.cnt === null ? "Not counted" : inr(x.cnt))}
+      <div class="rowx tot"><span class="l">Status</span><span class="tag ${x.status === "OK" ? "good" : "bad"}" style="font-size:11px">${esc(x.status || "–")}</span></div></div>` : ""}
+  </main>`;
+};
+
+/* ================= 3 · expenses: fixed and day-to-day heads ================= */
+function entriesFor(k) {
+  const cat = ENTRYCAT[k] || k;
+  const cash = D.cash.filter(c => c.cat === cat).map(c => ({ ed: ["cash", { r: c.r }], d: c.d, t: c.t + (c.staff && !c.t.toUpperCase().includes(c.staff.toUpperCase()) ? " · " + c.staff : ""), v: c.out || c.inn, by: "Manager", how: c.pf === "Cash" ? "Cash" : "Bank / UPI", sp: c.sp }));
+  const own = D.owner.filter(o => o.cat === cat).map(o => ({ ed: ["owner", { r: o.r }], d: o.day, t: o.remark || o.cat, v: o.amt, by: "Owner", how: o.sec === "B" ? "Not paid yet" : "Paid", sp: o.sp, part: o.month !== o.amt ? o.month : null }));
+  let rows = cash.concat(own), note = "";
+  const S = D.salary;
+  if (k === "Salaries" && M.salTD !== null) {
+    const c20 = Number((D.setup.find(x => x.r === 20) || {}).v) || M.dim, done = new Set(M.doneDays), LV = ["leave", "weekend", "extra"];
+    rows = S.filter(s => s["Fixed salary"]).map(s => { const p = M.byName[s.Staff], fs = s["Fixed salary"]; let v = 0, n = 0, l = 0;
+      done.forEach(d => { const lv = p && LV.includes(p.st[d - 1]); v += fs / M.dim - (lv ? fs / c20 : 0); if (lv) l++; else n++; });
+      return { d: null, t: s.Staff, v: Math.round(v), by: `${n} day${n === 1 ? "" : "s"}`, how: l ? `${l} leave` : "" }; });
+  } else if (k === "Salaries") { rows = S.filter(s => s["Fixed salary"]).map(s => ({ d: null, t: s.Staff, v: s["Salary earned"], by: "Salary sheet", how: s.LEAVE ? `${s.LEAVE} leave · cut ${inr(s["Leave cut"])}` : "Full month" })); note = "Fixed salary less leave cut, for the full month."; }
+  if (k === "Incentives (salary)") rows = S.filter(s => s["Service incentive"] + s["Product incentive"]).map(s => ({ d: null, t: s.Staff, v: s["Service incentive"] + s["Product incentive"], by: "Salary sheet", how: `service ${inr(s["Service incentive"])} · retail ${inr(s["Product incentive"])}` }));
+  if (k === "Overtime") rows = S.filter(s => s.Overtime).map(s => ({ d: null, t: s.Staff, v: s.Overtime, by: "Month end", how: "" }));
+  if (k === "Less: staff lent to other branch") rows = S.filter(s => s["Days at other branch"]).map(s => ({ d: null, t: s.Staff, v: 0, by: "Other branch", how: `${s["Days at other branch"]} day(s)` }));
+  if (k === "Billing sales (net)") rows = M.days.filter(x => x.gross).map(x => ({ ed: ["dayfig", { d: x.d }], d: x.d, t: x.net === null ? "Billing net not entered" : "Billing net", v: x.netused, by: "Closing report", how: "gross " + inr(x.gross) }));
+  if (k === "Products sold") rows = D.prods.filter(p => p.out !== "Other branch").map(p => ({ ed: ["prod", { r: p.r }], d: p.d, t: `${p.item} × ${p.qty}`, v: p.amt, by: p.staff || "–", how: p.out === "Own use" ? "Own use" : (p.mode || "") }))
+    .concat(D.cash.filter(c => c.cat === "Sales outside billing").map(c => ({ d: c.d, t: c.t, v: c.inn, by: "Manager", how: "Cash book" })));
+  if (k === "Less: refunds, dummy and cancelled bills") rows = D.cash.filter(c => ["Refunds", "Cancelled bills"].includes(c.cat)).map(c => ({ d: c.d, t: c.t, v: c.out, by: "Manager", how: c.cat }));
+  if (k === "Consumables used") note = `Stock at the start ${inr(D.stockSum.consOpen)} + bought − counted at month end ${inr(D.stockSum.consClose)}. Until the count, it is what was bought. Purchases below.`;
+  if (k === "Retail products sold (at cost)") note = "Pieces sold × cost price, plus anything missing in the count. Purchases below.";
+  if (k === "Royalty / franchise fee") note = "Royalty % from SETUP × net sales. No entries.";
+  if (k === "Depreciation") note = "Equipment cost spread over its life, from SETUP. No entries.";
+  if (k === "Cash short / (excess)") rows = M.days.filter(x => x.diff).map(x => ({ d: x.d, t: x.diff < 0 ? "Cash short" : "Cash excess", v: -x.diff, by: "Closing report", how: "counted vs expected" }));
+  return { rows: rows.sort((a, b) => (b.d || 0) - (a.d || 0)), note };
+}
+VIEWS.exp = () => {
+  const all = M.fixed.map(k => [k, "f"]).concat(M.daily.map(k => [k, "d"])).filter(([k]) => M.PL[k] > 0);
+  const n = sum(all, ([k]) => entriesFor(k).rows.length), tot = M.costs || 1;
+  const segs = all.slice().sort((a, b) => (a[1] === b[1] ? M.PL[b[0]] - M.PL[a[0]] : a[1] === "f" ? -1 : 1));
+  const shades = { f: ["#A5B4FC", "#4F46E5", "#3730A3", "#6366F1", "#818CF8", "#312E81"], d: ["#2563EB", "#60A5FA", "#93C5FD", "#BFDBFE", "#3B82F6", "#DBEAFE"] };
+  let fi = 0, di = 0;
+  const head = (k, i) => { const e = entriesFor(k), last = e.rows.find(r => r.d); const c = (M.fixed.includes(k) ? shades.f : shades.d)[i % 6];
+    return `<button class="li" ${gp("head", { k })}><span class="lt" style="background:${c};color:${["#BFDBFE","#DBEAFE","#93C5FD","#A5B4FC"].includes(c) ? "var(--ink)" : "#fff"}">${esc(lab(k)[0])}</span>
+      <span style="flex:1;min-width:0"><span style="display:block;font-size:15.5px;font-weight:500;line-height:1.25">${esc(lab(k))}</span>
+      <div class="meta">${ownerTag(k) ? '<span class="tag own" style="padding:1px 6px;margin-right:6px">Owner</span>' : ""}${e.rows.length ? e.rows.length + " entr" + (e.rows.length > 1 ? "ies" : "y") + (last ? " · " + last.d + " " + M.MON : "") : "worked out"}</div></span>
+      <span style="text-align:right"><b class="tn" style="font-size:15px">${inr(M.PL[k])}</b><div class="mono muted" style="font-size:10.5px">${pct(M.PL[k], tot)}</div></span><span style="color:var(--lav)">${IC.chev}</span></button>`; };
+  const F = all.filter(a => a[1] === "f").sort((a, b) => M.PL[b[0]] - M.PL[a[0]]), Dd = all.filter(a => a[1] === "d").sort((a, b) => M.PL[b[0]] - M.PL[a[0]]);
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Expenses · ${range()}</span>${hero(M.costs)}
+     <span class="lite" style="font-size:14px">${all.length} heads · ${n} entries</span></div>
+     <div style="position:relative;display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:3px;height:12px">${segs.map(([k, t]) => `<i style="flex:${M.PL[k]};border-radius:4px;background:${t === "f" ? shades.f[fi++ % 6] : shades.d[di++ % 6]}"></i>`).join("")}</div>
+     <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:10px;color:var(--lav)">FIXED ${pct(M.fixedT, tot)}</span><span style="font-size:10px;color:var(--lav)">DAY-TO-DAY ${pct(M.dailyT, tot)}</span></div></div>`, "short")
+  + `<main class="main" style="margin-top:-46px">${canEdit() ? `<div class="edbar" style="margin-top:4px">${edBtn("owner", { sec: "A" }, "+ Owner bill")}${edBtn("owner", { sec: "B" }, "+ Bill not paid yet")}${isOwner() ? edBtn("settings_go", {}, "Rates & settings") : ""}</div>` : ""}
+    <div class="card" style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center"><span class="ebd">Fixed · full month</span><span class="serif tn" style="font-size:24px">${inr(M.fixedT)}</span></div>
+    ${sh(1, "Fixed costs")}<div class="card pad">${F.map(([k], i) => head(k, i)).join("") || '<div class="empty">Nothing yet</div>'}</div>
+    ${sh(2, "Day-to-day costs", `<span class="mono">${inr(M.dailyT)}</span>`)}<div class="card pad">${Dd.map(([k], i) => head(k, i)).join("") || '<div class="empty">Nothing yet</div>'}</div>
+  </main>`;
+};
+VIEWS.head = s => {
+  const k = s.k, v = M.PL[k] || 0, e = entriesFor(k), isInc = INCOME.includes(k);
+  const src = [["Shop cash", sum(e.rows.filter(r => r.how === "Cash"), r => r.v), "#0E0C2B"], ["Bank / UPI", sum(e.rows.filter(r => r.how === "Bank / UPI"), r => r.v), "#4F46E5"],
+    ["Owner", sum(e.rows.filter(r => r.by === "Owner"), r => r.part ?? r.v), "#60A5FA"]].filter(x => x[1] > 0);
+  const top = !src.length && e.rows.length ? e.rows.slice().sort((a, b) => b.v - a.v).slice(0, 3).map((r, i) => [r.t, r.v, ["#0E0C2B", "#4F46E5", "#60A5FA"][i]]) : src;
+  return header(backBtn(isInc ? "Profit & Loss" : "Expenses"), `<span class="rlab">${isInc ? "Income" : M.fixed.includes(k) ? "Fixed" : "Day-to-day"}</span>`,
+    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">${esc(lab(k))} · ${M.Month}</span>${hero(v)}
+     <span class="lite" style="font-size:14px">${e.rows.length} entries${isInc ? "" : " · " + pct(Math.abs(v), M.costs) + " of all expenses"}</span></div>`, "short")
+  + `<main class="main lo">
+    ${top.length ? `<div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:12px"><span class="ebd">Where it went</span>
+      <div style="display:flex;gap:4px;height:12px">${top.map(t => `<i style="flex:${t[1]};border-radius:6px;background:${t[2]}"></i>`).join("")}</div>
+      <div style="display:grid;grid-template-columns:repeat(${top.length},minmax(0,1fr));gap:8px">${top.map(t => `<div style="min-width:0"><div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${t[2]};margin-right:6px"></i>${esc(t[0])}</div><div class="serif tn" style="font-size:22px">${inr(t[1])}</div></div>`).join("")}</div></div>` : ""}
+    ${sh(1, "Every entry")}
+    <div class="card pad">${e.rows.map(r => `<div class="li" ${r.ed ? ed(r.ed[0], r.ed[1]) : ""}>${r.d ? `<span class="dc"><span>${(dayOf(r.d) || {}).dow || ""}</span><b>${r.d}</b></span>` : av(r.t, 44)}
+      <span style="flex:1;min-width:0"><span style="font-size:15px">${esc(r.t)}</span>${r.by === "Owner" ? ' <span class="tag own">Owner</span>' : ""}<div class="meta">${esc([r.by !== "Owner" ? r.by : "", r.how, r.sp].filter(Boolean).join(" · "))}</div></span>
+      <b class="tn" style="text-align:right">${inr(r.v)}${r.part !== null && r.part !== undefined ? `<div class="mono muted" style="font-size:10px;font-weight:400">${inr(r.part)} this month</div>` : ""}</b></div>`).join("") || '<div class="empty">No entries.</div>'}</div>
+  </main>`;
+};
+
+/* ================= 9 · profit by day ================= */
+function profitChart(L) {
+  const W = 340, H = 190, Lm = 40, B = 22, T = 10, R = 6, days = M.dim, pts = L.map(x => [x.d, x.run]);
+  const lo = Math.min(0, ...L.map(x => Math.min(x.run, x.profit))), hi = Math.max(0, ...L.map(x => Math.max(x.run, x.profit))), span = Math.max(1, hi - lo);
+  const step = [1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000].find(s => span / s <= 4) || 1e6, a = Math.floor(lo / step) * step, b = Math.ceil(hi / step) * step || step;
+  const X = d => Lm + (W - Lm - R) * (d - 1) / Math.max(1, days - 1), Y = v => T + (H - T - B) * (1 - (v - a) / Math.max(1, b - a));
+  let g = "";
+  for (let t = a; t <= b; t += step) g += `<line x1="${Lm}" x2="${W - R}" y1="${Y(t)}" y2="${Y(t)}" stroke="${t === 0 ? "#A5B4FC" : "#EEF0F7"}"/><text x="${Lm - 6}" y="${Y(t) + 3.5}" text-anchor="end" font-size="9.5" font-family="Geist Mono,monospace" fill="#6B6F8C">${t === 0 ? 0 : (t / 1000) + "k"}</text>`;
+  L.forEach(x => { const y0 = Y(0), y1 = Y(x.profit); g += `<rect x="${(X(x.d) - 3.5).toFixed(1)}" y="${Math.min(y0, y1).toFixed(1)}" width="7" height="${Math.max(1, Math.abs(y1 - y0)).toFixed(1)}" rx="2" fill="${x.profit >= 0 ? "#C7D2FE" : "#FDBA74"}"/>`; });
+  g += `<path d="${pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("")}" fill="none" stroke="#4F46E5" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const e = pts[pts.length - 1]; g += `<circle cx="${X(e[0])}" cy="${Y(e[1])}" r="4.5" fill="#4F46E5" stroke="#fff" stroke-width="2"/>`;
+  [1, 10, 20, days].forEach(d => g += `<text x="${X(d)}" y="${H - 6}" text-anchor="middle" font-size="9.5" font-family="Geist Mono,monospace" fill="#6B6F8C">${d}</text>`);
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit so far, day by day">${g}</svg>`;
+}
+VIEWS.pday = () => {
+  const L = M.daily_.filter(x => x.profit !== null);
+  if (!L.length) return header(backBtn("Home"), monthPick(), `<div style="position:relative"><span class="eb">Profit by day</span><h1 class="ttl">No days<br><em>yet.</em></h1></div>`, "flat") + `<main class="main flat"><div class="empty">The first day shows here as soon as its sales are entered.</div></main>`;
+  const run = L[L.length - 1].run, done = L.filter(x => x.done), avg = done.length ? sum(done, x => x.profit) / done.length : 0;
+  const best = done.slice().sort((a, b) => b.profit - a.profit)[0], minus = L.filter(x => x.profit < 0).length, mx = Math.max(1, ...L.map(x => Math.abs(x.profit)));
+  const F = D.dailyFoot || [];
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Profit by day · ${range()}</span>${hero(run)}
+     <span style="font-size:14px;color:#E0E7FF">Profit so far · ${sgn(avg)} a day on average</span></div>
+     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">Best day</span><span class="v tn">${best ? cpt(best.profit) : "–"}</span><span class="s">${best ? best.dow + " " + best.d : ""}</span></div>
+       <div class="hk"><span class="eb" style="font-size:10px">In minus</span><span class="v tn">${minus}<small> days</small></span></div>
+       <div class="hk"><span class="eb" style="font-size:10px">Days</span><span class="v tn">${done.length}<small> / ${M.dim}</small></span><span class="s">entered</span></div></div>`)
+  + `<main class="main">
+    <div class="card" style="padding:18px 16px 12px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px"><span class="ebd">Profit so far</span><span class="legend"><span><i style="background:#C7D2FE"></i>Day</span><span><i style="background:#FDBA74"></i>Minus</span></span></div>${profitChart(L)}</div>
+    ${sh(1, "Every day", "Tap a day")}
+    <div class="card pad">${L.slice().reverse().map(x => { const w = Math.abs(x.profit) / mx * 50, costs = sum([x.stock, x.roy, x.sal, x.inc, x.shop, x.own, x.dep]);
+      return `<button class="li" ${gp("day", { d: x.d })}><span class="dc ${isToday(x.d) ? "today" : ""}"><span>${isToday(x.d) ? "Today" : x.dow}</span><b>${x.d}</b></span>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;gap:8px"><b class="tn" style="font-size:16px;color:${x.profit < 0 ? "var(--bad)" : "var(--ink)"}">${sgn(x.profit)}</b><span class="mono muted" style="font-size:10.5px">SO FAR ${inr(x.run)}</span></span>
+        <span style="position:relative;height:6px;border-radius:99px;background:var(--soft);overflow:hidden"><i style="position:absolute;top:0;height:100%;border-radius:99px;left:${x.profit < 0 ? 50 - w : 50}%;width:${w}%;background:${x.profit < 0 ? "#FB923C" : "var(--accent)"}"></i></span>
+        <span class="meta" style="margin:0">${x.done ? `Sales ${inr(x.sales)} · costs ${inr(-costs)}` : "Owner bills"}${x.own ? ` · owner ${inr(-x.own)}` : ""}</span></span></button>`; }).join("")}</div>
+    ${sh(2, "From the days to the month")}
+    <div class="card pad">${F.map(([k, v], i) => i === F.length - 1 ? `<div class="rowx tot"><span class="l">${esc(k.replace(" (same as P&L)", ""))}</span><span class="a tn" style="color:var(--accent)">${inr(v)}</span></div>` : rowx(esc(k), `<span class="${v < 0 ? "neg" : ""}">${i ? sgn(v) : inr(v)}</span>`)).join("")}</div>
+  </main>`;
+};
+
+/* ================= 10 · checks ================= */
+VIEWS.checks = () => {
+  const tone = v => (v.startsWith("✗") || v === "Pending") ? "bad" : (v === "Done" || v.startsWith("✓")) ? "good" : "";
+  const ord = { bad: 0, "": 1, good: 2 }, list = (D.checks || []).slice().sort((a, b) => ord[tone(a[1])] - ord[tone(b[1])]);
+  const fx = list.filter(c => tone(c[1]) === "bad").length;
+  return header(backBtn("Home"), monthPick(), `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Checks · ${list.length}</span><h1 class="ttl">${fx ? `${fx} thing${fx > 1 ? "s" : ""}<br><em>to fix.</em>` : "All<br><em>clear.</em>"}</h1></div>`, "short")
+  + `<main class="main lo"><div class="card pad">${list.map(c => `<div class="li"><span style="width:10px;height:10px;border-radius:5px;flex-shrink:0;background:${tone(c[1]) === "bad" ? "var(--bad)" : tone(c[1]) === "good" ? "var(--good)" : "var(--peri)"}"></span>
+    <span style="flex:1;min-width:0"><span style="font-size:14.5px">${esc(c[0])}</span><div class="meta">${esc(c[2])}</div></span><span class="tag ${tone(c[1])}" style="font-size:11px">${esc(c[1].replace("✗  ", "✗ "))}</span></div>`).join("")}</div></main>`;
+};
+
+/* ================= 5 · staff ================= */
+VIEWS.staff = () => {
+  const R = M.ranked, top = R.slice(0, 3), order = [top[1], top[0], top[2]].filter(Boolean);
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Staff · ${R.length} people</span><h1 class="serif" style="margin:0;font-size:46px;line-height:1;letter-spacing:-1px">Top of the <em style="color:var(--lav)">month.</em></h1></div>
+     <div class="pod">${order.map(x => { const r = R.indexOf(x) + 1, sz = r === 1 ? 72 : 56; return `<button class="p" ${gp("person", { n: x.name })}>
+       <span class="ring" style="width:${sz}px;height:${sz}px;font-size:${sz * .45}px;${r === 1 ? "box-shadow:0 0 0 4px #60A5FA" : ""}">${esc(x.name[0])}</span><span class="nm">${esc(x.name)}</span><span class="mono" style="font-size:10.5px;color:var(--lite)">${cpt(x.total)}</span>
+       <span class="st" style="height:${r === 1 ? 92 : r === 2 ? 64 : 46}px;background:${r === 1 ? "var(--accent)" : "rgba(91,91,247,.28)"};color:${r === 1 ? "#fff" : "var(--lite)"}">${r}</span></button>`; }).join("")}</div>`, "flat")
+  + `<main class="main flat">${sh(1, "Everyone", "Tap for full record")}${canEdit() ? `<div class="edbar">${edBtn("staff", {}, "+ Add staff")}</div>` : ""}
+    ${R.map((x, i) => `<button class="card sc" ${gp("person", { n: x.name })}><span class="top">${av(x.name, 48)}<span style="min-width:0"><span class="serif" style="font-size:26px;line-height:1">${esc(x.name)}</span><div class="meta">#${i + 1} · ${esc(x.role)}</div></span><span class="go">${IC.arrow}</span></span>
+      <span class="mini3"><div><span>Sales</span><b class="tn">${cpt(x.total)}</b></div><div><span>Days in</span><b class="tn">${x.worked} / ${M.lastDay}</b></div><div><span>Incentive</span><b class="tn">${inr(x.inc)}</b></div></span></button>`).join("")}
+  </main>`;
+};
+
+/* ================= 5a · one staff: full record ================= */
+function calendar(x, hiDay) {
+  const first = new Date(M.year, M.mi, 1).getDay(), lead = (first + 6) % 7;
+  const cls = { off: "O", leave: "L", weekend: "L", extra: "L", ob: "B" };
+  return `<div class="cal">${["M","T","W","T","F","S","S"].map(h => `<span class="h">${h}</span>`).join("")}${"<span class='d no'></span>".repeat(lead)}
+    ${M.days.map((dd, k) => { const st = x.st[k]; return `<span class="d ${dd.d > M.lastDay && !cls[st] ? "fu" : cls[st] || ""} ${isToday(dd.d) || (!M.todayD && dd.d === M.lastDay) ? "today" : ""}">${dd.d}</span>`; }).join("")}</div>
+    <div class="legend"><span><i style="background:var(--soft)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span>${x.ob ? '<span><i style="background:#14B8A6"></i>Other branch</span>' : ""}</div>`;
+}
+VIEWS.person = s => {
+  const x = M.byName[s.n], S = x.s, rank = M.ranked.indexOf(x) + 1;
+  const mx = Math.max(1, ...x.svc);
+  const rows = M.days.filter(dd => dd.d <= Math.max(M.lastDay, 0)).reverse().map(dd => {
+    const k = dd.d - 1, st = x.st[k], dl = `<span class="dl">${isToday(dd.d) ? "Today" : dd.dow}<b>${dd.d}</b></span>`;
+    if (["off", "leave", "weekend", "extra"].includes(st) && !x.svc[k] && !x.ret[k])
+      return `<div class="drow g5">${dl}<span style="grid-column:span 4"><span class="tag ${st === "off" ? "blue" : "dark"}" style="font-size:10px;padding:5px 10px">${st === "off" ? "Week off" : st === "weekend" ? "Leave · weekend absence" : st === "extra" ? "Leave · week offs used up" : "Leave"}</span></span></div>`;
+    return `<div class="drow g5">${dl}<span style="min-width:0"><b class="tn" style="font-size:13.5px;font-weight:500">${ind(x.svc[k])}</b>${st === "ob" ? ' <span class="tag blue" style="font-size:8.5px">Other br.</span>' : ""}<span class="trk" style="margin-top:4px;width:${x.svc[k] / mx * 100}%;display:block"><i style="width:100%;background:var(--accent)"></i></span></span>
+      <span class="tn muted" style="text-align:right;font-size:13px">${ind(x.ret[k])}</span><b class="tn" style="text-align:right;font-size:13.5px">${ind(x.svc[k] + x.ret[k])}</b><span class="chk ${x.tk[k] ? "on" : ""}">${x.tk[k] ? IC.tick : ""}</span></div>`;
+  }).join("");
+  const tkDays = x.tk.filter(v => v).length, pinc = S["Product incentive"] || 0, psales = S["Product sales"] || 0, lvl = S.Level || 5000;
+  const leaveDays = x.st.map((v, k) => ["leave", "weekend", "extra"].includes(v) ? k + 1 : 0).filter(Boolean);
+  const advs = D.cash.filter(c => c.staff === x.name && ["Staff advance", "Salary paid"].includes(c.cat));
+  return header(backBtn("Staff"), monthPick(),
+    `<div style="position:relative;display:flex;align-items:center;gap:16px"><span class="ring" style="width:76px;height:76px;border-radius:50%;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:36px;box-shadow:0 0 0 5px rgba(96,165,250,.35)">${esc(x.name[0])}</span>
+      <span style="min-width:0"><span class="eb">#${rank} seller · ${M.Month}</span><div class="serif" style="font-size:44px;line-height:1">${esc(x.name)}</div><span class="mono" style="font-size:10.5px;color:var(--lite)">${esc(x.role).toUpperCase()}</span></span></div>
+     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">Sales</span><span class="v tn">${cpt(x.total)}</span></div><div class="hk"><span class="eb" style="font-size:10px">Days in</span><span class="v tn">${x.worked}<small> / ${M.lastDay}</small></span></div><div class="hk"><span class="eb" style="font-size:10px">Incentives</span><span class="v tn">${cpt(x.inc)}</span></div></div>`, "short")
+  + `<main class="main lo" style="margin-top:-28px">
+    ${canEdit() ? `<div class="edbar">${edBtn("staff", { k: D.staffRows.findIndex(r => r.name === x.name) }, "Edit details, salary, overtime")}</div>` : ""}
+    <div class="tabs" id="ptabs"><button aria-pressed="true" data-t="s1">Day by day</button><button data-t="s2">Attendance</button><button data-t="s3">Incentives</button><button data-t="s4">Salary</button></div>
+    <div id="s1">${sh(1, "Day by day")}</div>
+    <div class="card" style="padding:10px 18px"><div class="g5 mono" style="font-size:9.5px;letter-spacing:.08em;color:var(--muted);padding:6px 0"><span>DAY</span><span>SERVICE</span><span style="text-align:right">RETAIL</span><span style="text-align:right">TOTAL</span><span>10K</span></div>${rows || '<div class="empty">No days yet.</div>'}</div>
+    <div id="s2">${sh(2, "Attendance", `<button class="r" style="color:var(--accent);font-weight:500" ${gp("patt", { n: x.name })}>Full detail ›</button>`)}</div>
+    <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:14px">${calendar(x)}
+      <div class="kpi3"><div class="kpi" style="background:var(--soft);box-shadow:none;border:0"><span class="ebd">Worked</span><span class="v tn">${x.worked} <small>days</small></span></div>
+      <div class="kpi" style="background:var(--sky);box-shadow:none;border:0"><span class="ebd" style="color:var(--ink)">Week offs</span><span class="v tn">${x.off} <small style="color:var(--ink)">of ${x.allowed}</small></span></div>
+      <div class="kpi" style="background:var(--ink);color:#fff;box-shadow:none;border:0"><span class="ebd" style="color:var(--lav)">Leave</span><span class="v tn">${x.leave} <small style="color:var(--lite)">day${x.leave === 1 ? "" : "s"}</small></span></div></div></div>
+    <div id="s3">${sh(3, "Incentives")}</div>
+    <div style="position:relative;overflow:hidden;padding:20px;border-radius:28px;background:var(--ink);color:#fff;display:flex;flex-direction:column;gap:12px">
+      <div style="position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.55),rgba(91,91,247,0) 68%)"></div>
+      <div style="position:relative;display:flex;justify-content:space-between;align-items:baseline"><span class="eb">Daily 10K incentive</span><span class="serif tn" style="font-size:34px">${inr(x.tkT)}</span></div>
+      <span style="position:relative;font-size:13px;color:var(--lite)">${tkDays} day${tkDays === 1 ? "" : "s"}</span>
+      <div class="dchips" style="position:relative">${M.days.filter(dd => dd.d <= M.lastDay).map(dd => `<span class="${x.tk[dd.d - 1] ? "on" : ""}">${dd.d}</span>`).join("")}</div></div>
+    <div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Retail incentive</span><span class="serif tn" style="font-size:30px;color:var(--accent)">${inr(pinc)}</span></div>
+      <span style="font-size:13px;color:var(--muted)">Sold ${inr(psales)} · ${psales >= lvl ? "7%" : "5%"}</span>
+      <div style="position:relative;height:8px;border-radius:99px;background:var(--soft)"><i style="position:absolute;left:0;top:0;height:100%;border-radius:99px;background:var(--sky);width:${Math.min(100, psales / Math.max(lvl * 2, psales || 1) * 100)}%"></i><i style="position:absolute;left:${Math.min(100, lvl / Math.max(lvl * 2, psales || 1) * 100)}%;top:-4px;width:2px;height:16px;background:var(--ink)"></i></div>
+      <div class="mono muted" style="display:flex;justify-content:space-between;font-size:9.5px"><span>₹0 · 5%</span><span>${inr(lvl)} · 7%</span><span>${inr(Math.max(lvl * 2, psales))}</span></div></div>
+    ${S.Target ? `<div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Service incentive</span><span class="serif tn" style="font-size:30px;color:var(--accent)">${inr(S["Service incentive"])}</span></div>
+      <span style="font-size:13px;color:var(--muted)">Service ${inr(S["Service sales"])} of target ${inr(S.Target)}</span><span class="trk" style="height:8px"><i style="width:${Math.min(100, S["Service sales"] / S.Target * 100)}%;background:var(--accent)"></i></span></div>` : ""}
+    <div id="s4">${sh(4, "Salary &amp; advances")}</div>
+    <div class="card pad">${rowx("Monthly salary", inr(S["Fixed salary"]))}
+      ${S["Leave cut"] ? rowx(`Leave · ${x.leave} day${x.leave === 1 ? "" : "s"} <span class="mono muted" style="font-size:10px">${leaveDays.slice(0, 6).map(d => dayOf(d).dow.toUpperCase() + " " + d).join(", ")}</span>`, `<span class="neg">− ${inr(S["Leave cut"])}</span>`) : ""}
+      ${S["Service incentive"] ? rowx("Service incentive", `<span style="color:var(--accent)">+ ${inr(S["Service incentive"])}</span>`) : ""}
+      ${pinc ? rowx("Retail incentive", `<span style="color:var(--accent)">+ ${inr(pinc)}</span>`) : ""}
+      ${S.Overtime ? rowx("Overtime", `<span style="color:var(--accent)">+ ${inr(S.Overtime)}</span>`) : ""}
+      ${advs.map(c => rowx(`${c.cat === "Staff advance" ? "Advance" : "Salary paid"} <span class="mono muted" style="font-size:10px">GIVEN ${dayOf(c.d) ? dayOf(c.d).dow.toUpperCase() + " " + c.d : ""}</span>`, `<span class="neg">− ${inr(c.out)}</span>`)).join("")}
+      ${S["Old advance"] ? rowx("Old advance", `<span class="neg">− ${inr(S["Old advance"])}</span>`) : ""}
+      <div style="margin:10px 0 14px;padding:16px 18px;border-radius:20px;background:var(--soft);display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px">To pay at month end</span><span class="serif tn" style="font-size:32px">${inr(S["Balance to pay"])}</span></div></div>
+  </main>`;
+};
+VIEWS.person_bind = () => { const t = $("#ptabs"); if (!t) return; t.querySelectorAll("button").forEach(b => b.onclick = () => { t.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#" + b.dataset.t).scrollIntoView({ behavior: "smooth", block: "start" }); }); };
+
+/* ================= 6 · attendance ================= */
+VIEWS.att = () => {
+  const d = M.todayD && M.todayD <= M.lastDay ? M.todayD : M.lastDay, S = M.staff;
+  const away = d ? S.filter(x => ["off", "leave", "weekend", "extra"].includes(x.st[d - 1])) : [];
+  const inN = d ? S.filter(x => ["in", "ob"].includes(x.st[d - 1])).length : 0;
+  const n = Math.max(M.lastDay, 1), cell = { off: ["O", "O"], leave: ["L", "L"], weekend: ["L", "L"], extra: ["L", "L"], ob: ["B", "B"] };
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Attendance · ${range()}</span>
+     <h1 class="ttl" style="font-size:48px">${!d ? "Nothing<br><em>yet.</em>" : away.length ? `${away.length} away<br><em>${isToday(d) ? "today" : "on day " + d}.</em>` : `Everyone is <em>in<br>${isToday(d) ? "today" : "on day " + d}.</em>`}</h1></div>
+     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">In ${isToday(d) ? "today" : "day " + d}</span><span class="v tn">${inN}<small> / ${S.length}</small></span></div>
+      <div class="hk"><span class="eb" style="font-size:10px">Week offs</span><span class="v tn">${sum(S, x => x.off)}</span></div><div class="hk"><span class="eb" style="font-size:10px">Leave days</span><span class="v tn">${sum(S, x => x.leave)}</span></div></div>`)
+  + `<main class="main"><div class="card" style="padding:16px 14px;display:flex;flex-direction:column;gap:12px">
+    <div style="overflow-x:auto;scrollbar-width:none"><div class="ag" style="grid-template-columns:64px repeat(${n},minmax(14px,1fr));min-width:${64 + n * 16}px">
+      <span></span>${M.days.slice(0, n).map(dd => `<span class="h ${["Sat", "Sun"].includes(dd.dow) ? "we" : ""}">${dd.d}</span>`).join("")}
+      ${S.map(x => `<button style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left" ${gp("patt", { n: x.name })}>${esc(x.name)}</button>${x.st.slice(0, n).map((v, k) => `<span class="c ${cell[v] ? cell[v][0] : v === "in" ? "" : "F"}">${cell[v] ? cell[v][1] : v === "in" && x.wfh[k] ? "W" : ""}</span>`).join("")}`).join("")}</div></div>
+    <div class="legend"><span><i style="background:var(--soft2)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span><span><i style="background:#14B8A6"></i>Other branch</span><span><b style="font-size:10px;margin-right:4px">W</b>Work from home</span></div>
+    <span class="mono" style="font-size:9.5px;letter-spacing:.08em;color:var(--accent)">BLUE DATES = SAT / SUN</span></div>
+    ${sh(1, "Each person", "Tap for detail")}
+    <div class="card pad">${S.map(x => `<button class="li" ${gp("patt", { n: x.name })}>${av(x.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(x.name)}</span><div class="meta">${x.worked} days worked${x.ob ? " · " + x.ob + " at other branch" : ""}</div></span>
+      <span class="tag" style="background:var(--ice);color:#1E3A8A;font-size:10px;padding:5px 9px">${x.off}/${x.allowed} off</span><span class="tag ${x.leave >= 3 ? "dark" : "own"}" style="font-size:10px;padding:5px 9px">${x.leave} leave</span></button>`).join("")}</div>
+  </main>`;
+};
+VIEWS.patt = s => {
+  const x = M.byName[s.n];
+  let wk = 0; const ev = [];
+  x.st.forEach((v, k) => { const d = k + 1, dd = dayOf(d), b = `<b>${dd.dow} ${d}</b>`;
+    if (v === "off") { wk++; ev.push(["", `Week off on ${b} — ${wk} of ${x.allowed} earned.`]); }
+    else if (v === "weekend") ev.push(["dark", `Absent on ${b} — no week off on a weekend, so it is <b>leave</b>.`]);
+    else if (v === "extra") { wk++; ev.push(["dark", `Off on ${b} — all ${x.allowed} week offs already used, so it is <b>leave</b>.`]); }
+    else if (v === "leave") ev.push(["dark", `Leave on ${b}.`]);
+    else if (v === "ob") ev.push(["blue", `Worked at the other branch on ${b} — sales count for ${esc(x.name)}, not for this branch.`]); });
+  const rows = M.days.filter(dd => dd.d <= M.lastDay || ["off", "leave", "weekend", "extra", "ob"].includes(x.st[dd.d - 1])).reverse().map(dd => { const k = dd.d - 1, v = x.st[k];
+    const pill = v === "in" && x.wfh[k] ? ["Work from home", "own"] : { in: ["Present", "own"], ob: ["Other branch", "blue"], off: ["Week off", "blue"], leave: ["Leave", "dark"], weekend: ["Leave", "dark"], extra: ["Leave", "dark"] }[v] || ["–", ""];
+    const right = v === "off" ? "Earned" : v === "weekend" ? "Weekend absence" : v === "extra" ? "Over the week offs" : v === "leave" ? "" : (x.svc[k] + x.ret[k]) ? "Sold " + inr(x.svc[k] + x.ret[k]) : "";
+    return `<div class="li" style="padding:11px 0"><span class="dl" style="width:42px">${isToday(dd.d) ? "Today" : dd.dow}<b>${dd.d}</b></span><span class="tag ${pill[1]}" style="font-size:10px;padding:5px 10px">${pill[0]}</span><span class="tn" style="margin-left:auto;font-size:13.5px;color:${v === "in" || v === "ob" ? "var(--ink)" : "var(--muted)"}">${right}</span></div>`; }).join("");
+  return header(backBtn("Attendance"), `<button class="back glass" style="padding:0 14px;background:#fff;color:var(--ink)" ${gp("person", { n: x.name })}>Full record ›</button>`,
+    `<div style="position:relative;display:flex;align-items:center;gap:16px"><span style="width:70px;height:70px;border-radius:50%;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:34px;box-shadow:0 0 0 5px rgba(96,165,250,.35)">${esc(x.name[0])}</span>
+     <span><span class="eb">Attendance · ${M.Month}</span><div class="serif" style="font-size:44px;line-height:1">${esc(x.name)}</div></span></div>
+     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">Worked</span><span class="v tn">${x.worked}</span></div><div class="hk"><span class="eb" style="font-size:10px">Week offs</span><span class="v tn">${x.off}<small> / ${x.allowed}</small></span></div><div class="hk"><span class="eb" style="font-size:10px">Leave</span><span class="v tn">${x.leave}</span></div></div>`, "short")
+  + `<main class="main lo"><div class="card" style="padding:18px;display:flex;flex-direction:column;gap:14px">${calendar(x)}</div>
+    ${sh(1, "How it was counted")}
+    <div class="card" style="padding:16px 20px;display:flex;flex-direction:column;gap:12px">
+      ${ev.map((e, i) => `<div style="display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.45"><span style="width:24px;height:24px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;background:${e[0] === "dark" ? "var(--ink)" : e[0] === "blue" ? "#14B8A6" : "var(--soft)"};color:${e[0] ? "#fff" : "var(--deep)"}">${i + 1}</span><span>${e[1]}</span></div>`).join("") || '<div class="muted" style="font-size:14px">No offs or leave this month.</div>'}
+      <div style="padding:12px 14px;border-radius:16px;background:var(--bg);font-size:12.5px;color:var(--muted)">Week offs allowed: <b style="color:var(--ink)">${x.allowed}</b></div></div>
+    ${sh(2, "Every day")}<div class="card pad">${rows || '<div class="empty">No days yet.</div>'}</div>
+  </main>`;
+};
+
+/* ================= 7 · salary & advances ================= */
+VIEWS.salary = () => {
+  const S = D.salary, T = k => sum(S, s => s[k]);
+  const adv = D.cash.filter(c => ["Staff advance", "Salary paid"].includes(c.cat)).sort((a, b) => b.d - a.d);
+  const neg = v => `<span class="neg">− ${inr(v)}</span>`, plus = v => `<span style="color:var(--accent)">+ ${inr(v)}</span>`;
+  const chips = s => [s.LEAVE ? `−${inr(s["Leave cut"])} · ${s.LEAVE} leave` : "No leave", s["Service incentive"] ? `+${inr(s["Service incentive"])} service` : "", s["Product incentive"] ? `+${inr(s["Product incentive"])} retail` : "",
+    s.Overtime ? `+${inr(s.Overtime)} overtime` : "", s.Advance ? `−${inr(s.Advance)} advance` : "", s["Salary paid"] ? `−${inr(s["Salary paid"])} paid` : "", s["Old advance"] ? `−${inr(s["Old advance"])} old advance` : ""].filter(Boolean);
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Salary · to pay at month end</span>${hero(T("Balance to pay"))}
+     <span class="lite" style="font-size:14px">${S.length} staff</span></div>`, "short")
+  + `<main class="main lo"><div class="card pad">${rowx("Total salary", inr(T("Fixed salary")))}${T("Leave cut") ? rowx(`Leave cut <span class="mono muted" style="font-size:10px">${T("LEAVE")} DAYS</span>`, neg(T("Leave cut"))) : ""}
+      ${T("Service incentive") ? rowx("Service incentive", plus(T("Service incentive"))) : ""}${rowx("Retail incentive", plus(T("Product incentive")))}${T("Overtime") ? rowx("Overtime", plus(T("Overtime"))) : ""}
+      ${rowx("Advances given", neg(T("Advance")))}${T("Salary paid") ? rowx("Salary already paid", neg(T("Salary paid"))) : ""}${T("Old advance") ? rowx("Old advance", neg(T("Old advance"))) : ""}
+      <div style="margin:10px 0 14px;padding:16px 18px;border-radius:20px;background:var(--soft);display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px">To pay</span><span class="serif tn" style="font-size:32px">${inr(T("Balance to pay"))}</span></div></div>
+    ${sh(1, "Each person")}
+    ${S.slice().sort((a, b) => b["Balance to pay"] - a["Balance to pay"]).map(s => `<button class="card sc" ${gp("person", { n: s.Staff })}><span class="top">${av(s.Staff, 44)}<span style="min-width:0"><span class="serif" style="font-size:25px;line-height:1">${esc(s.Staff)}</span><div class="meta">Salary ${inr(s["Fixed salary"])}${(M.byName[s.Staff] || {}).role === "Visiting" ? " · visiting" : ""}</div></span>
+      <span style="margin-left:auto;text-align:right"><span class="mono muted" style="font-size:9.5px;letter-spacing:.08em">TO PAY</span><div class="serif tn" style="font-size:28px;color:var(--accent)">${inr(s["Balance to pay"])}</div></span></span>
+      <span style="display:flex;flex-wrap:wrap;gap:6px">${chips(s).map(c => `<span class="tag ${c.startsWith("−") ? "own" : ""}" style="font-size:9.5px;padding:5px 9px;${c.startsWith("+") ? "background:var(--ice);color:#1E3A8A" : ""}">${esc(c)}</span>`).join("")}</span></button>`).join("")}
+    ${sh(2, "Advances &amp; salary given")}
+    <div class="card pad">${adv.map(c => `<div class="li"><span class="dc"><span>${(dayOf(c.d) || {}).dow || ""}</span><b>${c.d ?? "–"}</b></span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(c.staff || c.t)}</span><div class="meta">${c.cat === "Staff advance" ? "Advance · cut from this month's salary" : "Salary paid"} · ${c.pf === "Cash" ? "cash" : "bank / UPI"}</div></span><b class="tn">${inr(c.out)}</b></div>`).join("") || '<div class="empty">No advances given yet.</div>'}</div>
+  </main>`;
+};
+
+/* ================= 8 · incentives ================= */
+VIEWS.inc = () => {
+  const S = M.staff, tk = sum(S, x => x.tkT), ret = sum(D.salary, s => s["Product incentive"]), svc = sum(D.salary, s => s["Service incentive"]);
+  const d = M.lastDay, today = d ? S.filter(x => x.tk[d - 1]) : [];
+  const tkL = S.filter(x => x.tkT).sort((a, b) => b.tkT - a.tkT), mx = Math.max(1, ...tkL.map(x => x.tkT));
+  const rL = D.salary.filter(s => s["Product sales"]).sort((a, b) => b["Product incentive"] - a["Product incentive"]);
+  const sL = D.salary.filter(s => s["Service incentive"]);
+  return header(backBtn("Home"), monthPick(),
+    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Incentives · ${range()}</span>${hero(tk + ret + svc)}</div>
+     <div class="hk${svc ? "3" : "2"}"><div class="hk"><span class="eb" style="font-size:10px">Daily 10K</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(tk)}</span><span class="s">Paid in cash each day</span></div>
+      <div class="hk"><span class="eb" style="font-size:10px">Retail</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(ret)}</span><span class="s">Paid with salary</span></div>
+      ${svc ? `<div class="hk"><span class="eb" style="font-size:10px">Service</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(svc)}</span><span class="s">Target met</span></div>` : ""}</div>`)
+  + `<main class="main">
+    <div style="position:relative;overflow:hidden;padding:18px 20px;border-radius:28px;background:var(--accent);color:#fff;display:flex;align-items:center;gap:14px;box-shadow:0 24px 44px -18px rgba(79,70,229,.6)">
+      <div style="position:absolute;right:-50px;top:-40px;width:160px;height:160px;border-radius:50%;border:18px solid rgba(255,255,255,.1)"></div>
+      ${today.length ? av(today[0].name, 54).replace(`background:${avc(today[0].name)}`, "background:#fff;color:var(--ink)") : `<span class="av" style="width:54px;height:54px;background:rgba(255,255,255,.15);font-size:24px">–</span>`}
+      <span style="position:relative"><span class="eb" style="color:var(--peri)">${d ? (isToday(d) ? "Today" : "Day " + d) : "No days yet"}</span><div style="font-size:17px;font-weight:500;line-height:1.3">${today.length ? today.map(x => esc(x.name)).join(", ") + " earned the 10K — " + inr(sum(today, x => x.tk[d - 1])) : "No 10K paid on this day"}</div></span></div>
+    ${sh(1, "Daily 10K", `<span class="mono">${inr(tk)}</span>`)}
+    <div class="card pad">${tkL.map(x => `<button class="li" ${gp("person", { n: x.name })}>${av(x.name, 44)}<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between"><span style="font-size:15px">${esc(x.name)}</span><b class="tn">${inr(x.tkT)}</b></span>
+      <span class="trk"><i style="width:${x.tkT / mx * 100}%;background:var(--accent)"></i></span><span class="meta" style="margin:0">${x.tk.filter(v => v).length} of ${M.lastDay} days</span></span></button>`).join("") || '<div class="empty">No 10K paid yet.</div>'}</div>
+    ${sh(2, "Retail incentive", `<span class="mono">${inr(ret)}</span>`)}
+    <div class="card pad">${rL.map(s => { const r = s["Product sales"] >= (s.Level || 5000) ? 7 : 5; return `<button class="li" ${gp("person", { n: s.Staff })}><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(s.Staff)}</span><div class="meta">Sold ${inr(s["Product sales"])}</div></span>
+      <span class="tag ${r === 7 ? "dark" : "own"}" style="font-size:10px;padding:5px 9px">${r}%</span><span class="serif tn" style="font-size:24px;min-width:74px;text-align:right">${inr(s["Product incentive"])}</span></button>`; }).join("") || '<div class="empty">No retail sold yet.</div>'}</div>
+    ${sL.length ? `${sh(3, "Service incentive", `<span class="mono">${inr(svc)}</span>`)}<div class="card pad">${sL.map(s => rowx(`${esc(s.Staff)} <span class="mono muted" style="font-size:10px">${inr(s["Service sales"])} OF ${inr(s.Target)}</span>`, inr(s["Service incentive"]))).join("")}</div>` : ""}
+  </main>`;
+};
+
+/* ================= 4 · stock ================= */
+VIEWS.stock = s => {
+  s.t = s.t || "Retail"; s.f = s.f || "all"; s.q = s.q || "";
+  const all = D.stock.filter(i => i.type === s.t), low = i => i.inhand !== null && i.open !== null && i.inhand <= 2;
+  const list = all.filter(i => (!s.q || i.item.toLowerCase().includes(s.q)) && (s.f === "all" || (s.f === "low" && low(i)) || (s.f === "moved" && (i.sold || i.recv)) || (s.f === "diff" && i.diff)))
+    .sort((a, b) => (low(b) - low(a)) || (b.sold - a.sold) || a.item.localeCompare(b.item));
+  const t = lastLoad ? lastLoad.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
+  const val = s.t === "Retail" ? D.stockSum.retClose : D.stockSum.consClose;
+  return header(backBtn("Home"), `<span class="rlab">Updated ${esc(t)}</span>`,
+    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Stock · ${inr(val)} at cost</span><h1 class="ttl">On the <em>shelf.</em></h1></div>
+     <div class="seg" id="sseg"><button data-t="Retail" aria-pressed="${s.t === "Retail"}">For sale</button><button data-t="Consumable" aria-pressed="${s.t === "Consumable"}">Salon use</button></div>
+     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">On shelf</span><span class="v tn">${ind(sum(all, i => i.inhand))}</span></div><div class="hk"><span class="eb" style="font-size:10px">Low</span><span class="v tn" style="color:var(--lav)">${all.filter(low).length}</span></div><div class="hk"><span class="eb" style="font-size:10px">${s.t === "Retail" ? "Sold" : "Used"}</span><span class="v tn">${ind(sum(all, i => i.sold))}</span></div></div>`)
+  + `<main class="main"><input class="srch" id="sq" type="search" placeholder="Search ${s.t === "Retail" ? "products for sale" : "salon products"}" value="${esc(s.q)}">
+    <div class="fch" id="sf">${[["all", "All " + all.length], ["low", "Low"], ["moved", s.t === "Retail" ? "Sold / received" : "Used / received"], ["diff", "Count difference"]].map(([k, l]) => `<button data-f="${k}" aria-pressed="${s.f === k}">${l}</button>`).join("")}</div>
+    ${canEdit() ? `<div class="edbar">${edBtn("stock", { type: s.t }, s.t === "Retail" ? "+ Add product" : "+ Add salon item")}</div>` : ""}
+    <div class="sg">${list.map(i => { const L = low(i), base = Math.max(1, (i.open || 0) + (i.recv || 0)); return `<div class="st ${L ? "low" : "card"}" ${ed("stock", { r: i.r })}>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="q tn">${i.inhand ?? i.count ?? "–"}</span>${L ? '<span class="tag" style="background:#fff;color:var(--deep)">Low</span>' : i.diff ? `<span class="tag bad">Count ${i.diff > 0 ? "+" : ""}${i.diff}</span>` : ""}</div>
+      <span class="nm">${esc(i.item)}</span>
+      <span class="trk" style="background:${L ? "rgba(255,255,255,.12)" : "var(--soft)"}"><i style="width:${Math.min(100, (i.sold || 0) / base * 100)}%;background:${L ? "var(--sky)" : "var(--accent)"}"></i></span>
+      <span class="meta" style="margin:0">${i.sold || 0} ${s.t === "Retail" ? "sold" : "used"} in ${M.MON}${i.recv ? " · +" + i.recv + " in" : ""}</span></div>`; }).join("") || '<div class="empty" style="grid-column:span 2">No items match.</div>'}</div>
+  </main>`;
+};
+VIEWS.stock_bind = s => {
+  root().querySelectorAll("#sseg button").forEach(b => b.onclick = () => { s.t = b.dataset.t; s.f = "all"; s.q = ""; draw(); });
+  root().querySelectorAll("#sf button").forEach(b => b.onclick = () => { s.f = b.dataset.f; draw(); });
+  const q = $("#sq"); q.oninput = e => { s.q = e.target.value.toLowerCase(); const p = q.selectionStart, y = window.scrollY; draw(); const n = $("#sq"); n.focus(); n.setSelectionRange(p, p); window.scrollTo(0, y); };
+};
+VIEWS.day_bind = s => root().querySelectorAll("[data-wd]").forEach(b => b.onclick = () => { s.d = +b.dataset.wd; draw(); window.scrollTo(0, 0); });
+
+/* ================= start ================= */
+start();
+
+
+})();
 </script>
-</body>
-</html>
+</body></html>
