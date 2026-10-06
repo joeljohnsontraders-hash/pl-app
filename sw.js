@@ -1,5 +1,5 @@
 /* opens instantly from this phone's copy, then quietly fetches the newest version for next time */
-const C = "pl-v3";
+const C = "pl-v4";
 const CORE = ["/", "/manifest.json", "/icon-96.png", "/icon-192.png", "/icon-512.png"];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(CORE)).catch(() => {})); });
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== C).map(x => caches.delete(x)))).then(() => self.clients.claim())));
