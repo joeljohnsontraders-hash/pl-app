@@ -395,9 +395,10 @@ function model(D) {
       ret: m.days.map(dd => sum(retail.filter(p => p.d === dd.d), p => p.amt)),
       obret: m.days.map(dd => sum(retail.filter(p => p.d === dd.d && p.out === "Other branch"), p => p.amt)),
       tk: m.days.map(dd => sum(tenk.filter(c => c.d === dd.d), c => c.out)),
-      off: x.off || 0, leave: x.leave || 0, allowed: x.allowed ?? 4, ob: x.ob || 0, wfh: m.days.map(dd => WF.has(x.name + "|" + dd.d))
+      off: x.off || 0, leave: x.leave || 0, allowed: x.allowed ?? 4, ob: x.ob || 0, wfh: m.days.map(dd => WF.has(x.name + "|" + dd.d)),
+      bills: m.days.map((dd, k) => (x.bills || [])[k] || 0)
     };
-    o.svcT = sum(o.svc); o.retT = sum(o.ret); o.total = o.svcT + o.retT; o.tkT = sum(o.tk);
+    o.billsT = sum(o.bills); o.svcT = sum(o.svc); o.avgBill = o.billsT ? sum(o.svc.filter((v, k) => o.bills[k]), v => v) / o.billsT : 0; o.retT = sum(o.ret); o.total = o.svcT + o.retT; o.tkT = sum(o.tk);
     o.inc = o.tkT + (s["Service incentive"] || 0) + (s["Product incentive"] || 0);
     o.worked = st.filter((v, k) => k < m.lastDay && (v === "in" || v === "ob")).length;
     return o;
@@ -751,11 +752,15 @@ EDIT.att = ({ d, n }) => {
 /* ---- staff-wise service sales for a day ---- */
 EDIT.ssales = ({ d }) => {
   const S = D.staffSales;
-  const before = Object.fromEntries(S.map(x => ["s" + x.k, money(x.days[d - 1])]));
-  sheet(`Day ${d} · service sales by staff`, S.map(x => ({ k: "s" + x.k, label: x.name, type: "num", value: before["s" + x.k], half: 1 })), async v => {
-    const ops = []; S.forEach(x => { const b = before["s" + x.k], a = numv(v["s" + x.k], x.name); if (String(b) !== String(a)) ops.push({ s: "STAFF SALES", r: LY().SS1 + x.k, c: d + 2, v: a }); });
+  const before = Object.fromEntries(S.flatMap(x => [["s" + x.k, money(x.days[d - 1])], ["b" + x.k, money((x.bills || [])[d - 1])]]));
+  sheet(`Day ${d} · staff sales & bills`, S.flatMap(x => [{ k: "s" + x.k, label: x.name + " · service ₹", type: "num", value: before["s" + x.k], half: 1 },
+    { k: "b" + x.k, label: "No. of bills", type: "num", value: before["b" + x.k], half: 1 }]), async v => {
+    const ops = []; S.forEach(x => {
+      const b = before["s" + x.k], a = numv(v["s" + x.k], x.name); if (String(b) !== String(a)) ops.push({ s: "STAFF SALES", r: LY().SS1 + x.k, c: d + 2, v: a });
+      const bb = before["b" + x.k], ab = numv(v["b" + x.k], x.name + " bills"); if (ab !== "" && (ab < 0 || ab % 1)) throw new Error(x.name + ": bills must be a whole number.");
+      if (String(bb) !== String(ab)) ops.push({ s: "STAFF SALES", r: LY().SB1 + x.k, c: d + 2, v: ab }); });
     if (!ops.length) return closeSheet();
-    await write(ops, `day ${d}: staff service sales`);
+    await write(ops, `day ${d}: staff sales and bills`);
   });
 };
 
@@ -1025,7 +1030,7 @@ VIEWS.sales = s => {
   const list = M.days.filter(x => x.total > 0).reverse(), show = s.all ? list : list.slice(0, 10);
   return header(backBtn("Home"), monthPick(),
     `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Daily sales · ${range()}</span>${hero(tot)}
-     <span class="lite" style="font-size:14px">Service ${inr(svc)} · Retail ${inr(ret)}</span></div>
+     <span class="lite" style="font-size:14px">Service ${inr(svc)} · Retail ${inr(ret)}${(() => { const n = sum(M.staff, x => x.billsT); return n ? ` · ${n} bills · avg ₹${ind(sum(M.staff, x => x.avgBill * x.billsT) / n)}` : ""; })()}</span></div>
      <div style="position:relative;display:flex;flex-direction:column;gap:6px"><div class="strip">${M.days.map(x => `<i class="${x.total ? (x.d === M.lastDay ? "hi" : "") : "z"}" style="height:${Math.max(3, x.total / mx * 100)}%" title="Day ${x.d}"></i>`).join("")}</div>
      <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:10px;color:var(--lav)">1 ${M.MON}</span><span style="font-size:10px;color:var(--lav)">${M.dim}</span></div></div>`, "short")
   + `<main class="main lo">
@@ -1058,7 +1063,8 @@ VIEWS.day = s => {
   const ins = cash.filter(c => c.inn > 0);
   const tenk = cash.filter(c => c.cat === "Staff incentive"), advs = cash.filter(c => ["Staff advance", "Salary paid", "Tips to staff"].includes(c.cat));
   const owners = D.owner.filter(o => o.day === d), prods = D.prods.filter(p => p.d === d), mvs = D.moves.filter(m => m.d === d);
-  const people = M.staff.map(p => ({ p, st: p.st[d - 1], svc: p.svc[d - 1], ret: p.ret[d - 1], ob: p.obret[d - 1], tk: p.tk[d - 1], wfh: p.wfh[d - 1] }));
+  const people = M.staff.map(p => ({ p, st: p.st[d - 1], svc: p.svc[d - 1], ret: p.ret[d - 1], ob: p.obret[d - 1], tk: p.tk[d - 1], wfh: p.wfh[d - 1], bl: p.bills[d - 1] }));
+  const dayBills = sum(people, r => r.bl), daySvcB = sum(people.filter(r => r.bl), r => r.svc);
   const sold = people.filter(r => r.svc || r.ret).sort((a, b) => (b.svc + b.ret) - (a.svc + a.ret));
   const away = people.filter(r => !(r.svc || r.ret) && ["leave", "off", "weekend", "extra", "ob"].includes(r.st));
   const mx = Math.max(1, ...sold.map(r => r.svc + r.ret));
@@ -1079,12 +1085,12 @@ VIEWS.day = s => {
     <div class="card pad">
       ${dayPLLines(P, d)}
     </div>` : ""}
-    ${sh(2, "Who sold what")}
+    ${sh(2, "Who sold what", dayBills ? `${dayBills} bills · avg ₹${ind(daySvcB / dayBills)}` : "")}
     <div class="card pad">${sold.map(r => `<button class="li" ${gp("person", { n: r.p.name })}>${av(r.p.name, 44)}
       <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
         <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b>${r.tk ? '<span class="tag dark">10K</span>' : ""}${r.st === "ob" ? '<span class="tag blue">Other branch</span>' : ""}</span><b class="tn" style="font-size:15px">${inr(r.svc + r.ret)}</b></span>
         <span class="trk" style="width:${(r.svc + r.ret) / mx * 100}%"><i style="flex:${r.svc || 0.0001};background:var(--accent)"></i>${r.ret ? `<i style="flex:${r.ret};background:var(--sky)"></i>` : ""}</span>
-        <span class="meta" style="margin:0">Service ${inr(r.svc)} · Retail ${inr(r.ret)}${r.ob ? " · at other branch" : ""}</span></span></button>`).join("")}
+        <span class="meta" style="margin:0">Service ${inr(r.svc)} · Retail ${inr(r.ret)}${r.bl ? ` · ${r.bl} bill${r.bl === 1 ? "" : "s"} · avg ₹${ind(r.svc / r.bl)}` : ""}${r.ob ? " · at other branch" : ""}</span></span></button>`).join("")}
       ${away.map(r => `<div class="li" style="opacity:.75">${av(r.p.name, 44)}<span style="flex:1"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b><br><span class="meta">${r.st === "ob" ? "At the other branch" : r.st === "off" ? "Week off" : r.st === "leave" ? "Leave" : "Off · counted as leave"}</span></span><span class="tag ${STATUS[r.st][1]}">${STATUS[r.st][0]}</span></div>`).join("")}
       ${!sold.length && !away.length ? '<div class="empty">No staff sales entered for this day.</div>' : ""}</div>
     ${sh(3, "Attendance")}
@@ -1234,7 +1240,7 @@ VIEWS.staff = () => {
        <span class="ring" style="width:${sz}px;height:${sz}px;font-size:${sz * .45}px;${r === 1 ? "box-shadow:0 0 0 4px #60A5FA" : ""}">${esc(x.name[0])}</span><span class="nm">${esc(x.name)}</span><span class="mono" style="font-size:10.5px;color:var(--lite)">${cpt(x.total)}</span>
        <span class="st" style="height:${r === 1 ? 92 : r === 2 ? 64 : 46}px;background:${r === 1 ? "var(--accent)" : "rgba(91,91,247,.28)"};color:${r === 1 ? "#fff" : "var(--lite)"}">${r}</span></button>`; }).join("")}</div>`, "flat")
   + `<main class="main flat">${sh(1, "Everyone", "Tap for full record")}${canEdit() ? `<div class="edbar">${edBtn("staff", {}, "+ Add staff")}</div>` : ""}
-    ${R.map((x, i) => `<button class="card sc" ${gp("person", { n: x.name })}><span class="top">${av(x.name, 48)}<span style="min-width:0"><span class="serif" style="font-size:26px;line-height:1">${esc(x.name)}</span><div class="meta">#${i + 1} · ${esc(x.role)}</div></span><span class="go">${IC.arrow}</span></span>
+    ${R.map((x, i) => `<button class="card sc" ${gp("person", { n: x.name })}><span class="top">${av(x.name, 48)}<span style="min-width:0"><span class="serif" style="font-size:26px;line-height:1">${esc(x.name)}</span><div class="meta">#${i + 1} · ${esc(x.role)}${x.billsT ? ` · ${x.billsT} bills · avg ₹${ind(x.avgBill)}` : ""}</div></span><span class="go">${IC.arrow}</span></span>
       <span class="mini3"><div><span>Sales</span><b class="tn">${cpt(x.total)}</b></div><div><span>Days in</span><b class="tn">${x.worked} / ${M.lastDay}</b></div><div><span>Incentive</span><b class="tn">${inr(x.inc)}</b></div></span></button>`).join("")}
   </main>`;
 };
@@ -1254,7 +1260,7 @@ VIEWS.person = s => {
     const k = dd.d - 1, st = x.st[k], dl = `<span class="dl">${isToday(dd.d) ? "Today" : dd.dow}<b>${dd.d}</b></span>`;
     if (["off", "leave", "weekend", "extra"].includes(st) && !x.svc[k] && !x.ret[k])
       return `<div class="drow g5">${dl}<span style="grid-column:span 4"><span class="tag ${st === "off" ? "blue" : "dark"}" style="font-size:10px;padding:5px 10px">${st === "off" ? "Week off" : st === "weekend" ? "Leave · weekend absence" : st === "extra" ? "Leave · week offs used up" : "Leave"}</span></span></div>`;
-    return `<div class="drow g5">${dl}<span style="min-width:0"><b class="tn" style="font-size:13.5px;font-weight:500">${ind(x.svc[k])}</b>${st === "ob" ? ' <span class="tag blue" style="font-size:8.5px">Other br.</span>' : ""}<span class="trk" style="margin-top:4px;width:${x.svc[k] / mx * 100}%;display:block"><i style="width:100%;background:var(--accent)"></i></span></span>
+    return `<div class="drow g5">${dl}<span style="min-width:0"><b class="tn" style="font-size:13.5px;font-weight:500">${ind(x.svc[k])}</b>${st === "ob" ? ' <span class="tag blue" style="font-size:8.5px">Other br.</span>' : ""}<span class="trk" style="margin-top:4px;width:${x.svc[k] / mx * 100}%;display:block"><i style="width:100%;background:var(--accent)"></i></span>${x.bills[k] ? `<span class="mono muted" style="display:block;margin-top:3px;font-size:10px">${x.bills[k]} BILL${x.bills[k] === 1 ? "" : "S"} · ₹${ind(x.svc[k] / x.bills[k])}</span>` : ""}</span>
       <span class="tn muted" style="text-align:right;font-size:13px">${ind(x.ret[k])}</span><b class="tn" style="text-align:right;font-size:13.5px">${ind(x.svc[k] + x.ret[k])}</b><span class="chk ${x.tk[k] ? "on" : ""}">${x.tk[k] ? IC.tick : ""}</span></div>`;
   }).join("");
   const tkDays = x.tk.filter(v => v).length, pinc = S["Product incentive"] || 0, psales = S["Product sales"] || 0, lvl = S.Level || 5000;
@@ -1263,7 +1269,7 @@ VIEWS.person = s => {
   return header(backBtn("Staff"), monthPick(),
     `<div style="position:relative;display:flex;align-items:center;gap:16px"><span class="ring" style="width:76px;height:76px;border-radius:50%;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:36px;box-shadow:0 0 0 5px rgba(96,165,250,.35)">${esc(x.name[0])}</span>
       <span style="min-width:0"><span class="eb">#${rank} seller · ${M.Month}</span><div class="serif" style="font-size:44px;line-height:1">${esc(x.name)}</div><span class="mono" style="font-size:10.5px;color:var(--lite)">${esc(x.role).toUpperCase()}</span></span></div>
-     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">Sales</span><span class="v tn">${cpt(x.total)}</span></div><div class="hk"><span class="eb" style="font-size:10px">Days in</span><span class="v tn">${x.worked}<small> / ${M.lastDay}</small></span></div><div class="hk"><span class="eb" style="font-size:10px">Incentives</span><span class="v tn">${cpt(x.inc)}</span></div></div>`, "short")
+     <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">Sales</span><span class="v tn">${cpt(x.total)}</span>${x.billsT ? `<span class="s">${x.billsT} bills · avg ₹${ind(x.avgBill)}</span>` : ""}</div><div class="hk"><span class="eb" style="font-size:10px">Days in</span><span class="v tn">${x.worked}<small> / ${M.lastDay}</small></span></div><div class="hk"><span class="eb" style="font-size:10px">Incentives</span><span class="v tn">${cpt(x.inc)}</span></div></div>`, "short")
   + `<main class="main lo" style="margin-top:-28px">
     ${canEdit() ? `<div class="edbar">${edBtn("staff", { k: D.staffRows.findIndex(r => r.name === x.name) }, "Edit details, salary, overtime")}</div>` : ""}
     <div class="tabs" id="ptabs"><button aria-pressed="true" data-t="s1">Day by day</button><button data-t="s2">Attendance</button><button data-t="s3">Incentives</button><button data-t="s4">Salary</button></div>
