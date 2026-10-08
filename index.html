@@ -765,9 +765,9 @@ EDIT.ssales = ({ d }) => {
   sheet(`Day ${d} · staff sales & bills`, S.flatMap(x => [{ k: "s" + x.k, label: x.name + " · service ₹", type: "num", value: before["s" + x.k], half: 1 },
     { k: "b" + x.k, label: "No. of bills", type: "num", value: before["b" + x.k], half: 1 }]), async v => {
     const ops = []; S.forEach(x => {
-      const b = before["s" + x.k], a = numv(v["s" + x.k], x.name); if (String(b) !== String(a)) ops.push({ s: "STAFF SALES", r: LY().SS1 + x.k, c: d + 2, v: a });
+      const b = before["s" + x.k], a = numv(v["s" + x.k], x.name); if (String(b) !== String(a)) ops.push(LY().SSI ? { s: "STAFF SALES", r: LY().SS1 + x.k, c: 2 * d + 1, v: a, ly: 2 } : { s: "STAFF SALES", r: LY().SS1 + x.k, c: d + 2, v: a });
       const bb = before["b" + x.k], ab = numv(v["b" + x.k], x.name + " bills"); if (ab !== "" && (ab < 0 || ab % 1)) throw new Error(x.name + ": bills must be a whole number.");
-      if (String(bb) !== String(ab)) ops.push({ s: "STAFF SALES", r: LY().SB1 + x.k, c: d + 2, v: ab }); });
+      if (String(bb) !== String(ab)) ops.push(LY().SSI ? { s: "STAFF SALES", r: LY().SS1 + x.k, c: 2 * d + 2, v: ab, ly: 2 } : { s: "STAFF SALES", r: LY().SB1 + x.k, c: d + 2, v: ab }); });
     if (!ops.length) return closeSheet();
     await write(ops, `day ${d}: staff sales and bills`);
   });
