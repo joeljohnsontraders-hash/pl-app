@@ -356,7 +356,7 @@ function model(D) {
   m.dim = D.days.length;
   const now = new Date();
   m.todayD = (now.getMonth() === m.mi && now.getFullYear() === m.year) ? now.getDate() : null;
-  m.retailDay = d => sum(D.prods.filter(p => p.d === d && p.out !== "Other branch"), p => p.amt);
+  m.retailDay = d => sum(D.prods.filter(p => p.d === d && p.out !== "Other branch" && p.out !== "Given to branch"), p => p.amt);
   m.days = D.days.map(x => ({ ...x, retail: m.retailDay(x.d), total: x.gross + m.retailDay(x.d) }));
   m.entered = m.days.filter(x => x.gross > 0);
   m.lastDay = m.entered.length ? Math.max(...m.entered.map(x => x.d)) : 0;
@@ -388,7 +388,7 @@ function model(D) {
       if (a === "OB") return "ob";
       return d <= m.lastDay ? "in" : "";
     });
-    const retail = D.prods.filter(p => p.staff === x.name && p.out !== "Own use");
+    const retail = D.prods.filter(p => p.staff === x.name && p.out !== "Own use" && p.out !== "Given to branch");
     const tenk = D.cash.filter(c => c.cat === "Staff incentive" && c.staff === x.name);
     const o = {
       name: x.name, role: x.role, s, st, svc: x.days.slice(0, m.dim).map(v => v || 0),
@@ -701,21 +701,30 @@ EDIT.cash = ({ r, d }) => {
 /* ---- retail sold ---- */
 EDIT.prod = ({ r, d }) => {
   const p = r ? D.prods.find(x => x.r === r) : null; d = d || (p && p.d);
-  const before = p ? { item: p.item, qty: money(p.qty), price: money(p.price), staff: p.staff, type: p.out === "Own use" || p.out === "Other branch" ? p.out : "", mode: p.mode, day: String(p.d || "") } : { item: "", qty: "1", price: "", staff: "", type: "", mode: "UPI", day: String(d) };
-  sheet(p ? "Change this sale" : `Day ${d} · add retail sold`, [
+  const before = p ? { item: p.item, qty: money(p.qty), price: money(p.price), staff: p.staff, type: p.out === "Own use" || p.out === "Other branch" || p.out === "Given to branch" ? p.out : "", mode: p.mode, day: String(p.d || "") } : { item: "", qty: "1", price: "", staff: "", type: "", mode: "UPI", day: String(d) };
+  const BRS = ["Potheri", "Guduvanchery", "Chengalpattu", "Urapakkam"].filter(b => b !== D.branch);
+  sheet(p ? "Change this line" : `Day ${d} · add retail sold / given`, [
+    { k: "type", label: "Type", type: "select", value: before.type, options: [["", "Sold here"], ["Own use", "Own use (staff bought it)"], ["Other branch", "Sold at the other branch"], ["Given to branch", "Given to another branch (no sale, no incentive)"]] },
     { k: "item", label: "Product", type: "select", value: before.item, options: opt(D.lists.retail, "Pick the product") },
-    { k: "qty", label: "Pieces", type: "num", value: before.qty, half: 1 }, { k: "price", label: "Price per piece ₹", type: "num", value: before.price, half: 1 },
-    { k: "staff", label: "Sold by", type: "select", value: before.staff, options: [["", "Pick the staff"], ["Walk-in", "Walk-in (no staff)"]].concat(opt(D.lists.staff)), half: 1 },
-    { k: "mode", label: "Paid by", type: "select", value: before.mode, options: opt(["Cash", "Card", "UPI"]), half: 1 },
-    { k: "type", label: "Type", type: "select", value: before.type, options: [["", "Sold here"], ["Own use", "Own use (staff bought it)"], ["Other branch", "Sold at the other branch"]] }], async v => {
+    { k: "qty", label: "Pieces", type: "num", value: before.qty, half: 1 }, { k: "price", label: "Price per piece ₹ (skip if given)", type: "num", value: before.price, half: 1 },
+    { k: "staff", label: "Sold / given by", type: "select", value: before.staff, options: [["", "Pick the staff"], ["Walk-in", "Walk-in (no staff)"]].concat(opt(D.lists.staff)), half: 1 },
+    { k: "mode", label: "Paid by / given to", type: "select", value: before.mode, options: opt(["Cash", "Card", "UPI"]).concat(BRS.map(b => [b, "Given to " + b])), half: 1 }], async v => {
     v.qty = numv(v.qty, "Pieces"); v.price = numv(v.price, "Price");
-    if (!v.item || !v.qty || v.price === "" || !v.staff) throw new Error("Fill product, pieces, price and staff.");
+    if (v.type === "Given to branch") {
+      if (!v.item || !v.qty) throw new Error("Pick the product and the pieces.");
+      if (!v.staff || v.staff === "Walk-in") throw new Error("Pick the staff who gave it.");
+      if (BRS.indexOf(v.mode) < 0) throw new Error("In the last box, pick the branch it went to.");
+      v.price = "";
+    } else {
+      if (!v.item || !v.qty || v.price === "" || !v.staff) throw new Error("Fill product, pieces, price and staff.");
+      if (BRS.indexOf(v.mode) >= 0) throw new Error("Pick how it was paid: Cash, Card or UPI.");
+    }
     let row = r, extra = r ? isExtra(r) : false;
     if (!row) [row, extra] = freeRow("P", d);
     const ops = diffOps(DB, row, { item: 2, qty: 3, price: 4, staff: 6, type: 7, mode: 8 }, p ? before : {}, v);
     if (extra && !p) ops.push({ s: DB, r: row, c: 1, v: d });
     if (!ops.length) return closeSheet();
-    await write(ops, `day ${d}: ${v.staff} sold ${v.item} × ${v.qty}${p ? " (changed)" : " (added)"}`);
+    await write(ops, `day ${d}: ${v.staff} ${v.type === "Given to branch" ? "gave" : "sold"} ${v.item} × ${v.qty}${v.type === "Given to branch" ? " to " + v.mode : ""}${p ? " (changed)" : " (added)"}`);
   }, { onDelete: p ? async () => write([2, 3, 4, 6, 7, 8].concat(isExtra(r) ? [1] : []).map(col => ({ s: DB, r: r, c: col, v: "" })), `day ${p.d}: deleted sale of ${p.item}`) : null });
 };
 
@@ -1080,7 +1089,7 @@ VIEWS.day = s => {
     <div class="kpi3"><div class="kpi"><span class="ebd">Staff in</span><span class="v tn">${staffIn}<small> / ${M.staff.length}</small></span></div>
       <div class="kpi"><span class="ebd">Spent</span><span class="v tn">${cpt(sum(exps, c => c.out))}</span></div>
       <div class="kpi acc"><span class="ebd">10K paid</span><span class="v tn">${cpt(sum(tenk, c => c.out))}</span></div></div>
-    ${canEdit() ? `<div class="edbar">${edBtn("dayfig", { d }, "Sales & cash figures")}${edBtn("cash", { d }, "+ Money in / out")}${edBtn("prod", { d }, "+ Retail sold")}${edBtn("ssales", { d }, "Staff sales")}${edBtn("owner", { d }, "+ Owner bill")}${edBtn("move", { d }, "+ Stock line")}</div>` : ""}
+    ${canEdit() ? `<div class="edbar">${edBtn("dayfig", { d }, "Sales & cash figures")}${edBtn("cash", { d }, "+ Money in / out")}${edBtn("prod", { d }, "+ Retail sold / given")}${edBtn("ssales", { d }, "Staff sales")}${edBtn("owner", { d }, "+ Owner bill")}${edBtn("move", { d }, "+ Stock line")}</div>` : ""}
     ${P && P.profit !== null ? `${sh(1, "Profit for the day", `so far ${inr(P.run)}`)}
     <div class="card pad">
       ${dayPLLines(P, d)}
@@ -1103,7 +1112,7 @@ VIEWS.day = s => {
       ${owners.map(o => `<div class="li" ${ed("owner", { r: o.r })}><span class="lt" style="background:var(--soft2);color:var(--deep)">${esc(o.cat[0])}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(o.cat)}</span> <span class="tag own">Owner</span><div class="meta">${esc(o.remark || "")}${o.sp ? " · " + esc(o.sp) : ""}${o.sec === "B" ? " · not paid yet" : ""}</div></span><b class="tn">${inr(o.amt)}</b></div>`).join("")}
       ${!exps.length && !ins.length && !owners.length ? '<div class="empty">Nothing entered.</div>' : ""}</div>
     ${prods.length || mvs.length ? `${sh(5, "Retail sold &amp; stock lines")}
-    <div class="card pad">${prods.map(p => `<div class="li" ${ed("prod", { r: p.r })}><span class="lt" style="background:var(--ice);color:#1E3A8A">${esc(p.item[0] || "?")}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(p.item)} × ${p.qty}</span><div class="meta">${esc(p.staff || "no staff")} · ${p.out === "Other branch" ? "other branch" : p.out === "Own use" ? "own use" : "sold here"}${p.mode ? " · " + esc(p.mode) : ""}${p.check && p.check !== "✓" ? ` · <span style="color:var(--bad)">${esc(p.check)}</span>` : ""}</div></span><b class="tn">${inr(p.amt)}</b></div>`).join("")}
+    <div class="card pad">${prods.map(p => `<div class="li" ${ed("prod", { r: p.r })}><span class="lt" style="background:var(--ice);color:#1E3A8A">${esc(p.item[0] || "?")}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(p.item)} × ${p.qty}</span><div class="meta">${esc(p.staff || "no staff")} · ${p.out === "Given to branch" ? "given to " + esc(p.mode || "branch") + " · no sale" : (p.out === "Other branch" ? "other branch" : p.out === "Own use" ? "own use" : "sold here") + (p.mode ? " · " + esc(p.mode) : "")}${p.check && p.check !== "✓" ? ` · <span style="color:var(--bad)">${esc(p.check)}</span>` : ""}</div></span><b class="tn">${p.out === "Given to branch" ? "−" + p.qty + " pcs" : inr(p.amt)}</b></div>`).join("")}
       ${mvs.map(m => `<div class="li" ${ed("move", { r: m.r })}><span class="lt" style="background:var(--soft);color:var(--deep)">${m.type === "Used" ? "−" : "+"}</span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(m.item)}</span><div class="meta">${esc(m.type)}${m.remark ? " · " + esc(m.remark) : ""}</div></span><b class="tn">${m.type === "Used" ? "−" : "+"}${m.qty}</b></div>`).join("")}</div>` : ""}
     ${sh(6, "Incentives &amp; advances")}
     <div class="card pad">${tenk.map(c => rowx(`10K incentive · ${esc(c.staff || c.t)}`, inr(c.out), ed("cash", { r: c.r }))).join("")}${advs.map(c => rowx(`${c.cat === "Staff advance" ? "Advance" : c.cat === "Salary paid" ? "Salary paid" : "Tips"} · ${esc(c.staff || c.t)}`, inr(c.out), ed("cash", { r: c.r }))).join("")}
@@ -1130,7 +1139,7 @@ function entriesFor(k) {
   if (k === "Overtime") rows = S.filter(s => s.Overtime).map(s => ({ d: null, t: s.Staff, v: s.Overtime, by: "Month end", how: "" }));
   if (k === "Less: staff lent to other branch") rows = S.filter(s => s["Days at other branch"]).map(s => ({ d: null, t: s.Staff, v: 0, by: "Other branch", how: `${s["Days at other branch"]} day(s)` }));
   if (k === "Billing sales (net)") rows = M.days.filter(x => x.gross).map(x => ({ ed: ["dayfig", { d: x.d }], d: x.d, t: x.net === null ? "Billing net not entered" : "Billing net", v: x.netused, by: "Closing report", how: "gross " + inr(x.gross) }));
-  if (k === "Products sold") rows = D.prods.filter(p => p.out !== "Other branch").map(p => ({ ed: ["prod", { r: p.r }], d: p.d, t: `${p.item} × ${p.qty}`, v: p.amt, by: p.staff || "–", how: p.out === "Own use" ? "Own use" : (p.mode || "") }))
+  if (k === "Products sold") rows = D.prods.filter(p => p.out !== "Other branch" && p.out !== "Given to branch").map(p => ({ ed: ["prod", { r: p.r }], d: p.d, t: `${p.item} × ${p.qty}`, v: p.amt, by: p.staff || "–", how: p.out === "Own use" ? "Own use" : (p.mode || "") }))
     .concat(D.cash.filter(c => c.cat === "Sales outside billing").map(c => ({ d: c.d, t: c.t, v: c.inn, by: "Manager", how: "Cash book" })));
   if (k === "Less: refunds, dummy and cancelled bills") rows = D.cash.filter(c => ["Refunds", "Cancelled bills"].includes(c.cat)).map(c => ({ d: c.d, t: c.t, v: c.out, by: "Manager", how: c.cat }));
   if (k === "Consumables used") note = `Stock at the start ${inr(D.stockSum.consOpen)} + bought − counted at month end ${inr(D.stockSum.consClose)}. Until the count, it is what was bought. Purchases below.`;
