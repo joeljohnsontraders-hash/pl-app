@@ -257,6 +257,68 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #toast.bad{background:var(--bad)}
 #pdays button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+/* ===== v8 UI: readable labels, live tiles, tab bar, add button, compact forms, skeletons ===== */
+:root{--muted:#5A5E7D}
+.eb{font-size:12px;letter-spacing:.1em}
+.ebd{font-size:12px;letter-spacing:.1em;color:#4F536F}
+.meta{font-size:11.5px;letter-spacing:.04em;color:#5A5E7D}
+.tag{font-size:11px;letter-spacing:.05em}
+.tag.grey{background:#EEF0F6;color:#4F536F}
+.dc span{font-size:10px}
+.mini3 span,.legend{font-size:10.5px}
+.sh .r{font-size:13px}
+.wk button span{font-size:10px}
+.dl{font-size:10px}
+.hk .s{font-size:12.5px}
+.ix{font-size:12px}
+/* live figures on home tiles */
+.tv{font-family:var(--serif);font-size:34px;line-height:1;letter-spacing:-.5px;white-space:nowrap}
+.tv.s{font-size:28px}
+.ts{font-size:12.5px;line-height:1.3;opacity:.8;margin-top:4px}
+.tbody{display:flex;flex-direction:column;gap:2px;position:relative}
+.tiles{grid-auto-rows:minmax(158px,auto)}
+/* bottom tab bar */
+#nav{display:none;position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:480px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(14,12,43,.08);justify-content:space-around}
+body.app #nav{display:flex}
+body.app #root{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+#nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;border-radius:14px;font-size:11.5px;font-weight:600;color:#7A7E9C;text-align:center}
+#nav button svg{width:23px;height:23px}
+#nav button[aria-current="page"]{color:var(--accent)}
+#nav button[aria-current="page"] svg{background:var(--soft);border-radius:10px;padding:2px;box-sizing:content-box;margin:-2px}
+body.app #toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+/* single add button on the day report */
+.fab{position:fixed;z-index:39;right:max(16px,calc(50vw - 224px));bottom:calc(88px + env(safe-area-inset-bottom));height:56px;padding:0 22px 0 18px;border-radius:28px;background:var(--accent);color:#fff;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;box-shadow:0 16px 30px -10px rgba(79,70,229,.65)}
+.fab svg{width:20px;height:20px}
+.mrow{display:flex;align-items:center;gap:14px;width:100%;padding:15px 4px;border-bottom:1px solid var(--line);font-size:16px;font-weight:500}
+.mrow:last-child{border-bottom:0}
+.mrow .ic{width:38px;height:38px;border-radius:12px;background:var(--soft);color:var(--deep)}
+.mrow .chev{margin-left:auto;color:var(--lav);font-size:20px}
+.rawf{grid-column:span 2;min-width:0}
+/* staff sales: one row per person */
+.sstot{padding:12px 14px;border-radius:16px;background:var(--soft);color:var(--deep);font-size:14px;font-weight:600;margin-bottom:6px}
+.ssh,.ssr{display:grid;grid-template-columns:minmax(0,1fr) 104px 66px;gap:8px;align-items:center}
+.sshw{position:sticky;top:-26px;z-index:2;background:#fff;padding-top:4px}
+.ssh{padding:8px 0;font-size:12px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line)}
+.ssh span:not(:first-child){text-align:center}
+.ssr{padding:7px 0;border-bottom:1px solid var(--line)}
+.ssr .nm{display:flex;align-items:center;gap:9px;min-width:0}
+.ssr .nm>span:last-child{display:flex;flex-direction:column;min-width:0}
+.ssr b{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ssr small{font-size:11px;color:var(--bad)}
+.ssr input{height:46px;width:100%;border-radius:12px;border:1px solid #E4E7F2;background:#F6F7FB;padding:0 10px;font:inherit;font-size:16px;font-weight:600;color:var(--ink);text-align:right;appearance:none;-webkit-appearance:none}
+.ssr input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(79,70,229,.14)}
+.sheetc>*{flex-shrink:0}
+.sheetc .cta{position:sticky;bottom:calc(-26px - env(safe-area-inset-bottom));z-index:3;box-shadow:0 -14px 18px 6px #fff}
+/* who sold what: four small blocks */
+.m4{display:grid;grid-template-columns:1.3fr 1fr .62fr 1.1fr;gap:5px}
+.m4>span{background:var(--bg);border-radius:11px;padding:7px 7px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.m4 b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m4 i{font-style:normal;font-size:11px;color:var(--muted)}
+/* loading placeholders */
+.sk{display:block;border-radius:12px;background:linear-gradient(90deg,#E8EAF4 25%,#F3F4FA 50%,#E8EAF4 75%);background-size:200% 100%;animation:skel 1.3s linear infinite}
+.sk.dk{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%}
+.sk.tile{border-radius:30px;padding:0}
+@keyframes skel{to{background-position:-200% 0}}
 </style>
 
 </head><body>
@@ -320,6 +382,11 @@ const IC = {
   plus: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
   user: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
   tick: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20h-5.5v-6h-5v6H4z"/></svg>',
+  tsales: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V12M10 20V7M15 20v-9M20 20V4"/></svg>',
+  tpnl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>',
+  tstaff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.6-5.5 6.5-5.5s5.5 2 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.8 3 2.6 3.5 5.2"/></svg>',
+  tmore: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/></svg>',
   info: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'
 };
 
@@ -427,6 +494,10 @@ const header = (left, right, inner, cls = "") => `<header class="hd ${cls}"><div
 const sh = (n, t, r = "") => `<div class="sh"><span class="n">${String(n).padStart(2, "0")}</span><h2>${t}</h2>${r ? `<span class="r">${r}</span>` : ""}</div>`;
 const rowx = (l, a, go_ = "", cls = "", tags = "") => `<${go_ ? "button" : "div"} class="rowx ${cls}" ${go_}><span class="l">${l}${tags}</span><span class="a tn">${a}${go_ ? '<span class="chev">›</span>' : ""}</span></${go_ ? "button" : "div"}>`;
 
+const SKEL = (t = "Loading the book…") => `<header class="hd"><div class="dots"></div><div class="o1"></div><div class="o2"></div>
+  <div class="bar"><span class="sk dk" style="width:170px;height:34px;border-radius:17px"></span><span class="sk dk" style="width:44px;height:44px;border-radius:22px"></span></div>
+  <div style="position:relative;display:flex;flex-direction:column;gap:12px"><span class="eb">${esc(t)}</span><span class="sk dk" style="width:78%;height:48px"></span><span class="sk dk" style="width:52%;height:48px"></span></div></header>
+  <main class="tiles">${[2, 1, 1, 2, 1, 1].map(n => `<span class="sk tile" style="grid-column:span ${n}"></span>`).join("")}</main>`;
 const VIEWS = {};
 function draw() {
   if (!D) return;
@@ -435,9 +506,39 @@ function draw() {
   root().querySelectorAll("[data-back]").forEach(b => b.onclick = back);
   root().querySelectorAll("[data-go]").forEach(b => b.onclick = () => { const p = b.dataset.p ? JSON.parse(b.dataset.p) : {}; go(b.dataset.go, p); });
   root().querySelectorAll("[data-ed]").forEach(b => b.onclick = e => { e.stopPropagation(); EDIT[b.dataset.ed](b.dataset.p ? JSON.parse(b.dataset.p) : {}); });
-  const mp = $("#mpick"); if (mp) mp.onchange = async e => { cur = +e.target.value; root().innerHTML = '<div class="loading">Loading…</div>'; await refresh(); };
+  const mp = $("#mpick"); if (mp) mp.onchange = async e => { cur = +e.target.value; root().innerHTML = SKEL("Loading…"); await refresh(); };
   (s.after || (() => {}))();
   if (VIEWS[s.v + "_bind"]) VIEWS[s.v + "_bind"](s);
+  navSync();
+}
+/* bottom tab bar: Home · Sales · P&L · Staff · More */
+const TABOF = { home: "home", sales: "sales", day: "sales", pnl: "pnl", head: "pnl", staff: "staff", person: "staff" };
+function navSync() {
+  let n = $("#nav");
+  if (!n) {
+    n = document.createElement("nav"); n.id = "nav";
+    n.innerHTML = [["home", "Home", IC.home], ["sales", "Sales", IC.tsales], ["pnl", "P&amp;L", IC.tpnl], ["staff", "Staff", IC.tstaff], ["more", "More", IC.tmore]]
+      .map(([k, l, ic]) => `<button data-tab="${k}">${ic}<span>${l}</span></button>`).join("");
+    document.body.appendChild(n);
+    n.querySelectorAll("button").forEach(b => b.onclick = () => tab(b.dataset.tab));
+  }
+  const t = TABOF[stack[stack.length - 1].v] || "more";
+  n.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === t ? "page" : "false"));
+  document.body.classList.add("app");
+}
+const noNav = () => document.body.classList.remove("app");
+function tab(k) {
+  if (!D) return;
+  if (k === "more") return moreSheet();
+  closeSheet(); stack = k === "home" ? [{ v: "home" }] : [{ v: "home" }, { v: k }]; draw(); window.scrollTo(0, 0);
+}
+function moreSheet() {
+  const P = [["exp", "Expenses"], ["stock", "Stock"], ["att", "Attendance"], ["salary", "Salary"], ["inc", "Incentives"], ["pday", "Profit by day"], ["checks", "Checks"]]
+    .concat(isOwner() ? [["notes", "Notifications"], ["people", "People &amp; PINs"], ["settings", "Book settings"]] : []);
+  sheet("More", [{ k: "m", type: "raw", value: P.map(([v, l]) => `<button class="mrow" data-mv="${v}"><span>${l}</span><span class="chev">›</span></button>`).join("")
+    + `<button class="mrow" data-mv="_r"><span>Refresh now</span></button>` }], null, { bind: el => el.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => {
+      closeSheet(); if (b.dataset.mv === "_r") return refresh();
+      stack = [{ v: "home" }, { v: b.dataset.mv }]; draw(); window.scrollTo(0, 0); }) });
 }
 const gp = (v, p) => `data-go="${v}"${p ? ` data-p='${JSON.stringify(p).replace(/'/g, "&#39;")}'` : ""}`;
 
@@ -451,6 +552,7 @@ const loginTop = (eb, title, sub) => `<div class="dots"></div>
     ${sub ? `<p style="margin:0;font-size:15px;line-height:1.55;color:var(--lite);max-width:300px">${sub}</p>` : ""}</div>`;
 const fld = (id, label, type = "text", extra = "") => `<label class="fl"><span>${label}</span><input id="${id}" type="${type}" ${extra}></label>`;
 function authPage(top, sheet) {
+  noNav();
   root().innerHTML = `<section class="login" style="display:flex;flex-direction:column;justify-content:space-between">${top}
     <div class="sheetw" style="position:relative">${sheet}
     </div></section>`;
@@ -460,7 +562,7 @@ const busy = (b, on, t) => { if (!b) return; b.disabled = on; if (t) b.dataset.t
 async function start() {
   const c = TOKEN ? readCache() : null;
   if (c && c.data) try { BOOKS = c.books || []; cur = c.cur || 0; ME = c.me; D = JSON.parse(c.data); M = model(D); lastLoad = new Date(c.t); stack = [{ v: "home" }]; draw(); } catch (e) { D = null; }
-  if (!D) root().innerHTML = '<div class="loading">Opening…</div>';
+  if (!D) root().innerHTML = SKEL("Opening…");
   await openBook(c ? c.cur || 0 : 0, !!D);
 }
 async function openBook(i, quiet) {
@@ -475,7 +577,7 @@ async function openBook(i, quiet) {
   if (!$("#sheet")) draw();
 }
 async function enter() {
-  root().innerHTML = '<div class="loading">Loading the book…</div>'; D = null;
+  root().innerHTML = SKEL(); D = null;
   await openBook(0, false);
 }
 /* first visit only: the main owner's login */
@@ -526,14 +628,14 @@ function pwPage(ticket, name, err = "") {
   $("#go").onclick = go; $("#pw").onkeydown = e => { if (e.key === "Enter") go(); }; $("#pw").focus();
 }
 async function signOut() { try { await api("logout", TOKEN); } catch (e) {} keep(""); D = null; ME = null; login(); }
-function fail(msg) { root().innerHTML = `<div class="loading"><b class="serif" style="font-size:28px;color:var(--ink)">Something went wrong</b><br><br>${esc(msg)}<br><br><button class="more" id="retry">Try again</button></div>`; $("#retry").onclick = start; }
+function fail(msg) { noNav(); root().innerHTML = `<div class="loading"><b class="serif" style="font-size:28px;color:var(--ink)">Something went wrong</b><br><br>${esc(msg)}<br><br><button class="more" id="retry">Try again</button></div>`; $("#retry").onclick = start; }
 function pickBranch() {
   const br = [...new Set(BOOKS.map(b => b.branch))];
   root().innerHTML = header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live from the sheets</span></span>`, "",
     `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Pick a branch</span><h1 class="ttl">One branch<br><em>at a time.</em></h1></div>`, "short")
     + `<main class="main lo">${br.map((b, i) => `<button class="card" data-b="${esc(b)}" style="padding:22px;display:flex;justify-content:space-between;align-items:center;${i === 0 ? "background:var(--accent);color:#fff" : ""}">
        <span><span class="serif" style="font-size:32px">${esc(b)}</span><br><span class="ebd" style="${i === 0 ? "color:var(--peri)" : ""}">${esc(BOOKS.find(x => x.branch === b).month)}</span></span>${IC.chev}</button>`).join("")}</main>`;
-  root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; root().innerHTML = '<div class="loading">Loading the book…</div>'; await refresh(); });
+  root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; root().innerHTML = SKEL(); await refresh(); });
 }
 
 /* ================= bottom-sheet form used for every change ================= */
@@ -549,14 +651,14 @@ function sheet(title, fields, onSave, opts = {}) {
   };
   el.innerHTML = `<div class="sheetc"><span class="grab"></span><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h3 class="serif" style="margin:0;font-size:28px;font-weight:400">${esc(title)}</h3><button class="lnk" id="sx">Close</button></div>
     ${opts.note ? `<div class="hint" style="text-align:left">${opts.note}</div>` : ""}
-    <div class="fgrid">${fields.map(f => `<label class="fl ${f.half ? "half" : ""}"><span>${esc(f.label)}</span>${inp(f)}${f.hint ? `<small>${f.hint}</small>` : ""}</label>`).join("")}</div>
+    <div class="fgrid">${fields.map(f => f.type === "raw" ? `<div class="rawf">${f.value}</div>` : `<label class="fl ${f.half ? "half" : ""}"><span>${esc(f.label)}</span>${inp(f)}${f.hint ? `<small>${f.hint}</small>` : ""}</label>`).join("")}</div>
     <div class="err" id="ferr"></div>
     ${onSave ? `<button class="cta" id="fsave">${esc(opts.saveText || "Save")}</button>` : ""}${opts.onDelete ? `<button class="lnk danger" id="fdel">${esc(opts.delText || "Delete this entry")}</button>` : ""}${opts.extra || ""}</div>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add("on"));
   el.onclick = e => { if (e.target === el) closeSheet(); };
   $("#sx").onclick = closeSheet;
-  const vals = () => Object.fromEntries(fields.filter(f => f.type !== "info").map(f => [f.k, $("#f_" + f.k).value.trim()]));
+  const vals = () => Object.fromEntries(fields.filter(f => f.type !== "info" && f.type !== "raw").map(f => [f.k, $("#f_" + f.k).value.trim()]));
   const run = async (fn, btn) => { busy(btn, true, 1); $("#ferr").textContent = ""; try { await fn(vals()); } catch (x) { $("#ferr").textContent = msgOf(x); busy(btn, false); } };
   if (onSave) $("#fsave").onclick = e => run(onSave, e.target);
   if (opts.onDelete) $("#fdel").onclick = e => { if (e.target.dataset.sure) run(opts.onDelete, e.target); else { e.target.dataset.sure = 1; e.target.textContent = "Tap again to confirm"; } };
@@ -762,15 +864,26 @@ EDIT.att = ({ d, n }) => {
 EDIT.ssales = ({ d }) => {
   const S = D.staffSales;
   const before = Object.fromEntries(S.flatMap(x => [["s" + x.k, money(x.days[d - 1])], ["b" + x.k, money((x.bills || [])[d - 1])]]));
-  sheet(`Day ${d} · staff sales & bills`, S.flatMap(x => [{ k: "s" + x.k, label: x.name + " · service ₹", type: "num", value: before["s" + x.k], half: 1 },
-    { k: "b" + x.k, label: "No. of bills", type: "num", value: before["b" + x.k], half: 1 }]), async v => {
+  const away = x => { const p = M.byName[x.name], v = p && p.st[d - 1]; return v && v !== "in" && STATUS[v] ? STATUS[v][0] : ""; };
+  const rows = S.map(x => `<div class="ssr"><span class="nm">${av(x.name, 30)}<span><b>${esc(x.name)}</b>${away(x) ? `<small>${esc(away(x))}</small>` : ""}</span></span>
+    <input id="f_s${x.k}" inputmode="decimal" enterkeyhint="next" autocomplete="off" value="${esc(before["s" + x.k])}" placeholder="–" aria-label="${esc(x.name)} service ₹">
+    <input id="f_b${x.k}" inputmode="numeric" enterkeyhint="next" autocomplete="off" value="${esc(before["b" + x.k])}" placeholder="–" aria-label="${esc(x.name)} bills"></div>`).join("");
+  sheet(`Day ${d} · staff sales`, [{ k: "t", type: "raw", value: `<div class="sshw"><div class="sstot" id="sstot"></div><div class="ssh"><span>Staff</span><span>Service ₹</span><span>Bills</span></div></div>${rows}` }], async () => {
+    const v = Object.fromEntries(S.flatMap(x => [["s" + x.k, $("#f_s" + x.k).value.trim()], ["b" + x.k, $("#f_b" + x.k).value.trim()]]));
     const ops = []; S.forEach(x => {
       const b = before["s" + x.k], a = numv(v["s" + x.k], x.name); if (String(b) !== String(a)) ops.push(LY().SSI ? { s: "STAFF SALES", r: LY().SS1 + x.k, c: 2 * d + 1, v: a, ly: 2 } : { s: "STAFF SALES", r: LY().SS1 + x.k, c: d + 2, v: a });
       const bb = before["b" + x.k], ab = numv(v["b" + x.k], x.name + " bills"); if (ab !== "" && (ab < 0 || ab % 1)) throw new Error(x.name + ": bills must be a whole number.");
       if (String(bb) !== String(ab)) ops.push(LY().SSI ? { s: "STAFF SALES", r: LY().SS1 + x.k, c: 2 * d + 2, v: ab, ly: 2 } : { s: "STAFF SALES", r: LY().SB1 + x.k, c: d + 2, v: ab }); });
     if (!ops.length) return closeSheet();
     await write(ops, `day ${d}: staff sales and bills`);
-  });
+  }, { bind: el => {
+    const ins = [...el.querySelectorAll(".ssr input")];
+    const n = v => { const x = Number(String(v).replace(/[₹,\s]/g, "")); return isFinite(x) ? x : 0; };
+    const upd = () => { const t = sum(S, x => n($("#f_s" + x.k).value)), bl = sum(S, x => n($("#f_b" + x.k).value));
+      $("#sstot").textContent = `Total ${inr(t)} · ${bl} bill${bl === 1 ? "" : "s"}${bl ? ` · avg ₹${ind(t / bl)}` : ""}`; };
+    ins.forEach((i, k) => { i.oninput = upd; i.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); const nx = ins[k + 1]; nx ? nx.focus() : $("#fsave").focus(); } }; });
+    upd();
+  } });
 };
 
 /* ---- owner bills (OWNER sheet) ---- */
@@ -899,50 +1012,67 @@ VIEWS.home = () => {
     `<span style="display:flex;gap:8px">${isOwner() ? `<button class="round glass" ${gp("notes")} aria-label="Notifications" style="position:relative">${IC.bell}${D.unread ? `<span class="badge">${D.unread > 9 ? "9+" : D.unread}</span>` : ""}</button>` : ""}<button class="round glass" id="acct" aria-label="Menu">${IC.user}</button></span>`,
     `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${esc(dateL)}${ME ? ` · ${esc(ME.name)} · ${isOwner() ? "owner" : ME.edit ? "can change" : "viewer"}` : ""}</span>
      <h1 class="serif" style="margin:0;font-size:56px;line-height:.95;letter-spacing:-1.5px">${greet}<br><em style="color:var(--lav)">${esc(D.branch)}.</em></h1></div>`)
-  + `<main class="tiles">
+  + (() => {
+  // the figures each tile shows
+  const dOf = d => M.days.find(x => x.d === d), fd = M.todayD && dOf(M.todayD) && dOf(M.todayD).total > 0 ? M.todayD : M.lastDay, fx_ = fd ? dOf(fd) || null : null;
+  const dl = fx_ ? (fd === M.todayD ? "Today" : `${fx_.dow} ${fd} ${M.MON.slice(0, 3)}`) : "No days yet";
+  const last5 = M.entered.slice(-5), m5 = Math.max(1, ...last5.map(x => x.total));
+  const margin = M.netSales ? Math.max(0, Math.min(100, M.net / M.netSales * 100)) : 0;
+  const lowN = (D.stock || []).filter(i => i.inhand !== null && i.open !== null && i.inhand <= 2).length;
+  const top = M.ranked[0], inN = fd ? M.staff.filter(x => ["in", "ob"].includes(x.st[fd - 1])).length : 0;
+  const pay = sum(D.salary, x => x["Balance to pay"]), incT = sum(M.staff, x => x.inc);
+  const PL_ = M.daily_.filter(x => x.profit !== null), lastP = PL_[PL_.length - 1];
+  const spark = (() => { if (PL_.length < 2) return ""; const v = PL_.map(x => x.run), lo = Math.min(0, ...v), hi = Math.max(1, ...v);
+    const pts = v.map((y, k) => [4 + k * 222 / (v.length - 1), 110 - (y - lo) / (hi - lo) * 96]);
+    const dd = pts.map(([x, y], k) => (k ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1)).join(" ");
+    return `<path d="${dd}" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="${dd} L226 120 L4 120Z" fill="rgba(96,165,250,0.14)"/><circle cx="${pts[pts.length - 1][0]}" cy="${pts[pts.length - 1][1]}" r="5" fill="#fff"/>`; })();
+  const dotC = { in: "C7D2FE", ob: "14B8A6", off: "60A5FA", weekend: "0E0C2B", extra: "0E0C2B", leave: "0E0C2B" };
+  return `<main class="tiles">
   <button ${gp("pnl")} class="tile" style="grid-column:span 2;background:var(--accent);color:#fff;box-shadow:0 24px 44px -18px rgba(79,70,229,.6)">
-    <svg width="190" height="190" viewBox="0 0 190 190" fill="none" style="position:absolute;right:-30px;top:-21px"><circle cx="95" cy="95" r="64" stroke="rgba(255,255,255,0.16)" stroke-width="18"/><circle cx="95" cy="95" r="64" stroke="#BFDBFE" stroke-width="18" stroke-linecap="round" stroke-dasharray="160 402" transform="rotate(-90 95 95)"/><circle cx="95" cy="95" r="88" stroke="rgba(255,255,255,0.14)"/></svg>
-    <div style="position:relative;display:flex;align-items:center;gap:10px"><span class="ix" style="color:#C7D2FE">01</span><span style="width:18px;height:1px;background:rgba(255,255,255,.4)"></span></div>
-    <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:32px">Profit &amp; <em>Loss</em></span></div></button>
+    <svg width="190" height="190" viewBox="0 0 190 190" fill="none" style="position:absolute;right:-30px;top:-21px"><circle cx="95" cy="95" r="64" stroke="rgba(255,255,255,0.16)" stroke-width="18"/><circle cx="95" cy="95" r="64" stroke="#BFDBFE" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(margin * 4.02).toFixed(0)} 402" transform="rotate(-90 95 95)"/><circle cx="95" cy="95" r="88" stroke="rgba(255,255,255,0.14)"/></svg>
+    <div style="position:relative;display:flex;align-items:center;gap:10px"><span class="ix" style="color:#C7D2FE">01</span><span class="ix" style="color:#E0E7FF">PROFIT SO FAR · ${range()}</span></div>
+    <div class="tbody"><span class="tv" style="font-size:44px">${cpt(M.net)}</span><span class="ts">${pct(M.net, M.netSales)} margin on ${cpt(M.netSales)} sales</span>
+      <span class="tt" style="font-size:24px;margin-top:6px">Profit &amp; <em>Loss</em></span></div></button>
   <button ${gp("sales")} class="tile lift" style="grid-row:span 2">
-    <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">02</span><span style="width:18px;height:1px;background:#D5D9EA"></span></div>
-    <div style="height:120px;display:flex;align-items:flex-end;gap:5px">${[38, 56, 46, 74, 100].map((h, i) => `<span style="flex-grow:1;height:${h}%;border-radius:8px 8px 3px 3px;background:${["#E0E7FF","#C7D2FE","#E0E7FF","#A5B4FC","#2563EB"][i]}"></span>`).join("")}</div>
-    <div style="display:flex;flex-direction:column;gap:6px"><span class="tt">Daily <em>Sales</em></span></div></button>
+    <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">02</span><span class="ix muted">${esc(dl.toUpperCase())}</span></div>
+    <div class="tbody"><span class="tv">${fx_ ? cpt(fx_.total) : "–"}</span><span class="ts muted">${fx_ && fx_.status ? cashTagS(fx_.status) : ""}</span></div>
+    <div style="height:84px;display:flex;align-items:flex-end;gap:5px">${(last5.length ? last5 : [{ total: 0 }]).map((x, i, A) => `<span style="flex-grow:1;height:${Math.max(6, x.total / m5 * 100)}%;border-radius:8px 8px 3px 3px;background:${i === A.length - 1 ? "#2563EB" : "#C7D2FE"}" title="${x.d || ""}"></span>`).join("")}</div>
+    <span class="tt">Daily <em>Sales</em></span></button>
   <button ${gp("exp")} class="tile" style="background:var(--ink);color:#fff">
     <div style="position:absolute;right:-50px;bottom:-60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.4),rgba(96,165,250,0) 70%)"></div>
-    <div style="position:relative;display:flex;justify-content:space-between;align-items:center"><span class="ix" style="color:var(--lav)">03</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg></div>
-    <div style="position:relative;display:flex;flex-direction:column;gap:4px"><span class="tt">Expenses</span></div></button>
+    <div style="position:relative"><span class="ix" style="color:var(--lav)">03</span></div>
+    <div class="tbody"><span class="tv s">${cpt(Math.abs(M.costs))}</span><span class="ts">costs so far</span><span class="tt" style="margin-top:6px">Expenses</span></div></button>
   <button ${gp("stock")} class="tile" style="background:var(--ice)">
-    <div style="display:flex;justify-content:space-between;align-items:center"><span class="ix" style="color:#1E3A8A">04</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></div>
-    <div style="display:flex;flex-direction:column;gap:4px"><span class="tt">Stock</span></div></button>
+    <div><span class="ix" style="color:#1E3A8A">04</span></div>
+    <div class="tbody" style="color:#1E3A8A"><span class="tv s">${lowN || "All good"}</span><span class="ts">${lowN ? (lowN === 1 ? "item" : "items") + " running low" : "nothing running low"}</span><span class="tt" style="margin-top:6px;color:var(--ink)">Stock</span></div></button>
   <button ${gp("staff")} class="tile lift" style="grid-column:span 2;flex-direction:row;align-items:center">
-    <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
-      <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">05</span><span style="width:18px;height:1px;background:#D5D9EA"></span></div>
-      <div style="display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Staff</span></div></div>
+    <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%;min-width:0">
+      <span class="ix muted">05 · TOP SELLER</span>
+      <div class="tbody"><span class="tv s">${top ? esc(top.name) : "–"}</span><span class="ts muted">${top ? `${cpt(top.total)} sold${top.billsT ? ` · ${top.billsT} bills` : ""}` : ""}</span><span class="tt" style="font-size:26px;margin-top:6px">Staff</span></div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px">
       <span style="display:flex">${M.ranked.slice(0, 5).map(x => `<span class="av" style="width:42px;height:42px;margin-left:-12px;border:3px solid #fff;font-size:19px;background:${avc(x.name)}">${esc(x.name[0])}</span>`).join("")}</span>
       <span class="round" style="width:40px;height:40px;background:var(--ink);color:#fff">${IC.arrow}</span></div></button>
   <button ${gp("att")} class="tile lift">
     <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="ix muted">06</span>
-      <span style="display:grid;grid-template-columns:repeat(5,9px);gap:4px">${["C7D2FE","C7D2FE","60A5FA","C7D2FE","C7D2FE","C7D2FE","0E0C2B","C7D2FE","C7D2FE","60A5FA"].map(c => `<span style="height:9px;border-radius:3px;background:#${c}"></span>`).join("")}</span></div>
-    <div style="display:flex;flex-direction:column;gap:4px"><span class="tt">Attendance</span></div></button>
+      <span style="display:grid;grid-template-columns:repeat(5,9px);gap:4px">${M.staff.slice(0, 10).map(x => `<span style="height:9px;border-radius:3px;background:#${dotC[x.st[(fd || 1) - 1]] || "EEF0F6"}"></span>`).join("")}</span></div>
+    <div class="tbody"><span class="tv s">${inN}<small style="font-size:18px;color:var(--muted)"> / ${M.staff.length}</small></span><span class="ts muted">in · ${esc(dl.toLowerCase())}</span><span class="tt" style="margin-top:6px">Attendance</span></div></button>
   <button ${gp("salary")} class="tile" style="background:var(--blue);color:#fff">
     <div style="position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;border:16px solid rgba(255,255,255,.12)"></div>
     <div style="position:relative"><span class="ix" style="color:var(--ice)">07</span></div>
-    <div style="position:relative;display:flex;flex-direction:column;gap:4px"><span class="tt">Salary</span></div></button>
+    <div class="tbody"><span class="tv s">${cpt(pay)}</span><span class="ts">to pay at month end</span><span class="tt" style="margin-top:6px">Salary</span></div></button>
   <button ${gp("inc")} class="tile" style="grid-column:span 2;background:var(--soft2);flex-direction:row;align-items:center;justify-content:flex-start;gap:18px">
     <svg width="170" height="170" viewBox="0 0 24 24" fill="none" stroke="#C7D2FE" stroke-width="0.8" stroke-linejoin="round" style="position:absolute;right:-30px;bottom:-44px"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
     <span class="ic" style="position:relative;width:58px;height:58px;border-radius:20px;background:var(--ink);color:#fff"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
-    <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="ix" style="color:var(--deep)">08</span><span class="tt" style="font-size:30px">Incentives</span></div></button>
+    <div class="tbody"><span class="ix" style="color:var(--deep)">08 · EARNED SO FAR</span><span class="tv s" style="color:var(--deep)">${cpt(incT)}</span><span class="tt" style="font-size:26px;margin-top:4px">Incentives</span></div></button>
   <button ${gp("pday")} class="tile" style="grid-column:span 2;background:linear-gradient(135deg,#1E1B4B,#312E81 55%,#4F46E5);color:#fff;box-shadow:0 24px 44px -18px rgba(49,46,129,.55)">
-    <svg width="170" height="78" viewBox="0 0 230 120" fill="none" style="position:absolute;right:14px;top:16px"><path d="M4 100 L36 92 L68 96 L100 70 L132 74 L164 46 L196 52 L226 22" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 100 L36 92 L68 96 L100 70 L132 74 L164 46 L196 52 L226 22 L226 120 L4 120Z" fill="rgba(96,165,250,0.14)"/>${[[36,92],[100,70],[164,46],[226,22]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="#fff"/>`).join("")}</svg>
-    <div style="position:relative;display:flex;align-items:center;gap:10px"><span class="ix" style="color:var(--lav)">09</span><span style="width:18px;height:1px;background:rgba(255,255,255,.4)"></span></div>
-    <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Profit <em>by day</em></span></div></button>
-  <button ${gp("checks")} class="tile lift" style="grid-column:span 2;grid-row:span 1;flex-direction:row;align-items:center;justify-content:space-between">
+    <svg width="170" height="78" viewBox="0 0 230 120" fill="none" style="position:absolute;right:14px;top:16px">${spark}</svg>
+    <div style="position:relative"><span class="ix" style="color:var(--lav)">09</span></div>
+    <div class="tbody"><span class="tv s">${lastP ? (lastP.profit < 0 ? "−" : "") + cpt(Math.abs(lastP.profit)).replace("−", "") : "–"}</span><span class="ts">${lastP ? `profit on day ${lastP.d}` : "no days yet"}</span><span class="tt" style="font-size:26px;margin-top:6px">Profit <em>by day</em></span></div></button>
+  <button ${gp("checks")} class="tile lift" style="grid-column:span 2;flex-direction:row;align-items:center;justify-content:space-between">
     <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%"><span class="ix muted">10</span>
-      <div style="display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Checks</span></div></div>
+      <div class="tbody"><span class="tv s" style="color:${fx ? "var(--bad)" : "var(--good)"}">${fx ? `${fx} to fix` : "All clear"}</span><span class="tt" style="font-size:26px;margin-top:6px">Checks</span></div></div>
     <span class="round" style="width:58px;height:58px;border-radius:20px;background:${fx ? "var(--badsoft)" : "var(--goodsoft)"};color:${fx ? "var(--bad)" : "var(--good)"}">${fx ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 7v6M12 17v.5"/><circle cx="12" cy="12" r="9.5"/></svg>' : IC.tick.replace(/12/g, "24")}</span></button>
-  </main>`;
+  </main>`; })();
 };
 VIEWS.home_bind = () => {
   const a = $("#acct"); if (!a) return;
@@ -1050,9 +1180,9 @@ VIEWS.sales = s => {
     <div class="card pad">${show.map(x => `<button class="li" ${gp("day", { d: x.d })}>
        <span class="dc ${isToday(x.d) ? "today" : ""}"><span>${isToday(x.d) ? "Today" : x.dow}</span><b>${x.d}</b></span>
        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px"><span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b class="tn" style="font-size:16px">${inr(x.total)}</b>
-         <span class="meta" style="margin:0">${x.retail ? "Retail " + inr(x.retail) : ""}${x.status && x.status !== "OK" ? ` · <span style="color:${/^Short|Not/.test(x.status) ? "var(--bad)" : "var(--deep)"}">${esc(x.status)}</span>` : ""}</span></span>
-         <span class="trk" style="width:${Math.max(8, x.total / mx * 100)}%"><i style="flex:${x.gross};background:var(--accent)"></i>${x.retail ? `<i style="flex:${x.retail};background:var(--sky)"></i>` : ""}</span></span>
-       <span style="color:var(--lav)">${IC.chev}</span></button>`).join("") || '<div class="empty">No days entered yet.</div>'}</div>
+         ${cashTag(x.status)}</span>
+         <span style="display:flex;align-items:center;gap:8px;min-width:0"><span style="flex:1;min-width:0"><span class="trk" style="width:${Math.max(8, x.total / mx * 100)}%"><i style="flex:${x.gross};background:var(--accent)"></i>${x.retail ? `<i style="flex:${x.retail};background:var(--sky)"></i>` : ""}</span></span>${x.retail ? `<span class="meta" style="margin:0;white-space:nowrap">Retail ${inr(x.retail)}</span>` : ""}</span></span>
+       <span style="color:var(--lav);flex:none;margin-left:4px">${IC.chev}</span></button>`).join("") || '<div class="empty">No days entered yet.</div>'}</div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="legend"><span><i style="background:var(--accent)"></i>Service</span><span><i style="background:var(--sky)"></i>Retail</span></span>
       ${list.length > 10 && !s.all ? `<button class="more" id="all">All ${list.length} days</button>` : ""}</div>
   </main>`;
@@ -1060,6 +1190,10 @@ VIEWS.sales = s => {
 VIEWS.sales_bind = s => { const a = $("#all"); if (a) a.onclick = () => { s.all = true; draw(); }; };
 
 /* ================= 2a · one day: full report ================= */
+const cashTag = (st, big) => { const t = String(st || "").trim(); if (!t) return "";
+  const c = /^short/i.test(t) ? "bad" : /^excess/i.test(t) ? "good" : "grey";
+  return `<span class="tag ${c}" ${big ? 'style="font-size:12px;padding:5px 10px"' : ""}>${esc(t === "OK" ? "Matched" : t)}</span>`; };
+const cashTagS = st => cashTag(st);
 const STATUS = { in: ["In", ""], ob: ["Other branch", "blue"], off: ["Week off", "blue"], weekend: ["Leave", "dark"], extra: ["Leave", "dark"], leave: ["Leave", "dark"] };
 VIEWS.day = s => {
   const d = s.d, x = dayOf(d), P = M.daily_.find(y => y.d === d);
@@ -1089,7 +1223,7 @@ VIEWS.day = s => {
     <div class="kpi3"><div class="kpi"><span class="ebd">Staff in</span><span class="v tn">${staffIn}<small> / ${M.staff.length}</small></span></div>
       <div class="kpi"><span class="ebd">Spent</span><span class="v tn">${cpt(sum(exps, c => c.out))}</span></div>
       <div class="kpi acc"><span class="ebd">10K paid</span><span class="v tn">${cpt(sum(tenk, c => c.out))}</span></div></div>
-    ${canEdit() ? `<div class="edbar">${edBtn("dayfig", { d }, "Sales & cash figures")}${edBtn("cash", { d }, "+ Money in / out")}${edBtn("prod", { d }, "+ Retail sold / given")}${edBtn("ssales", { d }, "Staff sales")}${edBtn("owner", { d }, "+ Owner bill")}${edBtn("move", { d }, "+ Stock line")}</div>` : ""}
+    ${canEdit() ? `<button class="fab" id="fab" aria-label="Add or change something for this day">${IC.plus}<span>Add</span></button>` : ""}
     ${P && P.profit !== null ? `${sh(1, "Profit for the day", `so far ${inr(P.run)}`)}
     <div class="card pad">
       ${dayPLLines(P, d)}
@@ -1099,7 +1233,7 @@ VIEWS.day = s => {
       <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
         <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b>${r.tk ? '<span class="tag dark">10K</span>' : ""}${r.st === "ob" ? '<span class="tag blue">Other branch</span>' : ""}</span><b class="tn" style="font-size:15px">${inr(r.svc + r.ret)}</b></span>
         <span class="trk" style="width:${(r.svc + r.ret) / mx * 100}%"><i style="flex:${r.svc || 0.0001};background:var(--accent)"></i>${r.ret ? `<i style="flex:${r.ret};background:var(--sky)"></i>` : ""}</span>
-        <span class="meta" style="margin:0">Service ${inr(r.svc)} · Retail ${inr(r.ret)}${r.bl ? ` · ${r.bl} bill${r.bl === 1 ? "" : "s"} · avg ₹${ind(r.svc / r.bl)}` : ""}${r.ob ? " · at other branch" : ""}</span></span></button>`).join("")}
+        <span class="m4"><span><b>${inr(r.svc)}</b><i>Service</i></span><span><b>${inr(r.ret)}</b><i>Retail</i></span><span><b>${r.bl || "–"}</b><i>Bills</i></span><span><b>${r.bl ? "₹" + ind(r.svc / r.bl) : "–"}</b><i>Avg bill</i></span></span>${r.ob ? '<span class="meta" style="margin:0">Retail sold at the other branch</span>' : ""}</span></button>`).join("")}
       ${away.map(r => `<div class="li" style="opacity:.75">${av(r.p.name, 44)}<span style="flex:1"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b><br><span class="meta">${r.st === "ob" ? "At the other branch" : r.st === "off" ? "Week off" : r.st === "leave" ? "Leave" : "Off · counted as leave"}</span></span><span class="tag ${STATUS[r.st][1]}">${STATUS[r.st][0]}</span></div>`).join("")}
       ${!sold.length && !away.length ? '<div class="empty">No staff sales entered for this day.</div>' : ""}</div>
     ${sh(3, "Attendance")}
@@ -1118,7 +1252,7 @@ VIEWS.day = s => {
     <div class="card pad">${tenk.map(c => rowx(`10K incentive · ${esc(c.staff || c.t)}`, inr(c.out), ed("cash", { r: c.r }))).join("")}${advs.map(c => rowx(`${c.cat === "Staff advance" ? "Advance" : c.cat === "Salary paid" ? "Salary paid" : "Tips"} · ${esc(c.staff || c.t)}`, inr(c.out), ed("cash", { r: c.r }))).join("")}
       ${!tenk.length && !advs.length ? '<div class="empty">None on this day.</div>' : ""}</div>
     ${entered ? `${sh(7, "Cash drawer")}<div class="card pad">${rowx("Opening cash", inr(x.open))}${rowx("Card · UPI", inr(x.card) + " · " + inr(x.upi))}${rowx("Received · paid out", inr(x.recv) + " · " + inr(x.paid))}${rowx("Expected in drawer", inr(x.exp))}${rowx("Counted", x.cnt === null ? "Not counted" : inr(x.cnt))}
-      <div class="rowx tot"><span class="l">Status</span><span class="tag ${x.status === "OK" ? "good" : "bad"}" style="font-size:11px">${esc(x.status || "–")}</span></div></div>` : ""}
+      <div class="rowx tot"><span class="l">Status</span>${cashTag(x.status, 1) || '<span class="tag grey">–</span>'}</div></div>` : ""}
   </main>`;
 };
 
@@ -1440,7 +1574,14 @@ VIEWS.stock_bind = s => {
   root().querySelectorAll("#sf button").forEach(b => b.onclick = () => { s.f = b.dataset.f; draw(); });
   const q = $("#sq"); q.oninput = e => { s.q = e.target.value.toLowerCase(); const p = q.selectionStart, y = window.scrollY; draw(); const n = $("#sq"); n.focus(); n.setSelectionRange(p, p); window.scrollTo(0, y); };
 };
-VIEWS.day_bind = s => root().querySelectorAll("[data-wd]").forEach(b => b.onclick = () => { s.d = +b.dataset.wd; draw(); window.scrollTo(0, 0); });
+VIEWS.day_bind = s => {
+  root().querySelectorAll("[data-wd]").forEach(b => b.onclick = () => { s.d = +b.dataset.wd; draw(); window.scrollTo(0, 0); });
+  const f = $("#fab"); if (!f) return;
+  const d = s.d, ADDS = [["dayfig", "Sales &amp; cash figures", IC.pen], ["ssales", "Staff sales &amp; bills", IC.pen], ["cash", "Money in / out", IC.plus],
+    ["prod", "Retail sold / given", IC.plus], ["owner", "Owner bill", IC.plus], ["move", "Stock line (received / used)", IC.plus]];
+  f.onclick = () => sheet(`Day ${d} · add or change`, [{ k: "m", type: "raw", value: ADDS.map(([k, l, ic]) => `<button class="mrow" data-add="${k}"><span class="ic">${ic}</span><span>${l}</span><span class="chev">›</span></button>`).join("") }], null,
+    { bind: el => el.querySelectorAll("[data-add]").forEach(b => b.onclick = () => EDIT[b.dataset.add]({ d })) });
+};
 
 /* ================= start ================= */
 start();
