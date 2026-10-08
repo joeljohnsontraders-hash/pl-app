@@ -319,6 +319,9 @@ body.app #toast{bottom:calc(92px + env(safe-area-inset-bottom))}
 .sk.dk{background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.06) 75%);background-size:200% 100%}
 .sk.tile{border-radius:30px;padding:0}
 @keyframes skel{to{background-position:-200% 0}}
+.sw{flex:none;width:46px;height:28px;border-radius:99px;background:#D7DAE8;position:relative;transition:background .2s}
+.sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.sw.on{background:var(--accent)}.sw.on i{left:21px}
 </style>
 
 </head><body>
@@ -1041,7 +1044,7 @@ VIEWS.home = () => {
   <button ${gp("exp")} class="tile" style="background:var(--ink);color:#fff">
     <div style="position:absolute;right:-50px;bottom:-60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.4),rgba(96,165,250,0) 70%)"></div>
     <div style="position:relative"><span class="ix" style="color:var(--lav)">03</span></div>
-    <div class="tbody"><span class="tv s">${cpt(Math.abs(M.costs))}</span><span class="ts">costs so far</span><span class="tt" style="margin-top:6px">Expenses</span></div></button>
+    <div class="tbody"><span class="tv s">${cpt(spendT())}</span><span class="ts">spent day-to-day</span><span class="tt" style="margin-top:6px">Expenses</span></div></button>
   <button ${gp("stock")} class="tile" style="background:var(--ice)">
     <div><span class="ix" style="color:#1E3A8A">04</span></div>
     <div class="tbody" style="color:#1E3A8A"><span class="tv s">${lowN || "All good"}</span><span class="ts">${lowN ? (lowN === 1 ? "item" : "items") + " running low" : "nothing running low"}</span><span class="tt" style="margin-top:6px;color:var(--ink)">Stock</span></div></button>
@@ -1283,7 +1286,52 @@ function entriesFor(k) {
   if (k === "Cash short / (excess)") rows = M.days.filter(x => x.diff).map(x => ({ d: x.d, t: x.diff < 0 ? "Cash short" : "Cash excess", v: -x.diff, by: "Closing report", how: "counted vs expected" }));
   return { rows: rows.sort((a, b) => (b.d || 0) - (a.d || 0)), note };
 }
-VIEWS.exp = () => {
+const expSeg = s => fullOK() ? `<div class="seg" id="eseg" style="position:relative"><button data-em="spend" aria-pressed="${!s.full}">Day-to-day</button><button data-em="full" aria-pressed="${!!s.full}">With salary &amp; fixed</button></div>` : "";
+const viewerSwitch = () => isOwner() ? `<button class="card" id="vflag" style="padding:14px 18px;display:flex;align-items:center;gap:14px;text-align:left;width:100%">
+    <span style="flex:1;min-width:0"><span style="display:block;font-size:15px;font-weight:600">Managers see salary &amp; fixed costs</span>
+    <span class="meta" style="margin:0">${D.flags && D.flags.viewFull ? "On · they can open “With salary & fixed”" : "Off · they only see day-to-day spending"}</span></span>
+    <span class="sw ${D.flags && D.flags.viewFull ? "on" : ""}" aria-hidden="true"><i></i></span></button>` : "";
+function expSpend(s) {
+  const H = spendHeads().sort((a, b) => shopAmt(b) - shopAmt(a)), T = spendT(), n = sum(H, k => shopRows(k).length);
+  const shades = ["#2563EB", "#60A5FA", "#93C5FD", "#BFDBFE", "#3B82F6", "#DBEAFE"];
+  const head = (k, i) => { const e = { rows: shopRows(k) }, last = e.rows.find(r => r.d), c = shades[i % 6];
+    return `<button class="li" ${gp("head", { k, shop: 1 })}><span class="lt" style="background:${c};color:${["#BFDBFE","#DBEAFE","#93C5FD"].includes(c) ? "var(--ink)" : "#fff"}">${esc(lab(k)[0])}</span>
+      <span style="flex:1;min-width:0"><span style="display:block;font-size:15.5px;font-weight:500;line-height:1.25">${esc(lab(k))}</span>
+      <div class="meta">${e.rows.length ? e.rows.length + " entr" + (e.rows.length > 1 ? "ies" : "y") + (last ? " · " + last.d + " " + M.MON : "") : "worked out"}</div></span>
+      <span style="text-align:right"><b class="tn" style="font-size:15px">${inr(shopAmt(k))}</b><div class="mono muted" style="font-size:10.5px">${pct(shopAmt(k), T || 1)}</div></span><span style="color:var(--lav)">${IC.chev}</span></button>`; };
+  return header(backBtn("Home"), monthPick(),
+    `${expSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Day-to-day spending · ${range()}</span>${hero(T)}
+     <span class="lite" style="font-size:14px">${H.length} heads · ${n} entries</span></div>
+     <div style="position:relative;display:flex;gap:3px;height:12px">${H.map((k, i) => `<i style="flex:${shopAmt(k)};border-radius:4px;background:${shades[i % 6]}"></i>`).join("")}</div>`, "short")
+  + `<main class="main" style="margin-top:-46px">${canEdit() ? `<div class="edbar" style="margin-top:4px">${edBtn("owner", { sec: "A" }, "+ Owner bill")}${edBtn("owner", { sec: "B" }, "+ Bill not paid yet")}${isOwner() ? edBtn("settings_go", {}, "Rates & settings") : ""}</div>` : ""}
+    ${viewerSwitch()}
+    <div class="card" style="padding:14px 18px;display:flex;gap:12px;align-items:flex-start;background:var(--soft)"><span style="flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;font-family:Georgia,serif">i</span>
+      <span style="font-size:13.5px;line-height:1.45;color:var(--ink2,var(--ink))">Only what the shop paid out day by day. Staff salary and bills you add as owner (rent, SMS, EB, insurance…) are not counted here.${fullOK() ? " Tap <b>With salary &amp; fixed</b> to see them." : ""} Profit still counts everything.</span></div>
+    ${sh(1, "Day-to-day costs", `<span class="mono">${inr(T)}</span>`)}<div class="card pad">${H.map(head).join("") || '<div class="empty">Nothing spent yet</div>'}</div>
+  </main>`;
+}
+VIEWS.exp_bind = s => {
+  const g = $("#eseg"); if (g) g.querySelectorAll("button").forEach(b => b.onclick = () => { s.full = b.dataset.em === "full"; draw(); });
+  const f = $("#vflag"); if (f) f.onclick = async () => {
+    const on = !(D.flags && D.flags.viewFull); f.disabled = true;
+    try { D.flags = LIVE ? await api("setFlag", TOKEN, "viewFull", on) : Object.assign({}, D.flags, { viewFull: on }); toast(on ? "Managers can now see salary & fixed costs" : "Managers now see only day-to-day spending"); }
+    catch (e) { toast(e.message, 1); }
+    draw();
+  };
+};
+/* salary and fixed costs (rent, phone…) are added anyway: the Expenses page shows real day-to-day spending unless "Full month" is picked.
+   Owners can always switch; managers only when an owner allows it. Profit always counts everything. */
+const STAFFPAY = ["Salaries", "Incentives (salary)", "Overtime", "Less: staff lent to other branch"];
+const isWorked = k => FIXED.includes(k) || STAFFPAY.includes(k);
+const fullOK = () => isOwner() || !!(D.flags && D.flags.viewFull);
+/* day-to-day = what the shop itself paid out of the cash book; owner bills (rent, SMS, EB…) and salary are left out */
+const shopRows = k => entriesFor(k).rows.filter(r => r.by === "Manager" && r.v > 0);
+const shopAmt = k => sum(shopRows(k), r => r.v);
+const spendHeads = () => M.daily.filter(k => !isWorked(k) && shopAmt(k) > 0);
+const spendT = () => sum(spendHeads(), k => shopAmt(k));
+VIEWS.exp = (s = {}) => {
+  const full = fullOK() && s.full;
+  if (!full) return expSpend(s);
   const all = M.fixed.map(k => [k, "f"]).concat(M.daily.map(k => [k, "d"])).filter(([k]) => M.PL[k] > 0);
   const n = sum(all, ([k]) => entriesFor(k).rows.length), tot = M.costs || 1;
   const segs = all.slice().sort((a, b) => (a[1] === b[1] ? M.PL[b[0]] - M.PL[a[0]] : a[1] === "f" ? -1 : 1));
@@ -1296,24 +1344,25 @@ VIEWS.exp = () => {
       <span style="text-align:right"><b class="tn" style="font-size:15px">${inr(M.PL[k])}</b><div class="mono muted" style="font-size:10.5px">${pct(M.PL[k], tot)}</div></span><span style="color:var(--lav)">${IC.chev}</span></button>`; };
   const F = all.filter(a => a[1] === "f").sort((a, b) => M.PL[b[0]] - M.PL[a[0]]), Dd = all.filter(a => a[1] === "d").sort((a, b) => M.PL[b[0]] - M.PL[a[0]]);
   return header(backBtn("Home"), monthPick(),
-    `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Expenses · ${range()}</span>${hero(M.costs)}
+    `${expSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Expenses with salary &amp; fixed · ${range()}</span>${hero(M.costs)}
      <span class="lite" style="font-size:14px">${all.length} heads · ${n} entries</span></div>
      <div style="position:relative;display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:3px;height:12px">${segs.map(([k, t]) => `<i style="flex:${M.PL[k]};border-radius:4px;background:${t === "f" ? shades.f[fi++ % 6] : shades.d[di++ % 6]}"></i>`).join("")}</div>
      <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:10px;color:var(--lav)">FIXED ${pct(M.fixedT, tot)}</span><span style="font-size:10px;color:var(--lav)">DAY-TO-DAY ${pct(M.dailyT, tot)}</span></div></div>`, "short")
   + `<main class="main" style="margin-top:-46px">${canEdit() ? `<div class="edbar" style="margin-top:4px">${edBtn("owner", { sec: "A" }, "+ Owner bill")}${edBtn("owner", { sec: "B" }, "+ Bill not paid yet")}${isOwner() ? edBtn("settings_go", {}, "Rates & settings") : ""}</div>` : ""}
+    ${viewerSwitch()}
     <div class="card" style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center"><span class="ebd">Fixed · full month</span><span class="serif tn" style="font-size:24px">${inr(M.fixedT)}</span></div>
     ${sh(1, "Fixed costs")}<div class="card pad">${F.map(([k], i) => head(k, i)).join("") || '<div class="empty">Nothing yet</div>'}</div>
     ${sh(2, "Day-to-day costs", `<span class="mono">${inr(M.dailyT)}</span>`)}<div class="card pad">${Dd.map(([k], i) => head(k, i)).join("") || '<div class="empty">Nothing yet</div>'}</div>
   </main>`;
 };
 VIEWS.head = s => {
-  const k = s.k, v = M.PL[k] || 0, e = entriesFor(k), isInc = INCOME.includes(k);
+  const k = s.k, isInc = INCOME.includes(k), e = s.shop ? { rows: shopRows(k), note: "" } : entriesFor(k), v = s.shop ? sum(e.rows, r => r.v) : M.PL[k] || 0;
   const src = [["Shop cash", sum(e.rows.filter(r => r.how === "Cash"), r => r.v), "#0E0C2B"], ["Bank / UPI", sum(e.rows.filter(r => r.how === "Bank / UPI"), r => r.v), "#4F46E5"],
     ["Owner", sum(e.rows.filter(r => r.by === "Owner"), r => r.part ?? r.v), "#60A5FA"]].filter(x => x[1] > 0);
   const top = !src.length && e.rows.length ? e.rows.slice().sort((a, b) => b.v - a.v).slice(0, 3).map((r, i) => [r.t, r.v, ["#0E0C2B", "#4F46E5", "#60A5FA"][i]]) : src;
   return header(backBtn(isInc ? "Profit & Loss" : "Expenses"), `<span class="rlab">${isInc ? "Income" : M.fixed.includes(k) ? "Fixed" : "Day-to-day"}</span>`,
     `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">${esc(lab(k))} · ${M.Month}</span>${hero(v)}
-     <span class="lite" style="font-size:14px">${e.rows.length} entries${isInc ? "" : " · " + pct(Math.abs(v), M.costs) + " of all expenses"}</span></div>`, "short")
+     <span class="lite" style="font-size:14px">${e.rows.length} entries${isInc ? "" : s.shop ? " · paid by the shop · " + pct(v, spendT() || 1) + " of day-to-day" : " · " + pct(Math.abs(v), M.costs) + " of all expenses"}</span></div>`, "short")
   + `<main class="main lo">
     ${top.length ? `<div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:12px"><span class="ebd">Where it went</span>
       <div style="display:flex;gap:4px;height:12px">${top.map(t => `<i style="flex:${t[1]};border-radius:6px;background:${t[2]}"></i>`).join("")}</div>
