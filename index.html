@@ -322,10 +322,30 @@ body.app #toast{bottom:calc(92px + env(safe-area-inset-bottom))}
 .sw{flex:none;width:46px;height:28px;border-radius:99px;background:#D7DAE8;position:relative;transition:background .2s}
 .sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
 .sw.on{background:var(--accent)}.sw.on i{left:21px}
+.barr{display:flex;align-items:center;gap:8px;margin-left:auto}
+.rfb svg{transition:transform .2s}.rfb.spin svg{animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+#ptr{position:fixed;left:50%;top:0;z-index:60;width:40px;height:40px;border-radius:50%;background:#fff;color:var(--accent);display:grid;place-items:center;box-shadow:0 8px 20px -6px rgba(14,12,43,.35);transform:translate(-50%,-50px);opacity:0;pointer-events:none;transition:opacity .2s}
+#ptr.on{transform:translate(-50%,16px)!important;opacity:1!important}#ptr.on svg{animation:rot .8s linear infinite}
+.swc{padding:14px 18px;display:flex;align-items:center;gap:14px;text-align:left;width:100%}.swt{display:block;font-size:15px;font-weight:600;color:var(--ink)}
+.heldn{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;margin:6px 0;border-radius:16px;background:var(--soft);font-size:13px;line-height:1.45;color:#3B3F63}.heldn svg{flex:none;color:var(--accent);margin-top:1px}
+.card.heldn{margin:0}
+.held .rowx{opacity:.72}.held .rowx.tot{opacity:1}
+.lockc{padding:26px 22px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}.lockc svg{color:var(--accent);width:28px;height:28px}
+.ag .c.wf{background:#CCFBF1;color:#0F766E;font-weight:700}
+.pill.wfh{background:#CCFBF1;color:#0F766E;border-color:#99F6E4}
+.cal .d.W{background:#CCFBF1;color:#0F766E;font-weight:600}
+.chipw{align-self:flex-start;margin-top:6px;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.16);font-size:11px;font-weight:600;letter-spacing:.02em}
+.qa{grid-column:span 2;background:#fff;border-radius:26px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 1px 0 rgba(14,12,43,.04),0 14px 30px -20px rgba(14,12,43,.25)}
+.qah{display:flex;justify-content:space-between;align-items:baseline;padding:0 4px}
+.qab{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.qab button{display:flex;align-items:center;gap:7px;height:44px;padding:0 8px;border-radius:14px;background:var(--soft);color:var(--ink);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
+.qab .ic{flex:none;width:26px;height:26px;border-radius:8px;background:#fff;color:var(--accent);display:grid;place-items:center}.qab .ic svg{width:13px;height:13px}
+.qab button:active{transform:scale(.97)}
 </style>
 
 </head><body>
-<div id="root"></div>
+<div id="ptr" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5A8 8 0 1 1 17.7 6"/><path d="M20 4v5h-5"/></svg></div><div id="root"></div>
 <script>
 (function(){
 /* ================= data: live from Google Sheets (Apps Script), or the preview's stand-in server ================= */
@@ -340,12 +360,25 @@ const KEY = "plbook_session", CK = "plbook_cache";
 const keep = t => { if ((t || "") !== TOKEN) try { localStorage.removeItem(CK); } catch (e) {} TOKEN = t || ""; try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {} };
 const readCache = () => { try { return JSON.parse(localStorage.getItem(CK) || "null"); } catch (e) { return null; } };
 const saveCache = raw => { try { localStorage.setItem(CK, JSON.stringify({ t: Date.now(), me: ME, books: BOOKS, cur: cur, data: raw })); } catch (e) {} };
-function useData(raw) { D = JSON.parse(raw); ME = D.me; lastLoad = new Date(); M = model(D); saveCache(raw); }
+function useData(raw) { D = JSON.parse(raw); ME = D.me; lastLoad = new Date(); M = model(D); M.P = buildPV(); saveCache(raw); }
 try { TOKEN = localStorage.getItem(KEY) || ""; } catch (e) {}
 const msgOf = e => String(e && e.message || e).replace(/^Error:\s*/, "").replace(/^Exception:\s*/, "");
 async function loadBook() {
   useData(await api("getBook", TOKEN, BOOKS[cur].i));
 }
+let refreshing = false;
+async function doRefresh() {
+  if (refreshing) return; refreshing = true;
+  document.querySelectorAll("[data-refresh]").forEach(b => b.classList.add("spin"));
+  const ptr = $("#ptr"); if (ptr) ptr.classList.add("on");
+  try { await refresh(); toast("Up to date"); } finally { refreshing = false; document.querySelectorAll("[data-refresh]").forEach(b => b.classList.remove("spin")); if (ptr) ptr.classList.remove("on"); }
+}
+/* pull down at the top of any screen to refresh */
+(() => { let y0 = null, pulled = 0;
+  addEventListener("touchstart", e => { y0 = window.scrollY <= 0 && !$("#sheet") && D ? e.touches[0].clientY : null; pulled = 0; }, { passive: true });
+  addEventListener("touchmove", e => { if (y0 === null) return; pulled = e.touches[0].clientY - y0; const p = $("#ptr"); if (p) { p.style.transform = `translate(-50%, ${Math.min(70, Math.max(0, pulled * .5)) - 50}px) rotate(${pulled * 2}deg)`; p.style.opacity = Math.min(1, pulled / 90); } }, { passive: true });
+  addEventListener("touchend", () => { const p = $("#ptr"); if (p) { p.style.transform = ""; p.style.opacity = ""; } if (y0 !== null && pulled > 90) doRefresh(); y0 = null; });
+})();
 async function refresh() {
   try { await loadBook(); if (!$("#sheet")) draw(); }
   catch (e) { const m = msgOf(e); if (/SESSION/.test(m)) { keep(""); D = null; login(); } else fail(m); }
@@ -377,6 +410,8 @@ const COLS = ["#4F46E5", "#2563EB", "#0E0C2B", "#3B82F6", "#3730A3", "#6366F1", 
 const avc = name => COLS[[...String(name)].reduce((a, c) => a + c.charCodeAt(0), 0) % COLS.length];
 const av = (name, size = 44) => `<span class="av" style="width:${size}px;height:${size}px;font-size:${Math.round(size * .45)}px;background:${avc(name)}">${esc(String(name || "?")[0])}</span>`;
 const IC = {
+  refresh: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5A8 8 0 1 1 17.7 6"/><path d="M20 4v5h-5"/></svg>',
+  lock: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
   back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
   arrow: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>',
   chev: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
@@ -492,8 +527,9 @@ const monthPick = () => {
   return list.length > 1 ? `<select class="pick" id="mpick" aria-label="Month">${list.map(([b, k]) => `<option value="${k}" ${k === cur ? "selected" : ""}>${esc(b.month)}</option>`).join("")}</select>`
     : `<span class="pick" style="display:inline-flex;align-items:center;padding-right:14px;background-image:none">${esc(M.Month)}</span>`;
 };
+const refBtn = () => `<button class="round glass rfb" data-refresh aria-label="Refresh" title="Refresh">${IC.refresh}</button>`;
 const header = (left, right, inner, cls = "") => `<header class="hd ${cls}"><div class="dots"></div><div class="o1"></div><div class="o2"></div>
-  <div class="bar">${left}${right || ""}</div>${inner}</header>`;
+  <div class="bar">${left}<span class="barr">${right || ""}${refBtn()}</span></div>${inner}</header>`;
 const sh = (n, t, r = "") => `<div class="sh"><span class="n">${String(n).padStart(2, "0")}</span><h2>${t}</h2>${r ? `<span class="r">${r}</span>` : ""}</div>`;
 const rowx = (l, a, go_ = "", cls = "", tags = "") => `<${go_ ? "button" : "div"} class="rowx ${cls}" ${go_}><span class="l">${l}${tags}</span><span class="a tn">${a}${go_ ? '<span class="chev">›</span>' : ""}</span></${go_ ? "button" : "div"}>`;
 
@@ -507,6 +543,7 @@ function draw() {
   const s = stack[stack.length - 1];
   root().innerHTML = (VIEWS[s.v] || VIEWS.home)(s);
   root().querySelectorAll("[data-back]").forEach(b => b.onclick = back);
+  root().querySelectorAll("[data-refresh]").forEach(b => b.onclick = doRefresh);
   root().querySelectorAll("[data-go]").forEach(b => b.onclick = () => { const p = b.dataset.p ? JSON.parse(b.dataset.p) : {}; go(b.dataset.go, p); });
   root().querySelectorAll("[data-ed]").forEach(b => b.onclick = e => { e.stopPropagation(); EDIT[b.dataset.ed](b.dataset.p ? JSON.parse(b.dataset.p) : {}); });
   const mp = $("#mpick"); if (mp) mp.onchange = async e => { cur = +e.target.value; root().innerHTML = SKEL("Loading…"); await refresh(); };
@@ -788,7 +825,7 @@ EDIT.cash = ({ r, d }) => {
   const fields = [{ k: "t", label: "Details (as the manager writes it)", value: before.t },
     { k: "out", label: "Paid out ₹", type: "num", value: before.out, half: 1 }, { k: "inn", label: "Received ₹", type: "num", value: before.inn, half: 1 },
     { k: "pf", label: "Paid from", type: "select", value: before.pf, options: opt(["Cash", "Bank / UPI"]), half: 1 },
-    { k: "sp", label: "Counts for", type: "select", value: before.sp, options: opt(D.lists.spread, "This month"), half: 1 },
+    { k: "sp", label: "Counts for", type: "select", value: before.sp, options: opt(D.lists.spread, "This month").concat([[LASTSAL, "Advance: last month's salary"]]), half: 1 },
     { k: "pick", label: "Category", type: "select", value: before.pick, options: opt(D.lists.cats, c && !c.pick ? `Automatic — ${c.cat || "from the words"}` : "Automatic (from the words)") }];
   if (r ? isExtra(r) : false) fields.push({ k: "day", label: "Day", type: "select", value: before.day, options: dayOpts().slice(1) });
   sheet(c ? "Change this entry" : `Day ${d} · add money in / out`, fields, async v => {
@@ -801,6 +838,26 @@ EDIT.cash = ({ r, d }) => {
     if (!ops.length) return closeSheet();
     await write(ops, `day ${v.day || d}: "${v.t}" ${inr(v.out || v.inn)}${c ? " (changed)" : " (added)"}`);
   }, { onDelete: c ? async () => write([2, 3, 4, 5, 7, 9].concat(isExtra(r) ? [1] : []).map(col => ({ s: DB, r: r, c: col, v: "" })), `day ${c.d}: deleted "${c.t}" ${inr(c.out || c.inn)}`) : null });
+};
+
+/* ---- staff advance: cut from this month's or last month's salary ---- */
+const LASTSAL = "Last month's salary";
+EDIT.adv = ({ d, n }) => {
+  d = d || M.todayD || M.lastDay || 1;
+  sheet("Give an advance", [
+    { k: "staff", label: "Staff", type: "select", value: n || "", options: opt(D.lists.staff, "Pick the staff") },
+    { k: "amt", label: "Amount ₹", type: "num", value: "", half: 1 }, { k: "pf", label: "Paid from", type: "select", value: "Cash", options: opt(["Cash", "Bank / UPI"]), half: 1 },
+    { k: "from", label: "Cut it from", type: "select", value: "", options: [["", `This month's salary (${M.Month})`], [LASTSAL, `Last month's salary (${prevMonth()})`]] },
+    { k: "day", label: "Day given", type: "select", value: String(d), options: dayOpts().slice(1), half: 1 }, { k: "note", label: "Note (optional)", value: "", half: 1 }], async v => {
+    v.amt = numv(v.amt, "Amount");
+    if (!v.staff) throw new Error("Pick the staff."); if (!v.amt || v.amt < 0) throw new Error("Enter the amount.");
+    const day = Number(v.day) || d; const [row, extra] = freeRow("C", day);
+    const ops = [{ s: DB, r: row, c: 2, v: ("ADVANCE " + v.staff + (v.note ? " · " + v.note : "")).toUpperCase() }, { s: DB, r: row, c: 3, v: v.amt }, { s: DB, r: row, c: 5, v: v.pf },
+      { s: DB, r: row, c: 7, v: "Staff advance" }];
+    if (v.from) ops.push({ s: DB, r: row, c: 9, v: v.from });
+    if (extra) ops.push({ s: DB, r: row, c: 1, v: day });
+    await write(ops, `day ${day}: advance ${inr(v.amt)} to ${v.staff} (${v.from ? "cut from " + prevMonth() + " salary" : "cut from this month"})`);
+  }, { note: `Pick <b>Last month</b> when the advance should come off ${esc(prevMonth())}'s salary that you have not paid yet. It is then left out of ${esc(M.Month)}'s salary.` });
 };
 
 /* ---- retail sold ---- */
@@ -1011,7 +1068,7 @@ VIEWS.home = () => {
   const now = new Date(), dateL = M.todayD ? `${WD[["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][now.getDay()]]} · ${now.getDate()} ${M.Month}` : `${M.Month} ${M.year} · ${M.lastDay} of ${M.dim} days`;
   const branches = [...new Set(BOOKS.map(b => b.branch))].length;
   const fx = (D.checks || []).filter(c => c[1].startsWith("✗") || c[1] === "Pending").length;
-  return header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live · updated ${esc(t)}</span></span>`,
+  return header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live · ${esc(t)}</span></span>`,
     `<span style="display:flex;gap:8px">${isOwner() ? `<button class="round glass" ${gp("notes")} aria-label="Notifications" style="position:relative">${IC.bell}${D.unread ? `<span class="badge">${D.unread > 9 ? "9+" : D.unread}</span>` : ""}</button>` : ""}<button class="round glass" id="acct" aria-label="Menu">${IC.user}</button></span>`,
     `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${esc(dateL)}${ME ? ` · ${esc(ME.name)} · ${isOwner() ? "owner" : ME.edit ? "can change" : "viewer"}` : ""}</span>
      <h1 class="serif" style="margin:0;font-size:56px;line-height:.95;letter-spacing:-1.5px">${greet}<br><em style="color:var(--lav)">${esc(D.branch)}.</em></h1></div>`)
@@ -1020,7 +1077,7 @@ VIEWS.home = () => {
   const dOf = d => M.days.find(x => x.d === d), fd = M.todayD && dOf(M.todayD) && dOf(M.todayD).total > 0 ? M.todayD : M.lastDay, fx_ = fd ? dOf(fd) || null : null;
   const dl = fx_ ? (fd === M.todayD ? "Today" : `${fx_.dow} ${fd} ${M.MON.slice(0, 3)}`) : "No days yet";
   const last5 = M.entered.slice(-5), m5 = Math.max(1, ...last5.map(x => x.total));
-  const margin = M.netSales ? Math.max(0, Math.min(100, M.net / M.netSales * 100)) : 0;
+  const margin = M.netSales ? Math.max(0, Math.min(100, M.P.net / M.netSales * 100)) : 0;
   const lowN = (D.stock || []).filter(i => i.inhand !== null && i.open !== null && i.inhand <= 2).length;
   const top = M.ranked[0], inN = fd ? M.staff.filter(x => ["in", "ob"].includes(x.st[fd - 1])).length : 0;
   const pay = sum(D.salary, x => x["Balance to pay"]), incT = sum(M.staff, x => x.inc);
@@ -1030,11 +1087,15 @@ VIEWS.home = () => {
     const dd = pts.map(([x, y], k) => (k ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1)).join(" ");
     return `<path d="${dd}" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="${dd} L226 120 L4 120Z" fill="rgba(96,165,250,0.14)"/><circle cx="${pts[pts.length - 1][0]}" cy="${pts[pts.length - 1][1]}" r="5" fill="#fff"/>`; })();
   const dotC = { in: "C7D2FE", ob: "14B8A6", off: "60A5FA", weekend: "0E0C2B", extra: "0E0C2B", leave: "0E0C2B" };
+  const qd = M.todayD && M.todayD <= M.dim ? M.todayD : Math.min(M.dim, Math.max(1, M.lastDay));
+  const QA = [["dayfig", "Sales", IC.pen], ["ssales", "Staff", IC.pen], ["cash", "Money", IC.plus], ["adv", "Advance", IC.plus], ["prod", "Retail", IC.plus], ["move", "Stock", IC.plus]];
   return `<main class="tiles">
+  ${canEdit() ? `<div class="qa"><div class="qah"><span class="ebd">Quick add</span><span class="mono muted" style="font-size:11px">${qd === M.todayD ? "TODAY" : "DAY " + qd} · ${esc(((dayOf(qd) || {}).dow || "").toUpperCase())} ${qd} ${M.MON.slice(0, 3)}</span></div>
+    <div class="qab">${QA.map(([k, l, ic]) => `<button data-qa="${k}" data-qd="${qd}"><span class="ic">${ic}</span>${esc(l)}</button>`).join("")}</div></div>` : ""}
   <button ${gp("pnl")} class="tile" style="grid-column:span 2;background:var(--accent);color:#fff;box-shadow:0 24px 44px -18px rgba(79,70,229,.6)">
     <svg width="190" height="190" viewBox="0 0 190 190" fill="none" style="position:absolute;right:-30px;top:-21px"><circle cx="95" cy="95" r="64" stroke="rgba(255,255,255,0.16)" stroke-width="18"/><circle cx="95" cy="95" r="64" stroke="#BFDBFE" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(margin * 4.02).toFixed(0)} 402" transform="rotate(-90 95 95)"/><circle cx="95" cy="95" r="88" stroke="rgba(255,255,255,0.14)"/></svg>
     <div style="position:relative;display:flex;align-items:center;gap:10px"><span class="ix" style="color:#C7D2FE">01</span><span class="ix" style="color:#E0E7FF">PROFIT SO FAR · ${range()}</span></div>
-    <div class="tbody"><span class="tv" style="font-size:44px">${cpt(M.net)}</span><span class="ts">${pct(M.net, M.netSales)} margin on ${cpt(M.netSales)} sales</span>
+    <div class="tbody"><span class="tv" style="font-size:44px">${cpt(M.P.net)}</span><span class="ts">${pct(M.P.net, M.netSales)} margin on ${cpt(M.netSales)} sales</span>${M.P.full ? "" : '<span class="chipw">Before salary &amp; fixed</span>'}
       <span class="tt" style="font-size:24px;margin-top:6px">Profit &amp; <em>Loss</em></span></div></button>
   <button ${gp("sales")} class="tile lift" style="grid-row:span 2">
     <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">02</span><span class="ix muted">${esc(dl.toUpperCase())}</span></div>
@@ -1062,7 +1123,7 @@ VIEWS.home = () => {
   <button ${gp("salary")} class="tile" style="background:var(--blue);color:#fff">
     <div style="position:absolute;right:-40px;top:-40px;width:130px;height:130px;border-radius:50%;border:16px solid rgba(255,255,255,.12)"></div>
     <div style="position:relative"><span class="ix" style="color:var(--ice)">07</span></div>
-    <div class="tbody"><span class="tv s">${cpt(pay)}</span><span class="ts">to pay at month end</span><span class="tt" style="margin-top:6px">Salary</span></div></button>
+    <div class="tbody">${seeSal() ? `<span class="tv s">${cpt(pay)}</span><span class="ts">to pay at month end</span>` : `<span class="tv s" style="display:flex;align-items:center;gap:8px">${IC.lock}</span><span class="ts">owner only</span>`}<span class="tt" style="margin-top:6px">Salary</span></div></button>
   <button ${gp("inc")} class="tile" style="grid-column:span 2;background:var(--soft2);flex-direction:row;align-items:center;justify-content:flex-start;gap:18px">
     <svg width="170" height="170" viewBox="0 0 24 24" fill="none" stroke="#C7D2FE" stroke-width="0.8" stroke-linejoin="round" style="position:absolute;right:-30px;bottom:-44px"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
     <span class="ic" style="position:relative;width:58px;height:58px;border-radius:20px;background:var(--ink);color:#fff"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
@@ -1078,6 +1139,7 @@ VIEWS.home = () => {
   </main>`; })();
 };
 VIEWS.home_bind = () => {
+  root().querySelectorAll("[data-qa]").forEach(b => b.onclick = () => EDIT[b.dataset.qa]({ d: +b.dataset.qd }));
   const a = $("#acct"); if (!a) return;
   a.onclick = () => {
     const ex = $("#menu"); if (ex) return ex.remove();
@@ -1102,11 +1164,11 @@ function dayPLLines(P, d) {
       ${prowG("Sales", P.sales, x && x.gross > 0 && x.net === null ? "<b style='color:var(--bad)'>Billing net not entered</b>" : "")}
       ${prowG("Products & stock used", P.stock, [P.retail ? `retail sold at cost ${inr(P.retail)}` : "", P.cons ? `salon products used ${inr(P.cons)}` : ""].filter(Boolean).join(" · "))}
       ${prowG("Royalty", P.roy)}
-      ${prowG("Staff salary for the day", P.sal)}
-      ${prowG("Retail incentive", P.inc)}
+      ${seeSal() ? prowG("Staff salary for the day", P.sal) + prowG("Retail incentive", P.inc) : prowG("Staff costs", (P.sal || 0) + (P.inc || 0))}
       ${prowG("Shop expenses", P.shop, [P.cashexp ? `paid by the shop ${inr(P.cashexp)}` : "", P.card ? `card charges ${inr(P.card)}` : "", P.cashdiff ? (P.cashdiff < 0 ? `cash short ${inr(-P.cashdiff)}` : `cash excess ${inr(P.cashdiff)}`) : ""].filter(Boolean).join(" · "))}
       ${prowG("Owner bills", P.own, owners.filter(o => o.sec !== "C").map(o => esc(o.cat) + " " + inr(o.month)).join(" · "))}
       ${prowG("Depreciation", P.dep)}
+      ${P.held ? `<div class="heldn">${IC.info}<span>Salary, owner bills and depreciation (${seeSal() ? inr(P.held) : "not shown"}) are not counted yet — the owner turns them on in Profit &amp; Loss.</span></div>` : ""}
       <div class="rowx tot"><span class="l">Profit for the day</span><span class="a tn ${P.profit < 0 ? "neg" : ""}" style="color:${P.profit < 0 ? "var(--bad)" : "var(--accent)"}">${sgn(P.profit)}</span></div>
 `;
 }
@@ -1122,6 +1184,7 @@ function pnlDay(s) {
      <span style="font-size:14px;color:#E0E7FF">Profit for the day · month so far ${sgn(P.run)}</span></div>
      <div class="fch" id="pdays" style="position:relative">${L.map(y => `<button data-pd="${y.d}" aria-pressed="${y.d === d}">${y.d} ${y.dow}</button>`).join("")}</div>`, "short")
   + `<main class="main lo">
+    ${isOwner() ? flagSwitch("pflag", plFull(), "Count salary &amp; fixed costs in profit", "On · profit is after salary, rent, SMS and other owner bills", "Off · profit leaves out salary and the bills you add as owner") : ""}
     <div class="card pad">${dayPLLines(P, d)}</div>
     <button class="more" ${gp("day", { d })} style="align-self:flex-start">Full day report ›</button>
     ${sh(1, "Every day", "Tap a day")}
@@ -1129,39 +1192,46 @@ function pnlDay(s) {
   </main>`;
 }
 VIEWS.pnl_bind = s => {
+  const pf = $("#pflag"); if (pf) pf.onclick = () => { pf.disabled = true; const on = !plFull(); setFlag("plFull", on, on ? "Profit now counts salary & fixed costs" : "Profit now leaves out salary & fixed costs"); };
   root().querySelectorAll("[data-pm]").forEach(b => b.onclick = () => { s.mode = b.dataset.pm; draw(); });
   root().querySelectorAll("[data-pd]").forEach(b => b.onclick = () => { s.d = +b.dataset.pd; draw(); window.scrollTo(0, 0); });
   const c = $("#pdays"), a = c && c.querySelector('[aria-pressed="true"]'); if (a) c.scrollLeft = a.offsetLeft - c.clientWidth / 2 + a.offsetWidth / 2;
 };
 VIEWS.pnl = s => {
   if (s.mode === "day") return pnlDay(s);
-  const ns = M.netSales || 1, f = M.fixedT / ns * 100, d = M.dailyT / ns * 100, p = M.net / ns * 100;
+  let sn = 0; const P = M.P, ns = M.netSales || 1, f = P.fixedT / ns * 100, d = P.dailyT / ns * 100, p = P.net / ns * 100;
   const clamp = v => Math.max(0, Math.min(100, v));
-  const line = k => rowx(esc(lab(k)), (M.PL[k] < 0 ? "− " : "") + "₹" + ind(M.PL[k]), gp("head", { k }), "", ownerTag(k));
+  const vv = k => k in P.val ? P.val[k] : M.PL[k];
+  const line = k => rowx(esc(lab(k)), (vv(k) < 0 ? "− " : "") + "₹" + ind(vv(k)), gp("head", { k }), "", P.full || !(k in P.val) || P.val[k] === M.PL[k] ? ownerTag(k) : "");
+  const lines = L => { if (seeSal()) return L.map(line).join(""); const st = L.filter(k => STAFFPAY.includes(k)), v = sum(st, k => P.val[k]);
+    return L.filter(k => !STAFFPAY.includes(k)).map(line).join("") + (st.length ? rowx("Staff costs", (v < 0 ? "− " : "") + "₹" + ind(v)) : ""); };
   return header(backBtn("Home"), monthPick(),
-    `${pnlSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Profit &amp; loss · ${range()}</span>${hero(M.net)}
-     <span style="font-size:14px;color:#E0E7FF">Net profit so far · <b>${pct(M.net, M.netSales)}</b> margin</span></div>
+    `${pnlSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Profit &amp; loss · ${range()}</span>${hero(P.net)}
+     <span style="font-size:14px;color:#E0E7FF">${P.full ? "Net profit so far" : "Profit before salary &amp; fixed costs"} · <b>${pct(P.net, M.netSales)}</b> margin</span></div>
      <div class="hk2"><div class="hk"><span class="eb" style="font-size:10px">Income</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(M.netSales)}</span></div>
-       <div class="hk"><span class="eb" style="font-size:10px">Costs</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(M.costs)}</span></div></div>`)
+       <div class="hk"><span class="eb" style="font-size:10px">Costs</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(P.costs)}</span></div></div>`)
   + `<main class="main">
+    ${isOwner() ? flagSwitch("pflag", P.full, "Count salary &amp; fixed costs in profit", "On · profit is after salary, rent, SMS and other owner bills", "Off · profit leaves out salary and the bills you add as owner") : ""}
     ${M.netSales <= 0 ? `<div class="card empty">The ₹100 split shows once sales are entered.</div>` : `<div class="card" style="padding:20px 20px 16px;display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">How ₹100 earned was used</span><span class="mono muted" style="font-size:11px">of ${cpt(M.netSales)}</span></div>
-      <div class="wf">
+      <div class="wf" style="${f ? "" : "grid-template-columns:repeat(3,minmax(0,1fr))"}">
         <div><div class="b" style="bottom:0;height:100%;background:var(--peri)"></div><span class="t" style="top:8px;color:#1E1B4B">100</span></div>
-        <div><div class="b" style="top:0;height:${clamp(f)}%;background:var(--ink)"></div><span class="t" style="top:8px;color:#fff">−${f.toFixed(1)}</span><div class="d" style="top:${clamp(f)}%"></div></div>
+        ${f ? `<div><div class="b" style="top:0;height:${clamp(f)}%;background:var(--ink)"></div><span class="t" style="top:8px;color:#fff">−${f.toFixed(1)}</span><div class="d" style="top:${clamp(f)}%"></div></div>` : ""}
         <div><div class="b" style="top:${clamp(f)}%;height:${clamp(Math.min(d, 100 - f))}%;background:var(--sky)"></div><span class="t" style="top:calc(${clamp(f)}% + 8px)">−${d.toFixed(1)}</span><div class="d" style="top:${clamp(f + d)}%"></div></div>
         <div><div class="b" style="bottom:0;height:${clamp(Math.abs(p))}%;background:${p < 0 ? "var(--bad)" : "var(--accent)"};box-shadow:0 12px 24px -10px rgba(79,70,229,.6)"></div><span class="t" style="bottom:calc(${clamp(Math.abs(p))}% + 6px);color:var(--ink)">${p.toFixed(1)}</span></div>
       </div>
-      <div class="wfl"><span>Income</span><span>Fixed</span><span>Day-to-day</span><span style="color:var(--ink)">Profit</span></div>
+      <div class="wfl" style="${f ? "" : "grid-template-columns:repeat(3,minmax(0,1fr))"}"><span>Income</span>${f ? "<span>Fixed</span>" : ""}<span>Day-to-day</span><span style="color:var(--ink)">Profit</span></div>
     </div>`}
-    ${sh(1, "Income")}<div class="card pad">${M.income.map(line).join("")}${rowx("Total income", `<span style="color:var(--accent)">${inr(M.netSales)}</span>`, "", "tot")}</div>
-    ${sh(2, "Fixed costs", '<span class="mono">FULL MONTH</span>')}<div class="card pad">${M.fixed.map(line).join("") || '<div class="empty">Nothing yet</div>'}${rowx("Total fixed", inr(M.fixedT), "", "tot")}</div>
-    ${sh(3, "Day-to-day costs")}<div class="card pad">${M.daily.map(line).join("") || '<div class="empty">Nothing yet</div>'}${rowx("Total day-to-day", inr(M.dailyT), "", "tot")}</div>
+    ${sh(sn = 1, "Income")}<div class="card pad">${M.income.map(line).join("")}${rowx("Total income", `<span style="color:var(--accent)">${inr(M.netSales)}</span>`, "", "tot")}</div>
+    ${P.fixed.length ? `${sh(++sn, "Fixed costs", '<span class="mono">FULL MONTH</span>')}<div class="card pad">${lines(P.fixed)}${rowx("Total fixed", inr(P.fixedT), "", "tot")}</div>` : ""}
+    ${sh(++sn, "Day-to-day costs")}<div class="card pad">${lines(P.daily) || '<div class="empty">Nothing yet</div>'}${rowx("Total day-to-day", inr(P.dailyT), "", "tot")}</div>
+    ${!P.full && P.held.length ? (seeSal() ? `${sh(++sn, "Not counted yet", `<span class="mono">${inr(P.heldT)}</span>`)}<div class="card pad held">${P.held.map(([k, v]) => rowx(esc(lab(k)), (v < 0 ? "− " : "") + "₹" + ind(v), gp("head", { k }))).join("")}${rowx("Would come off profit", inr(P.heldT), "", "tot")}</div>`
+      : `<div class="heldn card">${IC.info}<span>Salary and fixed costs are not counted in this profit yet.</span></div>`) : ""}
     <div style="position:relative;overflow:hidden;margin-top:8px;padding:22px;border-radius:28px;background:var(--ink);color:#fff;display:flex;flex-direction:column;gap:10px">
       <div style="position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.55),rgba(91,91,247,0) 68%)"></div>
-      <span class="eb" style="position:relative">Net profit</span><span class="serif tn" style="position:relative;font-size:44px;line-height:1;color:${M.net < 0 ? "#FDBA74" : "#fff"}">${inr(M.net)}</span>
-      <span class="mono" style="position:relative;font-size:12px;color:var(--lite)">${ind(M.netSales)} − ${ind(M.fixedT)} − ${ind(M.dailyT)}</span></div>
-    ${sh(4, "Not profit", "for information")}<div class="card pad">${D.info.filter(x => x[1]).map(([k, v]) => rowx(esc(k), inr(v))).join("") || '<div class="empty">Nothing yet</div>'}</div>
+      <span class="eb" style="position:relative">${P.full ? "Net profit" : "Profit before salary &amp; fixed"}</span><span class="serif tn" style="position:relative;font-size:44px;line-height:1;color:${P.net < 0 ? "#FDBA74" : "#fff"}">${inr(P.net)}</span>
+      <span class="mono" style="position:relative;font-size:12px;color:var(--lite)">${ind(M.netSales)}${P.fixedT ? " − " + ind(P.fixedT) : ""} − ${ind(P.dailyT)}</span></div>
+    ${sh(++sn, "Not profit", "for information")}<div class="card pad">${D.info.filter(x => x[1] && (seeSal() || !/salary|advance|staff/i.test(x[0]))).map(([k, v]) => rowx(esc(k), inr(v))).join("") || '<div class="empty">Nothing yet</div>'}</div>
   </main>`;
 };
 
@@ -1240,7 +1310,7 @@ VIEWS.day = s => {
       ${away.map(r => `<div class="li" style="opacity:.75">${av(r.p.name, 44)}<span style="flex:1"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b><br><span class="meta">${r.st === "ob" ? "At the other branch" : r.st === "off" ? "Week off" : r.st === "leave" ? "Leave" : "Off · counted as leave"}</span></span><span class="tag ${STATUS[r.st][1]}">${STATUS[r.st][0]}</span></div>`).join("")}
       ${!sold.length && !away.length ? '<div class="empty">No staff sales entered for this day.</div>' : ""}</div>
     ${sh(3, "Attendance")}
-    <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px"><div style="display:flex;flex-wrap:wrap;gap:8px">${people.filter(r => r.st || canEdit()).map(r => `<span class="pill ${!r.st || r.st === "in" ? "" : STATUS[r.st][1] === "dark" ? "dark" : "blue"}" ${ed("att", { d, n: r.p.name })}>${av(r.p.name, 22)}${esc(r.p.name)} · ${r.st ? (r.wfh && r.st === "in" ? "WFH" : STATUS[r.st][0]) : "–"}${canEdit() ? ' <span style="opacity:.5">' + IC.pen + "</span>" : ""}</span>`).join("") || '<span class="muted">Not entered yet.</span>'}</div>
+    <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px"><div style="display:flex;flex-wrap:wrap;gap:8px">${people.filter(r => r.st || canEdit()).map(r => `<span class="pill ${r.wfh && r.st === "in" ? "wfh" : !r.st || r.st === "in" ? "" : STATUS[r.st][1] === "dark" ? "dark" : "blue"}" ${ed("att", { d, n: r.p.name })}>${av(r.p.name, 22)}${esc(r.p.name)} · ${r.st ? (r.wfh && r.st === "in" ? "WFH" : STATUS[r.st][0]) : "–"}${canEdit() ? ' <span style="opacity:.5">' + IC.pen + "</span>" : ""}</span>`).join("") || '<span class="muted">Not entered yet.</span>'}</div>
 </div>
     ${sh(4, "Money in &amp; out")}
     <div class="card pad">${exps.concat(ins).map(c => `<div class="li" ${ed("cash", { r: c.r })}><span class="lt" style="background:${c.inn ? "var(--goodsoft)" : "var(--soft)"};color:${c.inn ? "var(--good)" : "var(--deep)"}">${esc((c.cat || c.t || "?")[0])}</span>
@@ -1287,10 +1357,7 @@ function entriesFor(k) {
   return { rows: rows.sort((a, b) => (b.d || 0) - (a.d || 0)), note };
 }
 const expSeg = s => fullOK() ? `<div class="seg" id="eseg" style="position:relative"><button data-em="spend" aria-pressed="${!s.full}">Day-to-day</button><button data-em="full" aria-pressed="${!!s.full}">With salary &amp; fixed</button></div>` : "";
-const viewerSwitch = () => isOwner() ? `<button class="card" id="vflag" style="padding:14px 18px;display:flex;align-items:center;gap:14px;text-align:left;width:100%">
-    <span style="flex:1;min-width:0"><span style="display:block;font-size:15px;font-weight:600">Managers see salary &amp; fixed costs</span>
-    <span class="meta" style="margin:0">${D.flags && D.flags.viewFull ? "On · they can open “With salary & fixed”" : "Off · they only see day-to-day spending"}</span></span>
-    <span class="sw ${D.flags && D.flags.viewFull ? "on" : ""}" aria-hidden="true"><i></i></span></button>` : "";
+const viewerSwitch = () => isOwner() ? flagSwitch("vflag", D.flags && D.flags.viewFull, "Managers see salary &amp; fixed costs", "On · they can see salaries, the Salary page and fixed costs", "Off · salaries and fixed costs are hidden from them") : "";
 function expSpend(s) {
   const H = spendHeads().sort((a, b) => shopAmt(b) - shopAmt(a)), T = spendT(), n = sum(H, k => shopRows(k).length);
   const shades = ["#2563EB", "#60A5FA", "#93C5FD", "#BFDBFE", "#3B82F6", "#DBEAFE"];
@@ -1312,15 +1379,32 @@ function expSpend(s) {
 }
 VIEWS.exp_bind = s => {
   const g = $("#eseg"); if (g) g.querySelectorAll("button").forEach(b => b.onclick = () => { s.full = b.dataset.em === "full"; draw(); });
-  const f = $("#vflag"); if (f) f.onclick = async () => {
-    const on = !(D.flags && D.flags.viewFull); f.disabled = true;
-    try { D.flags = LIVE ? await api("setFlag", TOKEN, "viewFull", on) : Object.assign({}, D.flags, { viewFull: on }); toast(on ? "Managers can now see salary & fixed costs" : "Managers now see only day-to-day spending"); }
-    catch (e) { toast(e.message, 1); }
-    draw();
-  };
+  const f = $("#vflag"); if (f) f.onclick = () => { f.disabled = true; const on = !(D.flags && D.flags.viewFull); setFlag("viewFull", on, on ? "Managers can now see salary & fixed costs" : "Salary & fixed costs are hidden from managers"); };
 };
 /* salary and fixed costs (rent, phone…) are added anyway: the Expenses page shows real day-to-day spending unless "Full month" is picked.
    Owners can always switch; managers only when an owner allows it. Profit always counts everything. */
+const plFull = () => !!(D && D.flags && D.flags.plFull);
+const seeSal = () => isOwner() || !!(D && D.flags && D.flags.viewFull);
+const prevMonth = () => MONTHS[(M.mi + 11) % 12] || "last month";
+/* profit as the owner wants to see it: without salary & fixed costs (rent, SMS… added as owner bills) until the owner switches them on */
+function buildPV() {
+  const full = plFull(), held = [], val = {};
+  const ownerPart = k => { const cat = ENTRYCAT[k] || k; return sum(D.owner.filter(o => o.cat === cat), o => typeof o.month === "number" ? o.month : o.amt); };
+  M.fixed.concat(M.daily).forEach(k => { const v = M.PL[k] || 0; let h = 0;
+    if (!full) h = isWorked(k) ? v : ENTRYCAT[k] && k !== "Daily incentives (paid in cash)" ? 0 : Math.max(0, Math.min(v, ownerPart(k)));   // stock bought (cost of goods) always counts
+    if (h) held.push([k, h]); val[k] = v - h; });
+  const fixed = M.fixed.filter(k => val[k]), daily = M.daily.filter(k => val[k]);
+  const fixedT = sum(fixed, k => val[k]), dailyT = sum(daily, k => val[k]), heldT = sum(held, x => x[1]);
+  M.daily_ = (D.daily || []).map(x => ({ ...x }));
+  if (!full) { let run = 0; M.daily_.forEach(x => { if (x.profit === null) return; x.held = -((x.sal || 0) + (x.inc || 0) + (x.own || 0) + (x.dep || 0)); x.profit += x.held; x.sal = x.inc = x.own = x.dep = 0; run += x.profit; x.run = run; }); }
+  return { full, held, heldT, val, fixed, daily, fixedT, dailyT, costs: fixedT + dailyT, net: M.net + heldT };
+}
+const flagSwitch = (id, on, title, onText, offText) => `<button class="card swc" id="${id}"><span style="flex:1;min-width:0"><span class="swt">${title}</span><span class="meta" style="margin:0">${on ? onText : offText}</span></span><span class="sw ${on ? "on" : ""}" aria-hidden="true"><i></i></span></button>`;
+async function setFlag(k, on, msg) {
+  try { D.flags = LIVE ? await api("setFlag", TOKEN, k, on) : Object.assign({}, D.flags, { [k]: on }); M.P = buildPV(); toast(msg); }
+  catch (e) { toast(msgOf(e), 1); }
+  draw();
+}
 const STAFFPAY = ["Salaries", "Incentives (salary)", "Overtime", "Less: staff lent to other branch"];
 const isWorked = k => FIXED.includes(k) || STAFFPAY.includes(k);
 const fullOK = () => isOwner() || !!(D.flags && D.flags.viewFull);
@@ -1442,8 +1526,8 @@ function calendar(x, hiDay) {
   const first = new Date(M.year, M.mi, 1).getDay(), lead = (first + 6) % 7;
   const cls = { off: "O", leave: "L", weekend: "L", extra: "L", ob: "B" };
   return `<div class="cal">${["M","T","W","T","F","S","S"].map(h => `<span class="h">${h}</span>`).join("")}${"<span class='d no'></span>".repeat(lead)}
-    ${M.days.map((dd, k) => { const st = x.st[k]; return `<span class="d ${dd.d > M.lastDay && !cls[st] ? "fu" : cls[st] || ""} ${isToday(dd.d) || (!M.todayD && dd.d === M.lastDay) ? "today" : ""}">${dd.d}</span>`; }).join("")}</div>
-    <div class="legend"><span><i style="background:var(--soft)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span>${x.ob ? '<span><i style="background:#14B8A6"></i>Other branch</span>' : ""}</div>`;
+    ${M.days.map((dd, k) => { const st = x.st[k]; return `<span class="d ${dd.d > M.lastDay && !cls[st] ? "fu" : cls[st] || (st === "in" && x.wfh[k] ? "W" : "")} ${isToday(dd.d) || (!M.todayD && dd.d === M.lastDay) ? "today" : ""}">${dd.d}</span>`; }).join("")}</div>
+    <div class="legend"><span><i style="background:var(--soft)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span>${x.ob ? '<span><i style="background:#14B8A6"></i>Other branch</span>' : ""}${x.wfh.some(Boolean) ? '<span><i style="background:#CCFBF1;border:1px solid #5EEAD4"></i>WFH</span>' : ""}</div>`;
 }
 VIEWS.person = s => {
   const x = M.byName[s.n], S = x.s, rank = M.ranked.indexOf(x) + 1;
@@ -1464,7 +1548,7 @@ VIEWS.person = s => {
      <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">Sales</span><span class="v tn">${cpt(x.total)}</span>${x.billsT ? `<span class="s">${x.billsT} bills · avg ₹${ind(x.avgBill)}</span>` : ""}</div><div class="hk"><span class="eb" style="font-size:10px">Days in</span><span class="v tn">${x.worked}<small> / ${M.lastDay}</small></span></div><div class="hk"><span class="eb" style="font-size:10px">Incentives</span><span class="v tn">${cpt(x.inc)}</span></div></div>`, "short")
   + `<main class="main lo" style="margin-top:-28px">
     ${canEdit() ? `<div class="edbar">${edBtn("staff", { k: D.staffRows.findIndex(r => r.name === x.name) }, "Edit details, salary, overtime")}</div>` : ""}
-    <div class="tabs" id="ptabs"><button aria-pressed="true" data-t="s1">Day by day</button><button data-t="s2">Attendance</button><button data-t="s3">Incentives</button><button data-t="s4">Salary</button></div>
+    <div class="tabs" id="ptabs"><button aria-pressed="true" data-t="s1">Day by day</button><button data-t="s2">Attendance</button><button data-t="s3">Incentives</button>${seeSal() ? '<button data-t="s4">Salary</button>' : ""}</div>
     <div id="s1">${sh(1, "Day by day")}</div>
     <div class="card" style="padding:10px 18px"><div class="g5 mono" style="font-size:9.5px;letter-spacing:.08em;color:var(--muted);padding:6px 0"><span>DAY</span><span>SERVICE</span><span style="text-align:right">RETAIL</span><span style="text-align:right">TOTAL</span><span>10K</span></div>${rows || '<div class="empty">No days yet.</div>'}</div>
     <div id="s2">${sh(2, "Attendance", `<button class="r" style="color:var(--accent);font-weight:500" ${gp("patt", { n: x.name })}>Full detail ›</button>`)}</div>
@@ -1485,15 +1569,15 @@ VIEWS.person = s => {
       <div class="mono muted" style="display:flex;justify-content:space-between;font-size:9.5px"><span>₹0 · 5%</span><span>${inr(lvl)} · 7%</span><span>${inr(Math.max(lvl * 2, psales))}</span></div></div>
     ${S.Target ? `<div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Service incentive</span><span class="serif tn" style="font-size:30px;color:var(--accent)">${inr(S["Service incentive"])}</span></div>
       <span style="font-size:13px;color:var(--muted)">Service ${inr(S["Service sales"])} of target ${inr(S.Target)}</span><span class="trk" style="height:8px"><i style="width:${Math.min(100, S["Service sales"] / S.Target * 100)}%;background:var(--accent)"></i></span></div>` : ""}
-    <div id="s4">${sh(4, "Salary &amp; advances")}</div>
+    ${seeSal() ? `<div id="s4">${sh(4, "Salary &amp; advances")}</div>
     <div class="card pad">${rowx("Monthly salary", inr(S["Fixed salary"]))}
       ${S["Leave cut"] ? rowx(`Leave · ${x.leave} day${x.leave === 1 ? "" : "s"} <span class="mono muted" style="font-size:10px">${leaveDays.slice(0, 6).map(d => dayOf(d).dow.toUpperCase() + " " + d).join(", ")}</span>`, `<span class="neg">− ${inr(S["Leave cut"])}</span>`) : ""}
       ${S["Service incentive"] ? rowx("Service incentive", `<span style="color:var(--accent)">+ ${inr(S["Service incentive"])}</span>`) : ""}
       ${pinc ? rowx("Retail incentive", `<span style="color:var(--accent)">+ ${inr(pinc)}</span>`) : ""}
       ${S.Overtime ? rowx("Overtime", `<span style="color:var(--accent)">+ ${inr(S.Overtime)}</span>`) : ""}
-      ${advs.map(c => rowx(`${c.cat === "Staff advance" ? "Advance" : "Salary paid"} <span class="mono muted" style="font-size:10px">GIVEN ${dayOf(c.d) ? dayOf(c.d).dow.toUpperCase() + " " + c.d : ""}</span>`, `<span class="neg">− ${inr(c.out)}</span>`)).join("")}
+      ${advs.map(c => rowx(`${c.cat === "Staff advance" ? (c.sp === LASTSAL ? "Advance · " + esc(prevMonth()) + " salary" : "Advance") : "Salary paid"} <span class="mono muted" style="font-size:10px">GIVEN ${dayOf(c.d) ? dayOf(c.d).dow.toUpperCase() + " " + c.d : ""}</span>`, c.sp === LASTSAL ? `<span class="muted">${inr(c.out)}</span>` : `<span class="neg">− ${inr(c.out)}</span>`)).join("")}
       ${S["Old advance"] ? rowx("Old advance", `<span class="neg">− ${inr(S["Old advance"])}</span>`) : ""}
-      <div style="margin:10px 0 14px;padding:16px 18px;border-radius:20px;background:var(--soft);display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px">To pay at month end</span><span class="serif tn" style="font-size:32px">${inr(S["Balance to pay"])}</span></div></div>
+      <div style="margin:10px 0 14px;padding:16px 18px;border-radius:20px;background:var(--soft);display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px">To pay at month end</span><span class="serif tn" style="font-size:32px">${inr(S["Balance to pay"])}</span></div></div>` : ""}
   </main>`;
 };
 VIEWS.person_bind = () => { const t = $("#ptabs"); if (!t) return; t.querySelectorAll("button").forEach(b => b.onclick = () => { t.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); $("#" + b.dataset.t).scrollIntoView({ behavior: "smooth", block: "start" }); }); };
@@ -1512,8 +1596,8 @@ VIEWS.att = () => {
   + `<main class="main"><div class="card" style="padding:16px 14px;display:flex;flex-direction:column;gap:12px">
     <div style="overflow-x:auto;scrollbar-width:none"><div class="ag" style="grid-template-columns:64px repeat(${n},minmax(14px,1fr));min-width:${64 + n * 16}px">
       <span></span>${M.days.slice(0, n).map(dd => `<span class="h ${["Sat", "Sun"].includes(dd.dow) ? "we" : ""}">${dd.d}</span>`).join("")}
-      ${S.map(x => `<button style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left" ${gp("patt", { n: x.name })}>${esc(x.name)}</button>${x.st.slice(0, n).map((v, k) => `<span class="c ${cell[v] ? cell[v][0] : v === "in" ? "" : "F"}">${cell[v] ? cell[v][1] : v === "in" && x.wfh[k] ? "W" : ""}</span>`).join("")}`).join("")}</div></div>
-    <div class="legend"><span><i style="background:var(--soft2)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span><span><i style="background:#14B8A6"></i>Other branch</span><span><b style="font-size:10px;margin-right:4px">W</b>Work from home</span></div>
+      ${S.map(x => `<button style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left" ${gp("patt", { n: x.name })}>${esc(x.name)}</button>${x.st.slice(0, n).map((v, k) => `<span class="c ${cell[v] ? cell[v][0] : v === "in" ? (x.wfh[k] ? "wf" : "") : "F"}">${cell[v] ? cell[v][1] : v === "in" && x.wfh[k] ? "W" : ""}</span>`).join("")}`).join("")}</div></div>
+    <div class="legend"><span><i style="background:var(--soft2)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span><span><i style="background:#14B8A6"></i>Other branch</span><span><i style="background:#CCFBF1;border:1px solid #5EEAD4"></i>WFH (present)</span></div>
     <span class="mono" style="font-size:9.5px;letter-spacing:.08em;color:var(--accent)">BLUE DATES = SAT / SUN</span></div>
     ${sh(1, "Each person", "Tap for detail")}
     <div class="card pad">${S.map(x => `<button class="li" ${gp("patt", { n: x.name })}>${av(x.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(x.name)}</span><div class="meta">${x.worked} days worked${x.ob ? " · " + x.ob + " at other branch" : ""}</div></span>
@@ -1547,16 +1631,24 @@ VIEWS.patt = s => {
 };
 
 /* ================= 7 · salary & advances ================= */
+const lockedPage = (title, what) => header(backBtn("Home"), monthPick(), `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${title}</span><h1 class="ttl">Owner<br><em>only.</em></h1></div>`, "flat")
+  + `<main class="main flat"><div class="card lockc">${IC.lock}<b>${what} are visible to owners only.</b><span class="meta" style="margin:0">An owner can turn this on for managers in Expenses.</span></div></main>`;
 VIEWS.salary = () => {
+  if (!seeSal()) return lockedPage("Salary", "Salaries");
   const S = D.salary, T = k => sum(S, s => s[k]);
   const adv = D.cash.filter(c => ["Staff advance", "Salary paid"].includes(c.cat)).sort((a, b) => b.d - a.d);
+  const lastAdv = adv.filter(c => c.cat === "Staff advance" && c.sp === LASTSAL);
   const neg = v => `<span class="neg">− ${inr(v)}</span>`, plus = v => `<span style="color:var(--accent)">+ ${inr(v)}</span>`;
   const chips = s => [s.LEAVE ? `−${inr(s["Leave cut"])} · ${s.LEAVE} leave` : "No leave", s["Service incentive"] ? `+${inr(s["Service incentive"])} service` : "", s["Product incentive"] ? `+${inr(s["Product incentive"])} retail` : "",
     s.Overtime ? `+${inr(s.Overtime)} overtime` : "", s.Advance ? `−${inr(s.Advance)} advance` : "", s["Salary paid"] ? `−${inr(s["Salary paid"])} paid` : "", s["Old advance"] ? `−${inr(s["Old advance"])} old advance` : ""].filter(Boolean);
   return header(backBtn("Home"), monthPick(),
     `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Salary · to pay at month end</span>${hero(T("Balance to pay"))}
      <span class="lite" style="font-size:14px">${S.length} staff</span></div>`, "short")
-  + `<main class="main lo"><div class="card pad">${rowx("Total salary", inr(T("Fixed salary")))}${T("Leave cut") ? rowx(`Leave cut <span class="mono muted" style="font-size:10px">${T("LEAVE")} DAYS</span>`, neg(T("Leave cut"))) : ""}
+  + `<main class="main lo">${canEdit() ? `<div class="edbar">${edBtn("adv", { d: M.todayD || M.lastDay || 1 }, "+ Give an advance")}</div>` : ""}
+    ${lastAdv.length ? `<div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:var(--ice)"><span class="ebd" style="color:#1E3A8A">Cut from ${esc(prevMonth())} salary</span>
+      ${lastAdv.map(c => `<div style="display:flex;justify-content:space-between;gap:10px;font-size:14px"><span>${esc(c.staff || c.t)} <span class="muted">· given ${c.d ? c.d + " " + M.MON : ""}</span></span><b class="tn">${inr(c.out)}</b></div>`).join("")}
+      <span class="meta" style="margin:0">Not taken from ${esc(M.Month)} salary — take it off when you pay ${esc(prevMonth())}'s salary.</span></div>` : ""}
+    <div class="card pad">${rowx("Total salary", inr(T("Fixed salary")))}${T("Leave cut") ? rowx(`Leave cut <span class="mono muted" style="font-size:10px">${T("LEAVE")} DAYS</span>`, neg(T("Leave cut"))) : ""}
       ${T("Service incentive") ? rowx("Service incentive", plus(T("Service incentive"))) : ""}${rowx("Retail incentive", plus(T("Product incentive")))}${T("Overtime") ? rowx("Overtime", plus(T("Overtime"))) : ""}
       ${rowx("Advances given", neg(T("Advance")))}${T("Salary paid") ? rowx("Salary already paid", neg(T("Salary paid"))) : ""}${T("Old advance") ? rowx("Old advance", neg(T("Old advance"))) : ""}
       <div style="margin:10px 0 14px;padding:16px 18px;border-radius:20px;background:var(--soft);display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px">To pay</span><span class="serif tn" style="font-size:32px">${inr(T("Balance to pay"))}</span></div></div>
@@ -1565,7 +1657,7 @@ VIEWS.salary = () => {
       <span style="margin-left:auto;text-align:right"><span class="mono muted" style="font-size:9.5px;letter-spacing:.08em">TO PAY</span><div class="serif tn" style="font-size:28px;color:var(--accent)">${inr(s["Balance to pay"])}</div></span></span>
       <span style="display:flex;flex-wrap:wrap;gap:6px">${chips(s).map(c => `<span class="tag ${c.startsWith("−") ? "own" : ""}" style="font-size:9.5px;padding:5px 9px;${c.startsWith("+") ? "background:var(--ice);color:#1E3A8A" : ""}">${esc(c)}</span>`).join("")}</span></button>`).join("")}
     ${sh(2, "Advances &amp; salary given")}
-    <div class="card pad">${adv.map(c => `<div class="li"><span class="dc"><span>${(dayOf(c.d) || {}).dow || ""}</span><b>${c.d ?? "–"}</b></span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(c.staff || c.t)}</span><div class="meta">${c.cat === "Staff advance" ? "Advance · cut from this month's salary" : "Salary paid"} · ${c.pf === "Cash" ? "cash" : "bank / UPI"}</div></span><b class="tn">${inr(c.out)}</b></div>`).join("") || '<div class="empty">No advances given yet.</div>'}</div>
+    <div class="card pad">${adv.map(c => `<div class="li"><span class="dc"><span>${(dayOf(c.d) || {}).dow || ""}</span><b>${c.d ?? "–"}</b></span><span style="flex:1;min-width:0"><span style="font-size:15px">${esc(c.staff || c.t)}</span><div class="meta">${c.cat === "Staff advance" ? (c.sp === LASTSAL ? `<span class="tag blue" style="padding:1px 6px">${esc(prevMonth())}</span> Advance · cut from last month's salary` : "Advance · cut from this month's salary") : "Salary paid"} · ${c.pf === "Cash" ? "cash" : "bank / UPI"}</div></span><b class="tn">${inr(c.out)}</b></div>`).join("") || '<div class="empty">No advances given yet.</div>'}</div>
   </main>`;
 };
 
@@ -1626,7 +1718,7 @@ VIEWS.stock_bind = s => {
 VIEWS.day_bind = s => {
   root().querySelectorAll("[data-wd]").forEach(b => b.onclick = () => { s.d = +b.dataset.wd; draw(); window.scrollTo(0, 0); });
   const f = $("#fab"); if (!f) return;
-  const d = s.d, ADDS = [["dayfig", "Sales &amp; cash figures", IC.pen], ["ssales", "Staff sales &amp; bills", IC.pen], ["cash", "Money in / out", IC.plus],
+  const d = s.d, ADDS = [["dayfig", "Sales &amp; cash figures", IC.pen], ["ssales", "Staff sales &amp; bills", IC.pen], ["cash", "Money in / out", IC.plus], ["adv", "Staff advance", IC.plus],
     ["prod", "Retail sold / given", IC.plus], ["owner", "Owner bill", IC.plus], ["move", "Stock line (received / used)", IC.plus]];
   f.onclick = () => sheet(`Day ${d} · add or change`, [{ k: "m", type: "raw", value: ADDS.map(([k, l, ic]) => `<button class="mrow" data-add="${k}"><span class="ic">${ic}</span><span>${l}</span><span class="chev">›</span></button>`).join("") }], null,
     { bind: el => el.querySelectorAll("[data-add]").forEach(b => b.onclick = () => EDIT[b.dataset.add]({ d })) });
