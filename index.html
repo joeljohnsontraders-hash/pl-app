@@ -15,7 +15,7 @@
 /* Owner P&L app — Naveen's design: dark indigo headers, white cards, Instrument Serif figures, Geist text, Geist Mono labels */
 :root{
   --ink:#0E0C2B; --bg:#F6F7FB; --card:#FFFFFF; --muted:#6B6F8C; --line:#EEF0F7; --soft:#EEF1FF; --soft2:#E0E7FF; --peri:#C7D2FE; --lav:#A5B4FC;
-  --accent:#4F46E5; --deep:#3730A3; --blue:#2563EB; --sky:#60A5FA; --ice:#DBEAFE; --lite:#B9C0F5;
+  --night:#0E0C2B; --accent:#4F46E5; --deep:#3730A3; --blue:#2563EB; --sky:#60A5FA; --ice:#DBEAFE; --lite:#B9C0F5;
   --bad:#C2410C; --badsoft:#FFEDD5; --good:#15803D; --goodsoft:#DCFCE7;
   --serif:'Instrument Serif',Georgia,serif; --sans:'Geist',system-ui,-apple-system,sans-serif; --mono:'Geist Mono',ui-monospace,monospace;
   color-scheme:light;
@@ -35,12 +35,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .ix{font-family:var(--mono);font-size:11px;letter-spacing:.1em}
 .tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;padding:3px 8px;border-radius:8px;white-space:nowrap;text-transform:uppercase}
 .tag.own{background:var(--soft);color:var(--deep)}
-.tag.dark{background:var(--ink);color:#fff}
+.tag.dark{background:var(--night);color:#fff}
 .tag.blue{background:var(--sky);color:var(--ink)}
 .tag.bad{background:var(--badsoft);color:var(--bad)}
 .tag.good{background:var(--goodsoft);color:var(--good)}
 /* dark header */
-.hd{position:relative;overflow:hidden;background:var(--ink);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 22px 92px;border-radius:0 0 44px 44px;display:flex;flex-direction:column;gap:22px}
+.hd{position:relative;overflow:hidden;background:var(--night);color:#fff;padding:calc(18px + env(safe-area-inset-top)) 22px 92px;border-radius:0 0 44px 44px;display:flex;flex-direction:column;gap:22px}
 .hd.short{padding-bottom:72px}
 .hd.flat{padding-bottom:30px}
 .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1.2px);background-size:18px 18px;pointer-events:none}
@@ -96,7 +96,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .dc{width:46px;height:52px;border-radius:16px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;color:var(--deep)}
 .dc span{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .dc b{font-family:var(--serif);font-weight:400;font-size:22px;line-height:1}
-.dc.today{background:var(--ink);color:#fff}.dc.today span{color:var(--lav)}
+.dc.today{background:var(--night);color:#fff}.dc.today span{color:var(--lav)}
 .meta{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:3px}
 .trk{height:6px;border-radius:99px;background:var(--soft);overflow:hidden;display:flex;gap:2px}
 .trk i{display:block;height:100%;border-radius:99px}
@@ -108,7 +108,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .kpi.acc .ebd{color:var(--peri)}
 .pill{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px 0 4px;border-radius:15px;background:var(--soft);font-size:13px}
 .pill .av{width:22px;height:22px;font-size:12px}
-.pill.dark{background:var(--ink);color:#fff}
+.pill.dark{background:var(--night);color:#fff}
 .pill.blue{background:var(--ice)}
 .more{height:42px;padding:0 18px;border-radius:21px;background:#fff;border:1px solid rgba(14,12,43,.08);font-size:13px;font-weight:500;align-self:flex-end}
 .note{padding:16px 18px;border-radius:22px;background:var(--soft2);color:var(--deep);font-size:13.5px;line-height:1.5;display:flex;gap:10px}
@@ -161,12 +161,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* attendance grid + calendar */
 .ag{display:grid;gap:4px;align-items:center;font-size:13px}
 .ag .c{height:22px;border-radius:6px;background:var(--soft2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;font-weight:600}
-.ag .c.O{background:var(--sky);color:var(--ink)}.ag .c.L{background:var(--ink);color:#fff}.ag .c.B{background:#14B8A6;color:#fff}.ag .c.F{background:#F1F2F8}
+.ag .c.O{background:var(--sky);color:var(--ink)}.ag .c.L{background:var(--night);color:#fff}.ag .c.B{background:#14B8A6;color:#fff}.ag .c.F{background:#F1F2F8}
 .ag .h{font-family:var(--mono);font-size:9.5px;text-align:center;color:var(--muted)}.ag .h.we{color:var(--accent);font-weight:600}
 .cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}
 .cal .h{font-family:var(--mono);font-size:10px;color:var(--muted);padding-bottom:4px}
 .cal .d{height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--soft);color:var(--deep)}
-.cal .d.O{background:var(--sky);color:var(--ink)}.cal .d.L{background:var(--ink);color:#fff}.cal .d.B{background:#14B8A6;color:#fff}
+.cal .d.O{background:var(--sky);color:var(--ink)}.cal .d.L{background:var(--night);color:#fff}.cal .d.B{background:#14B8A6;color:#fff}
 .cal .d.fu{background:transparent;color:#C3C6D9}.cal .d.no{background:transparent}
 .cal .d.today{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--accent)}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
@@ -175,7 +175,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tabs{display:flex;gap:6px;padding:5px;border-radius:20px;background:#fff;border:1px solid rgba(14,12,43,.06);box-shadow:0 1px 2px rgba(14,12,43,.04),0 22px 44px -22px rgba(14,12,43,.22);overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{flex:1;height:38px;border-radius:15px;font-size:12.5px;font-weight:500;color:var(--deep);white-space:nowrap;padding:0 10px}
-.tabs button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.tabs button[aria-pressed="true"]{background:var(--night);color:#fff}
 .g5{display:grid;grid-template-columns:42px minmax(0,1fr) 54px 60px 26px;gap:8px;align-items:center}
 .drow{padding:10px 0;border-bottom:1px solid var(--line);width:100%;color:var(--ink)}
 .drow:last-child{border-bottom:0}
@@ -194,17 +194,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .st{padding:16px 18px;border-radius:28px;display:flex;flex-direction:column;gap:10px;min-height:150px}
 .st .q{font-family:var(--serif);font-size:44px;line-height:.95}
 .st .nm{font-size:13.5px;line-height:1.3;min-height:35px}
-.st.low{background:var(--ink);color:#fff;box-shadow:0 22px 44px -22px rgba(14,12,43,.5)}
+.st.low{background:var(--night);color:#fff;box-shadow:0 22px 44px -22px rgba(14,12,43,.5)}
 .st.low .meta{color:var(--lav)}
 .srch{width:100%;height:46px;border-radius:16px;border:1px solid rgba(14,12,43,.08);background:#fff;padding:0 16px;font:inherit;font-size:15px;color:var(--ink)}
 .fch{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 .fch::-webkit-scrollbar{display:none}
 .fch button{height:34px;padding:0 14px;border-radius:17px;background:#fff;border:1px solid rgba(14,12,43,.08);font-size:12.5px;font-weight:500;white-space:nowrap;color:var(--deep)}
-.fch button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.fch button[aria-pressed="true"]{background:var(--night);color:#fff;border-color:var(--ink)}
 /* charts */
 .chart{width:100%;height:auto;display:block}
 /* login */
-.login{position:relative;min-height:100vh;overflow:hidden;background:var(--ink);color:#fff}
+.login{position:relative;min-height:100vh;overflow:hidden;background:var(--night);color:#fff}
 .login .sheetw{position:absolute;left:0;right:0;bottom:0;padding:30px 26px calc(30px + env(safe-area-inset-bottom));background:#fff;border-radius:40px 40px 0 0;display:flex;flex-direction:column;gap:14px;color:var(--ink)}
 .pinrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .pinrow span{height:58px;border-radius:18px;border:1px solid #E4E7F2;background:#F6F7FB;display:flex;align-items:center;justify-content:center;font-size:26px}
@@ -229,7 +229,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .fgrid .fl{grid-column:span 2}.fgrid .fl.half{grid-column:span 1}
 .infov{height:52px;border-radius:16px;background:var(--soft);display:flex;align-items:center;padding:0 16px;font-weight:600;color:var(--deep)}
-.cta{height:56px;border-radius:20px;background:var(--ink);color:#fff;font-size:16px;font-weight:500;text-align:center;margin-top:2px}
+.cta{height:56px;border-radius:20px;background:var(--night);color:#fff;font-size:16px;font-weight:500;text-align:center;margin-top:2px}
 .cta:disabled{opacity:.6}
 .lnk{font-size:14px;font-weight:500;color:var(--accent);text-align:center;padding:6px}
 .segl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:18px;background:#F1F2F8}
@@ -248,12 +248,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 [data-ed]{cursor:pointer}
 .li[data-ed]:active,.rowx[data-ed]:active,.pill[data-ed]:active{opacity:.6}
 .badge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#F97316;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--ink)}
-.pillbtn{height:34px;padding:0 14px;border-radius:17px;background:var(--ink);color:#fff;font-size:12.5px;font-weight:600}
+.pillbtn{height:34px;padding:0 14px;border-radius:17px;background:var(--night);color:#fff;font-size:12.5px;font-weight:600}
 .pillbtn.ghost{background:var(--soft);color:var(--deep)}
 .pinchip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:12px;background:var(--ice);color:#1E3A8A;font-family:var(--mono);font-size:11px;letter-spacing:.06em}
 .pinchip b{font-size:15px;letter-spacing:.2em}
 .lnk.danger,.pillbtn.danger{color:var(--bad)}
-#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:60;background:var(--ink);color:#fff;padding:12px 18px;border-radius:16px;font-size:14px;max-width:90vw;transition:all .2s;pointer-events:none}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;z-index:60;background:var(--night);color:#fff;padding:12px 18px;border-radius:16px;font-size:14px;max-width:90vw;transition:all .2s;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #toast.bad{background:var(--bad)}
 #pdays button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -342,6 +342,50 @@ body.app #toast{bottom:calc(92px + env(safe-area-inset-bottom))}
 .qab button{display:flex;align-items:center;gap:7px;height:44px;padding:0 8px;border-radius:14px;background:var(--soft);color:var(--ink);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden}
 .qab .ic{flex:none;width:26px;height:26px;border-radius:8px;background:#fff;color:var(--accent);display:grid;place-items:center}.qab .ic svg{width:13px;height:13px}
 .qab button:active{transform:scale(.97)}
+.ins{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.insl{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4}
+.insl .ii{flex:none;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;background:var(--soft);color:var(--accent)}
+.insl.up .ii{background:#DCFCE7;color:#15803D}.insl.down .ii,.insl.bad .ii{background:#FFEDD5;color:#C2410C}
+.pace{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.pg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pg2>div{display:flex;flex-direction:column;gap:2px}.pg2 b{font-size:30px;font-weight:400;line-height:1.05}
+.pl{font-size:11.5px;color:var(--muted)}
+.be{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:16px;font-size:12.5px;line-height:1.4}.be b{font-size:14px}
+.be.ok{background:#DCFCE7;color:#14532D}.be.no{background:#FFEDD5;color:#7C2D12}
+.hcal,.wkb,.cashc,.scat,.mov{padding:18px 16px 14px;display:flex;flex-direction:column;gap:12px}
+.hgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.hgrid .h{font:500 10.5px var(--mono);color:var(--muted);text-align:center}
+.hgrid .c{aspect-ratio:1/1.05;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:var(--soft)}
+.hgrid .c b{font-size:12px;font-weight:600}.hgrid .c span{font:500 9px var(--mono);opacity:.85}
+.hgrid .c.e{background:transparent;border:1px dashed var(--line);color:var(--muted)}.hgrid .c.t{box-shadow:0 0 0 2px var(--accent)}
+.hleg{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--muted)}.hleg i{width:12px;height:8px;border-radius:2px;display:inline-block}
+.wkg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;height:130px}
+.wc{display:flex;flex-direction:column;align-items:center;gap:6px}.wv{font:500 10.5px var(--mono);color:var(--muted)}
+.wbar{flex:1;width:100%;display:flex;align-items:flex-end}.wbar i{display:block;width:100%;border-radius:6px 6px 3px 3px}
+.wl{font-size:11.5px;font-weight:600}
+.ax{font:500 9.5px var(--mono);fill:#6B6F8C}.axb{font:600 10px var(--sans);fill:var(--ink)}.axq{font:500 9.5px var(--sans);fill:#A5B4FC}
+.warnl{display:flex;gap:8px;align-items:center;padding:8px 12px;border-radius:12px;background:#FFEDD5;color:#9A3412;font-size:13px;font-weight:600}.warnl svg{flex:none}
+.sprow{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:12px;margin-top:2px;border-top:1px solid var(--line)}
+.spk{display:flex;flex-direction:column;gap:4px}.tgt{display:flex;align-items:center;gap:8px}.tgt .pl{line-height:1.25}
+.mvr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 30px;gap:10px;align-items:center;font-size:13.5px}
+.mvn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mvr b{text-align:right;font-size:13.5px}
+.mvidle{font-size:12.5px;color:var(--muted);padding-top:10px;border-top:1px solid var(--line)}.mvidle b{color:var(--bad)}
+.st .dl{align-self:flex-start;margin-top:2px;padding:3px 8px;border-radius:99px;font:600 10.5px var(--sans);background:var(--soft);color:var(--deep)}
+.st .dl.soon{background:#FFEDD5;color:#9A3412}.st.low .dl{background:rgba(255,255,255,.14);color:#fff}
+#tip{position:fixed;z-index:80;padding:8px 12px;border-radius:12px;background:#0E0C2B;color:#fff;font-size:12.5px;line-height:1.35;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 10px 24px -8px rgba(14,12,43,.5)}
+[data-tip]{cursor:pointer}
+/* dark mode */
+body.dark{--ink:#ECEEFF;--bg:#0B0A1C;--card:#16152D;--muted:#A3A7CC;--line:#26254A;--soft:#1F1E3C;--soft2:#2A2952;--ice:#1B2547;--night:#05040F;color-scheme:dark}
+html:has(body.dark),body.dark{background:#05040F}
+body.dark .kpi,body.dark .more,body.dark .lift,body.dark .tabs,body.dark .srch,body.dark .fch button,body.dark .sheetc,body.dark .sshw,body.dark .edb,body.dark .qa,body.dark .qab .ic,body.dark .login .sheetw,body.dark #ptr{background:var(--card);color:var(--ink);border-color:rgba(255,255,255,.08)}
+body.dark .card{border-color:rgba(255,255,255,.06);box-shadow:none}
+body.dark [style*="background:#fff"]{background:var(--card)!important}
+body.dark .seg button[aria-pressed="true"],body.dark .wk button[aria-pressed="true"],body.dark .segl button[aria-pressed="true"],body.dark .dchips span.on,body.dark .pod .ring{background:#2A2952;color:#fff}
+body.dark .fl input,body.dark .fl select,body.dark .ssr input{background:#1F1E3C;color:var(--ink);border-color:#2A2952}
+body.dark .fch button[aria-pressed="true"],body.dark .cta{background:var(--accent);color:#fff}
+body.dark .insl.up .ii,body.dark .be.ok{background:#0F3B26;color:#86EFAC}body.dark .insl.down .ii,body.dark .insl.bad .ii,body.dark .be.no,body.dark .warnl{background:#3B1A0C;color:#FDBA74}
+body.dark .hgrid .c{color:var(--ink)}body.dark .ax{fill:#A3A7CC}
+body.dark #tip{background:#ECEEFF;color:#0E0C2B}
+body.dark #nav{background:rgba(22,21,45,.94);border-color:rgba(255,255,255,.08)}body.dark #nav button{color:#A3A7CC}body.dark #nav button[aria-current="page"]{color:#fff}
 </style>
 
 </head><body>
@@ -356,6 +400,7 @@ let BOOKS = [], cur = 0, D = null, M = null, TOKEN = "", ME = null, lastLoad = n
 const call = (fn, ...a) => EXEC ? fetch(EXEC, { method: "POST", body: JSON.stringify({ fn: fn, args: a }) }).then(r => r.json()).then(j => { if (j.error) throw new Error(j.error); return j.result; })
   : new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a));
 const api = (fn, ...a) => LIVE ? call(fn, ...a) : new Promise((ok, no) => setTimeout(() => { try { ok(window.MOCK_API[fn](...a)); } catch (e) { no(e); } }, 120));
+try { if (localStorage.getItem("pl_dark")) document.body.classList.add("dark"); } catch (e) {}
 const KEY = "plbook_session", CK = "plbook_cache";
 const keep = t => { if ((t || "") !== TOKEN) try { localStorage.removeItem(CK); } catch (e) {} TOKEN = t || ""; try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {} };
 const readCache = () => { try { return JSON.parse(localStorage.getItem(CK) || "null"); } catch (e) { return null; } };
@@ -517,6 +562,158 @@ const dayOf = d => M.days[d - 1];
 const isToday = d => M.todayD === d;
 const range = () => M.lastDay ? `1–${M.lastDay} ${M.MON}` : M.MON;
 
+/* ================= analysis: pace, break-even, patterns, insights ================= */
+const SEQ = ["#EEF2FF", "#E0E7FF", "#C7D2FE", "#A5B4FC", "#818CF8", "#6366F1", "#4F46E5"];
+const kc = v => cpt(v).replace("₹", "");
+const pctS = (a, b) => b ? Math.round((a - b) / Math.abs(b) * 100) : null;
+function pace() {
+  if (M._pace) return M._pace;
+  const E = M.entered, n = E.length, last = M.lastDay, left = Math.max(0, M.dim - last);
+  if (!n) return (M._pace = null);
+  const sales = sum(E, x => x.total), avg = sales / n;
+  const L = M.daily_.filter(x => x.profit !== null && x.done), pAvg = L.length ? sum(L, x => x.profit) / L.length : 0;
+  const run = L.length ? L[L.length - 1].run : 0;
+  // break-even: what a month of salary + rent + owner bills needs, against the average day's profit before them
+  const SD = (D.daily || []).filter(x => x.done && x.profit !== null), dayAvgS = SD.length ? sum(SD, x => x.profit - (x.sal || 0) - (x.inc || 0) - (x.own || 0) - (x.dep || 0)) / SD.length : 0;
+  const salM = sum(D.salary, x => x["Fixed salary"] || 0), fixedM = sum(M.fixed.filter(k => k !== "Salaries" && k !== "Less: staff lent to other branch"), k => M.PL[k] || 0);
+  const ownerOther = sum((M.P.held || []).filter(([k]) => !isWorked(k)), x => x[1]);
+  const burden = salM + fixedM + ownerOther, beDay = dayAvgS > 0 ? Math.ceil(burden / dayAvgS) : null;
+  return (M._pace = { n, last, left, sales, avg, projSales: sales + avg * left, run, pAvg, projProfit: M.P.net / Math.max(1, last) * M.dim, burden, dayAvgS, beDay, salM, fixedM, ownerOther });
+}
+function weekdays() {
+  const order = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  return order.map(w => { const E = M.entered.filter(x => x.dow === w); return { w, n: E.length, avg: E.length ? sum(E, x => x.total) / E.length : 0 }; });
+}
+function cashRows() { let run = 0; return M.days.filter(x => x.d <= M.lastDay && x.gross > 0).sort((a, b) => a.d - b.d).map(x => { const v = x.diff || 0; run += v; return { d: x.d, dow: x.dow, v, run }; }); }
+function shortStreak() { const C = cashRows(); let k = 0; for (let i = C.length - 1; i >= 0 && C[i].v < 0; i--) k++; return k; }
+const stockRate = i => { const per = (i.sold || 0) / Math.max(1, M.lastDay); return per > 0 && i.inhand !== null ? Math.floor(i.inhand / per) : null; };
+function headRise(k) {           // a day-to-day head running clearly above its own month average over the last 7 days
+  if (M.lastDay < 10) return null;
+  const R = shopRows(k), tot = sum(R, r => r.v), mAvg = tot / M.lastDay, last7 = sum(R.filter(r => r.d && r.d > M.lastDay - 7), r => r.v) / 7;
+  return last7 > 1.4 * mAvg && last7 * 7 >= 500 ? Math.round((last7 / mAvg - 1) * 100) : null;
+}
+function insights(page) {
+  const out = [], P = pace(), E = M.entered;
+  if (!E.length) return out;
+  const last = E[E.length - 1], wk = M.days.find(x => x.d === last.d - 7);
+  if (page === "sales" || page === "pnl") {
+    if (wk && wk.total > 0) { const c = pctS(last.total, wk.total); out.push([c >= 0 ? "up" : "down", `${last.dow} ${last.d}: sales ${c >= 0 ? "up" : "down"} ${Math.abs(c)}% vs last ${last.dow} (${cpt(wk.total)})`]); }
+    const W = weekdays().filter(x => x.n), bw = W.slice().sort((a, b) => b.avg - a.avg);
+    if (bw.length >= 3) out.push(["info", `Busiest day: ${WD[bw[0].w]} (avg ${cpt(bw[0].avg)}). Slowest: ${WD[bw[bw.length - 1].w]} (avg ${cpt(bw[bw.length - 1].avg)})`]);
+    const st = shortStreak(); if (st >= 2) out.push(["bad", `Cash short ${st} days in a row — check the drawer`]);
+  }
+  if (page === "pnl" && P) {
+    out.unshift(["info", `At this pace ${M.Month} ends near ${cpt(P.projSales)} sales and ${cpt(P.projProfit)} profit${M.P.full ? "" : " (before salary & fixed)"}`]);
+    if (seeSal()) out.push(P.beDay && P.beDay <= M.dim ? ["up", `Salary, rent & owner bills (${cpt(P.burden)}) are covered by day ${P.beDay}`] : ["bad", `At this pace salary, rent & owner bills (${cpt(P.burden)}) are not covered this month`]);
+  }
+  if (page === "staff") {
+    const R = M.ranked; if (R.length > 1 && R[0].total) out.push(["up", `${R[0].name} leads with ${cpt(R[0].total)} — ${cpt(R[0].total - R[1].total)} ahead of ${R[1].name}`]);
+    const ab = M.staff.filter(x => x.billsT >= 5).sort((a, b) => b.avgBill - a.avgBill)[0]; if (ab) out.push(["info", `Highest average bill: ${ab.name} (₹${ind(ab.avgBill)} over ${ab.billsT} bills)`]);
+    const near = M.staff.filter(x => x.s.Target && x.s["Service sales"] < x.s.Target && x.s["Service sales"] >= .8 * x.s.Target);
+    near.slice(0, 2).forEach(x => out.push(["up", `${x.name} is ${Math.round(x.s["Service sales"] / x.s.Target * 100)}% to target — ${cpt(x.s.Target - x.s["Service sales"])} to go`]));
+  }
+  if (page === "stock") {
+    const Rt = D.stock.filter(i => i.type === "Retail"), soon = Rt.filter(i => { const d = stockRate(i); return d !== null && d < 7; });
+    if (soon.length) out.push(["bad", `${soon.length} product${soon.length > 1 ? "s" : ""} will run out within a week: ${soon.slice(0, 3).map(i => i.item).join(", ")}${soon.length > 3 ? "…" : ""}`]);
+    const top = Rt.slice().sort((a, b) => b.sold - a.sold)[0]; if (top && top.sold) out.push(["up", `Fastest mover: ${top.item} (${top.sold} sold)`]);
+    const idle = Rt.filter(i => !i.sold && i.inhand > 0).length; if (idle) out.push(["info", `${idle} products have not sold this month`]);
+  }
+  if (page === "exp") {
+    spendHeads().forEach(k => { const r = headRise(k); if (r) out.push(["bad", `${lab(k)} is ${r}% above its usual this week`]); });
+    const T = spendT(); if (T && M.netSales) out.push(["info", `Day-to-day spending is ${pct(T, M.netSales)} of sales`]);
+  }
+  return out.slice(0, 3);
+}
+const insightCard = page => { const L = insights(page); if (!L.length) return "";
+  const ic = { up: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l6-6 4 4 6-7"/><path d="M15 7h5v5"/></svg>', down: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l6 6 4-4 6 7"/><path d="M15 17h5v-5"/></svg>', bad: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg>', info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>' };
+  return `<div class="card ins"><span class="ebd">Insights</span>${L.map(([t, x]) => `<div class="insl ${t}"><span class="ii">${ic[t]}</span><span>${esc(x)}</span></div>`).join("")}</div>`; };
+
+/* ---------- charts (one style everywhere; tap a mark for its figure) ---------- */
+const tipA = t => `data-tip="${esc(t)}"`;
+function paceCard() {
+  const P = pace(); if (!P) return "";
+  const pr = Math.min(100, P.sales / Math.max(1, P.projSales) * 100);
+  return `<div class="card pace"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Month forecast</span><span class="mono muted" style="font-size:11px">${P.left} DAY${P.left === 1 ? "" : "S"} LEFT</span></div>
+    <div class="pg2"><div><span class="pl">Sales at this pace</span><b class="serif tn">${cpt(P.projSales)}</b><span class="pl">${cpt(P.avg)} a day</span></div>
+      <div><span class="pl">Profit at this pace</span><b class="serif tn" style="color:${P.projProfit < 0 ? "var(--bad)" : "var(--accent)"}">${cpt(P.projProfit)}</b><span class="pl">${M.P.full ? "after salary &amp; fixed" : "before salary &amp; fixed"}</span></div></div>
+    <div class="trk" style="height:8px" ${tipA(`So far ${inr(P.sales)} of about ${inr(P.projSales)}`)}><i style="width:${pr}%;background:var(--accent)"></i></div>
+    ${seeSal() ? `<div class="be ${P.beDay && P.beDay <= M.dim ? "ok" : "no"}"><b>${P.beDay && P.beDay <= M.dim ? "Break-even on day " + P.beDay : "Not breaking even this month"}</b><span>Salary ${cpt(P.salM)} + rent &amp; fixed ${cpt(P.fixedM)} + owner bills ${cpt(P.ownerOther)} = ${cpt(P.burden)}, against ${cpt(P.dayAvgS)} a day before them.${P.beDay && P.beDay <= M.dim ? "" : " Need " + cpt(P.burden / M.dim) + " a day."}</span></div>` : ""}</div>`;
+}
+function heatCal() {
+  const first = new Date(M.year, M.mi, 1).getDay(), lead = (first + 6) % 7, vals = M.days.map(x => x.total), mx = Math.max(1, ...vals);
+  const step = v => v <= 0 ? -1 : Math.min(6, Math.floor(v / mx * 6.999));
+  return `<div class="card hcal"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Sales calendar</span><span class="hleg"><span>Low</span>${SEQ.slice(1).map(c => `<i style="background:${c}"></i>`).join("")}<span>High</span></span></div>
+    <div class="hgrid">${["M","T","W","T","F","S","S"].map(h => `<span class="h">${h}</span>`).join("")}${"<span></span>".repeat(lead)}
+    ${M.days.slice().sort((a, b) => a.d - b.d).map(x => { const st = step(x.total); return `<button class="c ${st < 0 ? "e" : ""} ${isToday(x.d) ? "t" : ""}" ${x.total > 0 ? gp("day", { d: x.d }) : ""} style="${st >= 0 ? `background:${SEQ[st]};color:${st >= 4 ? "#fff" : "#1E1B4B"}` : ""}"><b>${x.d}</b><span>${x.total > 0 ? kc(x.total) : ""}</span></button>`; }).join("")}</div></div>`;
+}
+function weekBars() {
+  const W = weekdays(), mx = Math.max(1, ...W.map(x => x.avg)), top = W.slice().sort((a, b) => b.avg - a.avg)[0];
+  return `<div class="card wkb"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Average by weekday</span><span class="mono muted" style="font-size:11px">PLAN STAFF &amp; OFFS</span></div>
+    <div class="wkg">${W.map(x => `<div class="wc" ${tipA(`${WD[x.w]}: avg ${inr(x.avg)} over ${x.n} day${x.n === 1 ? "" : "s"}`)}><span class="wv tn">${x.n ? kc(x.avg) : "–"}</span><span class="wbar"><i style="height:${Math.max(2, x.avg / mx * 100)}%;background:${x === top ? "var(--accent)" : "#A5B4FC"}"></i></span><span class="wl">${x.w}</span></div>`).join("")}</div></div>`;
+}
+function cashChart() {
+  const C = cashRows(); if (!C.length) return "";
+  const W = 340, H = 150, T = 14, B = 22, Lm = 34, mx = Math.max(10, ...C.map(x => Math.abs(x.v)), ...C.map(x => Math.abs(x.run)));
+  const Y = v => T + (H - T - B) * (1 - (v + mx) / (2 * mx)), bw = Math.max(3, (W - Lm - 6) / M.dim - 3), X = d => Lm + (W - Lm - 6) * (d - .5) / M.dim;
+  const st = shortStreak(), tot = C[C.length - 1].run;
+  return `<div class="card cashc"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Cash short / excess</span><span class="mono" style="font-size:11px;color:${tot < 0 ? "var(--bad)" : "var(--good)"}">MONTH ${tot < 0 ? "SHORT " + inr(-tot) : "EXCESS " + inr(tot)}</span></div>
+    ${st >= 2 ? `<div class="warnl">${IC.info}<span>Short ${st} days in a row</span></div>` : ""}
+    <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">
+      <line x1="${Lm}" x2="${W - 6}" y1="${Y(0)}" y2="${Y(0)}" stroke="#C7D2FE"/>
+      <text x="${Lm - 6}" y="${Y(mx) + 4}" text-anchor="end" class="ax">+${kc(mx)}</text><text x="${Lm - 6}" y="${Y(0) + 4}" text-anchor="end" class="ax">0</text><text x="${Lm - 6}" y="${Y(-mx) + 4}" text-anchor="end" class="ax">−${kc(mx)}</text>
+      ${C.map(x => x.v ? `<rect x="${X(x.d) - bw / 2}" y="${Math.min(Y(0), Y(x.v))}" width="${bw}" height="${Math.max(2, Math.abs(Y(x.v) - Y(0)))}" rx="2" fill="${x.v < 0 ? "#EA580C" : "#16A34A"}" ${tipA(`${x.dow} ${x.d}: ${x.v < 0 ? "short " + inr(-x.v) : "excess " + inr(x.v)} · month ${x.run < 0 ? "short " + inr(-x.run) : "excess " + inr(x.run)}`)}/>` : "").join("")}
+      <path d="${C.map((x, i) => (i ? "L" : "M") + X(x.d).toFixed(1) + " " + Y(x.run).toFixed(1)).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="${Lm}" y="${H - 4}" class="ax">1</text><text x="${W - 6}" y="${H - 4}" text-anchor="end" class="ax">${M.dim}</text></svg>
+    <span class="legend"><span><i style="background:#16A34A"></i>Excess</span><span><i style="background:#EA580C"></i>Short</span><span><i style="background:var(--accent);height:2px"></i>Running total</span></span></div>`;
+}
+function dayProfitChart(L) {
+  const W = 340, H = 180, T = 16, B = 22, Lm = 38, V = L.map(x => x.profit), lo = Math.min(0, ...V), hi = Math.max(1, ...V), span = hi - lo || 1;
+  const Y = v => T + (H - T - B) * (1 - (v - lo) / span), X = d => Lm + (W - Lm - 6) * (d - .5) / M.dim, bw = Math.max(3, (W - Lm - 6) / M.dim - 3);
+  const ma = L.map((x, i) => { const w = L.slice(Math.max(0, i - 6), i + 1); return [x.d, sum(w, y => y.profit) / w.length]; });
+  const done = L.filter(x => x.done), best = done.slice().sort((a, b) => b.profit - a.profit)[0], worst = done.slice().sort((a, b) => a.profit - b.profit)[0];
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">
+    <line x1="${Lm}" x2="${W - 6}" y1="${Y(0)}" y2="${Y(0)}" stroke="#C7D2FE"/>
+    <text x="${Lm - 6}" y="${Y(hi) + 4}" text-anchor="end" class="ax">${kc(hi)}</text><text x="${Lm - 6}" y="${Y(0) + 4}" text-anchor="end" class="ax">0</text>${lo < 0 ? `<text x="${Lm - 6}" y="${Y(lo) + 4}" text-anchor="end" class="ax">−${kc(-lo)}</text>` : ""}
+    ${L.map(x => `<rect x="${X(x.d) - bw / 2}" y="${Math.min(Y(0), Y(x.profit))}" width="${bw}" height="${Math.max(2, Math.abs(Y(x.profit) - Y(0)))}" rx="2" fill="${x.profit < 0 ? "#FB923C" : "#A5B4FC"}" ${tipA(`${x.dow} ${x.d}: ${sgn(x.profit)} · 7-day average ${sgn(ma.find(m => m[0] === x.d)[1])}`)}/>`).join("")}
+    <path d="${ma.map((m, i) => (i ? "L" : "M") + X(m[0]).toFixed(1) + " " + Y(m[1]).toFixed(1)).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${best ? `<circle cx="${X(best.d)}" cy="${Y(best.profit)}" r="4" fill="var(--accent)" stroke="#fff" stroke-width="2"/><text x="${X(best.d)}" y="${Y(best.profit) - 8}" text-anchor="middle" class="axb">Best ${best.d}</text>` : ""}
+    ${worst && worst !== best ? `<circle cx="${X(worst.d)}" cy="${Y(worst.profit)}" r="4" fill="#EA580C" stroke="#fff" stroke-width="2"/><text x="${X(worst.d)}" y="${Math.min(H - B - 2, Y(worst.profit) + 16)}" text-anchor="middle" class="axb">Worst ${worst.d}</text>` : ""}
+    <text x="${Lm}" y="${H - 4}" class="ax">1</text><text x="${W - 6}" y="${H - 4}" text-anchor="end" class="ax">${M.dim}</text></svg>
+    <span class="legend"><span><i style="background:#A5B4FC"></i>Day profit</span><span><i style="background:#FB923C"></i>Loss</span><span><i style="background:var(--accent);height:2px"></i>7-day average</span></span>`;
+}
+const spark = (vals, w = 120, h = 30) => { const n = vals.length; if (n < 2) return ""; const mx = Math.max(1, ...vals);
+  const pts = vals.map((v, i) => [2 + i * (w - 4) / (n - 1), h - 3 - v / mx * (h - 6)]);
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" style="display:block"><path d="${pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ")}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${pts[n - 1][0]}" cy="${pts[n - 1][1]}" r="3" fill="var(--accent)"/></svg>`; };
+const ringP = (p, size = 44) => { const r = size / 2 - 4, c = 2 * Math.PI * r, v = Math.max(0, Math.min(1, p));
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${r}" stroke="var(--soft2)" stroke-width="5" fill="none"/><circle cx="${size / 2}" cy="${size / 2}" r="${r}" stroke="${v >= 1 ? "#16A34A" : "var(--accent)"}" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="${(c * v).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${size / 2} ${size / 2})"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" style="font:600 ${size * .26}px var(--sans);fill:var(--ink)">${Math.round(v * 100)}</text></svg>`; };
+function billScatter() {
+  const S = M.staff.filter(x => x.billsT > 0); if (S.length < 2) return "";
+  const W = 340, H = 200, T = 14, B = 30, Lm = 46, bx = S.map(x => x.billsT), by = S.map(x => x.avgBill);
+  const x0 = Math.max(0, Math.min(...bx) * .8), xm = Math.max(...bx) * 1.08, y0 = Math.max(0, Math.min(...by) * .8), ym = Math.max(...by) * 1.1;
+  const X = v => Lm + (W - Lm - 16) * (v - x0) / (xm - x0 || 1), Y = v => T + (H - T - B) * (1 - (v - y0) / (ym - y0 || 1)), mb = sum(S, x => x.billsT) / S.length, ma = sum(S, x => x.avgBill * x.billsT) / sum(S, x => x.billsT);
+  return `<div class="card scat"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Bills vs average bill</span><span class="mono muted" style="font-size:11px">${M.MON}</span></div>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">
+      <line x1="${X(mb)}" x2="${X(mb)}" y1="${T}" y2="${H - B}" stroke="#E0E7FF" stroke-dasharray="3 3"/><line x1="${Lm}" x2="${W - 10}" y1="${Y(ma)}" y2="${Y(ma)}" stroke="#E0E7FF" stroke-dasharray="3 3"/>
+      <line x1="${Lm}" x2="${W - 10}" y1="${H - B}" y2="${H - B}" stroke="#C7D2FE"/><line x1="${Lm}" x2="${Lm}" y1="${T}" y2="${H - B}" stroke="#C7D2FE"/>
+      <text x="${Lm - 6}" y="${Y(ym) + 8}" text-anchor="end" class="ax">₹${kc(ym)}</text><text x="${Lm - 6}" y="${H - B + 4}" text-anchor="end" class="ax">₹${kc(y0)}</text>
+      <text x="${W - 10}" y="${H - 6}" text-anchor="end" class="ax">${Math.round(xm)} bills</text><text x="${Lm}" y="${H - 6}" class="ax">${Math.round(x0)}</text>
+      <text x="${W - 12}" y="${T + 10}" text-anchor="end" class="axq">many &amp; big</text><text x="${Lm + 4}" y="${H - B - 6}" class="axq">few &amp; small</text>
+      ${S.map(x => `<g ${tipA(`${x.name}: ${x.billsT} bills · avg ₹${ind(x.avgBill)} · service ${inr(x.svcT)}`)}><circle cx="${X(x.billsT)}" cy="${Y(x.avgBill)}" r="11" fill="${avc(x.name)}" stroke="#fff" stroke-width="2"/><text x="${X(x.billsT)}" y="${Y(x.avgBill) + 4}" text-anchor="middle" style="font:600 10.5px var(--sans);fill:#fff">${esc(x.name[0])}</text></g>`).join("")}</svg>
+    <span class="meta" style="margin:0">Dashed lines = branch averages (${Math.round(mb)} bills · ₹${ind(ma)} a bill). Tap a dot for the name.</span></div>`;
+}
+/* tooltip for any [data-tip] mark */
+(() => { let tip = null;
+  const hide = () => { if (tip) tip.style.opacity = 0; };
+  addEventListener("click", e => { const t = e.target.closest && e.target.closest("[data-tip]");
+    if (!t) return hide(); e.stopPropagation();
+    if (!tip) { tip = document.createElement("div"); tip.id = "tip"; document.body.appendChild(tip); }
+    tip.textContent = t.dataset.tip; const r = t.getBoundingClientRect(); tip.style.opacity = 1;
+    const w = Math.min(260, innerWidth - 24); tip.style.maxWidth = w + "px";
+    const x = Math.max(12, Math.min(innerWidth - 12 - tip.offsetWidth, r.left + r.width / 2 - tip.offsetWidth / 2)), y = r.top - tip.offsetHeight - 10;
+    tip.style.left = x + "px"; tip.style.top = (y < 8 ? r.bottom + 10 : y) + "px"; }, true);
+  addEventListener("scroll", hide, { passive: true });
+})();
+
 /* ================= navigation ================= */
 function go(v, p = {}) { stack.push({ v, ...p }); draw(); window.scrollTo(0, 0); }
 function back() { if (stack.length > 1) stack.pop(); draw(); window.scrollTo(0, 0); }
@@ -576,8 +773,9 @@ function moreSheet() {
   const P = [["exp", "Expenses"], ["stock", "Stock"], ["att", "Attendance"], ["salary", "Salary"], ["inc", "Incentives"], ["pday", "Profit by day"], ["checks", "Checks"]]
     .concat(isOwner() ? [["notes", "Notifications"], ["people", "People &amp; PINs"], ["settings", "Book settings"]] : []);
   sheet("More", [{ k: "m", type: "raw", value: P.map(([v, l]) => `<button class="mrow" data-mv="${v}"><span>${l}</span><span class="chev">›</span></button>`).join("")
-    + `<button class="mrow" data-mv="_r"><span>Refresh now</span></button>` }], null, { bind: el => el.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => {
-      closeSheet(); if (b.dataset.mv === "_r") return refresh();
+    + `<button class="mrow" data-mv="_d"><span>Dark mode</span><span class="sw ${document.body.classList.contains("dark") ? "on" : ""}"><i></i></span></button><button class="mrow" data-mv="_r"><span>Refresh now</span></button>` }], null, { bind: el => el.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => {
+      if (b.dataset.mv === "_d") { const on = document.body.classList.toggle("dark"); try { localStorage.setItem("pl_dark", on ? "1" : ""); } catch (e) {} b.querySelector(".sw").classList.toggle("on", on); return; }
+      closeSheet(); if (b.dataset.mv === "_r") return doRefresh();
       stack = [{ v: "home" }, { v: b.dataset.mv }]; draw(); window.scrollTo(0, 0); }) });
 }
 const gp = (v, p) => `data-go="${v}"${p ? ` data-p='${JSON.stringify(p).replace(/'/g, "&#39;")}'` : ""}`;
@@ -1100,7 +1298,7 @@ VIEWS.home = () => {
     <div style="display:flex;align-items:center;gap:10px"><span class="ix muted">02</span><span style="width:18px;height:1px;background:#D5D9EA"></span></div>
     <div style="height:120px;display:flex;align-items:flex-end;gap:5px">${[38, 56, 46, 74, 100].map((h, i) => `<span style="flex-grow:1;height:${h}%;border-radius:8px 8px 3px 3px;background:${["#E0E7FF","#C7D2FE","#E0E7FF","#A5B4FC","#2563EB"][i]}"></span>`).join("")}</div>
     <div style="display:flex;flex-direction:column;gap:6px"><span class="tt">Daily <em>Sales</em></span></div></button>
-  <button ${gp("exp")} class="tile" style="background:var(--ink);color:#fff">
+  <button ${gp("exp")} class="tile" style="background:var(--night);color:#fff">
     <div style="position:absolute;right:-50px;bottom:-60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(96,165,250,.4),rgba(96,165,250,0) 70%)"></div>
     <div style="position:relative;display:flex;justify-content:space-between;align-items:center"><span class="ix" style="color:var(--lav)">03</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A5B4FC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6"/><path d="M9 12h6"/></svg></div>
     <div style="position:relative;display:flex;flex-direction:column;gap:4px"><span class="tt">Expenses</span></div></button>
@@ -1113,7 +1311,7 @@ VIEWS.home = () => {
       <div style="display:flex;flex-direction:column;gap:6px"><span class="tt" style="font-size:30px">Staff</span></div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:14px">
       <span style="display:flex">${M.ranked.slice(0, 5).map(x => `<span class="av" style="width:42px;height:42px;margin-left:-12px;border:3px solid #fff;font-size:19px;background:${avc(x.name)}">${esc(x.name[0])}</span>`).join("")}</span>
-      <span class="round" style="width:40px;height:40px;background:var(--ink);color:#fff">${IC.arrow}</span></div></button>
+      <span class="round" style="width:40px;height:40px;background:var(--night);color:#fff">${IC.arrow}</span></div></button>
   <button ${gp("att")} class="tile lift">
     <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="ix muted">06</span>
       <span style="display:grid;grid-template-columns:repeat(5,9px);gap:4px">${["C7D2FE","C7D2FE","60A5FA","C7D2FE","C7D2FE","C7D2FE","0E0C2B","C7D2FE","C7D2FE","60A5FA"].map(c => `<span style="height:9px;border-radius:3px;background:#${c}"></span>`).join("")}</span></div>
@@ -1124,7 +1322,7 @@ VIEWS.home = () => {
     <div style="position:relative;display:flex;flex-direction:column;gap:4px"><span class="tt">Salary</span></div></button>
   <button ${gp("inc")} class="tile" style="grid-column:span 2;background:var(--soft2);flex-direction:row;align-items:center;justify-content:flex-start;gap:18px">
     <svg width="170" height="170" viewBox="0 0 24 24" fill="none" stroke="#C7D2FE" stroke-width="0.8" stroke-linejoin="round" style="position:absolute;right:-30px;bottom:-44px"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>
-    <span class="ic" style="position:relative;width:58px;height:58px;border-radius:20px;background:var(--ink);color:#fff"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
+    <span class="ic" style="position:relative;width:58px;height:58px;border-radius:20px;background:var(--night);color:#fff"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span>
     <div style="position:relative;display:flex;flex-direction:column;gap:6px"><span class="ix" style="color:var(--deep)">08</span><span class="tt" style="font-size:30px">Incentives</span></div></button>
   <button ${gp("pday")} class="tile" style="grid-column:span 2;background:linear-gradient(135deg,#1E1B4B,#312E81 55%,#4F46E5);color:#fff;box-shadow:0 24px 44px -18px rgba(49,46,129,.55)">
     <svg width="170" height="78" viewBox="0 0 230 120" fill="none" style="position:absolute;right:14px;top:16px"><path d="M4 100 L36 92 L68 96 L100 70 L132 74 L164 46 L196 52 L226 22" stroke="#60A5FA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 100 L36 92 L68 96 L100 70 L132 74 L164 46 L196 52 L226 22 L226 120 L4 120Z" fill="rgba(96,165,250,0.14)"/>${[[36,92],[100,70],[164,46],[226,22]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="#fff"/>`).join("")}</svg>
@@ -1210,11 +1408,12 @@ VIEWS.pnl = s => {
        <div class="hk"><span class="eb" style="font-size:10px">Costs</span><span class="v tn" style="font-family:var(--sans);font-size:19px;font-weight:500">${inr(P.costs)}</span></div></div>`)
   + `<main class="main">
     ${isOwner() ? flagSwitch("pflag", P.full, "Count salary &amp; fixed costs in profit", "On · profit is after salary, rent, SMS and other owner bills", "Off · profit leaves out salary and the bills you add as owner") : ""}
+    ${insightCard("pnl")}${paceCard()}
     ${M.netSales <= 0 ? `<div class="card empty">The ₹100 split shows once sales are entered.</div>` : `<div class="card" style="padding:20px 20px 16px;display:flex;flex-direction:column;gap:14px">
       <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">How ₹100 earned was used</span><span class="mono muted" style="font-size:11px">of ${cpt(M.netSales)}</span></div>
       <div class="wf" style="${f ? "" : "grid-template-columns:repeat(3,minmax(0,1fr))"}">
         <div><div class="b" style="bottom:0;height:100%;background:var(--peri)"></div><span class="t" style="top:8px;color:#1E1B4B">100</span></div>
-        ${f ? `<div><div class="b" style="top:0;height:${clamp(f)}%;background:var(--ink)"></div><span class="t" style="top:8px;color:#fff">−${f.toFixed(1)}</span><div class="d" style="top:${clamp(f)}%"></div></div>` : ""}
+        ${f ? `<div><div class="b" style="top:0;height:${clamp(f)}%;background:var(--night)"></div><span class="t" style="top:8px;color:#fff">−${f.toFixed(1)}</span><div class="d" style="top:${clamp(f)}%"></div></div>` : ""}
         <div><div class="b" style="top:${clamp(f)}%;height:${clamp(Math.min(d, 100 - f))}%;background:var(--sky)"></div><span class="t" style="top:calc(${clamp(f)}% + 8px)">−${d.toFixed(1)}</span><div class="d" style="top:${clamp(f + d)}%"></div></div>
         <div><div class="b" style="bottom:0;height:${clamp(Math.abs(p))}%;background:${p < 0 ? "var(--bad)" : "var(--accent)"};box-shadow:0 12px 24px -10px rgba(79,70,229,.6)"></div><span class="t" style="bottom:calc(${clamp(Math.abs(p))}% + 6px);color:var(--ink)">${p.toFixed(1)}</span></div>
       </div>
@@ -1225,7 +1424,7 @@ VIEWS.pnl = s => {
     ${sh(++sn, "Day-to-day costs")}<div class="card pad">${lines(P.daily) || '<div class="empty">Nothing yet</div>'}${rowx("Total day-to-day", inr(P.dailyT), "", "tot")}</div>
     ${!P.full && P.held.length ? (seeSal() ? `${sh(++sn, "Not counted yet", `<span class="mono">${inr(P.heldT)}</span>`)}<div class="card pad held">${P.held.map(([k, v]) => rowx(esc(lab(k)), (v < 0 ? "− " : "") + "₹" + ind(v), gp("head", { k }))).join("")}${rowx("Would come off profit", inr(P.heldT), "", "tot")}</div>`
       : `<div class="heldn card">${IC.info}<span>Salary and fixed costs are not counted in this profit yet.</span></div>`) : ""}
-    <div style="position:relative;overflow:hidden;margin-top:8px;padding:22px;border-radius:28px;background:var(--ink);color:#fff;display:flex;flex-direction:column;gap:10px">
+    <div style="position:relative;overflow:hidden;margin-top:8px;padding:22px;border-radius:28px;background:var(--night);color:#fff;display:flex;flex-direction:column;gap:10px">
       <div style="position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.55),rgba(91,91,247,0) 68%)"></div>
       <span class="eb" style="position:relative">${P.full ? "Net profit" : "Profit before salary &amp; fixed"}</span><span class="serif tn" style="position:relative;font-size:44px;line-height:1;color:${P.net < 0 ? "#FDBA74" : "#fff"}">${inr(P.net)}</span>
       <span class="mono" style="position:relative;font-size:12px;color:var(--lite)">${ind(M.netSales)}${P.fixedT ? " − " + ind(P.fixedT) : ""} − ${ind(P.dailyT)}</span></div>
@@ -1247,6 +1446,7 @@ VIEWS.sales = s => {
     <div class="kpi3"><div class="kpi"><span class="ebd">Avg / day</span><span class="v tn">${cpt(E.length ? tot / E.length : 0)}</span></div>
       <div class="kpi"><span class="ebd">Best day</span><span class="v tn">${best ? cpt(best.total) : "–"}</span><span class="mono muted" style="font-size:10px">${best ? best.dow.toUpperCase() + " " + best.d : ""}</span></div>
       <div class="kpi acc"><span class="ebd">Retail share</span><span class="v tn">${pct(ret, tot)}</span></div></div>
+    ${insightCard("sales")}${paceCard()}${heatCal()}${weekBars()}${cashChart()}
     ${sh(1, "Closing reports", "Tap a day")}
     <div class="card pad">${show.map(x => `<button class="li" ${gp("day", { d: x.d })}>
        <span class="dc ${isToday(x.d) ? "today" : ""}"><span>${isToday(x.d) ? "Today" : x.dow}</span><b>${x.d}</b></span>
@@ -1362,8 +1562,9 @@ function expSpend(s) {
   const head = (k, i) => { const e = { rows: shopRows(k) }, last = e.rows.find(r => r.d), c = shades[i % 6];
     return `<button class="li" ${gp("head", { k, shop: 1 })}><span class="lt" style="background:${c};color:${["#BFDBFE","#DBEAFE","#93C5FD"].includes(c) ? "var(--ink)" : "#fff"}">${esc(lab(k)[0])}</span>
       <span style="flex:1;min-width:0"><span style="display:block;font-size:15.5px;font-weight:500;line-height:1.25">${esc(lab(k))}</span>
-      <div class="meta">${e.rows.length ? e.rows.length + " entr" + (e.rows.length > 1 ? "ies" : "y") + (last ? " · " + last.d + " " + M.MON : "") : "worked out"}</div></span>
-      <span style="text-align:right"><b class="tn" style="font-size:15px">${inr(shopAmt(k))}</b><div class="mono muted" style="font-size:10.5px">${pct(shopAmt(k), T || 1)}</div></span><span style="color:var(--lav)">${IC.chev}</span></button>`; };
+      <div class="meta">${headRise(k) ? `<span class="tag bad" style="padding:1px 6px;margin-right:6px">↑ ${headRise(k)}% this week</span>` : ""}${e.rows.length ? e.rows.length + " entr" + (e.rows.length > 1 ? "ies" : "y") + (last ? " · " + last.d + " " + M.MON : "") : "worked out"}</div>
+      <span class="trk" style="height:5px;margin-top:6px"><i style="width:${Math.max(2, shopAmt(k) / Math.max(1, ...H.map(shopAmt)) * 100)}%;background:var(--accent)"></i></span></span>
+      <span style="text-align:right"><b class="tn" style="font-size:15px">${inr(shopAmt(k))}</b><div class="mono muted" style="font-size:10.5px">${M.netSales ? pct(shopAmt(k), M.netSales) + " of sales" : pct(shopAmt(k), T || 1)}</div></span><span style="color:var(--lav)">${IC.chev}</span></button>`; };
   return header(backBtn("Home"), monthPick(),
     `${expSeg(s)}<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Day-to-day spending · ${range()}</span>${hero(T)}
      <span class="lite" style="font-size:14px">${H.length} heads · ${n} entries</span></div>
@@ -1372,6 +1573,7 @@ function expSpend(s) {
     ${viewerSwitch()}
     <div class="card" style="padding:14px 18px;display:flex;gap:12px;align-items:flex-start;background:var(--soft)"><span style="flex:none;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;font-family:Georgia,serif">i</span>
       <span style="font-size:13.5px;line-height:1.45;color:var(--ink2,var(--ink))">Only what the shop paid out day by day. Staff salary and bills you add as owner (rent, SMS, EB, insurance…) are not counted here.${fullOK() ? " Tap <b>With salary &amp; fixed</b> to see them." : ""} Profit still counts everything.</span></div>
+    ${insightCard("exp")}
     ${sh(1, "Day-to-day costs", `<span class="mono">${inr(T)}</span>`)}<div class="card pad">${H.map(head).join("") || '<div class="empty">Nothing spent yet</div>'}</div>
   </main>`;
 }
@@ -1386,6 +1588,7 @@ const seeSal = () => isOwner() || !!(D && D.flags && D.flags.viewFull);
 const prevMonth = () => MONTHS[(M.mi + 11) % 12] || "last month";
 /* profit as the owner wants to see it: without salary & fixed costs (rent, SMS… added as owner bills) until the owner switches them on */
 function buildPV() {
+  M._pace = null;
   const full = plFull(), held = [], val = {};
   const ownerPart = k => { const cat = ENTRYCAT[k] || k; return sum(D.owner.filter(o => o.cat === cat), o => typeof o.month === "number" ? o.month : o.amt); };
   M.fixed.concat(M.daily).forEach(k => { const v = M.PL[k] || 0; let h = 0;
@@ -1483,6 +1686,7 @@ VIEWS.pday = () => {
        <div class="hk"><span class="eb" style="font-size:10px">In minus</span><span class="v tn">${minus}<small> days</small></span></div>
        <div class="hk"><span class="eb" style="font-size:10px">Days</span><span class="v tn">${done.length}<small> / ${M.dim}</small></span><span class="s">entered</span></div></div>`)
   + `<main class="main">
+    <div class="card" style="padding:18px 16px 12px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px"><span class="ebd">Profit each day</span><span class="mono muted" style="font-size:11px">TAP A BAR</span></div>${dayProfitChart(L)}</div>
     <div class="card" style="padding:18px 16px 12px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 4px"><span class="ebd">Profit so far</span><span class="legend"><span><i style="background:#C7D2FE"></i>Day</span><span><i style="background:#FDBA74"></i>Minus</span></span></div>${profitChart(L)}</div>
     ${sh(1, "Every day", "Tap a day")}
     <div class="card pad">${L.slice().reverse().map(x => { const w = Math.abs(x.profit) / mx * 50, costs = sum([x.stock, x.roy, x.sal, x.inc, x.shop, x.own, x.dep]);
@@ -1490,8 +1694,8 @@ VIEWS.pday = () => {
         <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;gap:8px"><b class="tn" style="font-size:16px;color:${x.profit < 0 ? "var(--bad)" : "var(--ink)"}">${sgn(x.profit)}</b><span class="mono muted" style="font-size:10.5px">SO FAR ${inr(x.run)}</span></span>
         <span style="position:relative;height:6px;border-radius:99px;background:var(--soft);overflow:hidden"><i style="position:absolute;top:0;height:100%;border-radius:99px;left:${x.profit < 0 ? 50 - w : 50}%;width:${w}%;background:${x.profit < 0 ? "#FB923C" : "var(--accent)"}"></i></span>
         <span class="meta" style="margin:0">${x.done ? `Sales ${inr(x.sales)} · costs ${inr(-costs)}` : "Owner bills"}${x.own ? ` · owner ${inr(-x.own)}` : ""}</span></span></button>`; }).join("")}</div>
-    ${sh(2, "From the days to the month")}
-    <div class="card pad">${F.map(([k, v], i) => i === F.length - 1 ? `<div class="rowx tot"><span class="l">${esc(k.replace(" (same as P&L)", ""))}</span><span class="a tn" style="color:var(--accent)">${inr(v)}</span></div>` : rowx(esc(k), `<span class="${v < 0 ? "neg" : ""}">${i ? sgn(v) : inr(v)}</span>`)).join("")}</div>
+    ${M.P.full ? `${sh(2, "From the days to the month")}
+    <div class="card pad">${F.map(([k, v], i) => i === F.length - 1 ? `<div class="rowx tot"><span class="l">${esc(k.replace(" (same as P&L)", ""))}</span><span class="a tn" style="color:var(--accent)">${inr(v)}</span></div>` : rowx(esc(k), `<span class="${v < 0 ? "neg" : ""}">${i ? sgn(v) : inr(v)}</span>`)).join("")}</div>` : ""}
   </main>`;
 };
 
@@ -1513,9 +1717,10 @@ VIEWS.staff = () => {
      <div class="pod">${order.map(x => { const r = R.indexOf(x) + 1, sz = r === 1 ? 72 : 56; return `<button class="p" ${gp("person", { n: x.name })}>
        <span class="ring" style="width:${sz}px;height:${sz}px;font-size:${sz * .45}px;${r === 1 ? "box-shadow:0 0 0 4px #60A5FA" : ""}">${esc(x.name[0])}</span><span class="nm">${esc(x.name)}</span><span class="mono" style="font-size:10.5px;color:var(--lite)">${cpt(x.total)}</span>
        <span class="st" style="height:${r === 1 ? 92 : r === 2 ? 64 : 46}px;background:${r === 1 ? "var(--accent)" : "rgba(91,91,247,.28)"};color:${r === 1 ? "#fff" : "var(--lite)"}">${r}</span></button>`; }).join("")}</div>`, "flat")
-  + `<main class="main flat">${sh(1, "Everyone", "Tap for full record")}${canEdit() ? `<div class="edbar">${edBtn("staff", {}, "+ Add staff")}</div>` : ""}
+  + `<main class="main flat">${insightCard("staff")}${billScatter()}${sh(1, "Everyone", "Tap for full record")}${canEdit() ? `<div class="edbar">${edBtn("staff", {}, "+ Add staff")}</div>` : ""}
     ${R.map((x, i) => `<button class="card sc" ${gp("person", { n: x.name })}><span class="top">${av(x.name, 48)}<span style="min-width:0"><span class="serif" style="font-size:26px;line-height:1">${esc(x.name)}</span><div class="meta">#${i + 1} · ${esc(x.role)}${x.billsT ? ` · ${x.billsT} bills · avg ₹${ind(x.avgBill)}` : ""}</div></span><span class="go">${IC.arrow}</span></span>
-      <span class="mini3"><div><span>Sales</span><b class="tn">${cpt(x.total)}</b></div><div><span>Days in</span><b class="tn">${x.worked} / ${M.lastDay}</b></div><div><span>Incentive</span><b class="tn">${inr(x.inc)}</b></div></span></button>`).join("")}
+      <span class="mini3"><div><span>Sales</span><b class="tn">${cpt(x.total)}</b></div><div><span>Days in</span><b class="tn">${x.worked} / ${M.lastDay}</b></div><div><span>Incentive</span><b class="tn">${inr(x.inc)}</b></div></span>
+      <span class="sprow"><span class="spk"><span class="pl">Daily sales</span>${spark(x.svc.slice(0, M.lastDay).map((v, k) => v + (x.ret[k] || 0)), 150, 30)}</span>${x.s.Target ? `<span class="tgt">${ringP(x.s["Service sales"] / x.s.Target, 44)}<span class="pl">of target<br>${cpt(x.s.Target)}</span></span>` : ""}</span></button>`).join("")}
   </main>`;
 };
 
@@ -1525,7 +1730,7 @@ function calendar(x, hiDay) {
   const cls = { off: "O", leave: "L", weekend: "L", extra: "L", ob: "B" };
   return `<div class="cal">${["M","T","W","T","F","S","S"].map(h => `<span class="h">${h}</span>`).join("")}${"<span class='d no'></span>".repeat(lead)}
     ${M.days.map((dd, k) => { const st = x.st[k]; return `<span class="d ${dd.d > M.lastDay && !cls[st] ? "fu" : cls[st] || (st === "in" && x.wfh[k] ? "W" : "")} ${isToday(dd.d) || (!M.todayD && dd.d === M.lastDay) ? "today" : ""}">${dd.d}</span>`; }).join("")}</div>
-    <div class="legend"><span><i style="background:var(--soft)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span>${x.ob ? '<span><i style="background:#14B8A6"></i>Other branch</span>' : ""}${x.wfh.some(Boolean) ? '<span><i style="background:#CCFBF1;border:1px solid #5EEAD4"></i>WFH</span>' : ""}</div>`;
+    <div class="legend"><span><i style="background:var(--soft)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--night)"></i>Leave</span>${x.ob ? '<span><i style="background:#14B8A6"></i>Other branch</span>' : ""}${x.wfh.some(Boolean) ? '<span><i style="background:#CCFBF1;border:1px solid #5EEAD4"></i>WFH</span>' : ""}</div>`;
 }
 VIEWS.person = s => {
   const x = M.byName[s.n], S = x.s, rank = M.ranked.indexOf(x) + 1;
@@ -1553,9 +1758,9 @@ VIEWS.person = s => {
     <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:14px">${calendar(x)}
       <div class="kpi3"><div class="kpi" style="background:var(--soft);box-shadow:none;border:0"><span class="ebd">Worked</span><span class="v tn">${x.worked} <small>days</small></span></div>
       <div class="kpi" style="background:var(--sky);box-shadow:none;border:0"><span class="ebd" style="color:var(--ink)">Week offs</span><span class="v tn">${x.off} <small style="color:var(--ink)">of ${x.allowed}</small></span></div>
-      <div class="kpi" style="background:var(--ink);color:#fff;box-shadow:none;border:0"><span class="ebd" style="color:var(--lav)">Leave</span><span class="v tn">${x.leave} <small style="color:var(--lite)">day${x.leave === 1 ? "" : "s"}</small></span></div></div></div>
+      <div class="kpi" style="background:var(--night);color:#fff;box-shadow:none;border:0"><span class="ebd" style="color:var(--lav)">Leave</span><span class="v tn">${x.leave} <small style="color:var(--lite)">day${x.leave === 1 ? "" : "s"}</small></span></div></div></div>
     <div id="s3">${sh(3, "Incentives")}</div>
-    <div style="position:relative;overflow:hidden;padding:20px;border-radius:28px;background:var(--ink);color:#fff;display:flex;flex-direction:column;gap:12px">
+    <div style="position:relative;overflow:hidden;padding:20px;border-radius:28px;background:var(--night);color:#fff;display:flex;flex-direction:column;gap:12px">
       <div style="position:absolute;right:-60px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(91,91,247,.55),rgba(91,91,247,0) 68%)"></div>
       <div style="position:relative;display:flex;justify-content:space-between;align-items:baseline"><span class="eb">Daily 10K incentive</span><span class="serif tn" style="font-size:34px">${inr(x.tkT)}</span></div>
       <span style="position:relative;font-size:13px;color:var(--lite)">${tkDays} day${tkDays === 1 ? "" : "s"}</span>
@@ -1563,7 +1768,7 @@ VIEWS.person = s => {
     <div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:12px">
       <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Retail incentive</span><span class="serif tn" style="font-size:30px;color:var(--accent)">${inr(pinc)}</span></div>
       <span style="font-size:13px;color:var(--muted)">Sold ${inr(psales)} · ${psales >= lvl ? "7%" : "5%"}</span>
-      <div style="position:relative;height:8px;border-radius:99px;background:var(--soft)"><i style="position:absolute;left:0;top:0;height:100%;border-radius:99px;background:var(--sky);width:${Math.min(100, psales / Math.max(lvl * 2, psales || 1) * 100)}%"></i><i style="position:absolute;left:${Math.min(100, lvl / Math.max(lvl * 2, psales || 1) * 100)}%;top:-4px;width:2px;height:16px;background:var(--ink)"></i></div>
+      <div style="position:relative;height:8px;border-radius:99px;background:var(--soft)"><i style="position:absolute;left:0;top:0;height:100%;border-radius:99px;background:var(--sky);width:${Math.min(100, psales / Math.max(lvl * 2, psales || 1) * 100)}%"></i><i style="position:absolute;left:${Math.min(100, lvl / Math.max(lvl * 2, psales || 1) * 100)}%;top:-4px;width:2px;height:16px;background:var(--night)"></i></div>
       <div class="mono muted" style="display:flex;justify-content:space-between;font-size:9.5px"><span>₹0 · 5%</span><span>${inr(lvl)} · 7%</span><span>${inr(Math.max(lvl * 2, psales))}</span></div></div>
     ${S.Target ? `<div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="ebd">Service incentive</span><span class="serif tn" style="font-size:30px;color:var(--accent)">${inr(S["Service incentive"])}</span></div>
       <span style="font-size:13px;color:var(--muted)">Service ${inr(S["Service sales"])} of target ${inr(S.Target)}</span><span class="trk" style="height:8px"><i style="width:${Math.min(100, S["Service sales"] / S.Target * 100)}%;background:var(--accent)"></i></span></div>` : ""}
@@ -1595,7 +1800,7 @@ VIEWS.att = () => {
     <div style="overflow-x:auto;scrollbar-width:none"><div class="ag" style="grid-template-columns:64px repeat(${n},minmax(14px,1fr));min-width:${64 + n * 16}px">
       <span></span>${M.days.slice(0, n).map(dd => `<span class="h ${["Sat", "Sun"].includes(dd.dow) ? "we" : ""}">${dd.d}</span>`).join("")}
       ${S.map(x => `<button style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left" ${gp("patt", { n: x.name })}>${esc(x.name)}</button>${x.st.slice(0, n).map((v, k) => `<span class="c ${cell[v] ? cell[v][0] : v === "in" ? (x.wfh[k] ? "wf" : "") : "F"}">${cell[v] ? cell[v][1] : v === "in" && x.wfh[k] ? "W" : ""}</span>`).join("")}`).join("")}</div></div>
-    <div class="legend"><span><i style="background:var(--soft2)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--ink)"></i>Leave</span><span><i style="background:#14B8A6"></i>Other branch</span><span><i style="background:#CCFBF1;border:1px solid #5EEAD4"></i>WFH (present)</span></div>
+    <div class="legend"><span><i style="background:var(--soft2)"></i>Present</span><span><i style="background:var(--sky)"></i>Week off</span><span><i style="background:var(--night)"></i>Leave</span><span><i style="background:#14B8A6"></i>Other branch</span><span><i style="background:#CCFBF1;border:1px solid #5EEAD4"></i>WFH (present)</span></div>
     <span class="mono" style="font-size:9.5px;letter-spacing:.08em;color:var(--accent)">BLUE DATES = SAT / SUN</span></div>
     ${sh(1, "Each person", "Tap for detail")}
     <div class="card pad">${S.map(x => `<button class="li" ${gp("patt", { n: x.name })}>${av(x.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(x.name)}</span><div class="meta">${x.worked} days worked${x.ob ? " · " + x.ob + " at other branch" : ""}</div></span>
@@ -1687,10 +1892,16 @@ VIEWS.inc = () => {
 };
 
 /* ================= 4 · stock ================= */
+function movers() {
+  const R = D.stock.filter(i => i.type === "Retail"), top = R.filter(i => i.sold).sort((a, b) => b.sold - a.sold).slice(0, 5), idle = R.filter(i => !i.sold && i.inhand > 0), mx = Math.max(1, ...top.map(i => i.sold));
+  if (!top.length && !idle.length) return "";
+  return `<div class="card mov"><span class="ebd">Fast movers</span>${top.map(i => `<div class="mvr" ${tipA(`${i.item}: ${i.sold} sold · ${i.inhand ?? "–"} in hand${stockRate(i) !== null ? " · ~" + stockRate(i) + " days left" : ""}`)}><span class="mvn">${esc(i.item)}</span><span class="trk" style="height:6px"><i style="width:${i.sold / mx * 100}%;background:var(--accent)"></i></span><b class="tn">${i.sold}</b></div>`).join("") || '<span class="meta" style="margin:0">Nothing sold yet.</span>'}
+    ${idle.length ? `<div class="mvidle"><b>${idle.length}</b> product${idle.length > 1 ? "s have" : " has"} not sold this month · ${esc(idle.slice(0, 3).map(i => i.item).join(", "))}${idle.length > 3 ? "…" : ""}</div>` : ""}</div>`;
+}
 VIEWS.stock = s => {
   s.t = s.t || "Retail"; s.f = s.f || "all"; s.q = s.q || "";
   const all = D.stock.filter(i => i.type === s.t), low = i => i.inhand !== null && i.open !== null && i.inhand <= 2;
-  const list = all.filter(i => (!s.q || i.item.toLowerCase().includes(s.q)) && (s.f === "all" || (s.f === "low" && low(i)) || (s.f === "moved" && (i.sold || i.recv)) || (s.f === "diff" && i.diff)))
+  const list = all.filter(i => (!s.q || i.item.toLowerCase().includes(s.q)) && (s.f === "all" || (s.f === "low" && low(i)) || (s.f === "soon" && stockRate(i) !== null && stockRate(i) < 7) || (s.f === "moved" && (i.sold || i.recv)) || (s.f === "diff" && i.diff)))
     .sort((a, b) => (low(b) - low(a)) || (b.sold - a.sold) || a.item.localeCompare(b.item));
   const t = lastLoad ? lastLoad.toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }) : "";
   const val = s.t === "Retail" ? D.stockSum.retClose : D.stockSum.consClose;
@@ -1698,14 +1909,15 @@ VIEWS.stock = s => {
     `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Stock · ${inr(val)} at cost</span><h1 class="ttl">On the <em>shelf.</em></h1></div>
      <div class="seg" id="sseg"><button data-t="Retail" aria-pressed="${s.t === "Retail"}">For sale</button><button data-t="Consumable" aria-pressed="${s.t === "Consumable"}">Salon use</button></div>
      <div class="hk3"><div class="hk"><span class="eb" style="font-size:10px">On shelf</span><span class="v tn">${ind(sum(all, i => i.inhand))}</span></div><div class="hk"><span class="eb" style="font-size:10px">Low</span><span class="v tn" style="color:var(--lav)">${all.filter(low).length}</span></div><div class="hk"><span class="eb" style="font-size:10px">${s.t === "Retail" ? "Sold" : "Used"}</span><span class="v tn">${ind(sum(all, i => i.sold))}</span></div></div>`)
-  + `<main class="main"><input class="srch" id="sq" type="search" placeholder="Search ${s.t === "Retail" ? "products for sale" : "salon products"}" value="${esc(s.q)}">
-    <div class="fch" id="sf">${[["all", "All " + all.length], ["low", "Low"], ["moved", s.t === "Retail" ? "Sold / received" : "Used / received"], ["diff", "Count difference"]].map(([k, l]) => `<button data-f="${k}" aria-pressed="${s.f === k}">${l}</button>`).join("")}</div>
+  + `<main class="main">${s.t === "Retail" ? insightCard("stock") + movers() : ""}<input class="srch" id="sq" type="search" placeholder="Search ${s.t === "Retail" ? "products for sale" : "salon products"}" value="${esc(s.q)}">
+    <div class="fch" id="sf">${[["all", "All " + all.length], ["low", "Low"], ["soon", "Runs out soon"], ["moved", s.t === "Retail" ? "Sold / received" : "Used / received"], ["diff", "Count difference"]].map(([k, l]) => `<button data-f="${k}" aria-pressed="${s.f === k}">${l}</button>`).join("")}</div>
     ${canEdit() ? `<div class="edbar">${edBtn("stock", { type: s.t }, s.t === "Retail" ? "+ Add product" : "+ Add salon item")}</div>` : ""}
     <div class="sg">${list.map(i => { const L = low(i), base = Math.max(1, (i.open || 0) + (i.recv || 0)); return `<div class="st ${L ? "low" : "card"}" ${ed("stock", { r: i.r })}>
       <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="q tn">${i.inhand ?? i.count ?? "–"}</span>${L ? '<span class="tag" style="background:#fff;color:var(--deep)">Low</span>' : i.diff ? `<span class="tag bad">Count ${i.diff > 0 ? "+" : ""}${i.diff}</span>` : ""}</div>
       <span class="nm">${esc(i.item)}</span>
       <span class="trk" style="background:${L ? "rgba(255,255,255,.12)" : "var(--soft)"}"><i style="width:${Math.min(100, (i.sold || 0) / base * 100)}%;background:${L ? "var(--sky)" : "var(--accent)"}"></i></span>
-      <span class="meta" style="margin:0">${i.sold || 0} ${s.t === "Retail" ? "sold" : "used"} in ${M.MON}${i.recv ? " · +" + i.recv + " in" : ""}</span></div>`; }).join("") || '<div class="empty" style="grid-column:span 2">No items match.</div>'}</div>
+      <span class="meta" style="margin:0">${i.sold || 0} ${s.t === "Retail" ? "sold" : "used"} in ${M.MON}${i.recv ? " · +" + i.recv + " in" : ""}</span>
+      ${stockRate(i) !== null ? `<span class="dl ${stockRate(i) < 7 ? "soon" : ""}">${i.inhand <= 0 ? "Out · reorder" : (stockRate(i) < 7 ? "Reorder · " : "") + "~" + stockRate(i) + " day" + (stockRate(i) === 1 ? "" : "s") + " left"}</span>` : ""}</div>`; }).join("") || '<div class="empty" style="grid-column:span 2">No items match.</div>'}</div>
   </main>`;
 };
 VIEWS.stock_bind = s => {
