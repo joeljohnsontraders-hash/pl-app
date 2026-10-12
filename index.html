@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap"></noscript>
-<style>
+<style id="css">
 /* Owner P&L app — Naveen's design: dark indigo headers, white cards, Instrument Serif figures, Geist text, Geist Mono labels */
 :root{
   --ink:#0E0C2B; --bg:#F6F7FB; --card:#FFFFFF; --muted:#6B6F8C; --line:#EEF0F7; --soft:#EEF1FF; --soft2:#E0E7FF; --peri:#C7D2FE; --lav:#A5B4FC;
@@ -35,6 +35,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .ix{font-family:var(--mono);font-size:11px;letter-spacing:.1em}
 .tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;padding:3px 8px;border-radius:8px;white-space:nowrap;text-transform:uppercase}
 .tag.own{background:var(--soft);color:var(--deep)}
+.brcard{padding:22px;display:flex;gap:16px;align-items:center;background:var(--bs)!important;color:var(--bc);border:1px solid color-mix(in srgb,var(--bc) 22%,transparent)}
+.brcard .ebd{color:color-mix(in srgb,var(--bc) 70%,#555)}
+.brdot{width:14px;height:44px;border-radius:7px;background:var(--bc);flex:none}
+body.dark .brcard{background:color-mix(in srgb,var(--bc) 18%,#0B0A1C)!important;color:#fff}
+.abr{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 16px;margin-top:14px}
+.abr .v{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--ink)}
+.abar{display:flex;align-items:center;gap:10px;padding:8px 0}
+.abar .bn{width:104px;font-size:13.5px;flex:none}
+.abar .bt{flex:1;height:14px;border-radius:7px;background:var(--line);overflow:hidden}
+.abar .bt i{display:block;height:100%;border-radius:7px}
+.abar .bv{width:64px;text-align:right;font-family:var(--mono);font-size:13px}
 .tag.dark{background:var(--night);color:#fff}
 .tag.blue{background:var(--sky);color:var(--ink)}
 .tag.bad{background:var(--badsoft);color:var(--bad)}
@@ -416,7 +427,7 @@ async function doRefresh() {
   if (refreshing) return; refreshing = true;
   document.querySelectorAll("[data-refresh]").forEach(b => b.classList.add("spin"));
   const ptr = $("#ptr"); if (ptr) ptr.classList.add("on");
-  try { await refresh(); toast("Up to date"); } finally { refreshing = false; document.querySelectorAll("[data-refresh]").forEach(b => b.classList.remove("spin")); if (ptr) ptr.classList.remove("on"); }
+  try { if (stack[stack.length - 1].v === "all") ALLB = null; await refresh(); toast("Up to date"); } finally { refreshing = false; document.querySelectorAll("[data-refresh]").forEach(b => b.classList.remove("spin")); if (ptr) ptr.classList.remove("on"); }
 }
 /* pull down at the top of any screen to refresh */
 (() => { let y0 = null, pulled = 0;
@@ -430,7 +441,29 @@ async function refresh() {
 }
 setInterval(() => { if (!document.hidden && D && TOKEN && !$("#sheet")) refresh(); }, 60000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden && D && TOKEN && !$("#sheet")) refresh(); });
+/* who is who: role "owner" in the book = the CONTROLLER (edits, approves, manages people);
+   role "viewer" = the OWNER (sees every branch, changes nothing). Managers have no app — they use their branch's Entry Sheet. */
 const isOwner = () => ME && ME.role === "owner";
+const roleName = r => r === "owner" ? "Controller" : "Owner";
+const THEMES = {"Guduvanchery":{"#0E0C2B":"#06201F","#1E1B4B":"#0B3B38","#312E81":"#115E59","#3730A3":"#0F766E","#4F46E5":"#0D9488","#6366F1":"#14B8A6","#818CF8":"#2DD4BF","#A5B4FC":"#5EEAD4","#C7D2FE":"#99F6E4","#C7CCF9":"#A7EFE4","#E0E7FF":"#CCFBF1","#EEF2FF":"#E6FAF6","#EEF1FF":"#E8FBF7","#B9C0F5":"#9ADFD5","#F6F7FB":"#F5FAF9","#E7E9F3":"#E3EFED","#E4E7F2":"#DDEBE8","#6B6F8C":"#5F7A77","#5A5E7D":"#526B68","#1E3A8A":"#164E63","#1D4ED8":"#0E7490","#2563EB":"#0891B2","#3B82F6":"#06B6D4","#60A5FA":"#22D3EE","#93C5FD":"#67E8F9","#BFDBFE":"#A5F3FC","#DBEAFE":"#CFFAFE","#0B0A1C":"#041615","#16152D":"#0B2523","#26254A":"#16403C","#1F1E3C":"#11312E","#2A2952":"#1A4A45","#1B2547":"#0E3438","#05040F":"#020C0B","#ECEEFF":"#E8FBF8","#A3A7CC":"#9CC4BF","14,12,43":"6,32,31","91,91,247":"20,184,166","79,70,229":"13,148,136","96,165,250":"34,211,238","165,180,252":"94,234,212","56,189,248":"6,182,212","49,46,129":"17,94,89","22,21,45":"11,37,35"},"Chengalpattu":{"#0E0C2B":"#2A0A1C","#1E1B4B":"#4A1030","#312E81":"#701A45","#3730A3":"#881B4F","#4F46E5":"#A21C5E","#6366F1":"#BE2D73","#818CF8":"#D9508F","#A5B4FC":"#F0A6CA","#C7D2FE":"#F8CDE0","#C7CCF9":"#F5C4DA","#E0E7FF":"#FCE4EF","#EEF2FF":"#FDEEF4","#EEF1FF":"#FDF0F5","#B9C0F5":"#E8B4CB","#F6F7FB":"#FBF6F8","#E7E9F3":"#F1E6EB","#E4E7F2":"#EEDFE6","#6B6F8C":"#80667A","#5A5E7D":"#6E5468","#1E3A8A":"#4C1D95","#1D4ED8":"#6D28D9","#2563EB":"#7C3AED","#3B82F6":"#8B5CF6","#60A5FA":"#C084FC","#93C5FD":"#D8B4FE","#BFDBFE":"#E9D5FF","#DBEAFE":"#F3E8FF","#0B0A1C":"#1A0712","#16152D":"#2A0F1F","#26254A":"#46193A","#1F1E3C":"#381430","#2A2952":"#521D43","#1B2547":"#3B1640","#05040F":"#0D0309","#ECEEFF":"#FDEFF5","#A3A7CC":"#CFA3B8","14,12,43":"42,10,28","91,91,247":"190,45,115","79,70,229":"162,28,94","96,165,250":"192,132,252","165,180,252":"240,166,202","56,189,248":"139,92,246","49,46,129":"112,26,69","22,21,45":"42,15,31"},"Urapakkam":{"#0E0C2B":"#271505","#1E1B4B":"#451A03","#312E81":"#78350F","#3730A3":"#92400E","#4F46E5":"#B45309","#6366F1":"#D97706","#818CF8":"#F59E0B","#A5B4FC":"#FCD34D","#C7D2FE":"#FDE68A","#C7CCF9":"#FBE3A0","#E0E7FF":"#FEF3C7","#EEF2FF":"#FFF7E0","#EEF1FF":"#FFF8E6","#B9C0F5":"#F2CF8A","#F6F7FB":"#FBF8F3","#E7E9F3":"#F1EADF","#E4E7F2":"#EDE4D6","#6B6F8C":"#7A6A58","#5A5E7D":"#685846","#1E3A8A":"#57351E","#1D4ED8":"#7C4A24","#2563EB":"#9A5B2E","#3B82F6":"#B7773F","#60A5FA":"#D9A066","#93C5FD":"#E8C190","#BFDBFE":"#F2DAB8","#DBEAFE":"#F8EBD8","#0B0A1C":"#140B03","#16152D":"#221608","#26254A":"#3D2810","#1F1E3C":"#30200C","#2A2952":"#4A3214","#1B2547":"#3A2A12","#05040F":"#080401","#ECEEFF":"#FFF6E6","#A3A7CC":"#CDB592","14,12,43":"39,21,5","91,91,247":"217,119,6","79,70,229":"180,83,9","96,165,250":"217,160,102","165,180,252":"252,211,77","56,189,248":"183,119,63","49,46,129":"120,53,15","22,21,45":"34,22,8"}};
+
+const BRC = { Potheri: ["#4F46E5", "#EEF1FF"], Guduvanchery: ["#0D9488", "#E8FBF7"], Chengalpattu: ["#A21C5E", "#FDF0F5"], Urapakkam: ["#B45309", "#FFF8E6"] };
+const brc = b => BRC[b] || BRC.Potheri;
+let THEME = null, THEMEB = "", CSS0 = null;
+const recolor = v => !THEME || typeof v !== "string" ? v : v.replace(/#[0-9A-Fa-f]{6}\b|rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+/g, m => {
+  if (m[0] === "#") return THEME[m.toUpperCase()] || m;
+  const k = m.replace(/\s/g, "").replace(/^rgba?\(/, ""); return THEME[k] ? m.replace(/\(.*/, "(" + THEME[k]) : m; });
+function applyTheme(branch) {
+  branch = THEMES[branch] ? branch : "";
+  if (branch === THEMEB) return;
+  const st = document.getElementById("css"); if (CSS0 === null) CSS0 = st.textContent;
+  THEMEB = branch; THEME = THEMES[branch] || null; st.textContent = recolor(CSS0);
+  const mt = document.querySelector('meta[name="theme-color"]'); if (mt) mt.content = recolor("#0E0C2B");
+}
+/* every piece of HTML the app writes takes the branch colours */
+(() => { const d = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML"), a = Element.prototype.insertAdjacentHTML;
+  Object.defineProperty(Element.prototype, "innerHTML", { configurable: true, get() { return d.get.call(this); }, set(v) { d.set.call(this, recolor(v)); } });
+  Element.prototype.insertAdjacentHTML = function (p, v) { return a.call(this, p, recolor(v)); }; })();
 const canEdit = () => ME && (ME.role === "owner" || ME.edit);
 let toastT;
 function toast(t, bad) {
@@ -738,6 +771,7 @@ const VIEWS = {};
 function draw() {
   if (!D) return;
   const s = stack[stack.length - 1];
+  applyTheme(s.v === "all" ? "" : D.branch);
   root().innerHTML = (VIEWS[s.v] || VIEWS.home)(s);
   root().querySelectorAll("[data-back]").forEach(b => b.onclick = back);
   root().querySelectorAll("[data-refresh]").forEach(b => b.onclick = doRefresh);
@@ -822,11 +856,11 @@ async function enter() {
 function setupPage(err = "") {
   const keepV = id => { const e = $("#" + id); return e ? e.value : ""; };
   const old = { sn: keepV("sn"), sp: keepV("sp"), se: keepV("se"), sk: keepV("sk") };
-  authPage(loginTop("First time", `Set up the<br><em style="color:var(--lav)">owner login.</em>`, ""),
+  authPage(loginTop("First time", `Set up the<br><em style="color:var(--lav)">controller login.</em>`, ""),
     `<span class="grab"></span>${fld("sn", "Your name")}${fld("sp", "Mobile number", "tel", 'inputmode="tel" autocomplete="tel"')}${fld("se", "Email (the Gmail that runs this app)", "email", 'autocomplete="email"')}
      ${fld("sk", "Your 4-digit PIN", "password", 'inputmode="numeric" maxlength="4" pattern="[0-9]*" class="pin"')}
-     ${fld("sw", "Owner password (8 or more characters)", "password", 'autocomplete="new-password"')}${fld("sw2", "Password again", "password", 'autocomplete="new-password"')}
-     <div class="err">${esc(err)}</div><button class="cta" id="go">Create owner login</button>`);
+     ${fld("sw", "Controller password (8 or more characters)", "password", 'autocomplete="new-password"')}${fld("sw2", "Password again", "password", 'autocomplete="new-password"')}
+     <div class="err">${esc(err)}</div><button class="cta" id="go">Create controller login</button>`);
   Object.entries(old).forEach(([k, v]) => { if (v) $("#" + k).value = v; });
   $("#go").onclick = async e => {
     if ($("#sw").value !== $("#sw2").value) return setupPage("The two passwords are not the same.");
@@ -857,7 +891,7 @@ function login(err = "", info = "", phone = "") {
 /* owners: one more step */
 function pwPage(ticket, name, err = "") {
   authPage(loginTop("Owner", `Hello,<br><em style="color:var(--lav)">${esc(name)}.</em>`, ""),
-    `<span class="grab"></span>${fld("pw", "Owner password", "password", 'autocomplete="current-password"')}<div class="err">${esc(err)}</div>
+    `<span class="grab"></span>${fld("pw", "Controller password", "password", 'autocomplete="current-password"')}<div class="err">${esc(err)}</div>
      <button class="cta" id="go">Enter</button><button class="lnk" id="bk">Back</button>`);
   $("#bk").onclick = () => login();
   const go = async () => { const b = $("#go"); busy(b, true, 1);
@@ -868,11 +902,15 @@ function pwPage(ticket, name, err = "") {
 async function signOut() { try { await api("logout", TOKEN); } catch (e) {} keep(""); D = null; ME = null; login(); }
 function fail(msg) { noNav(); root().innerHTML = `<div class="loading"><b class="serif" style="font-size:28px;color:var(--ink)">Something went wrong</b><br><br>${esc(msg)}<br><br><button class="more" id="retry">Try again</button></div>`; $("#retry").onclick = start; }
 function pickBranch() {
+  applyTheme("");
   const br = [...new Set(BOOKS.map(b => b.branch))];
   root().innerHTML = header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live from the sheets</span></span>`, "",
     `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">Pick a branch</span><h1 class="ttl">One branch<br><em>at a time.</em></h1></div>`, "short")
-    + `<main class="main lo">${br.map((b, i) => `<button class="card" data-b="${esc(b)}" style="padding:22px;display:flex;justify-content:space-between;align-items:center;${i === 0 ? "background:var(--accent);color:#fff" : ""}">
-       <span><span class="serif" style="font-size:32px">${esc(b)}</span><br><span class="ebd" style="${i === 0 ? "color:var(--peri)" : ""}">${esc(BOOKS.find(x => x.branch === b).month)}</span></span>${IC.chev}</button>`).join("")}</main>`;
+    + `<main class="main lo">${br.length > 1 && D ? `<button class="card" id="pAll" style="padding:22px;display:flex;justify-content:space-between;align-items:center;background:var(--night);color:#fff">
+       <span><span class="serif" style="font-size:32px">All branches</span><br><span class="ebd" style="color:var(--lav)">Side by side · ${br.length}</span></span>${IC.chev}</button>` : ""}
+       ${br.map(b => `<button class="card brcard" data-b="${esc(b)}" style="--bc:${brc(b)[0]};--bs:${brc(b)[1]}">
+       <span class="brdot"></span><span style="flex:1"><span class="serif" style="font-size:32px">${esc(b)}</span><br><span class="ebd">${esc(BOOKS.find(x => x.branch === b).month || "")}</span></span>${IC.chev}</button>`).join("")}</main>`;
+  const pa = $("#pAll"); if (pa) pa.onclick = () => { stack = [{ v: "home" }, { v: "all" }]; ALLB = null; draw(); };
   root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; root().innerHTML = SKEL(); await refresh(); });
 }
 
@@ -913,6 +951,53 @@ async function write(ops, summary) {
   closeSheet(); draw(); toast("Saved");
 }
 
+/* ================= all branches side by side (owner & controller) ================= */
+let ALLB = null;
+function summarize(d) {                      // the same figures each branch's own pages use
+  const sD = D, sM = M;
+  try {
+    D = d; M = model(d); M.P = buildPV(); const P = pace() || {};
+    const bills = sum(M.staff, x => x.billsT), svcB = sum(M.staff, x => sum(x.svc.filter((v, k) => x.bills[k])));
+    return { month: M.Month, last: M.lastDay, dim: M.dim, sales: P.sales || 0, avg: P.avg || 0, proj: P.projSales || 0, net: M.P.net, full: M.P.full,
+      cash: sum(M.days.filter(x => x.d <= M.lastDay), x => x.diff || 0), bills, avgBill: bills ? svcB / bills : 0, best: (M.ranked[0] || {}).name || "" };
+  } finally { D = sD; M = sM; }
+}
+function loadAll() {
+  if (loadAll.p) return loadAll.p;
+  const br = [...new Set(BOOKS.map(b => b.branch))];
+  loadAll.p = Promise.all(br.map(b => {
+    const bk = BOOKS.find(x => x.branch === b && x.month === D.month) || BOOKS.find(x => x.branch === b);
+    if (bk.i === BOOKS[cur].i) return Promise.resolve({ branch: b, i: bk.i, k: summarize(D) });
+    return api("getBook", TOKEN, bk.i).then(raw => ({ branch: b, i: bk.i, k: summarize(JSON.parse(raw)) })).catch(e => ({ branch: b, i: bk.i, err: msgOf(e) }));
+  })).then(list => { ALLB = { t: new Date(), list }; loadAll.p = null; }, e => { loadAll.p = null; throw e; });
+  return loadAll.p;
+}
+VIEWS.all = s => {
+  const L = ALLB && ALLB.list, ok = (L || []).filter(x => !x.err);
+  const head = header(backBtn("Home"), "", `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">All branches${L ? " · " + ok.length : ""}${ok[0] ? " · " + esc(ok[0].k.month) : ""}</span><h1 class="ttl">Every branch,<br><em>side by side.</em></h1></div>`, "short");
+  if (!L) return head + `<main class="main lo">${[1, 2, 3].map(() => `<span class="sk" style="display:block;height:120px;border-radius:24px"></span>`).join("")}</main>`;
+  const T = k => sum(ok, x => x.k[k]), full = ok.every(x => x.k.full), mx = Math.max(1, ...ok.map(x => x.k.avg));
+  const sg = v => (v < 0 ? "− " : v > 0 ? "+ " : "") + inr(Math.abs(v));
+  const top = ok.slice().sort((a, b) => b.k.avg - a.k.avg)[0];
+  return head + `<main class="main lo">
+    <div class="card pad">${rowx("Sales so far", inr(T("sales")))}${rowx("On track for the month", inr(T("proj")))}${rowx(full ? "Profit so far" : "Profit before salary &amp; fixed costs", inr(T("net")))}${rowx("Cash short (−) / extra (+)", sg(T("cash")))}${rowx("Bills", ind(T("bills")))}</div>
+    ${sh(1, "Sales a day", top ? "best · " + esc(top.branch) : "")}
+    <div class="card pad">${ok.map(x => `<div class="abar"><span class="bn">${esc(x.branch)}</span><span class="bt"><i style="width:${Math.round(x.k.avg / mx * 100)}%;background:${brc(x.branch)[0]}"></i></span><span class="bv">${cpt(x.k.avg)}</span></div>`).join("")}</div>
+    ${sh(2, "Branches", "tap to open")}
+    ${L.map(x => `<button class="card brcard" data-ob="${x.i}" style="--bc:${brc(x.branch)[0]};--bs:${brc(x.branch)[1]};display:block;width:100%;text-align:left">
+      <span style="display:flex;align-items:center;gap:12px"><span class="brdot" style="height:30px;width:10px"></span><span class="serif" style="font-size:28px;flex:1">${esc(x.branch)}</span>${IC.chev}</span>
+      ${x.err ? `<div class="meta" style="margin-top:8px">Could not open: ${esc(x.err)}</div>` : `<span class="ebd" style="display:block;margin-top:6px">${x.k.last ? "Up to day " + x.k.last + " of " + x.k.dim : "Nothing entered yet"}</span>
+      <span class="abr"><span><span class="ebd">Sales</span><br><span class="v">${cpt(x.k.sales)}</span></span><span><span class="ebd">A day</span><br><span class="v">${cpt(x.k.avg)}</span></span>
+      <span><span class="ebd">${full ? "Profit" : "Profit*"}</span><br><span class="v">${cpt(x.k.net)}</span></span><span><span class="ebd">Cash</span><br><span class="v" style="color:${x.k.cash < 0 ? "var(--bad)" : "var(--ink)"}">${x.k.cash ? sg(x.k.cash) : "OK"}</span></span>
+      <span><span class="ebd">Avg bill</span><br><span class="v">${x.k.avgBill ? "₹" + ind(Math.round(x.k.avgBill)) : "–"}</span></span><span><span class="ebd">Top staff</span><br><span class="v" style="font-family:var(--sans);font-size:15px">${esc(x.k.best || "–")}</span></span></span>`}</button>`).join("")}
+    ${full ? "" : `<div class="meta" style="padding:0 6px">* before salary &amp; fixed costs — the controller turns them on in Profit &amp; Loss.</div>`}
+  </main>`;
+};
+VIEWS.all_bind = s => {
+  if (!ALLB) loadAll().then(() => { if (stack[stack.length - 1].v === "all" && !$("#sheet")) draw(); }).catch(e => toast(msgOf(e), 1));
+  root().querySelectorAll("[data-ob]").forEach(b => b.onclick = async () => { cur = BOOKS.findIndex(k => k.i === +b.dataset.ob); stack = [{ v: "home" }]; root().innerHTML = SKEL(); await refresh(); });
+};
+
 /* ================= notifications (owners) ================= */
 VIEWS.notes = s => {
   const N = s.list || [];
@@ -921,7 +1006,7 @@ VIEWS.notes = s => {
   + `<main class="main lo"><div class="card pad">${N.map(n => `<div class="li" style="align-items:flex-start">
       <span class="lt" style="background:${n.type === "request" ? "var(--accent)" : n.type === "alert" ? "var(--badsoft)" : "var(--soft)"};color:${n.type === "request" ? "#fff" : n.type === "alert" ? "var(--bad)" : "var(--deep)"};font-family:var(--mono);font-size:16px">${ic[n.type] || "i"}</span>
       <span style="flex:1;min-width:0"><span style="font-size:14.5px;${n.unread ? "font-weight:600" : ""}">${esc(n.text)}</span><div class="meta">${new Date(n.t).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })}</div>
-      ${n.type === "request" && n.open ? `<div style="display:flex;gap:8px;margin-top:10px"><button class="pillbtn" data-acc="${n.u}">Let in as viewer</button><button class="pillbtn ghost" data-rej="${n.u}">Refuse</button></div>` : ""}</span></div>`).join("") || (s.loading ? "" : '<div class="empty">No notifications yet.</div>')}</div></main>`;
+      ${n.type === "request" && n.open ? `<div style="display:flex;gap:8px;margin-top:10px"><button class="pillbtn" data-acc="${n.u}">Let in as owner (view only)</button><button class="pillbtn ghost" data-rej="${n.u}">Refuse</button></div>` : ""}</span></div>`).join("") || (s.loading ? "" : '<div class="empty">No notifications yet.</div>')}</div></main>`;
 };
 VIEWS.notes_bind = s => {
   if (!s.list && !s.loading) { s.loading = true; api("notes", TOKEN).then(l => { s.list = l; s.loading = false; draw(); api("markRead", TOKEN).then(() => { D.unread = 0; }); }).catch(e => toast(msgOf(e), 1)); }
@@ -935,27 +1020,27 @@ VIEWS.notes_bind = s => {
 
 function letIn(id, after) {
   sheet("Let this number in", [{ k: "name", label: "Their name" }], async v => {
-    if (!v.name) throw new Error("Write their name."); await api("decide", TOKEN, id, true, v.name); closeSheet(); await after(); toast(v.name + " can now sign in"); }, { saveText: "Let in as viewer" });
+    if (!v.name) throw new Error("Write their name."); await api("decide", TOKEN, id, true, v.name); closeSheet(); await after(); toast(v.name + " can now sign in"); }, { saveText: "Let in as owner (view only)" });
 }
 /* ================= people (owners): who can open the app ================= */
 VIEWS.people = s => {
   const P = s.list || [], O = P.filter(p => p.role === "owner" && p.status === "active"), V = P.filter(p => p.role === "viewer" && p.status === "active"), Q = P.filter(p => p.status === "pending");
   const when = t => t ? new Date(t).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }) : "never";
   const ph = p => p.phone.replace(/(\d{5})(\d{5})/, "$1 $2");
-  return header(backBtn("Home"), "", `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">People · ${O.length + V.length}</span><h1 class="ttl">Who can<br><em>see the book.</em></h1></div>`, "flat")
+  return header(backBtn("Home"), "", `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">People · ${O.length + V.length}</span><h1 class="ttl">Who can<br><em>open the app.</em></h1></div>`, "flat")
   + `<main class="main flat">
     ${Q.length ? `${sh(1, "Trying to log in")}<div class="card pad">${Q.map(p => `<div class="li" style="align-items:flex-start">${av(p.name || "?", 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${p.name ? esc(p.name) : "Unknown number"}</span><div class="meta">${ph(p)} · PIN typed ${esc(p.pin || "–")}</div>
-      <div style="display:flex;gap:8px;margin-top:10px"><button class="pillbtn" data-acc="${p.id}">Let in as viewer</button><button class="pillbtn ghost" data-rej="${p.id}">Refuse</button></div></span></div>`).join("")}</div>` : ""}
-    ${sh(Q.length ? 2 : 1, "Owners", `${O.length} of 2`)}
+      <div style="display:flex;gap:8px;margin-top:10px"><button class="pillbtn" data-acc="${p.id}">Let in as owner (view only)</button><button class="pillbtn ghost" data-rej="${p.id}">Refuse</button></div></span></div>`).join("")}</div>` : ""}
+    ${sh(Q.length ? 2 : 1, "Controller", `${O.length} of 2 · can change &amp; approve`)}
     <div class="card pad">${O.map(p => `<div class="li">${av(p.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(p.name)}</span> ${p.core ? '<span class="tag dark">Main</span>' : ""}${p.id === ME.id ? ' <span class="tag own">You</span>' : ""}
       <div class="meta">${ph(p)} · ${esc(p.email)}</div><div class="meta">Last in ${when(p.lastLogin)}</div></span>${!p.core && p.id !== ME.id ? `<button class="pillbtn ghost" data-rm="${p.id}" data-n="${esc(p.name)}">Remove</button>` : ""}</div>`).join("")}
-      ${O.length < 2 ? `<button class="rowx" id="addO" style="color:var(--accent);font-weight:600">+ Add the second owner</button>` : ""}</div>
-    ${sh(Q.length ? 3 : 2, "Viewers")}
+      ${O.length < 2 ? `<button class="rowx" id="addO" style="color:var(--accent);font-weight:600">+ Add a second controller</button>` : ""}</div>
+    ${sh(Q.length ? 3 : 2, "Owners", "see every branch · view only")}
     <div class="card pad">${V.map(p => `<div class="li" style="align-items:flex-start">${av(p.name, 44)}<span style="flex:1;min-width:0"><span style="font-size:15.5px">${esc(p.name)}</span>
       <div class="meta">${ph(p)}${p.email ? " · " + esc(p.email) : ""}</div><div class="meta">${p.addedBy ? "Added by " + esc(p.addedBy) + " · " : ""}last in ${when(p.lastLogin)}</div>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><span class="pinchip">PIN ${p.pin ? `<b>${esc(p.pin)}</b>` : "not chosen yet"}</span>
-        <button class="pillbtn ${p.edit ? "" : "ghost"}" data-ce="${p.id}" data-on="${p.edit ? "" : "1"}" data-n="${esc(p.name)}">${p.edit ? "Can make changes ✓" : "Allow changes"}</button><button class="pillbtn ghost" data-rp="${p.id}" data-n="${esc(p.name)}">Reset PIN</button><button class="pillbtn ghost danger" data-rm="${p.id}" data-n="${esc(p.name)}">Remove</button></div></span></div>`).join("") || '<div class="empty">No viewers yet.</div>'}
-      <button class="rowx" id="addV" style="color:var(--accent);font-weight:600">+ Add a viewer</button></div>
+        <button class="pillbtn ghost" data-rp="${p.id}" data-n="${esc(p.name)}">Reset PIN</button><button class="pillbtn ghost danger" data-rm="${p.id}" data-n="${esc(p.name)}">Remove</button></div></span></div>`).join("") || '<div class="empty">No owners added yet.</div>'}
+      <button class="rowx" id="addV" style="color:var(--accent);font-weight:600">+ Add an owner (view only)</button></div>
   </main>`;
 };
 VIEWS.people_bind = s => {
@@ -967,12 +1052,12 @@ VIEWS.people_bind = s => {
   root().querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = "Tap again to remove"; return; } act(b, () => api("removePerson", TOKEN, b.dataset.rm), b.dataset.n + " removed"); });
   root().querySelectorAll("[data-ce]").forEach(b => b.onclick = () => act(b, () => api("setEdit", TOKEN, b.dataset.ce, !!b.dataset.on), b.dataset.on ? b.dataset.n + " can now make changes" : b.dataset.n + " is view-only again"));
   root().querySelectorAll("[data-rp]").forEach(b => b.onclick = () => act(b, () => api("resetPin", TOKEN, b.dataset.rp), b.dataset.n + " will choose a new PIN"));
-  const aV = $("#addV"); if (aV) aV.onclick = () => sheet("Add a viewer", [{ k: "name", label: "Name" }, { k: "phone", label: "Mobile number", type: "tel" }, { k: "email", label: "Email (optional)", type: "email" },
+  const aV = $("#addV"); if (aV) aV.onclick = () => sheet("Add an owner (view only)", [{ k: "name", label: "Name" }, { k: "phone", label: "Mobile number", type: "tel" }, { k: "email", label: "Email (optional)", type: "email" },
     { k: "pin", label: "4-digit PIN (optional)", type: "pin" }],
-    async v => { s.list = await api("addPerson", TOKEN, Object.assign(v, { role: "viewer" })); closeSheet(); draw(); toast(v.name + " added"); }, { saveText: "Add viewer" });
-  const aO = $("#addO"); if (aO) aO.onclick = () => sheet("Add the second owner", [{ k: "name", label: "Name" }, { k: "phone", label: "Mobile number", type: "tel" }, { k: "email", label: "Email", type: "email" },
+    async v => { s.list = await api("addPerson", TOKEN, Object.assign(v, { role: "viewer" })); closeSheet(); draw(); toast(v.name + " added"); }, { saveText: "Add owner" });
+  const aO = $("#addO"); if (aO) aO.onclick = () => sheet("Add a second controller", [{ k: "name", label: "Name" }, { k: "phone", label: "Mobile number", type: "tel" }, { k: "email", label: "Email", type: "email" },
     { k: "pin", label: "4-digit PIN", type: "pin", half: 1 }, { k: "password", label: "Password (8+)", type: "password", half: 1 }],
-    async v => { s.list = await api("addPerson", TOKEN, Object.assign(v, { role: "owner" })); closeSheet(); draw(); toast(v.name + " added as owner"); }, { saveText: "Add owner" });
+    async v => { s.list = await api("addPerson", TOKEN, Object.assign(v, { role: "owner" })); closeSheet(); draw(); toast(v.name + " added as controller"); }, { saveText: "Add controller" });
 };
 function changePw() {
   sheet("Change my password or PIN", [{ k: "o", label: "Current password", type: "password" }, { k: "pin", label: "New 4-digit PIN (optional)", type: "pin", half: 1 },
@@ -1268,7 +1353,7 @@ VIEWS.home = () => {
   const fx = (D.checks || []).filter(c => c[1].startsWith("✗") || c[1] === "Pending").length;
   return header(`<span class="livep glass"><i></i><span class="eb" style="color:#C7CCF9">Live · ${esc(t)}</span></span>`,
     `<span style="display:flex;gap:8px">${isOwner() ? `<button class="round glass" ${gp("notes")} aria-label="Notifications" style="position:relative">${IC.bell}${D.unread ? `<span class="badge">${D.unread > 9 ? "9+" : D.unread}</span>` : ""}</button>` : ""}<button class="round glass" id="acct" aria-label="Menu">${IC.user}</button></span>`,
-    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${esc(dateL)}${ME ? ` · ${esc(ME.name)} · ${isOwner() ? "owner" : ME.edit ? "can change" : "viewer"}` : ""}</span>
+    `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${esc(dateL)}${ME ? ` · ${esc(ME.name)} · ${roleName(ME.role)}` : ""}</span>
      <h1 class="serif" style="margin:0;font-size:56px;line-height:.95;letter-spacing:-1.5px">${greet}<br><em style="color:var(--lav)">${esc(D.branch)}.</em></h1></div>`)
   + (() => {
   // the figures each tile shows
@@ -1342,11 +1427,11 @@ VIEWS.home_bind = () => {
     const multi = [...new Set(BOOKS.map(b => b.branch))].length > 1;
     const it = (id, t) => `<button class="rowx" style="padding:12px 14px" id="${id}">${t}</button>`;
     a.parentElement.insertAdjacentHTML("afterend", `<div id="menu" class="card" style="position:absolute;right:0;top:52px;z-index:5;padding:6px;min-width:210px;color:var(--ink)">
-      ${it("m-r", "Refresh now")}${multi ? it("m-b", "Change branch") : ""}${isOwner() ? it("m-p", "People & PINs") + it("m-s", "Book settings") + it("m-w", "Change my password or PIN") : ""}${it("m-l", "Sign out")}</div>`);
+      ${it("m-r", "Refresh now")}${multi ? it("m-a", "All branches") + it("m-b", "Change branch") : ""}${isOwner() ? it("m-p", "People & PINs") + it("m-s", "Book settings") + it("m-w", "Change my password or PIN") : ""}${it("m-l", "Sign out")}</div>`);
     $("#m-r").onclick = () => refresh();
     $("#m-l").onclick = signOut;
     const on = (id, f) => { const x = $("#" + id); if (x) x.onclick = f; };
-    on("m-b", pickBranch); on("m-p", () => go("people")); on("m-s", () => go("settings")); on("m-w", () => { $("#menu").remove(); changePw(); });
+    on("m-b", pickBranch); on("m-a", () => { ALLB = null; go("all"); }); on("m-p", () => go("people")); on("m-s", () => go("settings")); on("m-w", () => { $("#menu").remove(); changePw(); });
   };
 };
 
@@ -1364,7 +1449,7 @@ function dayPLLines(P, d) {
       ${prowG("Shop expenses", P.shop, [P.cashexp ? `paid by the shop ${inr(P.cashexp)}` : "", P.card ? `card charges ${inr(P.card)}` : "", P.cashdiff ? (P.cashdiff < 0 ? `cash short ${inr(-P.cashdiff)}` : `cash excess ${inr(P.cashdiff)}`) : ""].filter(Boolean).join(" · "))}
       ${prowG("Owner bills", P.own, owners.filter(o => o.sec !== "C").map(o => esc(o.cat) + " " + inr(o.month)).join(" · "))}
       ${prowG("Depreciation", P.dep)}
-      ${P.held ? `<div class="heldn">${IC.info}<span>Salary, owner bills and depreciation (${seeSal() ? inr(P.held) : "not shown"}) are not counted yet — the owner turns them on in Profit &amp; Loss.</span></div>` : ""}
+      ${P.held ? `<div class="heldn">${IC.info}<span>Salary, owner bills and depreciation (${seeSal() ? inr(P.held) : "not shown"}) are not counted yet — the controller turns them on in Profit &amp; Loss.</span></div>` : ""}
       <div class="rowx tot"><span class="l">Profit for the day</span><span class="a tn ${P.profit < 0 ? "neg" : ""}" style="color:${P.profit < 0 ? "var(--bad)" : "var(--accent)"}">${sgn(P.profit)}</span></div>
 `;
 }
@@ -1555,7 +1640,7 @@ function entriesFor(k) {
   return { rows: rows.sort((a, b) => (b.d || 0) - (a.d || 0)), note };
 }
 const expSeg = s => fullOK() ? `<div class="seg" id="eseg" style="position:relative"><button data-em="spend" aria-pressed="${!s.full}">Day-to-day</button><button data-em="full" aria-pressed="${!!s.full}">With salary &amp; fixed</button></div>` : "";
-const viewerSwitch = () => isOwner() ? flagSwitch("vflag", D.flags && D.flags.viewFull, "Managers see salary &amp; fixed costs", "On · they can see salaries, the Salary page and fixed costs", "Off · salaries and fixed costs are hidden from them") : "";
+const viewerSwitch = () => isOwner() ? flagSwitch("vflag", D.flags && D.flags.viewFull, "Owner sees salary &amp; fixed costs", "On · they can see salaries, the Salary page and fixed costs", "Off · salaries and fixed costs are hidden from them") : "";
 function expSpend(s) {
   const H = spendHeads().sort((a, b) => shopAmt(b) - shopAmt(a)), T = spendT(), n = sum(H, k => shopRows(k).length);
   const shades = ["#2563EB", "#60A5FA", "#93C5FD", "#BFDBFE", "#3B82F6", "#DBEAFE"];
@@ -1579,7 +1664,7 @@ function expSpend(s) {
 }
 VIEWS.exp_bind = s => {
   const g = $("#eseg"); if (g) g.querySelectorAll("button").forEach(b => b.onclick = () => { s.full = b.dataset.em === "full"; draw(); });
-  const f = $("#vflag"); if (f) f.onclick = () => { f.disabled = true; const on = !(D.flags && D.flags.viewFull); setFlag("viewFull", on, on ? "Managers can now see salary & fixed costs" : "Salary & fixed costs are hidden from managers"); };
+  const f = $("#vflag"); if (f) f.onclick = () => { f.disabled = true; const on = !(D.flags && D.flags.viewFull); setFlag("viewFull", on, on ? "The owner can now see salary & fixed costs" : "Salary & fixed costs are hidden from the owner"); };
 };
 /* salary and fixed costs (rent, phone…) are added anyway: the Expenses page shows real day-to-day spending unless "Full month" is picked.
    Owners can always switch; managers only when an owner allows it. Profit always counts everything. */
@@ -1835,7 +1920,7 @@ VIEWS.patt = s => {
 
 /* ================= 7 · salary & advances ================= */
 const lockedPage = (title, what) => header(backBtn("Home"), monthPick(), `<div style="position:relative;display:flex;flex-direction:column;gap:10px"><span class="eb">${title}</span><h1 class="ttl">Owner<br><em>only.</em></h1></div>`, "flat")
-  + `<main class="main flat"><div class="card lockc">${IC.lock}<b>${what} are visible to owners only.</b><span class="meta" style="margin:0">An owner can turn this on for managers in Expenses.</span></div></main>`;
+  + `<main class="main flat"><div class="card lockc">${IC.lock}<b>${what} are visible to the controller only.</b><span class="meta" style="margin:0">The controller can turn this on in Expenses.</span></div></main>`;
 VIEWS.salary = () => {
   if (!seeSal()) return lockedPage("Salary", "Salaries");
   const S = D.salary, T = k => sum(S, s => s[k]);
