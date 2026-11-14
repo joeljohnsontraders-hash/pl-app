@@ -417,6 +417,84 @@ body.dark .insl.up .ii,body.dark .be.ok{background:#0F3B26;color:#86EFAC}body.da
 body.dark .hgrid .c{color:var(--ink)}body.dark .ax{fill:#A3A7CC}
 body.dark #tip{background:#ECEEFF;color:#0E0C2B}
 body.dark #nav{background:rgba(22,21,45,.94);border-color:rgba(255,255,255,.08)}body.dark #nav button{color:#A3A7CC}body.dark #nav button[aria-current="page"]{color:#fff}
+/* ===== v15 · desktop: side menu, wide pages, two-column layout ===== */
+.nvb,.nvg,.nvf,.ld,.nvc{display:none}
+@media (max-width:959px){#nav .d:not(.m){display:none}#nav .nq1{order:1}#nav .nq2{order:2}#nav .nq3{order:3}#nav .nq4{order:4}#nav .nq5{order:5}}
+@media (min-width:960px){
+  html,body{background:#E7E9F3}
+  body:not(.app) #root{max-width:460px;margin:4vh auto;min-height:92vh;border-radius:34px;overflow:hidden;box-shadow:0 0 0 1px rgba(14,12,43,.06),0 40px 90px -30px rgba(14,12,43,.4)}
+  body:not(.app) .login{min-height:92vh}
+  body.app #root{max-width:none;margin:0 0 0 248px;min-height:100vh;padding-bottom:0;box-shadow:none;--dpad:max(40px,calc((100% - 1240px) / 2))}
+  /* side menu */
+  body.app #nav{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:2px;left:0;top:0;bottom:0;transform:none;width:248px;max-width:none;
+    padding:22px 14px 18px;background:var(--night);border:0;border-right:1px solid rgba(255,255,255,.06);overflow-y:auto;backdrop-filter:none;-webkit-backdrop-filter:none;scrollbar-width:thin}
+  #nav .m:not(.d){display:none}
+  #nav .lm{display:none}#nav .ld{display:inline}
+  #nav button{flex:none;flex-direction:row;justify-content:flex-start;align-items:center;gap:12px;padding:0 12px;height:40px;border-radius:12px;font-size:14px;font-weight:500;color:#B9C0F5;text-align:left;width:100%}
+  #nav button svg{width:18px;height:18px;flex:none}
+  #nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+  #nav button[aria-current="page"]{background:rgba(255,255,255,.11);color:#fff}
+  #nav button[aria-current="page"] svg{background:none;padding:0;margin:0;color:var(--lav)}
+  .nvb{display:flex;flex-direction:column;gap:14px;padding:4px 8px 14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .nvl{display:flex;align-items:center;gap:10px;color:#fff;font-family:var(--serif);font-size:26px;line-height:1}
+  .nvl i{width:30px;height:30px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font:600 12px var(--mono);font-style:normal;color:#fff}
+  #nav .nvbr{height:auto;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);flex-direction:column;align-items:flex-start;gap:2px;color:#fff}
+  .nvbr b{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}.nvbr b i{width:8px;height:8px;border-radius:4px;background:var(--sky)}
+  .nvbr small{font:500 11px var(--mono);letter-spacing:.06em;color:var(--lav);text-transform:uppercase}
+  .nvg{display:block;padding:14px 12px 6px;font:500 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#7C82B8}
+  .nvc{display:inline-grid;place-items:center;margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#F97316;color:#fff;font-size:11px;font-weight:700}
+  .nvf{display:flex;flex-direction:column;gap:2px;margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.08)}
+  #nav .nvf .sw{margin-left:auto;width:38px;height:22px}#nav .nvf .sw i{width:16px;height:16px}#nav .nvf .sw.on i{left:19px}
+  body.dark.app #nav{background:#05040F}body.dark #nav button{color:#A3A7CC}body.dark #nav button[aria-current="page"]{color:#fff}
+  /* header */
+  .hd{padding:30px var(--dpad,48px) 96px;border-radius:0 0 48px 48px;gap:24px}
+  .hd.short{padding-bottom:80px}.hd.flat{padding-bottom:34px}
+  .o1{right:8%;width:520px;height:520px;top:-240px}.o2{left:10%;width:520px;height:520px}
+  .ttl{font-size:66px}.big{font-size:78px}.big.m{font-size:64px}
+  .hd .hk3,.hd .hk2{max-width:780px}.hd .wk{max-width:640px}.hd .seg{max-width:440px}.hd .pod{max-width:640px}
+  .hk .v{font-size:30px}
+  /* pages */
+  .main{padding:0 var(--dpad,48px) 64px;gap:18px}
+  .main.dk{display:block}
+  .dmas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start;margin-bottom:20px}
+  .dmas:last-child{margin-bottom:0}
+  .dcol{display:flex;flex-direction:column;gap:20px;min-width:0}
+  .dsec{display:flex;flex-direction:column;gap:14px;min-width:0;margin-bottom:20px}
+  .dcol>.dsec,.dsec:last-child{margin-bottom:0}
+  .dsec>.sh:first-child{margin-top:4px}
+  .main.dk:not(.flat) .dtop>.dcol>.dsec:first-child>.sh:first-child,.main.dk:not(.flat) .dsec.dtop>.sh:first-child{margin-top:70px}
+  .main.dk.lo .dtop>.dcol>.dsec:first-child>.sh:first-child,.main.dk.lo .dsec.dtop>.sh:first-child{margin-top:52px}
+  .card.dlong{columns:2;column-gap:40px}.card.dlong>*{break-inside:avoid}
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;align-items:start}
+  .dgrid>:not(.card):not(.st):not(.sc){grid-column:1/-1}
+  .sg{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+  .card button:hover,.rowx[data-go]:hover,.li[data-go]:hover{background-color:rgba(79,70,229,.035)}
+  button.card:hover,.tile:hover{transform:translateY(-2px);transition:transform .15s ease}
+  /* home */
+  .tiles{padding:0 var(--dpad,48px) 64px;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(176px,auto);grid-auto-flow:dense;gap:18px}
+  .tiles .qa{grid-column:span 2}
+  .tiles>.tile:last-child{grid-column:1/-1}
+  .revwrap{margin:-58px var(--dpad,48px) 0}
+  .tt{font-size:30px}
+  /* forms open in the middle of the screen */
+  .sheetbg{align-items:center}
+  body.app .sheetbg{padding-left:248px}
+  .sheetc{max-width:560px;max-height:86vh;border-radius:30px;padding:28px 28px 26px}
+  .sheetc .cta{bottom:-26px}
+  .grab{display:none}
+  .fab{right:40px;bottom:32px}
+  #toast,body.app #toast{left:calc(50% + 124px);bottom:28px}
+  #menu{min-width:240px}
+}
+@media (min-width:960px) and (max-height:820px){#nav button{height:34px}#nav .nvg{padding:10px 12px 4px}.nvb{gap:10px;padding-bottom:10px}}
+@media (min-width:960px) and (max-width:1199px){
+  body.app #root{margin-left:220px;--dpad:28px}body.app #nav{width:220px;padding:20px 10px 16px}body.app .sheetbg{padding-left:220px}
+  #toast,body.app #toast{left:calc(50% + 110px)}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles>.tile:last-child{grid-column:auto}
+  .ttl{font-size:56px}.big{font-size:66px}
+  .dmas{gap:16px}.dcol{gap:16px}
+}
+@media (min-width:1600px){body.app #root{--dpad:max(56px,calc((100% - 1360px) / 2))}}
 </style>
 
 </head><body>
@@ -810,20 +888,110 @@ function draw() {
   (s.after || (() => {}))();
   if (VIEWS[s.v + "_bind"]) VIEWS[s.v + "_bind"](s);
   navSync();
+  deskLayout();
 }
+/* ===== v15 · desktop: side menu with every page, wide two-column pages ===== */
+const DESK = window.matchMedia("(min-width:960px)");
+const NIC = (d) => `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const NI = {
+  exp: NIC('<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/>'),
+  stock: NIC('<path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>'),
+  att: NIC('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M9 15l2 2 4-4"/>'),
+  salary: NIC('<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18"/><circle cx="16" cy="14.5" r="1.3"/>'),
+  inc: NIC('<path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6L12 16.6 6.7 19.5l1.1-6L3.4 9.3l6-.8z"/>'),
+  pday: NIC('<path d="M3 17l5-5 4 3 7-8"/><path d="M14 7h5v5"/>'),
+  checks: NIC('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/>'),
+  review: NIC('<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5l2.5 2.5 5-6"/>'),
+  people: NIC('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3 3 0 0 1 0 5.6M18 19a5 5 0 0 0-2.5-4.3"/>'),
+  settings: NIC('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>'),
+  moon: NIC('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),
+  swap: NIC('<path d="M7 7h12l-3-3M17 17H5l3 3"/>'),
+  grid: NIC('<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>')
+};
+const DTAB = { day: "sales", head: "pnl", person: "staff", patt: "att", rday: "review" };
+function navHTML() {
+  const multi = [...new Set(BOOKS.map(b => b.branch))].length > 1, own = isOwner();
+  const it = (k, ic, lm, ld, cls, extra = "") => `<button data-tab="${k}" class="${cls}">${ic}${lm ? `<span class="lm">${lm}</span>` : ""}<span class="ld">${ld}</span>${extra}</button>`;
+  const g = t => `<span class="nvg">${t}</span>`;
+  const bk = BOOKS[cur] || {};
+  return `<div class="nvb"><span class="nvl"><i>P&amp;L</i>Owner</span>
+    ${D ? `<button class="nvbr" data-nv="br"><b><i></i>${esc(D.branch || bk.branch || "")}</b><small>${esc(bk.month || D.month || "")}${multi ? " · change" : ""}</small></button>` : ""}</div>`
+    + it("home", IC.home, "Home", "Home", "m d nq1")
+    + g("Money") + it("sales", IC.tsales, "Sales", "Daily sales", "m d nq2") + it("pnl", IC.tpnl, "P&amp;L", "Profit &amp; Loss", "m d nq3")
+    + it("pday", NI.pday, "", "Profit by day", "d") + it("exp", NI.exp, "", "Expenses", "d") + it("stock", NI.stock, "", "Stock", "d")
+    + g("People") + it("staff", IC.tstaff, "Staff", "Staff", "m d nq4") + it("att", NI.att, "", "Attendance", "d") + it("salary", NI.salary, "", "Salary", "d")
+    + it("inc", NI.inc, "", "Incentives", "d") + it("checks", NI.checks, "", "Checks", "d")
+    + (own ? g("Controller") + it("review", NI.review, "", "Review &amp; approve", "d") + it("notes", IC.bell, "", "Notifications", "d", D && D.unread ? `<span class="nvc">${D.unread > 9 ? "9+" : D.unread}</span>` : "")
+      + it("people", NI.people, "", "People &amp; PINs", "d") + it("settings", NI.settings, "", "Book settings", "d") : "")
+    + it("more", IC.tmore, "More", "More", "m nq5")
+    + `<div class="nvf">${multi ? `<button data-nv="all">${NI.grid}<span class="ld">All branches</span></button>` : ""}
+      <button data-nv="dark">${NI.moon}<span class="ld">Dark mode</span><span class="sw ${document.body.classList.contains("dark") ? "on" : ""}"><i></i></span></button>
+      <button data-nv="ref">${IC.refresh}<span class="ld">Refresh now</span></button></div>`;
+}
+function navBind(n) {
+  n.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => tab(b.dataset.tab));
+  n.querySelectorAll("[data-nv]").forEach(b => b.onclick = () => {
+    const k = b.dataset.nv;
+    if (k === "br") { if ([...new Set(BOOKS.map(x => x.branch))].length > 1) { closeSheet(); try { history.pushState({ p: 1 }, ""); } catch (e) {} pickBranch(); } return; }
+    if (k === "all") { closeSheet(); ALLB = null; stack = [{ v: "home" }, { v: "all" }]; draw(); window.scrollTo(0, 0); return; }
+    if (k === "dark") { const on = document.body.classList.toggle("dark"); try { localStorage.setItem("pl_dark", on ? "1" : ""); } catch (e) {} b.querySelector(".sw").classList.toggle("on", on); return; }
+    if (k === "ref") doRefresh();
+  });
+}
+/* wide screens: the cards of a page sit in two columns; a section with many cards becomes a grid */
+function deskLayout() {
+  if (!DESK.matches) return;
+  root().querySelectorAll("main.main:not(.dk)").forEach(m => {
+    const all = [...m.children]; m.classList.add("dk");
+    const aside = all.filter(e => { const cs = getComputedStyle(e); return cs.position === "fixed" || cs.display === "none" || e.tagName === "SCRIPT"; });
+    const kids = all.filter(e => aside.indexOf(e) < 0);
+    if (kids.length < 2) return;
+    const ctl = e => e.matches(".tabs,.fch,.srch,.seg,.segl,.edbar,.revwrap,.heldn");
+    const isCard = e => e.matches(".card,.st,.sc,.kpi");
+    const blocks = []; let sec = null;
+    kids.forEach(e => {
+      if (e.matches(".sh")) { sec = { els: [e] }; blocks.push(sec); return; }
+      if (sec) { sec.els.push(e); return; }
+      blocks.push({ els: [e], full: ctl(e) });
+    });
+    blocks.forEach(b => {
+      if (b.els[0].matches(".sh") && b.els.filter(isCard).length >= 3) b.grid = b.full = true;
+      b.els.forEach(e => { if (e.matches(".card") && !e.querySelector(".tot") && e.firstElementChild && e.firstElementChild.matches(".rowx,.li,.drow") && [...e.children].filter(x => x.matches(".rowx,.li,.drow")).length >= 10) { e.classList.add("dlong"); b.full = true; } });
+    });
+    if (blocks.length >= 3 && blocks.every(b => b.els.length === 1 && b.els[0].matches("button.card"))) { const gr = document.createElement("div"); gr.className = "dgrid"; gr.append(...kids); m.textContent = ""; m.append(gr, ...aside); return; }
+    const wrap = b => {
+      const w = document.createElement("div"); w.className = "dsec";
+      if (!b.grid) { w.append(...b.els); return w; }
+      const f = b.els.findIndex(isCard), l = b.els.length - 1 - [...b.els].reverse().findIndex(isCard);
+      const gr = document.createElement("div"); gr.className = "dgrid"; gr.append(...b.els.slice(f, l + 1));
+      w.append(...b.els.slice(0, f), gr, ...b.els.slice(l + 1)); return w;
+    };
+    m.textContent = "";
+    let run = [];
+    const flush = () => {
+      if (run.length === 1) m.appendChild(wrap(run[0]));
+      else if (run.length > 1) {
+        const mas = document.createElement("div"), c1 = document.createElement("div"), c2 = document.createElement("div");
+        mas.className = "dmas"; c1.className = c2.className = "dcol"; mas.append(c1, c2); m.appendChild(mas);
+        run.forEach(b => (c1.offsetHeight <= c2.offsetHeight ? c1 : c2).appendChild(wrap(b)));
+      }
+      run = [];
+    };
+    blocks.forEach(b => { if (b.full) { flush(); m.appendChild(wrap(b)); } else run.push(b); });
+    flush();
+    const top = [...m.children].find(x => x.offsetHeight > 0); if (top) top.classList.add("dtop");
+    m.append(...aside);
+  });
+}
+DESK.addEventListener("change", () => { if (D && !$("#sheet") && document.body.classList.contains("app") && !PICKING) draw(); });
 /* bottom tab bar: Home · Sales · P&L · Staff · More */
 const TABOF = { home: "home", sales: "sales", day: "sales", pnl: "pnl", head: "pnl", staff: "staff", person: "staff" };
 function navSync() {
   let n = $("#nav");
-  if (!n) {
-    n = document.createElement("nav"); n.id = "nav";
-    n.innerHTML = [["home", "Home", IC.home], ["sales", "Sales", IC.tsales], ["pnl", "P&amp;L", IC.tpnl], ["staff", "Staff", IC.tstaff], ["more", "More", IC.tmore]]
-      .map(([k, l, ic]) => `<button data-tab="${k}">${ic}<span>${l}</span></button>`).join("");
-    document.body.appendChild(n);
-    n.querySelectorAll("button").forEach(b => b.onclick = () => tab(b.dataset.tab));
-  }
-  const t = TABOF[stack[stack.length - 1].v] || "more";
-  n.querySelectorAll("button").forEach(b => b.setAttribute("aria-current", b.dataset.tab === t ? "page" : "false"));
+  if (!n) { n = document.createElement("nav"); n.id = "nav"; document.body.appendChild(n); }
+  n.innerHTML = navHTML(); navBind(n);
+  const v = stack[stack.length - 1].v, t = TABOF[v] || "more", dt = DTAB[v] || v;
+  n.querySelectorAll("[data-tab]").forEach(b => { const k = b.dataset.tab; b.setAttribute("aria-current", (DESK.matches ? k === dt : k === t) ? "page" : "false"); });
   document.body.classList.add("app");
 }
 const noNav = () => document.body.classList.remove("app");
@@ -942,6 +1110,7 @@ function pickBranch() {
        <span class="brdot"></span><span style="flex:1"><span class="serif" style="font-size:32px">${esc(b)}</span><br><span class="ebd">${esc(BOOKS.find(x => x.branch === b).month || "")}</span></span>${IC.chev}</button>`).join("")}</main>`;
   const pa = $("#pAll"); if (pa) pa.onclick = () => { stack = [{ v: "home" }, { v: "all" }]; ALLB = null; draw(); };
   root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; try { history.pushState({ p: 1 }, ""); } catch (e) {} root().innerHTML = SKEL(); await refresh(); });
+  deskLayout();
 }
 
 /* ================= bottom-sheet form used for every change ================= */
