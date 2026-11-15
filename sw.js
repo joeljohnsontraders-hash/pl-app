@@ -1,5 +1,5 @@
 /* v18: the page itself always comes fresh from the internet (falls back to this phone's copy when offline); icons and fonts come from the copy */
-const C = "pl-v28";
+const C = "pl-v29";
 const CORE = ["/", "/manifest.json", "/icon-96.png", "/icon-192.png", "/icon-512.png"];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(CORE.map(u => new Request(u, { cache: "reload" })))).catch(() => {})); });
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== C).map(x => caches.delete(x)))).then(() => self.clients.claim())));

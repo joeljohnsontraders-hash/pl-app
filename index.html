@@ -678,6 +678,7 @@ body.ndb .hd.ndh{padding:12px 16px 26px;gap:14px;border-radius:0 0 32px 32px;bac
 .nsct td,.nsct th{text-align:center}.nsct td:first-child,.nsct th:first-child{text-align:left;background:none!important}.nsct td{border-bottom:2px solid #fff}body.dark .ND .nsct td{border-color:#0F2235;color:#0B1D2E}.nmt .nn{overflow:hidden;text-overflow:ellipsis}
 body.nstill .ND,body.nstill .ND *,body.nstill #ndnav *,body.nstill #ndside *,body.nboot #ndnav nav,body.nboot #ndside .nit,body.nboot .ndh,body.nboot .ndh *:not(.nhc):not(.mk):not(.npg):not(.npt):not(.nfl):not(path){animation:none!important}#root.nenter>.ND>main{animation:npage .34s cubic-bezier(.16,1,.3,1)}#root.nenter>.ND>.ndh>*:not(.ndz):not(.nac):not(.nr1):not(.nr2):not(.nr3){animation:nfade .3s ease}@keyframes npage{from{opacity:0;transform:translateY(8px)}}@keyframes nfade{from{opacity:0}}@keyframes up{from{opacity:0;transform:translateY(10px)}}.ND .ncard,.ND .nkt,.ND .nbnr,.ND .nag,.ND .nsig>div{animation-duration:420ms!important}#root{overflow-anchor:none}.nkt{height:auto;min-height:88px;padding:12px;align-items:center}.nkt .nn{font-size:clamp(15px,4.4vw,20px)}.nkt .ns{white-space:normal;overflow:visible;line-height:1.3}.nmt .nn{font-size:clamp(15px,4.2vw,20px)}.ng3{gap:8px}.nql{height:auto;min-height:72px;padding:12px;gap:10px}.nql .nii{width:38px;height:38px;border-radius:12px}.nql b{font-size:13px;white-space:normal;line-height:1.25}.nql small{white-space:normal;overflow:visible;font-size:11px;line-height:1.3}.ndh .ngr{font-size:clamp(21px,6.4vw,26px);line-height:1.25}.nhn{font-size:clamp(34px,11vw,46px);line-height:1.15}.nhcs{gap:6px}.nhc{height:auto;min-height:28px;white-space:normal;padding:4px 11px}.ncard{padding:18px 16px}.nch h2{font-size:15px}.nlk{font-size:12px}.nd7 .nv{font-size:12px}@media (max-width:380px){.ndm{padding:12px;gap:12px}.ndh{padding:10px 12px 22px}.nsr1{gap:6px}.npr{grid-template-columns:42px minmax(0,1fr) 46px 58px 24px;gap:6px}.nvs>.m{grid-template-columns:68px minmax(0,1fr) 70px}}body.ndb .main .card.pad{padding:4px 16px}body.ndb .main .li{padding:12px 0;gap:12px}body.ndb .main .li .meta{color:var(--mu);font-size:12px}body.ndb .main .rowx{padding:12px 0}body.ndb .main .rowx .a{font-weight:700}body.ndb .main .pillbtn{height:34px;padding:0 14px}body.ndb .main .revban{border-radius:22px}body.ndb .main .sw{flex:none}body.ndb .main .swc{padding:14px 16px;border-radius:22px;display:flex;align-items:center;gap:12px;text-align:left;width:100%}body.ndb .main .swt{display:block;font-weight:700;font-size:14px}body.ndb .hd.ndh .ttl{font-size:clamp(21px,6.4vw,26px)}body.ndb .hd.ndh .ttl br{display:none}body.ndb .hd.ndh .ttl em::before{content:" "}.nsc .ndot{position:absolute}.nmt.ns64{height:auto;min-height:64px;padding:10px 12px}.nmt .nl{white-space:normal;overflow:visible;line-height:1.25}html{background:#F3F4F7}body.ndb{min-height:100vh}body.ndb.dark,html:has(body.dark){background:#071521}
 .ncal .nhc{padding:3px 4px;overflow:hidden}.ncal .nhc b{font-size:12px;letter-spacing:-.02em;align-self:center}.ncal .nhc>span:not(.tip){font-size:10px}.ncsel .ntg.nnt,.ncsel .ntg.ngr{background:#fff}.rw .nt{text-overflow:ellipsis;min-width:0}.rw>span[style*="flex:1"]{min-width:0}
+html{scroll-behavior:auto!important}#root.back{display:block;height:auto;min-width:0;padding:0;border-radius:0;gap:0;font-size:inherit;font-weight:inherit;align-items:normal}
 </style>
 
 </head><body>
@@ -3507,18 +3508,29 @@ ND_TABOF.all = "home";
 { const D1 = draw;
 draw = () => {
 if (!D) return;
-const r = root(), k = viewKey(), same = k === LASTKEY && !!r.firstElementChild, y = window.scrollY;
+const r = root(), k = viewKey(), same = (k === LASTKEY && !!r.firstElementChild) || window.__ndStill === true, y = window.scrollY;
 document.body.classList.toggle("nstill", same);
 D1();
 r.scrollLeft = 0; document.documentElement.scrollLeft = 0;
 if (same) { window.scrollTo(0, y); return; }
-r.querySelectorAll('.ND [style*="animation-delay"]').forEach(el => { const v = parseFloat(el.style.animationDelay) || 0; el.style.animationDelay = Math.round(Math.min(320, v * 0.5)) + "ms"; });
+r.querySelectorAll('.ND [style*="animation-delay"]').forEach(el => { const v = parseFloat(el.style.animationDelay) || 0; el.style.animationDelay = Math.round(Math.min(160, v * 0.35)) + "ms"; });
 r.classList.remove("nenter"); void r.offsetWidth; r.classList.add("nenter");
 clearTimeout(r._ne); r._ne = setTimeout(() => r.classList.remove("nenter"), 500);
 if (!document.body.classList.contains("nboot")) setTimeout(() => document.body.classList.add("nboot"), 1200);
 }; }
 { const B0 = ndBind; ndBind = () => { if (!document.body.classList.contains("nstill")) B0(); }; }
 { const C0 = ndCount; ndCount = (el, to, ms) => { if (document.body.classList.contains("nstill")) { if (el) el.textContent = inr(to); return; } C0(el, to, ms); }; }
+/* ===== stage 8: back like a native app — same scroll, no flash ===== */
+try { history.scrollRestoration = "manual"; } catch (e) {}
+{ const G1 = go, B1 = back;
+  go = (v, p) => { const t = stack[stack.length - 1]; if (t) t._y = window.scrollY; G1(v, p); };
+  back = () => {
+    const ev = window.event, ua = !!(ev && ev.type === "popstate" && ev.hasUAVisualTransition), prev = stack.length > 1 ? stack[stack.length - 2] : null, y = prev && prev._y || 0;
+    window.__ndStill = true;
+    try { B1(); } finally { window.__ndStill = false; }
+    window.scrollTo(0, y);
+    if (!ua) requestAnimationFrame(() => window.scrollTo(0, y));
+  }; }
 /* ================= start ================= */
 start();
 
