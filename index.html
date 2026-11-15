@@ -808,7 +808,7 @@ function model(D) {
   m.dim = D.days.length;
   const now = new Date();
   m.todayD = (now.getMonth() === m.mi && now.getFullYear() === m.year) ? now.getDate() : null;
-  m.retailDay = d => sum(D.prods.filter(p => p.d === d && p.out !== "Other branch" && p.out !== "Given to branch"), p => p.amt);
+  m.retailDay = d => sum(D.prods.filter(p => p.d === d && p.out !== "Other branch" && p.out !== "Given to branch" && p.out !== "Own use"), p => p.amt);
   // sales = NET (staff-wise service net, sittings included); gross and retail are shown beside it
   m.days = D.days.map(x => { const svc = x.net !== null && x.net !== undefined ? x.net : (x.gross || 0); return { ...x, svc, retail: m.retailDay(x.d), total: svc }; });
   m.entered = m.days.filter(x => x.svc > 0);
@@ -1983,7 +1983,7 @@ VIEWS.sales = s => {
   const list = M.days.filter(x => x.total > 0).reverse(), show = s.all ? list : list.slice(0, 10);
   return header(backBtn("Home"), monthPick(),
     `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Net sales · ${range()}</span>${hero(tot)}
-     <span class="lite" style="font-size:14px">Gross ${inr(gr)} · Retail ${inr(ret)} (included)${(() => { const n = sum(M.staff, x => x.billsT); return n ? ` · ${n} bills · avg ₹${ind(sum(M.staff, x => x.avgBill * x.billsT) / n)}` : ""; })()}</span></div>
+     <span class="lite" style="font-size:14px">Gross ${inr(gr)}${(() => { const ms = E.filter(x => !x.gross).map(x => x.d); return ms.length ? ` (day ${ms.join(", ")}: no closing sheet)` : ""; })()} · Retail ${inr(ret)} (included)${(() => { const n = sum(M.staff, x => x.billsT); return n ? ` · ${n} bills · avg ₹${ind(sum(M.staff, x => x.avgBill * x.billsT) / n)}` : ""; })()}</span></div>
      <div style="position:relative;display:flex;flex-direction:column;gap:6px"><div class="strip">${M.days.map(x => `<i class="${x.total ? (x.d === M.lastDay ? "hi" : "") : "z"}" style="height:${Math.max(3, x.total / mx * 100)}%" title="Day ${x.d}"></i>`).join("")}</div>
      <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:10px;color:var(--lav)">1 ${M.MON}</span><span style="font-size:10px;color:var(--lav)">${M.dim}</span></div></div>`, "short")
   + `<main class="main lo">
