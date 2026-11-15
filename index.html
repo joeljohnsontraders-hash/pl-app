@@ -851,7 +851,7 @@ function model(D) {
       off: x.off || 0, leave: x.leave || 0, allowed: x.allowed ?? 4, ob: x.ob || 0, wfh: m.days.map(dd => WF.has(x.name + "|" + dd.d)),
       bills: m.days.map((dd, k) => (x.bills || [])[k] || 0)
     };
-    o.billsT = sum(o.bills); o.svcT = sum(o.svc); o.avgBill = o.billsT ? sum(o.svc.filter((v, k) => o.bills[k]), v => v) / o.billsT : 0; o.retT = sum(o.ret); o.total = o.svcT; /* staff-wise sales already include the products they sold */ o.tkT = sum(o.tk);
+    o.billsT = sum(o.bills); o.svcT = sum(o.svc); o.avgBill = o.billsT ? sum(o.svc.filter((v, k) => o.bills[k]), v => v) / o.billsT : 0; o.retT = sum(o.ret); o.total = o.svcT + o.retT; o.tkT = sum(o.tk);
     o.inc = o.tkT + (s["Service incentive"] || 0) + (s["Product incentive"] || 0);
     o.worked = st.filter((v, k) => k < m.lastDay && (v === "in" || v === "ob")).length;
     return o;
@@ -1983,22 +1983,22 @@ VIEWS.sales = s => {
   const list = M.days.filter(x => x.total > 0).reverse(), show = s.all ? list : list.slice(0, 10);
   return header(backBtn("Home"), monthPick(),
     `<div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">Net sales · ${range()}</span>${hero(tot)}
-     <span class="lite" style="font-size:14px">Gross ${inr(gr)}${(() => { const ms = E.filter(x => !x.gross).map(x => x.d); return ms.length ? ` (day ${ms.join(", ")}: no closing sheet)` : ""; })()} · Retail ${inr(ret)} (included)${(() => { const n = sum(M.staff, x => x.billsT); return n ? ` · ${n} bills · avg ₹${ind(sum(M.staff, x => x.avgBill * x.billsT) / n)}` : ""; })()}</span></div>
+     <span class="lite" style="font-size:14px">Gross ${inr(gr)}${(() => { const ms = E.filter(x => !x.gross).map(x => x.d); return ms.length ? ` (day ${ms.join(", ")}: no closing sheet)` : ""; })()} · Retail ${inr(ret)} (separate)${(() => { const n = sum(M.staff, x => x.billsT); return n ? ` · ${n} bills · avg ₹${ind(sum(M.staff, x => x.avgBill * x.billsT) / n)}` : ""; })()}</span></div>
      <div style="position:relative;display:flex;flex-direction:column;gap:6px"><div class="strip">${M.days.map(x => `<i class="${x.total ? (x.d === M.lastDay ? "hi" : "") : "z"}" style="height:${Math.max(3, x.total / mx * 100)}%" title="Day ${x.d}"></i>`).join("")}</div>
      <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:10px;color:var(--lav)">1 ${M.MON}</span><span style="font-size:10px;color:var(--lav)">${M.dim}</span></div></div>`, "short")
   + `<main class="main lo">
     <div class="kpi3"><div class="kpi"><span class="ebd">Avg / day</span><span class="v tn">${cpt(E.length ? tot / E.length : 0)}</span></div>
       <div class="kpi"><span class="ebd">Best day</span><span class="v tn">${best ? cpt(best.total) : "–"}</span><span class="mono muted" style="font-size:10px">${best ? best.dow.toUpperCase() + " " + best.d : ""}</span></div>
-      <div class="kpi acc"><span class="ebd">Retail · in net</span><span class="v tn">${cpt(ret)}</span><span class="mono" style="font-size:10px;opacity:.8">${gr ? pct(ret, gr) + " of gross" : ""}</span></div></div>
+      <div class="kpi acc"><span class="ebd">Retail</span><span class="v tn">${cpt(ret)}</span></div></div>
     ${insightCard("sales")}${paceCard()}${heatCal()}${weekBars()}${cashChart()}
     ${sh(1, "Closing reports", "Tap a day")}
     <div class="card pad">${show.map(x => `<button class="li" ${gp("day", { d: x.d })}>
        <span class="dc ${isToday(x.d) ? "today" : ""}"><span>${isToday(x.d) ? "Today" : x.dow}</span><b>${x.d}</b></span>
        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:7px"><span style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b class="tn" style="font-size:16px">${inr(x.total)}</b>
          ${cashTag(x.status)}</span>
-         <span style="display:flex;align-items:center;gap:8px;min-width:0"><span style="flex:1;min-width:0"><span class="trk" style="width:${Math.max(8, x.total / mx * 100)}%"><i style="flex:${Math.max(0.0001, x.svc - Math.min(x.retail, x.svc))};background:var(--accent)"></i>${x.retail ? `<i style="flex:${Math.min(x.retail, x.svc)};background:var(--sky)"></i>` : ""}</span></span>${x.retail ? `<span class="meta" style="margin:0;white-space:nowrap">incl. retail ${inr(x.retail)}</span>` : ""}</span></span>
+         <span style="display:flex;align-items:center;gap:8px;min-width:0"><span style="flex:1;min-width:0"><span class="trk" style="width:${Math.max(8, x.total / mx * 100)}%"><i style="flex:${x.svc};background:var(--accent)"></i>${x.retail ? `<i style="flex:${x.retail};background:var(--sky)"></i>` : ""}</span></span>${x.retail ? `<span class="meta" style="margin:0;white-space:nowrap">Retail ${inr(x.retail)}</span>` : ""}</span></span>
        <span style="color:var(--lav);flex:none;margin-left:4px">${IC.chev}</span></button>`).join("") || '<div class="empty">No days entered yet.</div>'}</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="legend"><span><i style="background:var(--accent)"></i>Service</span><span><i style="background:var(--sky)"></i>Retail (part of net)</span></span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px"><span class="legend"><span><i style="background:var(--accent)"></i>Net sales</span><span><i style="background:var(--sky)"></i>Retail</span></span>
       ${list.length > 10 && !s.all ? `<button class="more" id="all">All ${list.length} days</button>` : ""}</div>
   </main>`;
 };
@@ -2023,9 +2023,9 @@ VIEWS.day = s => {
   const owners = D.owner.filter(o => o.day === d), prods = D.prods.filter(p => p.d === d), mvs = D.moves.filter(m => m.d === d);
   const people = M.staff.map(p => ({ p, st: p.st[d - 1], svc: p.svc[d - 1], ret: p.ret[d - 1], ob: p.obret[d - 1], tk: p.tk[d - 1], wfh: p.wfh[d - 1], bl: p.bills[d - 1] }));
   const dayBills = sum(people, r => r.bl), daySvcB = sum(people.filter(r => r.bl), r => r.svc);
-  const sold = people.filter(r => r.svc || r.ret).sort((a, b) => Math.max(b.svc, b.ret) - Math.max(a.svc, a.ret));
+  const sold = people.filter(r => r.svc || r.ret).sort((a, b) => (b.svc + b.ret) - (a.svc + a.ret));
   const away = people.filter(r => !(r.svc || r.ret) && ["leave", "off", "weekend", "extra", "ob"].includes(r.st));
-  const mx = Math.max(1, ...sold.map(r => Math.max(r.svc, r.ret)));
+  const mx = Math.max(1, ...sold.map(r => r.svc + r.ret));
   const staffIn = people.filter(r => r.st === "in" || r.st === "ob").length;
   const entered = x.svc > 0;
   const notes = people.filter(r => r.st === "weekend" || r.st === "extra").map(r => `${esc(r.p.name)} was off on a ${r.st === "weekend" ? (x.dow === "Sat" ? "Saturday" : "Sunday") + " — no week off on weekends" : "weekday after using all week offs earned"}, so it counts as leave.`);
@@ -2033,7 +2033,7 @@ VIEWS.day = s => {
   return header(backBtn("Daily Sales"), `<span class="rlab">Day report</span>`,
     `<div class="wk">${week.map(k => { const y = dayOf(k); return `<button ${y ? `data-wd="${k}"` : "disabled"} aria-pressed="${k === d}"><span>${y ? y.dow.toUpperCase() : ""}</span><b>${y ? k : ""}</b></button>`; }).join("")}</div>
      <div style="position:relative;display:flex;flex-direction:column;gap:8px"><span class="eb">${WD[x.dow]} · ${d} ${M.Month}</span>${hero(x.total)}
-     <span class="lite" style="font-size:14px">${entered ? `Net sales${x.gross ? ` · Gross ${inr(x.gross)}` : ""}${x.retail ? ` · incl. retail ${inr(x.retail)}` : ""}${rank ? ` · ${rank === 1 ? "best day" : ord(rank) + " best day"}` : ""}` : "Not entered yet"}</span></div>`, "short")
+     <span class="lite" style="font-size:14px">${entered ? `Net sales${x.gross ? ` · Gross ${inr(x.gross)}` : ""} · Retail ${inr(x.retail)}${rank ? ` · ${rank === 1 ? "best day" : ord(rank) + " best day"}` : ""}` : "Not entered yet"}</span></div>`, "short")
   + `<main class="main lo">
     <div class="kpi3"><div class="kpi"><span class="ebd">Staff in</span><span class="v tn">${staffIn}<small> / ${M.staff.length}</small></span></div>
       <div class="kpi"><span class="ebd">Spent</span><span class="v tn">${cpt(sum(exps, c => c.out))}</span></div>
@@ -2046,9 +2046,9 @@ VIEWS.day = s => {
     ${sh(2, "Who sold what", dayBills ? `${dayBills} bills · avg ₹${ind(daySvcB / dayBills)}` : "")}
     <div class="card pad">${sold.map(r => `<button class="li" ${gp("person", { n: r.p.name })}>${av(r.p.name, 44)}
       <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
-        <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b>${r.tk ? '<span class="tag dark">10K</span>' : ""}${r.st === "ob" ? '<span class="tag blue">Other branch</span>' : ""}</span><b class="tn" style="font-size:15px">${inr(Math.max(r.svc, r.ret))}</b></span>
-        <span class="trk" style="width:${Math.max(r.svc, r.ret) / mx * 100}%"><i style="flex:${Math.max(0.0001, r.svc - Math.min(r.ret, r.svc))};background:var(--accent)"></i>${r.ret ? `<i style="flex:${r.ret};background:var(--sky)"></i>` : ""}</span>
-        <span class="m4"><span><b>${inr(r.svc)}</b><i>Sales</i></span><span><b>${inr(r.ret)}</b><i>Retail (in sales)</i></span><span><b>${r.bl || "–"}</b><i>Bills</i></span><span><b>${r.bl ? "₹" + ind(r.svc / r.bl) : "–"}</b><i>Avg bill</i></span></span>${r.ob ? '<span class="meta" style="margin:0">Retail sold at the other branch</span>' : ""}</span></button>`).join("")}
+        <span style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b>${r.tk ? '<span class="tag dark">10K</span>' : ""}${r.st === "ob" ? '<span class="tag blue">Other branch</span>' : ""}</span><b class="tn" style="font-size:15px">${inr(r.svc + r.ret)}</b></span>
+        <span class="trk" style="width:${(r.svc + r.ret) / mx * 100}%"><i style="flex:${r.svc || 0.0001};background:var(--accent)"></i>${r.ret ? `<i style="flex:${r.ret};background:var(--sky)"></i>` : ""}</span>
+        <span class="m4"><span><b>${inr(r.svc)}</b><i>Service</i></span><span><b>${inr(r.ret)}</b><i>Retail</i></span><span><b>${r.bl || "–"}</b><i>Bills</i></span><span><b>${r.bl ? "₹" + ind(r.svc / r.bl) : "–"}</b><i>Avg bill</i></span></span>${r.ob ? '<span class="meta" style="margin:0">Retail sold at the other branch</span>' : ""}</span></button>`).join("")}
       ${away.map(r => `<div class="li" style="opacity:.75">${av(r.p.name, 44)}<span style="flex:1"><b style="font-size:15px;font-weight:600">${esc(r.p.name)}</b><br><span class="meta">${r.st === "ob" ? "At the other branch" : r.st === "off" ? "Week off" : r.st === "leave" ? "Leave" : "Off · counted as leave"}</span></span><span class="tag ${STATUS[r.st][1]}">${STATUS[r.st][0]}</span></div>`).join("")}
       ${!sold.length && !away.length ? '<div class="empty">No staff sales entered for this day.</div>' : ""}</div>
     ${sh(3, "Attendance")}
