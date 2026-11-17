@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Green Trends</title>
+<meta name="theme-color" content="#0A1A2B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Green Trends">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="/icon-96.png">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: deep navy shell with a glowing branded header; white sheets below; reports keep each branch's Excel colours */
+:root{
+  --navy:#0A1A2B;--navy2:#132B44;--navy3:#1C3A58;--ground:#EEF1F6;--card:#FFFFFF;--ink:#0A1A2B;--muted:#5A6779;--line:#E2E7EF;--soft:#F6F8FB;
+  --gt:#1E9E63;--gth:#7EE0AE;--gts:#E2F5EC;--pink:#E0217A;--pinks:#FCE4EF;
+  --ok:#14804A;--oks:#DFF3E8;--warn:#9A6200;--warns:#FDF0D5;--bad:#B4362B;--bads:#FBE6E3;--info:#2D4E9E;--infos:#E6EDFB;
+  --fd:'Outfit',ui-sans-serif,system-ui,sans-serif;--fb:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--fb);font-size:14px;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+:focus-visible{outline:2px solid var(--gt);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+
+/* login */
+.login{min-height:100%;display:grid;place-items:center;padding-block:40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(900px 500px at 85% -10%,#1B4A3E 0%,transparent 60%),radial-gradient(700px 500px at -10% 110%,#3B1440 0%,transparent 55%),var(--navy)}
+.lcard{width:100%;max-width:400px;color:#fff}
+.lmark{width:60px;height:60px;border-radius:20px;background:linear-gradient(140deg,var(--gt),#0F7A4B);display:grid;place-items:center;font-family:var(--fd);font-weight:800;font-size:22px;margin-bottom:24px;box-shadow:0 12px 30px rgba(30,158,99,.35)}
+.lcard h1{font-family:var(--fd);font-weight:700;font-size:34px;margin:0 0 6px;letter-spacing:-.01em}
+.lcard h1 em{font-style:normal;color:var(--pink)}
+.lcard p{color:#9FB0C2;margin:0 0 26px}
+.lf{display:grid;gap:12px}
+.lf input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:15px 16px;color:#fff;font-size:16px}
+.lf input::placeholder{color:#8396AB}
+.lbtn{background:var(--gt);color:#fff;border-radius:16px;padding:15px;font-weight:800;font-size:15px;width:100%}
+.ldemo{margin-top:26px;display:grid;gap:10px}
+.ldemo button{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);color:#E3EBF3;border-radius:16px;padding:13px 14px;font-weight:700;text-align:left;display:flex;justify-content:space-between;align-items:center}
+.lerr{color:#FFB4A8;font-size:13px;min-height:18px}
+
+/* shell */
+.shell{display:flex;min-height:100%}
+.side{display:none}
+.main{flex:1;min-width:0;padding-bottom:104px}
+.hd{color:#fff;padding-block:20px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));position:relative;overflow:hidden;
+  background:radial-gradient(600px 300px at 100% 0%,rgba(30,158,99,.38),transparent 65%),radial-gradient(500px 280px at 0% 120%,rgba(224,33,122,.22),transparent 60%),var(--navy)}
+.hd::before,.hd::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
+.hd::before{width:420px;height:420px;right:-140px;top:-220px}
+.hd::after{width:260px;height:260px;right:-60px;top:-140px;border-color:rgba(126,224,174,.18)}
+.hdin{max-width:1080px;margin:0 auto;position:relative;z-index:1}
+.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.hd .eb{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gth)}
+.hd .br{font-family:var(--fd);font-size:28px;font-weight:700;line-height:1.1;margin-top:4px;letter-spacing:-.01em}
+.hd .dt{color:#A9B9CA;font-size:13px;margin-top:4px;font-weight:600}
+.hd .rt{display:flex;gap:8px;align-items:center}
+.av{width:40px;height:40px;border-radius:14px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;border:1px solid rgba(255,255,255,.14)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.page{display:grid;gap:16px;margin-top:-44px;position:relative;z-index:2}
+.nav{position:fixed;left:0;right:0;bottom:0;padding:0 max(12px,env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-bottom,0px));z-index:20;pointer-events:none}
+.navin{max-width:540px;margin:0 auto;background:rgba(10,26,43,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:24px;display:flex;justify-content:space-around;padding:8px;box-shadow:0 14px 34px rgba(10,26,43,.35);pointer-events:auto}
+.navin button{display:grid;justify-items:center;gap:3px;font-size:10px;font-weight:700;color:#8EA0B4;padding:7px 4px;border-radius:16px;min-width:50px;flex:1;position:relative}
+.navin button.on{color:#fff;background:rgba(255,255,255,.1)}
+.navin button.on svg{color:var(--gth)}
+.navin svg,.side svg{width:21px;height:21px}
+.navin .bd{position:absolute;top:3px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--pink)}
+@media (min-width:980px){
+  .side{display:flex;flex-direction:column;width:244px;flex:none;background:var(--navy);color:#fff;padding:22px 14px;position:sticky;top:0;height:100vh;gap:4px;border-right:1px solid rgba(255,255,255,.06)}
+  .side .lg{display:flex;align-items:center;gap:11px;padding:4px 8px 24px;font-family:var(--fd);font-weight:700;font-size:18px}
+  .side .lg span{width:36px;height:36px;border-radius:12px;background:linear-gradient(140deg,var(--gt),#0F7A4B);display:grid;place-items:center;font-size:14px}
+  .side .lg small{display:block;font-family:var(--fb);font-size:11px;color:#8EA0B4;font-weight:600}
+  .side button.it{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:13px;color:#A9B8C8;font-weight:700;text-align:left}
+  .side button.it:hover{background:rgba(255,255,255,.05)}
+  .side button.it.on{background:rgba(255,255,255,.09);color:#fff}
+  .side button.it.on svg{color:var(--gth)}
+  .side .who{margin-top:auto;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);font-size:12px;color:#A9B8C8}
+  .side .who b{display:block;color:#fff;font-size:14px;margin-bottom:2px}
+  .nav{display:none}
+  .main{padding-bottom:48px}
+  .hd{padding-block:28px 72px}
+  .hd .br{font-size:32px}
+}
+
+/* header hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin-top:18px}
+.ring{width:104px;height:104px;position:relative;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .rv{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .rv b{font-family:var(--fd);font-size:24px;font-weight:700;line-height:1}
+.ring .rv small{font-size:10.5px;color:#A9B9CA;font-weight:700;margin-top:3px}
+.glass{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gl{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:10px 12px;min-width:0}
+.gl small{display:block;font-size:11px;color:#A9B9CA;font-weight:700}
+.gl b{display:block;font-family:var(--fd);font-size:19px;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+@media (max-width:420px){.hero{grid-template-columns:1fr}.ring{display:none}.gl b{font-size:17px}}
+
+/* cards */
+.card{background:var(--card);border-radius:22px;padding:18px;min-width:0;box-shadow:0 1px 0 rgba(10,26,43,.04),0 8px 24px rgba(10,26,43,.05)}
+.ch{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.ct{font-family:var(--fd);font-weight:700;font-size:18px;display:flex;align-items:center;gap:10px}
+.ib{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}
+.ib svg{width:18px;height:18px}
+.ib.g{background:var(--gts);color:var(--gt)}.ib.p{background:var(--pinks);color:var(--pink)}.ib.b{background:var(--infos);color:var(--info)}.ib.y{background:var(--warns);color:var(--warn)}.ib.n{background:#E6EAF0;color:var(--navy)}
+.cs{color:var(--muted);font-size:12px;font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;padding:5px 10px;border-radius:99px;white-space:nowrap}
+.p-ok{background:var(--oks);color:var(--ok)}.p-warn{background:var(--warns);color:var(--warn)}.p-bad{background:var(--bads);color:var(--bad)}.p-info{background:var(--infos);color:var(--info)}.p-gt{background:var(--gts);color:var(--gt)}.p-mu{background:var(--soft);color:var(--muted)}
+.hd .pill.p-mu{background:rgba(255,255,255,.08);color:#C9D5E1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 16px;border-radius:14px;font-weight:800;font-size:14px;background:var(--gt);color:#fff;white-space:nowrap;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.dk{background:var(--navy)}
+.btn.pk{background:var(--pink)}
+.btn.gh{background:var(--soft);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.sm{padding:8px 12px;font-size:12.5px;border-radius:11px}
+.btn.wide{width:100%;padding:16px;font-size:15px;border-radius:18px}
+.btn svg{width:17px;height:17px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .l{min-width:0}
+.row .l b{display:block;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .l small{color:var(--muted);font-size:12px;font-weight:600}
+.tap{width:100%;text-align:left;border-radius:12px}
+.tap:hover{background:var(--soft)}
+.g2{display:grid;grid-template-columns:1fr;gap:16px}
+@media (min-width:980px){.g2{grid-template-columns:1.3fr 1fr}.g2e{grid-template-columns:1fr 1fr}}
+.empty{color:var(--muted);font-size:13px;padding:6px 0;font-weight:600}
+.note{border-radius:16px;padding:13px 15px;font-size:13px;font-weight:600}
+.n-warn{background:var(--warns);color:#6B4500}.n-bad{background:var(--bads);color:#8C2219}.n-ok{background:var(--oks);color:#0F5C37}.n-info{background:var(--infos);color:#1F3A7A}
+
+/* next-up */
+.next{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,var(--gt),#11784A);color:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 12px 28px rgba(30,158,99,.28)}
+.next .tx{flex:1;min-width:0}
+.next small{display:block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#C9F3DD}
+.next b{display:block;font-family:var(--fd);font-size:20px;font-weight:700;margin-top:2px}
+.next .btn{background:#fff;color:var(--gt)}
+.next.done{background:linear-gradient(120deg,var(--navy2),var(--navy))}
+.next.done small{color:var(--gth)}.next.done .btn{color:var(--navy)}
+
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tli{border-radius:16px;padding:11px 8px;text-align:center;background:var(--soft);min-width:0;position:relative}
+.tli b{display:block;font-family:var(--fd);font-size:15px;font-weight:700}
+.tli small{display:block;font-size:10.5px;font-weight:700;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tli.sent{background:var(--gts)}.tli.sent small{color:var(--gt)}
+.tli.due{background:var(--navy);color:#fff}.tli.due small{color:var(--gth)}
+button.tli{width:100%}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.tile{border-radius:18px;padding:14px;background:var(--soft);text-align:left;display:grid;gap:8px;min-width:0}
+.tile:hover{background:#EEF2F7}
+.tile b{font-weight:800;font-size:13.5px}
+.tile .v{font-family:var(--fd);font-size:19px;font-weight:700;font-variant-numeric:tabular-nums}
+.tile small{font-size:11.5px;color:var(--muted);font-weight:700}
+.tile.miss small{color:var(--bad)}
+
+/* attendance */
+.ar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.ar:first-of-type{border-top:0}
+.gh4{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 2px}
+.nm{display:flex;align-items:center;gap:11px;min-width:0;width:100%}
+.ini{width:36px;height:36px;border-radius:12px;background:var(--gts);color:var(--gt);display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.ini.L{background:var(--pinks);color:var(--pink)}.ini.O{background:var(--infos);color:var(--info)}.ini.H{background:#ECEFF3;color:var(--muted)}
+.nm b{display:block;font-weight:700}
+.nm small{color:var(--muted);font-size:11.5px;font-weight:600}
+.ac{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.tg{display:flex;background:var(--soft);border-radius:12px;padding:3px;gap:2px}
+.tg button{padding:7px 11px;border-radius:9px;font-size:12px;font-weight:700;color:var(--muted);background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.tg button.on.in{background:var(--gt);color:#fff}.tg button.on.off{background:var(--navy);color:#fff}.tg button.on.lv{background:var(--bad);color:#fff}
+.tin{width:92px;border:1px solid var(--line);border-radius:10px;padding:7px 8px;font-size:13px;font-weight:700;text-align:center}
+@media (max-width:560px){.ar{grid-template-columns:1fr}.ac{justify-content:flex-start}}
+
+/* EXCEL-STYLE DAY TARGET SHEET (branch colours) */
+.slots{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.slots::-webkit-scrollbar{display:none}
+.sl{flex:none;min-width:96px;border-radius:15px;padding:9px 12px;text-align:left;background:var(--soft)}
+.sl b{display:block;font-family:var(--fd);font-weight:700;font-size:15px}
+.sl small{font-size:11px;color:var(--muted);font-weight:700}
+.sl.sent small{color:var(--gt)}
+.sl.due{box-shadow:inset 0 0 0 2px var(--gt)}
+.sl.due small{color:var(--gt)}
+.sl.on{background:var(--navy);color:#fff;box-shadow:none}
+.sl.on small{color:var(--gth)}
+.xs{--b:#CF0165;--bt:#fff;--sub:#B9B5B4;--subt:#0A1A2B;--rw:#fff;--ft:var(--b);--ftt:#fff;border-radius:16px;overflow:hidden;box-shadow:0 0 0 1px rgba(10,26,43,.12);background:#fff}
+.xs.Guduvanchery{--b:#B5C5E9;--bt:#13294A;--sub:#B5C5E9;--subt:#13294A;--rw:#fff;--ft:#B5C5E9;--ftt:#13294A}
+.xs.Urapakkam{--b:#C9C9C9;--bt:#1D1D1D;--sub:#C9C9C9;--subt:#1D1D1D;--rw:#F8CBAD;--ft:#C9C9C9;--ftt:#1D1D1D}
+.xs.Chengalpattu{--b:#A9D08E;--bt:#1F3A12;--sub:#D5E8C8;--subt:#1F3A12;--rw:#fff;--ft:#A9D08E;--ftt:#1F3A12}
+.xsh{background:var(--b);color:var(--bt);text-align:center;padding:12px 10px 10px;font-family:var(--fd)}
+.xsh b{display:block;font-size:19px;font-weight:800;letter-spacing:.04em}
+.xsh span{font-size:13px;font-weight:600;opacity:.9}
+.xsw{overflow-x:auto}
+table.xt{border-collapse:collapse;width:100%;min-width:760px;font-variant-numeric:tabular-nums;font-size:14px}
+.xt th{background:var(--b);color:var(--bt);font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:9px 6px;border:1px solid rgba(0,0,0,.14);text-align:center;line-height:1.2}
+.xt td{border:1px solid rgba(10,26,43,.12);height:44px;text-align:center;font-weight:700;background:var(--rw);padding:0}
+.xt td.nmc{text-align:left;padding:0 10px;font-weight:800;white-space:nowrap;position:sticky;left:0;z-index:1;background:var(--rw)}
+.xt td.nmc .fr{display:block;font-size:10px;font-weight:700;color:var(--info)}
+.xt td.lk{color:#6B7787}
+.xt td.cl{color:var(--ink)}
+.xt td input{width:100%;height:43px;border:0;background:transparent;text-align:center;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;padding:0 4px}
+.xt td input:focus{outline:2px solid var(--gt);outline-offset:-2px;background:#fff}
+.xt td input:disabled{color:var(--ink);-webkit-text-fill-color:var(--ink);opacity:1}
+.xt td .pb{width:100%;height:43px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px}
+.xt td .pb:hover{background:rgba(30,158,99,.08)}
+.xt td .pb i{font-style:normal;font-size:16px;color:var(--gt);font-weight:800}
+.xt tr.sub td{background:var(--sub);color:var(--subt);font-weight:800}
+.xt tr.sub td.nmc{background:var(--sub)}
+.xt tr.gt td{background:var(--navy);color:#fff;font-weight:800;border-color:var(--navy)}
+.xt tr.gt td.nmc{background:var(--navy)}
+.xt tr.ft td{background:var(--ft);color:var(--ftt);font-weight:800;height:38px}
+.xt tr.ft td.nmc{background:var(--ft)}
+.xt tr.ft td input{height:37px;color:var(--ftt);-webkit-text-fill-color:var(--ftt)}
+.xt .stars{color:#E8A400;letter-spacing:1px}
+.xt .low{color:var(--bad)!important;-webkit-text-fill-color:var(--bad)!important}
+.xbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}
+.saved{font-size:12px;font-weight:700;color:var(--gt);display:inline-flex;gap:6px;align-items:center}
+.saved::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gt)}
+
+/* closing lists */
+.lt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.lt th{font-size:11px;color:var(--muted);text-align:left;padding:6px 6px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.lt td{border-top:1px solid var(--line);padding:3px 4px}
+.lt td input{width:100%;border:0;background:transparent;padding:9px 6px;font-weight:700;font-size:14px;border-radius:8px}
+.lt td input:focus{outline:2px solid var(--gt);outline-offset:-2px;background:#fff}
+.lt td.r,.lt th.r{text-align:right}.lt td.r input{text-align:right}
+.lt tr.tt td{font-weight:800;padding:11px 6px;background:var(--soft)}
+.lt .x{color:var(--muted);font-size:16px;padding:6px 8px;border-radius:8px}
+.lt .x:hover{background:var(--bads);color:var(--bad)}
+.chk{display:grid;grid-template-columns:1fr auto;gap:6px 14px;margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--soft);font-weight:700;font-size:13px;align-items:center}
+.chk .d{font-family:var(--fd);font-size:16px}
+.chk input{width:120px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;text-align:right;font-weight:700}
+.up{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.up label{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:12px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line);font-weight:800;font-size:12.5px;cursor:pointer}
+.up input{display:none}
+.up label svg{width:18px;height:18px}
+.upt{width:100%;font-size:12px;font-weight:800;color:var(--muted)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.ph{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;background:var(--soft);max-width:100%}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph button{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(10,26,43,.7);color:#fff;font-size:12px;font-weight:800}
+.padd{aspect-ratio:3/4;border-radius:14px;border:2px dashed #C9D2DE;display:grid;place-content:center;justify-items:center;gap:6px;font-weight:800;font-size:13px;color:var(--muted);cursor:pointer;background:var(--soft)}
+.padd:hover{border-color:var(--gt);color:var(--gt)}
+.padd svg{width:22px;height:22px}
+.padd input{display:none}
+.upd{display:inline-flex;align-items:center;gap:10px}
+.upd span{display:grid;gap:2px;font-size:12px}
+.upd b{color:var(--gt)}
+.upd button{color:var(--bad);font-weight:700;font-size:12px;text-align:left}
+.up img{width:56px;height:56px;object-fit:cover;border-radius:12px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px;align-items:start}
+.cbox{display:grid;gap:10px;min-width:0}
+.xc .xsh b{font-size:14px;letter-spacing:.03em}
+.xc .xsh span{font-size:12px}
+table.x2{min-width:0;font-size:13.5px}
+.x2 th{font-size:10.5px;padding:8px 6px}
+.x2 td{height:36px}
+.x2 td.sn{width:52px;color:#6B7787;font-weight:700;font-size:12.5px}
+.x2 td.pt{text-align:left;padding:0 10px;font-weight:800;font-size:12.5px}
+.x2 td.tlab{text-align:center;letter-spacing:.06em}
+.x2 td input{height:35px;font-size:13.5px}
+.x2 td input.lf{text-align:left;padding:0 10px;text-transform:uppercase}
+.x2 td input.rt{text-align:right;padding:0 10px}
+.x2 tr.ft td{height:36px}
+.acc2 td{text-align:right;padding:0 10px}.acc2 td.sn{text-align:center;padding:0}
+.acc2 td input{text-align:right}
+.acc2 tr.b-sale td{background:#D9EFD3}.acc2 tr.b-exp td{background:#E5484D;color:#fff}.acc2 tr.b-gp td{background:#EBD5F7}.acc2 tr.b-bal td{background:var(--b);color:var(--bt)}.acc2 tr.b-den td{background:#D6E6F6}
+.acc2 tr.ro td{background:#FAFBFD;color:#3E4B5C}
+.ftag{display:inline-block;margin-left:8px;font-size:10px;font-weight:800;color:var(--muted);background:#ECEFF4;border-radius:6px;padding:2px 6px;text-transform:none;letter-spacing:0;vertical-align:1px}
+.x2 td textarea.ta{display:block;width:100%;border:0;background:transparent;resize:none;field-sizing:content;min-height:35px;padding:9px 10px;font:inherit;font-weight:800;font-size:12.5px;text-transform:uppercase;line-height:1.35;text-align:left;overflow:hidden}
+.x2 td textarea.ta:focus{outline:2px solid var(--gt);outline-offset:-2px;background:#fff}
+table.att2{width:100%;border-collapse:collapse}
+.att2 .tin.tt{width:112px}
+.att2 td:first-child,.att2 th:first-child{position:sticky;left:0;background:#fff;z-index:1}
+.att2 td,.att2 th{white-space:nowrap}
+.att2 td:last-child:empty{display:none}
+.att2 th{font-size:11px;color:var(--muted);text-align:left;padding:6px 8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.att2 td{border-top:1px solid var(--line);padding:8px;font-weight:700}
+.xb{width:26px;height:26px;border-radius:8px;color:#9AA5B4;font-size:13px;font-weight:800;flex:none}
+.xb:hover{background:var(--bads);color:var(--bad)}
+.x2 td.dl{border-left:0;width:34px}
+.tin.tt{width:118px}
+.tin.need{border-color:var(--warn);background:var(--warns)}
+.yl2{display:inline-grid;gap:2px}
+.yl2 small{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.03em}
+.stp{display:flex;align-items:center;gap:6px;background:var(--soft);border-radius:14px;padding:4px}
+.stp button{width:36px;height:36px;border-radius:11px;background:#fff;font-size:20px;font-weight:700;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.stp button.pl{background:var(--gt);color:#fff;box-shadow:none}
+.stp b{min-width:34px;text-align:center;font-family:var(--fd);font-size:18px;font-variant-numeric:tabular-nums}
+.stp b.lo{color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+table.amon{border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums}
+.amon th{font-size:10px;color:var(--muted);font-weight:800;padding:0 1px 6px;text-align:center}
+.amon th button{display:grid;justify-items:center;width:28px;padding:3px 0;border-radius:8px;color:inherit;font-weight:800}
+.amon th button b{font-size:12px;color:var(--ink)}
+.amon th button:hover:not(:disabled){background:var(--soft)}
+.amon th.we button{color:#B7791F}
+.amon th.td button{background:var(--navy);color:#fff}.amon th.td button b{color:#fff}
+.amon td{padding:2px 1px;text-align:center}
+.amon .anm{position:sticky;left:0;background:#fff;z-index:1;text-align:left;padding-right:10px}
+.amon td.anm button{display:flex;align-items:center;gap:8px;font-weight:800;white-space:nowrap;padding:2px 0}
+.amon td.anm .ini{width:28px;height:28px;border-radius:9px;font-size:10.5px}
+.amon .sm2{padding:0 8px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.amon td.sm2 b{color:var(--ink)}
+.amon td.sm2 small{font-size:10.5px}
+.amon td.sm2.bad{color:var(--bad);font-weight:800}
+.ac2{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;font-size:11px;font-weight:800;font-style:normal}
+.a-in{background:var(--gt)}
+.a-off{background:#DCE6F7;color:var(--info)}
+.a-lv{background:#F9D6D1;color:var(--bad)}
+.a-none{background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+.a-fut{background:transparent;box-shadow:inset 0 0 0 1px #EEF1F5}
+.leg{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--muted)}
+.leg span{display:inline-flex;align-items:center;gap:6px}
+.leg .ac2{width:18px;height:18px;border-radius:6px;font-size:9.5px}
+.pcal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.pcal .dh{font-size:11px;color:var(--muted);text-align:center;font-weight:800}
+.dc2{border-radius:12px;padding:6px 2px;text-align:center;min-height:50px;display:grid;align-content:center;gap:2px}
+.dc2 b{font-size:12px}
+.dc2 span{font-size:10.5px;font-weight:800}
+.dc2.a-in{color:#fff}
+.x2 tr.yrow td input,.x2 tr.yrow td textarea{color:#9AA5B4;-webkit-text-fill-color:#9AA5B4;font-style:italic}
+.x2 td input.yv{color:#9AA5B4;font-style:italic}
+.acc2 tr.chg td{background:#FFF6E0}
+.acc2 tr.yl td{color:#9AA5B4;font-style:italic}
+.ybar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.xstrip{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:5px}
+.xd{border-radius:10px;padding:5px 2px;text-align:center;display:grid;gap:1px;min-height:44px;align-content:center}
+.xd b{font-size:10.5px;color:var(--muted);font-weight:800}
+.xd span{font-size:11.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.x-ok{background:var(--gts)}.x-ok span{color:var(--gt)}
+.x-ex{background:#FDF0D5}.x-ex span{color:#9A6200}
+.x-sh{background:var(--bads)}.x-sh span{color:var(--bad)}
+.x-none{background:var(--soft)}.x-fut{background:transparent;box-shadow:inset 0 0 0 1px #EEF1F5}
+.xsum{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13px;font-weight:700;color:var(--muted)}
+.xsum b{font-family:var(--fd);font-size:16px;color:var(--ink);margin-left:4px}
+.xrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.xb2{text-align:left;border-radius:16px;background:var(--soft);padding:12px 14px;display:grid;gap:4px}
+.xb2 .bt{display:flex;align-items:center;gap:8px;font-weight:800}
+.xb2 .bt i{width:10px;height:10px;border-radius:3px}
+.xb2 b{font-family:var(--fd);font-size:20px}
+.xb2 b.pos{color:#9A6200}.xb2 b.neg{color:var(--bad)}
+.xb2 small{font-size:11.5px;color:var(--muted);font-weight:700}
+.ai{background:#E2F0D9;padding:0;font-family:var(--fb);color:#0A1A2B}
+.ai table{border-collapse:collapse;width:640px;font-size:16px;white-space:nowrap}
+.ai td{border:1px solid #9DB58C;padding:8px 12px;text-align:center;font-weight:700;font-style:italic}
+.ai td.tt{font-size:19px;font-weight:800}
+.ai td.hh,.ai tr.gh td{font-weight:800}
+.ai .lv2{display:block;background:#F4B400;margin:-8px -12px;padding:8px 12px}
+.ai.mi{padding:16px;background:#fff}.ai.mi .mt{font-family:var(--fd);font-weight:700;font-size:18px;margin-bottom:10px}
+.ai.mi table{width:auto}.ai.mi td,.ai.mi th{border:0;font-style:normal;padding:2px 1px}.ai.mi .anm{position:static}
+.rt2{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13.5px}
+.rt2 th{font-size:11px;color:var(--muted);text-align:left;padding:6px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.rt2 td{border-top:1px solid var(--line);padding:9px 6px;font-weight:700}
+.rt2 .r{text-align:right}.rt2 td.pt{font-size:12.5px}
+.rt2 tfoot td{background:var(--soft);font-weight:800}
+.csel{border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-weight:700;font-size:12.5px;background:#fff;max-width:190px}
+.csel.need{border-color:var(--warn);background:var(--warns)}
+.asel{width:100%;height:35px;border:0;background:transparent;font-weight:700;font-size:12.5px;padding:0 4px}
+.segl button{background:var(--soft);color:var(--muted);border-color:var(--line)}
+.segl button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.rk{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:var(--soft);flex:none}
+.rk.r0{background:#F6D27A;color:#5C4300}.rk.r1{background:#D9DEE6;color:#3B4757}.rk.r2{background:#EBC3A0;color:#5E3412}
+.bmini{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:11.5px;color:var(--muted);font-weight:600}
+.bmini b{color:var(--ink)}
+.xadd{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.acc .row{padding:10px 0}
+.acc .row span{font-weight:800;font-variant-numeric:tabular-nums}
+.acc .big{font-family:var(--fd);font-size:17px}
+.den{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.dn{background:var(--soft);border-radius:14px;padding:9px 10px}
+.dn label{display:block;font-size:12px;font-weight:800;color:var(--muted)}
+.dn input{width:100%;border:0;background:transparent;font-family:var(--fd);font-size:18px;font-weight:700;padding:2px 0}
+.dn input:focus{outline:none}
+.dn small{font-size:11.5px;font-weight:700;color:var(--gt)}
+.dn:focus-within{box-shadow:inset 0 0 0 2px var(--gt)}
+
+/* sheet / toast */
+.ov{position:fixed;inset:0;background:rgba(10,26,43,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:fd .2s ease}
+.sh{background:var(--card);width:100%;max-width:560px;max-height:88vh;overflow:auto;border-radius:26px 26px 0 0;padding:22px max(18px,env(safe-area-inset-left,0px)) calc(20px + env(safe-area-inset-bottom,0px));animation:su .32s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:700px){.ov{align-items:center}.sh{border-radius:26px}}
+.sh h3{font-family:var(--fd);font-weight:700;font-size:21px;margin:0 0 4px}
+.sh .sub{color:var(--muted);font-size:13px;margin-bottom:16px;font-weight:600}
+.fl{display:grid;gap:5px;margin-bottom:12px}
+.fl label{font-size:12px;font-weight:800;color:var(--muted)}
+.fl input,.fl select{width:100%;border:1px solid #D4DBE5;border-radius:13px;padding:12px;background:#fff;font-weight:600}
+.fl input:focus,.fl select:focus{outline:2px solid var(--gt);outline-offset:-1px;border-color:transparent}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sha{display:flex;gap:10px;margin-top:8px}
+.sha .btn{flex:1}
+.err{color:var(--bad);font-size:13px;font-weight:700;min-height:18px;margin-bottom:6px}
+.toast{position:fixed;left:50%;bottom:116px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;font-size:13.5px;z-index:60;box-shadow:0 12px 30px rgba(10,26,43,.3);animation:su .3s ease;max-width:calc(100% - 32px)}
+@media (min-width:980px){.toast{bottom:32px}}
+.imgbox{background:var(--soft);border-radius:16px;padding:10px;display:grid;place-items:center;overflow:auto}
+.imgbox img{max-width:100%;border-radius:10px;box-shadow:0 6px 20px rgba(10,26,43,.15)}
+
+/* owner */
+.seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:16px}
+.seg::-webkit-scrollbar{display:none}
+.seg button{padding:8px 14px;border-radius:99px;font-weight:700;font-size:13px;background:rgba(255,255,255,.07);color:#C9D5E1;white-space:nowrap;border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:7px}
+.seg button i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.seg button.on{background:#fff;color:var(--navy);border-color:#fff}
+.bcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.bc{border-radius:20px;padding:16px;background:var(--card);text-align:left;box-shadow:0 8px 24px rgba(10,26,43,.05);display:grid;gap:10px;min-width:0}
+.bc:hover{transform:translateY(-2px);transition:transform .2s}
+.bc .bt{display:flex;align-items:center;gap:9px;font-weight:800}
+.bc .bt i{width:12px;height:12px;border-radius:4px}
+.bc .bv{font-family:var(--fd);font-size:24px;font-weight:700;font-variant-numeric:tabular-nums}
+.bc .mini{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.bc .mini span{height:6px;border-radius:99px;background:var(--soft)}
+.bc .mini span.s{background:var(--gt)}
+.lvt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:560px}
+.lvt th{font-size:11px;color:var(--muted);text-align:right;padding:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.lvt th:first-child,.lvt td:first-child{text-align:left}
+.lvt td{padding:12px 8px;border-top:1px solid var(--line);text-align:right;font-weight:800}
+.lvt td small{display:block;color:var(--muted);font-size:11.5px;font-weight:600}
+.lvt .m{color:var(--bad);font-size:12px}
+.lvt .w{color:var(--muted);font-size:12px;font-weight:600}
+.ox{overflow-x:auto}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.k{background:var(--card);border-radius:20px;padding:15px 16px;box-shadow:0 8px 24px rgba(10,26,43,.05)}
+.k .kl{font-size:12px;color:var(--muted);font-weight:700}
+.k .kv{font-family:var(--fd);font-size:26px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.k .kd{font-size:12px;margin-top:2px;color:var(--muted);font-weight:600}
+.bar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:7px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--gt);transform-origin:left;animation:gx .9s cubic-bezier(.2,.8,.2,1) both}
+svg.chs{width:100%;height:auto;display:block}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cal .dh{font-size:11px;color:var(--muted);text-align:center;font-weight:800}
+.cal .dc{border-radius:12px;padding:7px 3px;text-align:center;background:var(--soft);min-height:52px;display:grid;align-content:center;gap:2px}
+.cal .dc b{font-size:11.5px;font-weight:800;color:var(--muted)}
+.cal .dc span{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gt)}
+.cal .dc.has{background:var(--gts)}
+.cal .dc.hi{background:var(--gt)}.cal .dc.hi b,.cal .dc.hi span{color:#fff}
+.cal .dc.fut{opacity:.45}.cal .dc.fut span{color:var(--muted)}
+.cal .dc.tdy{box-shadow:inset 0 0 0 2px var(--navy)}
+
+@keyframes su{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fd{from{opacity:0}to{opacity:1}}
+@keyframes gx{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes rise{from{transform:translateY(12px);opacity:.001}to{transform:none;opacity:1}}
+@keyframes ringin{from{stroke-dashoffset:var(--c)}}
+.page>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.page>*:nth-child(2){animation-delay:.06s}.page>*:nth-child(3){animation-delay:.12s}.page>*:nth-child(4){animation-delay:.18s}.page>*:nth-child(n+5){animation-delay:.24s}
+.ring circle.v{animation:ringin 1.1s cubic-bezier(.2,.8,.2,1) both}
+.still .page>*,.still .ring circle.v{animation:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* app additions */
+.duo{display:grid;gap:16px}
+@media (min-width:980px){.duo{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}.duo.one{grid-template-columns:1fr}}
+.next.ywait{background:linear-gradient(120deg,#F2B04A,#DD861C);box-shadow:0 12px 28px rgba(221,134,28,.28)}
+.next.ywait small{color:#FFF1D6}.next.ywait .btn{color:#94550A}
+.glass.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:760px){.glass.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lg em,.lcard h1 em{font-style:normal;color:var(--pink)}
+.side .sl2{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6F8399;padding:14px 12px 6px}
+@media (min-width:980px){.side .who{display:flex;gap:10px;align-items:center}.side .who b{margin:0}}
+.wav{width:34px;height:34px;border-radius:50%;background:var(--navy3);display:grid;place-items:center;font-weight:800;color:#fff;flex:none;font-size:12px}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:var(--gth);animation:sp .8s linear infinite;margin:24px auto}
+.spin.dk{border-color:var(--line);border-top-color:var(--gt);margin:auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ph{display:grid}.ph img{cursor:zoom-in}
+.lbtn:disabled{opacity:.7}
+
+</style>
+</head><body>
+<div id="app"></div>
+<div id="layer"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<script>
+(() => {
+const I = {
+  today:'<path d="M4 6h16M4 6v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6M8 3v4M16 3v4M9 13l2 2 4-4"/>',
+  sheet:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16M15 4v16"/>',
+  close:'<path d="M12 3v3M12 18v3M5 12H3M21 12h-2"/><circle cx="12" cy="12" r="6"/><path d="M12 9v3l2 1"/>',
+  box:'<path d="M3 7l9-4 9 4-9 4-9-4zM3 7v10l9 4 9-4V7M12 11v10"/>',
+  cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  home:'<path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>',
+  sales:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
+  pl:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/>',
+  staff:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/>',
+  img:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>',
+  send:'<path d="M4 12l16-8-6 16-2-7z"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  out:'<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  camera:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
+  chev:'<path d="M9 6l6 6-6 6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+  cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 10v4M18 10v4"/>',
+  card:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>',
+  upi:'<path d="M7 4l-3 16M13 4l-3 16M14 8h6M12 16h6"/>',
+  wallet:'<path d="M3 7h15a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M3 7l12-4v4M16 14h2"/>',
+  receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6M9 16h3"/>',
+  bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+};
+const ic = (n, s) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${s ? `style="width:${s}px;height:${s}px"` : ''}>${I[n]}</svg>`;
+/* ---------------- server ---------------- */
+const EXEC = 'https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec';
+class NetErr extends Error {}
+async function call(fn, ...args) {
+  let r;
+  try { r = await fetch(window.__API || EXEC, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, args }) }); }
+  catch (e) { throw new NetErr('offline'); }
+  let j; try { j = await r.json(); } catch (e) { throw new NetErr('bad reply'); }
+  if (j.error) { if (j.error === 'SESSION') { signOut(true); } throw new Error(j.error); }
+  return j.result;
+}
+const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } };
+
+/* ---------------- constants ---------------- */
+const GN = { G: 'Gents', L: 'Ladies', O: 'OM', H: 'HK' };
+const SLOTS = [['s12', '12 pm'], ['s2', '2 pm'], ['s5', '5 pm'], ['s7', '7 pm'], ['cl', 'Closing']];
+const DENOM = [500, 200, 100, 50, 20, 10, 5, 2, 1];
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+/* ---------------- helpers ---------------- */
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const inr = n => '₹' + Math.round(n || 0).toLocaleString('en-IN');
+const fmt = n => Math.round(n || 0).toLocaleString('en-IN');
+const k = n => n >= 100000 ? (n / 100000).toFixed(1) + 'L' : n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'K' : String(Math.round(n));
+const num = v => { const x = parseFloat(String(v == null ? '' : v).replace(/[₹,\s]/g, '')); return isNaN(x) ? 0 : x; };
+const blank = v => v === undefined || v === null || String(v).trim() === '';
+const sum = a => a.reduce((x, y) => x + y, 0);
+const clone = o => JSON.parse(JSON.stringify(o));
+const now = () => { const d = new Date(); let h = d.getHours(), m = d.getMinutes(); const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + ':' + String(m).padStart(2, '0') + ' ' + ap; };
+const t12 = v => { if (!v) return ''; const m = /^(\d{1,2}):(\d{2})$/.exec(v); if (!m) return v; let h = +m[1]; const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + ':' + m[2] + ' ' + ap; };
+const ini = n => String(n).split(' ').filter(Boolean).map(x => x[0]).join('').slice(0, 2).toUpperCase();
+const istToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+const dt = s => { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+const ds = d => d.toISOString().slice(0, 10);
+const addDays = (s, n) => { const d = dt(s); d.setUTCDate(d.getUTCDate() + n); return ds(d); };
+const dnum = s => +s.slice(8, 10);
+const dowOf = s => dt(s).getUTCDay();
+const dLabel = s => `${DOW[dowOf(s)]}, ${dnum(s)} ${MON[+s.slice(5, 7) - 1].slice(0, 3)}`;
+const dLong = s => `${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dowOf(s)]}, ${dnum(s)} ${MON[+s.slice(5, 7) - 1]} ${s.slice(0, 4)}`;
+const dDash = s => s.slice(8, 10) + '-' + s.slice(5, 7) + '-' + s.slice(0, 4);
+const dShort = s => dnum(s) + '-' + MON[+s.slice(5, 7) - 1].slice(0, 3) + '-' + s.slice(0, 4);
+const monthName = s => MON[+s.slice(5, 7) - 1];
+const dim = s => new Date(Date.UTC(+s.slice(0, 4), +s.slice(5, 7), 0)).getUTCDate();
+const slotLabel = t => { const [h, m] = String(t).split(':').map(Number); const ap = h >= 12 ? 'pm' : 'am'; return (h % 12 || 12) + (m ? ':' + String(m).padStart(2, '0') : '') + ' ' + ap; };
+let toastT; const toast = t => { clearTimeout(toastT); document.querySelectorAll('.toast').forEach(x => x.remove()); const el = document.createElement('div'); el.className = 'toast'; el.textContent = t; document.body.appendChild(el); toastT = setTimeout(() => el.remove(), 3000); };
+
+/* ---------------- state ---------------- */
+const attDef = () => ({ att: {}, attDone: false, ebStart: '', ebY: '', ebEnd: '', extra: [], yout: {}, _v: 0 });
+const repDef = () => ({ rows: {}, mcAmt: '', snaps: {}, list: [], _v: 0 });
+const cloDef = () => ({ acc: [], exp: [], gpay: [], card: [], den: {}, bp: '', slip: '', photos: [], totSales: '', noCard: false, init: {}, status: 'open', sentAt: '', note: '', waived: false, openTyped: '', carried: false, denY: false, issues: [], _v: 0 });
+let S = { tok: ls('gt_tok') || '', me: null, page: ls('gt_page') || 'today', today: '', yday: '', settings: {}, staff: [], stock: [], month: [], days: {}, used: {}, moves: null, cdate: '', view: 'live', offline: false, photos: {}, booted: false };
+const day = d => { if (!S.days[d]) S.days[d] = {}; const o = S.days[d]; o.att = Object.assign(attDef(), o.att || {}); o.rep = Object.assign(repDef(), o.rep || {}); o.clo = Object.assign(cloDef(), o.clo || {}); return o; };
+const A = () => S.days[S.today].att, R = () => S.days[S.today].rep;
+const CD = () => S.cdate || S.today;
+const C = () => S.days[CD()].clo;
+const ME = () => S.me.branch;
+function persist() { try { ls('gt_cache', JSON.stringify({ me: S.me, today: S.today, yday: S.yday, settings: S.settings, staff: S.staff, stock: S.stock, month: S.month, days: S.days, used: S.used })); ls('gt_q', JSON.stringify([...dirty])); } catch (e) {} }
+function fromCache() { try { const c = JSON.parse(ls('gt_cache') || 'null'); if (!c || !c.me) return false; Object.assign(S, c); return true; } catch (e) { return false; } }
+
+/* ---------------- saving (debounced, queued on this device when offline) ---------------- */
+const dirty = new Set((() => { try { return JSON.parse(ls('gt_q') || '[]'); } catch (e) { return []; } })());
+let flushT, flushing = false, again = false;
+function touch(date, part) { dirty.add(date + '|' + part); persist(); setSaved('saving'); clearTimeout(flushT); flushT = setTimeout(flush, 900); }
+const KEEP = ['status', 'note', 'sentAt', 'issues', 'waived', 'late'];
+async function flush() {
+  if (flushing) { again = true; return; } flushing = true;
+  try {
+    for (const key of [...dirty]) {
+      const [date, part] = key.split('|'); const o = (S.days[date] || {})[part]; if (!o) { dirty.delete(key); continue; }
+      dirty.delete(key);
+      try {
+        let r = await call('appSave', S.tok, ME(), date, part, o);
+        if (r && r.conflict) {
+          const sv = r.data || {};
+          if (part === 'clo') KEEP.forEach(f => { if (sv[f] !== undefined) o[f] = sv[f]; });
+          if (part === 'rep') o.snaps = Object.assign({}, sv.snaps || {}, o.snaps || {});
+          o._v = sv._v || 0;
+          r = await call('appSave', S.tok, ME(), date, part, o);
+        }
+        if (r && r.ok) o._v = r._v;
+        setOffline(false);
+      } catch (e) {
+        if (e instanceof NetErr) { dirty.add(key); setOffline(true); break; }
+        toast(e.message);
+      }
+    }
+  } finally { flushing = false; persist(); setSaved(dirty.size ? (S.offline ? 'offline' : 'saving') : 'saved'); if (again) { again = false; flush(); } }
+}
+async function flushNow() { clearTimeout(flushT); await flush(); while (flushing) await new Promise(r => setTimeout(r, 120)); if (dirty.size && !S.offline) await flush(); return !dirty.size; }
+function setOffline(v) { if (S.offline === v) return; S.offline = v; setSaved(v ? 'offline' : dirty.size ? 'saving' : 'saved'); }
+function setSaved(st) { const el = document.getElementById('conn'); if (!el) return;
+  if (st === 'offline' || S.offline) { el.className = 'pill p-warn'; el.textContent = 'Offline · ' + dirty.size + ' on this device'; }
+  else if (st === 'saving') { el.className = 'pill p-mu'; el.textContent = 'Saving…'; }
+  else { el.className = 'pill p-mu'; el.textContent = '● Saved'; }
+  const sm = document.getElementById('savedmark'); if (sm) sm.textContent = st === 'saved' ? 'Saved ' + now() : st === 'saving' ? 'Saving…' : 'Saved on this device';
+}
+setInterval(() => { if (dirty.size && S.tok) flush(); }, 20000);
+window.addEventListener('online', () => { if (dirty.size) flush(); });
+window.addEventListener('beforeunload', e => { if (dirty.size && !S.offline) { flush(); } });
+
+/* ---------------- boot ---------------- */
+async function boot() {
+  if (!S.tok) { render(); return; }
+  if (fromCache()) { S.booted = true; prepDays(); render(); }
+  try {
+    const b = await call('appBoot', S.tok);
+    if (b.me.role !== 'manager') { S.me = b.me; S.booted = true; render(); return; }
+    const keepDirty = {}; dirty.forEach(key => { const [d, p] = key.split('|'); if (S.days[d] && S.days[d][p]) keepDirty[key] = S.days[d][p]; });
+    S.me = b.me; S.today = b.today; S.yday = b.yday; S.settings = b.settings || {}; S.staff = b.staff || []; S.stock = b.stock || []; S.month = b.month || [];
+    const old = S.days; S.days = {}; S.used = {};
+    [b.day, b.yesterday, b.before].forEach(x => { if (!x) return; S.days[x.date] = { att: x.att, rep: x.rep, clo: x.clo }; S.used[x.date] = !!(x.att || x.rep || x.clo); });
+    Object.keys(keepDirty).forEach(key => { const [d, p] = key.split('|'); S.days[d] = S.days[d] || {}; const sv = S.days[d][p] || {}; const loc = keepDirty[key]; loc._v = sv._v || 0; if (p === 'clo') KEEP.forEach(f => { if (sv[f] !== undefined) loc[f] = sv[f]; }); S.days[d][p] = loc; });
+    Object.keys(old).forEach(d => { if (!S.days[d] && d >= addDays(b.today, -3)) S.days[d] = old[d]; });
+    S.booted = true; setOffline(false); prepDays(); persist(); render();
+    if (dirty.size) flush();
+  } catch (e) {
+    if (e instanceof NetErr) { setOffline(true); if (!S.booted) { document.getElementById('app').innerHTML = `<div class="login"><div class="lcard"><div class="lmark">GT</div><h1>No internet</h1><p>Connect and open the app again.</p><button class="lbtn" onclick="location.reload()">Try again</button></div></div>`; } return; }
+    if (!S.tok) { render(); return; }
+    toast(e.message);
+  }
+}
+function prepDays() {
+  [S.today, S.yday, addDays(S.today, -2)].forEach(day);
+  const a = A(), ya = S.days[S.yday].att;
+  if (blank(a.ebY) && !blank(ya.ebEnd)) a.ebY = ya.ebEnd;
+  if (!S.cdate || (S.cdate !== S.today && S.cdate !== S.yday)) S.cdate = S.today;
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.me && S.me.role === 'manager' && S.today && istToday() !== S.today) { S.cdate = ''; boot(); } });
+
+function signOut(expired) { const t = S.tok; S.tok = ''; ls('gt_tok', null); ls('gt_cache', null); ls('gt_q', null); dirty.clear(); S.me = null; S.days = {}; closeSheet(); if (t && !expired) call('logout', t).catch(() => {}); render(); if (expired) toast('Please sign in again'); }
+
+/* ---------------- sheet maths (same for every branch) ---------------- */
+const blankRow = () => ({ tgt: '', svc: '', bills: '', kids: '', prod: [], mc: '', rev: '' });
+const tgtOf = r => (r.v && !blank(r.v.tgt)) ? num(r.v.tgt) : (r.p.t || 0);
+const prodSum = r => Array.isArray(r.prod) ? sum(r.prod.map(x => x.q * x.p)) : num(r.prod);
+function sheetCalc(list, data, mcAmt) {
+  const groups = ['G', 'L', 'O'].map(g => {
+    const rows = list.filter(p => p.g === g).map(p => ({ p, v: data[p.n] || blankRow() }));
+    const t = { tgt: sum(rows.map(tgtOf)), svc: sum(rows.map(r => num(r.v.svc))), bills: sum(rows.map(r => num(r.v.bills))), kids: sum(rows.map(r => num(r.v.kids))), prod: sum(rows.map(r => prodSum(r.v))), mc: sum(rows.map(r => num(r.v.mc))), rev: sum(rows.map(r => num(r.v.rev))) };
+    return { g, rows, t };
+  }).filter(x => x.rows.length);
+  const G = {}; ['tgt', 'svc', 'bills', 'kids', 'prod', 'mc', 'rev'].forEach(f => G[f] = sum(groups.map(x => x.t[f])));
+  const net = G.svc + num(mcAmt), gross = Math.round(net * (1 + (num(S.settings.gst) || 5) / 100));
+  return { groups, G, net, gross };
+}
+const abv = (s, b) => num(b) ? Math.round(num(s) / num(b)) : '–';
+
+/* ---------------- manager model ---------------- */
+const people = () => S.staff.filter(x => x.branch === ME()).map(x => ({ id: x.id, n: x.name, g: x.g, t: x.t, from: '', isNew: x.isNew }));
+const present = () => people().filter(p => p.g !== 'H' && (A().att[p.n] || {}).st === 'in').concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
+const slotTimes = () => (S.settings.slots || ['12:00', '14:00', '17:00', '19:00']);
+const slotName = key => { const i = SLOTS.findIndex(s => s[0] === key); return i < 0 ? '' : i < 4 ? slotLabel(slotTimes()[i] || '') : 'Closing'; };
+const due = () => { const s = SLOTS.find(([key]) => !R().snaps[key]); return s ? s[0] : null; };
+const liveCalc = () => { const r = R(); present().forEach(p => { if (!r.rows[p.n]) r.rows[p.n] = blankRow(); }); r.list = present(); return sheetCalc(r.list, r.rows, r.mcAmt); };
+const repOf = d => (S.days[d] || {}).rep || repDef();
+const calcOf = d => { if (d === S.today) return liveCalc(); const r = repOf(d), sn = r.snaps && r.snaps.cl; const list = (sn && sn.list && sn.list.length) ? sn.list : (r.list || []); return sheetCalc(list, sn ? sn.data : r.rows, sn ? sn.mcAmt : r.mcAmt); };
+const markChanged = () => { const c = C(); if (['sent', 'approved'].includes(c.status)) c.status = 'changed'; };
+const ST = { open: ['Day open', 'p-mu'], sent: ['Closing sent', 'p-info'], approved: ['✓ Approved', 'p-ok'], back: ['↩ Sent back', 'p-bad'], changed: ['✎ Changed, send again', 'p-warn'] };
+const statusPill = c => { const s = ST[c.status] || ST.open; return c.status === 'sent' ? ['⏳ Closing sent ' + (c.sentAt || ''), s[1]] : s; };
+const gpTot = () => sum(C().gpay.map(x => num(x.a))), cdTot = () => sum(C().card.map(x => num(x.a))), exTot = () => sum(C().exp.map(x => num(x.a))), inTot = () => sum(C().acc.map(x => num(x.c))), accDeb = () => sum(C().acc.map(x => num(x.d)));
+const prodSales = () => calcOf(CD()).G.prod;
+const denTot = () => sum(DENOM.map(d => d * num(C().den[d])));
+const totalSales = () => blank(C().totSales) ? calcOf(CD()).net : num(C().totSales);
+const isToday = () => CD() === S.today;
+const ydUsed = () => !!S.used[S.yday] || S.days[S.yday].clo.status !== 'open' || S.days[S.yday].clo.exp.some(filled);
+const autoOpening = () => { const p = S.days[addDays(CD(), -1)]; if (!p || !p.clo) return null; const t = sum(DENOM.map(d => d * num(p.clo.den[d]))); return t ? t : null; };
+const openingCash = () => { const c = C(); if (!blank(c.openTyped)) return num(c.openTyped); return autoOpening(); };
+const closingBal = () => (openingCash() || 0) + totalSales() + prodSales() + inTot() - exTot() - accDeb() - cdTot() - gpTot();
+
+/* ---------------- shell ---------------- */
+const NAV = [['today', 'Today', 'today'], ['att', 'Attendance', 'staff'], ['report', 'Report', 'sheet'], ['closing', 'Closing', 'wallet'], ['stock', 'Stock', 'box'], ['sales', 'Insights', 'chart']];
+let lastPage = '';
+function render() {
+  const app = document.getElementById('app');
+  if (!S.tok || !S.me) { app.innerHTML = loginView(); lastPage = ''; return; }
+  if (S.me.role !== 'manager') { app.innerHTML = `<div class="login"><div class="lcard"><div class="lmark">GT</div><h1>${esc(S.me.name || 'Welcome')}</h1><p>${S.me.role === 'controller' ? 'The controller screens come in the next update.' : 'The owner screens come in the next update.'}</p><button class="lbtn" data-a="logout">Sign out</button></div></div>`; return; }
+  if (!S.booted || !S.today) { app.innerHTML = `<div class="login"><div class="lcard"><div class="lmark">GT</div><div class="spin"></div></div></div>`; return; }
+  if (!NAV.some(n => n[0] === S.page)) S.page = 'today';
+  ls('gt_page', S.page);
+  if (S.page !== 'closing' || !S.cdate) S.cdate = S.today;
+  const still = lastPage === S.page; lastPage = S.page;
+  const y = window.scrollY, V = VIEWS[S.page](), cst = statusPill(S.days[S.today].clo);
+  app.innerHTML = `<div class="shell ${still ? 'still' : ''}">
+    <aside class="side"><div class="lg"><span>GT</span><div>Green <em>Trends</em><small>${esc(ME())}</small></div></div>
+      <div class="sl2">Daily work</div>${NAV.slice(0, 5).map(navBtn).join('')}<div class="sl2">Your branch</div>${NAV.slice(5).map(navBtn).join('')}
+      <div class="who"><span class="wav">${esc(ini(S.me.name || 'M'))}</span><span><b>${esc(S.me.name)}</b>Manager · ${esc(ME())}</span></div>
+      <button class="it" data-a="logout">${ic('out')}Sign out</button></aside>
+    <main class="main"><header class="hd"><div class="hdin"><div class="hrow"><div style="min-width:0"><div class="eb">${V.eb || ''}</div><div class="br">${V.title}</div><div class="dt">${V.sub}</div></div><div class="rt">${V.right !== undefined ? V.right : `<span class="pill ${cst[1]}">${cst[0]}</span>`}<span id="conn" class="pill p-mu">● Saved</span><button class="av" data-a="me" aria-label="Account">${esc(ini(S.me.name || 'M'))}</button></div></div>${V.hx || ''}</div></header>
+      <div class="wrap"><div class="page">${V.body}</div></div></main></div>
+    <nav class="nav"><div class="navin">${NAV.map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
+  setSaved(dirty.size ? 'saving' : 'saved');
+  window.scrollTo(0, still ? y : 0);
+  const am = document.querySelector('.amon'); if (am) { const ox = am.closest('.ox'), td = am.querySelector('th.td'); if (ox && td && ox.scrollWidth > ox.clientWidth) ox.scrollLeft = Math.max(0, td.offsetLeft - ox.clientWidth * 0.6); }
+}
+const navBtn = ([id, t, i]) => `<button class="it ${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}</button>`;
+const loginView = () => `<div class="login"><div class="lcard"><div class="lmark">GT</div><h1>Green <em>Trends</em></h1><p>Sign in with your mobile number and PIN</p>
+  <form class="lf" id="lform"><input id="lph" inputmode="numeric" maxlength="10" placeholder="Mobile number" autocomplete="username"><input id="lpin" inputmode="numeric" maxlength="4" type="password" placeholder="4-digit PIN" autocomplete="current-password"><div class="lerr" id="lerr"></div><button class="lbtn" type="submit" id="lbtn">Sign in</button></form></div></div>`;
+const ring = (pct, label, sub) => { const r = 44, c = 2 * Math.PI * r, off = c * (1 - Math.min(1, pct));
+  return `<div class="ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="${r}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/><circle class="v" cx="52" cy="52" r="${r}" fill="none" stroke="#7EE0AE" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--c:${c.toFixed(1)}"/></svg><div class="rv"><b>${label}</b><small>${sub}</small></div></div>`; };
+const greet = () => { const h = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: 'numeric', hourCycle: 'h23' }).format(new Date()); return (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + (S.me.name || '').split(' ')[0]; };
+const ebDate = () => `${DOW[dowOf(S.today)]} · ${dnum(S.today)} ${monthName(S.today).slice(0, 3)}`;
+
+/* ---------------- TODAY ---------------- */
+const VIEWS = {};
+VIEWS.today = () => {
+  const a = A(), r = R(), c = S.days[S.today].clo, Cc = liveCalc(), pct = Cc.G.tgt ? Cc.G.svc / Cc.G.tgt : 0, d = due();
+  const hx = `<div class="hero">${ring(pct, Math.round(pct * 100) + '%', 'of target')}<div class="glass g4"><div class="gl"><small>Service sale</small><b>${inr(Cc.G.svc)}</b></div><div class="gl"><small>Bills</small><b>${Cc.G.bills}</b></div><div class="gl"><small>ABV</small><b>${Cc.G.bills ? inr(Cc.G.svc / Cc.G.bills) : '–'}</b></div><div class="gl"><small>Day target</small><b>${Cc.G.tgt ? inr(Cc.G.tgt) : '–'}</b></div></div></div>`;
+  const notice = c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : c.status === 'approved' ? `<div class="note n-ok"><b>Approved.</b></div>` : '';
+  const big = (small, title, btn, page, icon) => `<div class="next"><span class="ib" style="background:rgba(255,255,255,.18);color:#fff">${ic(icon)}</span><div class="tx"><small>${small}</small><b>${title}</b></div><button class="btn sm" data-a="go" data-v="${page}">${btn}</button></div>`;
+  const next = !a.attDone ? big('Start of day', 'Mark attendance', 'Open', 'att', 'staff')
+    : d && d !== 'cl' ? big('Next up', slotName(d) + ' report', 'Open sheet', 'report', 'sheet')
+    : ['open', 'changed', 'back'].includes(c.status) ? big('End of day', 'Closing report', 'Open', 'closing', 'wallet')
+    : `<div class="next done"><span class="ib" style="background:rgba(255,255,255,.1);color:#7EE0AE">✓</span><div class="tx"><small>All done</small><b>${c.status === 'approved' ? 'Day approved' : 'Waiting for approval'}</b></div></div>`;
+  const yc = S.days[S.yday].clo;
+  const yb = ydUsed() && ['open', 'back', 'changed'].includes(yc.status) && !yc.waived ? `<div class="next ywait"><span class="ib" style="background:rgba(255,255,255,.22);color:#fff">${ic('wallet')}</span><div class="tx"><small>${yc.status === 'back' ? 'Sent back' : 'Not sent yet'}</small><b>${dLabel(S.yday)} closing</b></div><button class="btn sm" data-a="ycl">Open</button></div>` : '';
+  const tl = `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Reports today</div><span class="pill p-mu">${SLOTS.filter(s => r.snaps[s[0]]).length} of 5 sent</span></div><div class="tl">${SLOTS.map(([id]) => { const s = r.snaps[id], nm = slotName(id);
+    return `<button class="tli ${s ? 'sent' : id === d ? 'due' : ''}" data-a="openslot" data-v="${id}"><b>${nm}</b><small>${s ? '✓ ' + s.at : id === d ? 'Next' : 'Later'}</small></button>`; }).join('')}</div></section>`;
+  return { eb: ebDate(), title: esc(ME()), sub: greet(), hx, body: notice + `<div class="duo ${yb ? '' : 'one'}">${next}${yb}</div>` + tl };
+};
+
+/* ---------------- ATTENDANCE ---------------- */
+const ydAtt = n => { const y = S.days[S.yday].att, a = (y.att || {})[n] || {}, yo = A().yout || {}; return a.st === 'in' ? Object.assign({}, a, { out: yo[n] !== undefined ? yo[n] : (a.out || '') }) : a; };
+const monthAtt = d => { const m = S.month.find(x => x.date === d); return m ? m.att || {} : {}; };
+const attOf = (n, d) => d === S.today ? (A().att[n] || {}) : d === S.yday ? ydAtt(n) : d < S.today ? (((S.days[d] || {}).att || {}).att || monthAtt(d))[n] || {} : {};
+const youtCell = p => { const y = ydAtt(p.n); if (!y.st) return '<span class="cs">–</span>'; if (y.st !== 'in') return `<span class="pill ${y.st === 'off' ? 'p-info' : 'p-bad'}">${y.st === 'off' ? 'Week off' : 'Leave'}</span>`;
+  return `<input type="time" class="tin tt ${y.out ? '' : 'need'}" id="yo_${esc(p.n)}" data-yout="${esc(p.n)}" value="${esc(y.out || '')}" aria-label="${esc(p.n)} yesterday out time">`; };
+const AST = { in: ['In', 'a-in'], off: ['Week off', 'a-off'], lv: ['Leave', 'a-lv'] };
+const monthDays = () => [...Array(dim(S.today))].map((_, i) => S.today.slice(0, 8) + String(i + 1).padStart(2, '0'));
+function attSummary(n) { let w = 0, o = 0, l = 0; monthDays().filter(d => d <= S.today).forEach(d => { const a = attOf(n, d); if (a.st === 'in') w++; else if (a.st === 'off') o++; else if (a.st === 'lv') l++; });
+  const allowed = Math.min(num(S.settings.woMax) || 4, Math.floor(w / (num(S.settings.woPer) || 6))), extra = Math.max(0, o - allowed); return { w, o, l: l + extra, allowed, extra }; }
+function attImgHTML() {
+  const a = A(), ppl = people(); let n = 1;
+  const cell = x => x.st === 'in' ? (x.in ? t12(x.in) : '–') : x.st === 'off' ? '<span class="lv2">week off</span>' : x.st === 'lv' ? '<span class="lv2">leave</span>' : '–';
+  const yo = p => { const y = ydAtt(p.n); return y.st === 'lv' ? '<span class="lv2">leave</span>' : y.st === 'off' ? '<span class="lv2">week off</span>' : y.out ? t12(y.out) : '–'; };
+  const grp = g => { const L = ppl.filter(p => p.g === g); if (!L.length) return ''; const nm = { G: 'Gents ssp', L: 'Ladies ssp', O: 'OM', H: 'HK' }[g];
+    return `<tr class="gh"><td>S.No</td><td>${nm}</td><td>IN</td><td>${nm}</td><td>OUT</td></tr>` + L.map(p => `<tr><td>${n++}</td><td>${esc(p.n)}</td><td>${cell(a.att[p.n] || {})}</td><td>${esc(p.n)}</td><td>${yo(p)}</td></tr>`).join(''); };
+  const ext = a.extra.length ? `<tr class="gh"><td>S.No</td><td>From other branch</td><td>IN</td><td></td><td></td></tr>` + a.extra.map(x => `<tr><td>${n++}</td><td>${esc(x.n)} (${esc(x.from)})</td><td>in</td><td></td><td></td></tr>`).join('') : '';
+  const units = a.ebStart && a.ebY ? (num(a.ebStart) - num(a.ebY)).toFixed(1) : '';
+  return `<div class="ai"><table><tr><td rowspan="2" class="hh">S.NO</td><td colspan="4" class="tt">${esc(ME())} Attendance ${monthName(S.today)} ${S.today.slice(0, 4)}</td></tr>
+    <tr><td class="hh">Today</td><td class="hh">${dDash(S.today)}</td><td class="hh">Yesterday</td><td class="hh">${dDash(S.yday)}</td></tr>
+    ${['G', 'L', 'O', 'H'].map(grp).join('')}${ext}
+    <tr class="gh"><td></td><td>Today</td><td>STARTING</td><td>Yesterday</td><td>ENDING</td></tr>
+    <tr><td>${n}</td><td>${dDash(S.today)}</td><td>${esc(a.ebStart || '–')}</td><td>${dDash(S.yday)}</td><td>${esc(a.ebY || '–')}</td></tr>
+    <tr class="gh"><td colspan="2">EB units</td><td></td><td colspan="2">${units}</td></tr></table></div>`;
+}
+function monthImgHTML() { const card = monthCard(); return `<div class="ai mi"><div class="mt">${esc(ME())} Attendance · ${monthName(S.today)} ${S.today.slice(0, 4)}</div>${card.slice(card.indexOf('<table class="amon">'), card.indexOf('</table>') + 8)}</div>`; }
+function monthCard() {
+  const ppl = people(), days = monthDays();
+  const head = `<tr><th class="anm">Staff</th>${days.map(d => `<th class="${d === S.today ? 'td' : ''}"><button data-a="attday" data-v="${d}" ${d > S.today ? 'disabled' : ''}>${DOW[dowOf(d)][0]}<b>${dnum(d)}</b></button></th>`).join('')}<th class="sm2">In</th><th class="sm2">W/O</th><th class="sm2">Leave</th></tr>`;
+  const rows = ppl.map(p => { const s2 = attSummary(p.n);
+    return `<tr><td class="anm"><button data-a="attperson" data-v="${esc(p.n)}"><span class="ini ${p.g}">${esc(ini(p.n))}</span>${esc(p.n)}</button></td>${days.map(d => { const a = attOf(p.n, d), k2 = AST[a.st];
+      return `<td><span class="ac2 ${d > S.today ? 'a-fut' : k2 ? k2[1] : 'a-none'}" title="${dnum(d)} · ${k2 ? k2[0] : d > S.today ? '' : 'Not marked'}${a.in ? ' · in ' + t12(a.in) : ''}">${a.st === 'off' ? 'W' : a.st === 'lv' ? 'L' : ''}</span></td>`; }).join('')}
+      <td class="sm2"><b>${s2.w}</b></td><td class="sm2">${s2.o}<small>/${s2.allowed}</small></td><td class="sm2 ${s2.l ? 'bad' : ''}">${s2.l}</td></tr>`; }).join('');
+  return `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('cal')}</span>${monthName(S.today)}</div><button class="btn sm gh" data-a="attimg" data-v="month">${ic('img')}Month image</button><div class="leg" style="width:100%"><span><i class="ac2 a-in"></i>In</span><span><i class="ac2 a-off">W</i>Week off</span><span><i class="ac2 a-lv">L</i>Leave</span><span><i class="ac2 a-none"></i>Not marked</span></div></div>
+    <div class="ox"><table class="amon"><thead>${head}</thead><tbody>${rows}</tbody></table></div>
+    <div class="cs" style="margin-top:10px">W/O: week offs used / earned.</div></section>`;
+}
+VIEWS.att = () => { const a = A(), ppl = people(), cnt = st => ppl.filter(p => (a.att[p.n] || {}).st === st).length;
+  return { eb: ebDate(), title: 'Attendance', sub: esc(ME()), right: '', hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>In</small><b>${cnt('in') + a.extra.length}</b></div><div class="gl"><small>Week off</small><b>${cnt('off')}</b></div><div class="gl"><small>Leave</small><b>${cnt('lv')}</b></div></div>`, body: attCard() + monthCard() }; };
+function attCard() {
+  const a = A(), ppl = people();
+  if (!ppl.length) return `<section class="card"><div class="ct">No staff in the list yet</div><div class="empty" style="margin:6px 0 12px">Add your staff once. They stay for every day.</div><button class="btn" data-a="addnew">${ic('plus')}New staff</button></section>`;
+  if (a.attDone) { const c = s => ppl.filter(p => (a.att[p.n] || {}).st === s).length;
+    return `<section class="card" id="attcard"><div class="ch"><div class="ct"><span class="ib g">${ic('staff')}</span><span>Attendance<div class="cs" style="margin-top:2px">${c('in')} in${a.extra.length ? ' + ' + a.extra.length + ' from other branch' : ''} · ${c('off')} week off · ${c('lv')} leave</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="attimg" data-v="day">${ic('img')}Image for WhatsApp</button><button class="btn sm gh" data-a="attedit">Change</button></span></div>
+      <div class="ox"><table class="att2"><thead><tr><th>Staff</th><th>Yesterday out</th><th>Today in</th><th>Today out</th></tr></thead><tbody>${ppl.filter(p => (a.att[p.n] || {}).st === 'in' || ydAtt(p.n).st === 'in').map(p => { const x = a.att[p.n] || {};
+        return `<tr><td><span class="nm"><span class="ini ${p.g}" style="width:30px;height:30px;border-radius:10px;font-size:11px">${esc(ini(p.n))}</span><b>${esc(p.n)}</b></span></td><td>${youtCell(p)}</td><td>${x.st === 'in' ? esc(t12(x.in) || '–') : `<span class="pill ${x.st === 'off' ? 'p-info' : 'p-bad'}">${x.st === 'off' ? 'Week off' : 'Leave'}</span>`}</td><td>${x.st === 'in' ? `<input type="time" class="tin tt" id="out_${esc(p.n)}" data-out="${esc(p.n)}" value="${esc(x.out || '')}" aria-label="${esc(p.n)} out time">` : ''}</td></tr>`; }).join('')}
+      <tr><td><span class="nm"><span class="ini H" style="width:30px;height:30px;border-radius:10px">${ic('bolt', 14)}</span><b>EB meter</b></span></td><td>${esc(a.ebY || '–')}</td><td>${esc(a.ebStart)}</td><td><input class="tin" style="width:110px" id="ebe" data-eb="ebEnd" value="${esc(a.ebEnd)}" inputmode="decimal" placeholder="Ending" aria-label="EB ending reading"></td></tr></tbody></table></div>
+      <div class="cs" style="margin-top:10px">Out times and the EB ending typed tonight show as yesterday's tomorrow.</div></section>`; }
+  const grp = g => ppl.filter(p => p.g === g).map(p => { const x = a.att[p.n] || {};
+    return `<div class="ar"><div class="nm"><span class="ini ${p.g}">${esc(ini(p.n))}</span><div><b>${esc(p.n)}${p.isNew ? ' <span class="pill p-info">New</span>' : ''}</b><small>${GN[p.g]}</small></div><button class="xb" style="margin-left:auto" data-a="rmstaff" data-v="${esc(p.id)}" aria-label="Remove ${esc(p.n)}" title="Remove staff">✕</button></div>
+      <div class="ac"><span class="yl2"><small>Yesterday out</small>${youtCell(p)}</span>${x.st === 'in' ? `<span class="yl2"><small>Today in</small><input type="time" class="tin tt" id="in_${esc(p.n)}" data-in="${esc(p.n)}" value="${esc(x.in || '')}" aria-label="${esc(p.n)} in time"></span>` : ''}<div class="tg">${[['in', 'In'], ['off', 'Week off'], ['lv', 'Leave']].map(([v, t]) => `<button class="${v} ${x.st === v ? 'on' : ''}" data-a="att" data-n="${esc(p.n)}" data-v="${v}">${t}</button>`).join('')}</div></div></div>`; }).join('');
+  return `<section class="card" id="attcard"><div class="ch"><div class="ct"><span class="ib g">${ic('staff')}</span>Attendance</div><span class="cs">Tap In and type the time they came</span></div>
+    ${['G', 'L', 'O', 'H'].map(g => ppl.some(p => p.g === g) ? `<div class="gh4">${GN[g]}</div>${grp(g)}` : '').join('')}
+    ${a.extra.length ? `<div class="gh4">From other branches</div>${a.extra.map((x, i) => `<div class="ar"><div class="nm"><span class="ini ${x.g}">${esc(ini(x.n))}</span><div><b>${esc(x.n)}</b><small>${esc(x.from)} · ${GN[x.g]}</small></div><button class="xb" style="margin-left:auto" data-a="rmextra" data-v="${i}" aria-label="Remove ${esc(x.n)} for today">✕</button></div><span class="pill p-info">Working here today</span></div>`).join('')}` : ''}
+    <div class="gh4">EB meter</div><div class="ar"><div class="nm"><span class="ini H">${ic('bolt', 16)}</span><div><b>EB meter</b><small>${a.ebStart && a.ebY ? (num(a.ebStart) - num(a.ebY)).toFixed(1) + ' units yesterday' : ''}</small></div></div><div class="ac"><span class="yl2"><small>Yesterday ending</small><input class="tin" style="width:120px" id="eby" data-eb="ebY" value="${esc(a.ebY)}" inputmode="decimal"></span><span class="yl2"><small>Today starting</small><input class="tin" style="width:120px" id="ebs" data-eb="ebStart" value="${esc(a.ebStart)}" inputmode="decimal"></span></div></div>
+    <div class="xbar"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button><button class="btn sm gh" data-a="addnew">${ic('plus')}New staff</button></div><button class="btn" data-a="attdone">Save attendance</button></div></section>`;
+}
+
+/* ---------------- REPORT: the Excel-style sheet ---------------- */
+function sheetHTML(branch, list, data, mcAmt, opt) {
+  const Cc = sheetCalc(list, data, mcAmt), ed = opt.edit, prevD = opt.prev || {};
+  const inp = (n, f, v) => `<input id="x_${esc(n)}_${f}" data-x="${esc(n)}" data-f="${f}" inputmode="numeric" value="${esc(v)}" ${ed ? '' : 'disabled'} class="${prevD[n] && v !== '' && num(v) < num(prevD[n][f]) ? 'low' : ''}" aria-label="${esc(n)} ${f}">`;
+  const row = ({ p, v }) => `<tr><td class="nmc">${esc(String(p.n).toUpperCase())}${p.from ? `<span class="fr">${esc(p.from)}</span>` : ''}</td><td class="lk">${ed ? `<input id="x_${esc(p.n)}_tgt" data-x="${esc(p.n)}" data-f="tgt" inputmode="numeric" value="${esc(v.tgt === undefined ? '' : v.tgt)}" placeholder="${p.t ? p.t : ''}" aria-label="${esc(p.n)} target">` : (tgtOf({ p, v }) ? fmt(tgtOf({ p, v })) : '')}</td>
+    <td>${inp(p.n, 'svc', v.svc)}</td><td>${inp(p.n, 'bills', v.bills)}</td><td class="cl" data-abv="${esc(p.n)}">${abv(v.svc, v.bills) === '–' ? '' : fmt(abv(v.svc, v.bills))}</td><td>${inp(p.n, 'kids', v.kids)}</td>
+    <td>${ed ? `<button class="pb" data-a="prod" data-v="${esc(p.n)}">${prodSum(v) ? fmt(prodSum(v)) : '<i>+</i>'}</button>` : (prodSum(v) ? fmt(prodSum(v)) : '')}</td><td>${inp(p.n, 'mc', v.mc)}</td>
+    <td>${ed ? inp(p.n, 'rev', v.rev) : (num(v.rev) ? fmt(v.rev) : '')}</td></tr>`;
+  const tot = (lab, t, cls) => `<tr class="${cls}"><td class="nmc">${lab}</td><td>${fmt(t.tgt)}</td><td>${fmt(t.svc)}</td><td>${fmt(t.bills)}</td><td>${t.bills ? fmt(t.svc / t.bills) : '–'}</td><td>${fmt(t.kids)}</td><td>${fmt(t.prod)}</td><td>${fmt(t.mc)}</td><td>${fmt(t.rev)}</td></tr>`;
+  return `<div class="xs ${branch}"><div class="xsh"><b>★ GT-${branch.toUpperCase()} ★</b><span>${dLong(opt.date || S.today)}${opt.at ? ' · ' + opt.at : ''}</span></div><div class="xsw"><table class="xt">
+    <thead><tr><th style="text-align:left;padding-left:10px">SSP name</th><th>Day target</th><th>Service sale</th><th>Bills</th><th>ABV</th><th>Kids cut</th><th>Product</th><th>Mem card</th><th>Google reviews</th></tr></thead><tbody>
+    ${Cc.groups.map(gr => gr.rows.map(row).join('') + (gr.g === 'O' ? '' : tot(GN[gr.g] + ' total', gr.t, 'sub'))).join('')}
+    ${tot('Grand total', Cc.G, 'gt')}
+    <tr class="ft"><td class="nmc">Mem card ₹</td><td colspan="8">${ed ? `<input id="x_mcamt" data-mc="1" inputmode="numeric" value="${esc(mcAmt)}" placeholder="0">` : fmt(num(mcAmt))}</td></tr>
+    <tr class="ft"><td class="nmc">Product</td><td colspan="8" data-ft="prod">${fmt(Cc.G.prod)}</td></tr>
+    <tr class="ft"><td class="nmc">Service net sale</td><td colspan="8" data-ft="net">${fmt(Cc.net)}</td></tr>
+    <tr class="ft"><td class="nmc">Service gross sale</td><td colspan="8" data-ft="gross">${fmt(Cc.gross)}</td></tr>
+  </tbody></table></div></div>`;
+}
+VIEWS.report = () => {
+  const a = A(), r = R(), d = due();
+  if (S.view !== 'live' && !r.snaps[S.view]) S.view = 'live';
+  const live = S.view === 'live', snap = live ? null : r.snaps[S.view], Cc = liveCalc();
+  const last = SLOTS.map(s => s[0]).filter(key => r.snaps[key]).pop();
+  const chips = `<div class="slots"><button class="sl ${live ? 'on' : ''} ${d ? 'due' : ''}" data-a="view" data-v="live"><b>Live sheet</b><small>${d ? (d === 'cl' ? 'Closing next' : slotName(d) + ' next') : 'All sent'}</small></button>${SLOTS.map(([id]) => { const s = r.snaps[id], t = slotName(id);
+    return s ? `<button class="sl sent ${S.view === id ? 'on' : ''}" data-a="view" data-v="${id}"><b>${t}</b><small>✓ ${s.at}</small></button>` : `<div class="sl" style="opacity:.55"><b>${t}</b><small>${id === d ? 'Next' : 'Later'}</small></div>`; }).join('')}</div>`;
+  const hx = `<div class="glass" style="margin-top:18px"><div class="gl"><small>Target</small><b>${inr(Cc.G.tgt)}</b></div><div class="gl"><small>Service sale</small><b>${inr(Cc.G.svc)}</b></div><div class="gl"><small>Net sale</small><b>${inr(Cc.net)}</b></div></div>`;
+  if (!a.attDone) return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body: `<section class="card"><div class="ct">Mark attendance first</div><div class="empty" style="margin:6px 0 12px">Staff who are In become the rows of the sheet.</div><button class="btn" data-a="go" data-v="att">Go to attendance</button></section>` };
+  const body = `<section class="card">${chips}</section>
+    ${live ? sheetHTML(ME(), present(), r.rows, r.mcAmt, { edit: true, prev: last ? r.snaps[last].data : null }) : sheetHTML(ME(), snap.list || [], snap.data || {}, snap.mcAmt, { edit: false, at: 'sent ' + snap.at })}
+    <section class="card"><div class="xbar" style="margin:0">${live ? `<span class="saved" id="savedmark">Saved as you type</span>` : `<span class="cs">The ${slotName(S.view)} report as it was sent.</span>`}
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${live ? `<button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button>` : ''}<button class="btn sm gh" data-a="img">${ic('img')}Image for WhatsApp</button>${live && d && d !== 'cl' ? `<button class="btn sm" data-a="sendslot">${ic('send')}Send ${slotName(d)} report</button>` : ''}${live && d === 'cl' ? `<button class="btn sm" data-a="go" data-v="closing">Closing report</button>` : ''}</div></div><div id="gwarn"></div></section>`;
+  return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body };
+};
+
+/* ---------------- CLOSING ---------------- */
+const LCOLS = { acc: [{ k: 't', n: 'Particulars' }, { k: 's', n: 'Advance to', sel: 1 }, { k: 'd', n: 'Debit', r: 1 }, { k: 'c', n: 'Credit', r: 1 }], exp: [{ k: 't', n: 'Particulars' }, { k: 'a', n: 'Amount', r: 1 }],
+  gpay: [{ k: 'b', n: 'Bill no' }, { k: 'c', n: 'Client name' }, { k: 'a', n: 'Amount', r: 1 }], card: [{ k: 'b', n: 'Bill no' }, { k: 'c', n: 'Client name' }, { k: 'a', n: 'Amount', r: 1 }] };
+const LTITLE = key => { const B = ME().toUpperCase(), M3 = monthName(CD()).slice(0, 3).toUpperCase() + '-' + CD().slice(0, 4); return { exp: `${M3} ${B} EXPENSES`, gpay: `GT-${B} "BQR" PAYMENT DETAILS`, card: `GT-${B} "CARD" DETAILS` }[key]; };
+const LSTART = { acc: 6, exp: 8, gpay: 30, card: 6 };
+const blankL = key => Object.fromEntries(LCOLS[key].map(c => [c.k, '']));
+const filled = r => Object.entries(r).some(([k2, v]) => k2 !== 'y' && !blank(v));
+const LKEYS = ['acc', 'exp', 'gpay', 'card'];
+const carriedCount = () => LKEYS.reduce((a, kk) => a + (C()[kk] || []).filter(r => r.y && filled(r)).length, 0) + (C().denY ? 1 : 0);
+function carryOver() { const c = C(); if (!isToday() || c.carried) return; c.carried = true; const y = S.days[S.yday].clo; if (!y || (!LKEYS.some(kk => (y[kk] || []).some(filled)) && !Object.keys(y.den || {}).some(d => num(y.den[d])))) return;
+  LKEYS.forEach(kk => { const old = (y[kk] || []).filter(filled).map(r => Object.assign({}, r, { y: 1 })); c[kk] = old.concat((c[kk] || []).filter(filled)); });
+  if (!Object.keys(c.den || {}).some(d => num(c.den[d]))) { c.den = Object.assign({}, y.den || {}); c.denY = Object.keys(c.den).some(d => num(c.den[d])); }
+  touch(CD(), 'clo'); }
+const nFilled = key => C()[key].filter(filled).length;
+function padList(key) { const c = C(), a = c[key]; c.init = c.init || {}; if (!c.init[key]) { c.init[key] = 1; while (a.length < LSTART[key]) a.push(blankL(key)); let tail = 0; for (let i = a.length - 1; i >= 0 && !filled(a[i]); i--) tail++; while (tail < 3) { a.push(blankL(key)); tail++; } } if (!a.length) a.push(blankL(key)); }
+const lrow = (key, i, r, off) => `<tr class="${r.y ? 'yrow' : ''}"><td class="sn">${i + 1 + (off || 0)}</td>${LCOLS[key].map(c => c.sel ? `<td><select id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="asel" aria-label="Advance to ${i + 1}"><option value=""></option>${people().map(p => `<option ${r[c.k] === p.n ? 'selected' : ''}>${esc(p.n)}</option>`).join('')}</select></td>` : key === 'acc' && !c.r ? `<td><textarea rows="1" id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="ta" aria-label="${c.n} ${i + 1}">${esc(r[c.k])}</textarea></td>` : `<td><input id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="${c.r ? 'rt' : 'lf'}" value="${esc(r[c.k])}" ${c.r ? 'inputmode="numeric"' : ''} aria-label="${c.n} ${i + 1}"></td>`).join('')}<td class="dl"><button class="xb" data-a="delrow" data-l="${key}" data-v="${i}" aria-label="Delete row ${i + 1 + (off || 0)}">✕</button></td></tr>`;
+const xlist = (key, extra) => `<div class="cbox"><div class="xs ${ME()} xc"><div class="xsh"><b>${LTITLE(key)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2">
+  <thead><tr><th style="width:52px">S.No</th>${LCOLS[key].map(c => `<th>${c.n}</th>`).join('')}<th style="width:34px"></th></tr></thead>
+  <tbody data-lb="${key}">${C()[key].map((r, i) => lrow(key, i, r)).join('')}</tbody>
+  <tfoot><tr class="ft"><td colspan="${LCOLS[key].length}" class="tlab">TOTAL</td><td data-ltot="${key}">${fmt(sum(C()[key].map(x => num(x.a))))}</td><td></td></tr></tfoot></table></div></div>
+  <div class="xadd"><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addrows" data-v="${key}">${ic('plus')}Add 10 rows</button><button class="btn sm gh" data-a="clearrows" data-v="${key}">Remove empty rows</button></span><span class="cs" data-lcnt="${key}">${nFilled(key)} filled</span></div>${extra || ''}</div>`;
+function accHTML() {
+  const c = C(); padList('acc');
+  const exs = c.exp.filter(filled), cred = (openingCash() || 0) + totalSales() + prodSales() + inTot(), deb = exTot() + accDeb(), a1 = cred - deb, a2 = a1 - cdTot(), bal = a2 - gpTot(), ex = denTot() - bal;
+  let n = 1; const line = (t, d, cr, cls, tag) => `<tr class="${cls || ''}"><td class="sn">${n++}</td><td class="pt">${t}${tag ? `<span class="ftag">${tag}</span>` : ''}</td><td></td><td>${d === '' ? '' : fmt(d)}</td><td>${cr === '' ? '' : fmt(cr)}</td><td></td></tr>`;
+  const band = (t, d, cr, cls) => `<tr class="${cls}"><td colspan="3" class="pt">${t}</td><td>${d === '' ? '' : fmt(d)}</td><td>${cr}</td><td></td></tr>`;
+  const ao = autoOpening(), changed = !blank(c.openTyped) && num(c.openTyped) !== ao, otag = changed ? `changed${ao !== null ? ' from ' + fmt(ao) : ''}` : ao === null ? 'type it' : `cash counted ${dnum(addDays(CD(), -1))} ${monthName(CD()).slice(0, 3)}`,
+    head = `<tr class="ro ${changed ? 'chg' : ''}"><td class="sn">${n++}</td><td class="pt">OPENING CASH<span class="ftag">${otag}</span></td><td></td><td></td><td><input id="opentyped" data-ot="1" class="rt" inputmode="numeric" value="${esc(blank(c.openTyped) ? (ao === null ? '' : ao) : c.openTyped)}" placeholder="₹" aria-label="Opening cash"></td><td></td></tr>` + (prodSales() ? line('PRODUCT SALES', '', prodSales(), 'ro', 'from report') : '') + exs.map(x => line(esc(String(x.t || 'Expense').toUpperCase()), num(x.a), '', x.y ? 'ro yl' : 'ro', 'expenses')).join('');
+  const off = n - 1;
+  return `<div class="xs ${ME()} xc"><div class="xsh"><b>${ME().toUpperCase()} ACCOUNTS SHEET ${monthName(CD()).toUpperCase()}-${CD().slice(0, 4)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 acc2">
+    <thead><tr><th style="width:52px">S.No</th><th>Particulars</th><th style="width:96px">Advance to</th><th style="width:90px">Debit</th><th style="width:96px">Credit</th><th style="width:34px"></th></tr></thead><tbody>${head}</tbody>
+    <tbody data-lb="acc" data-off="${off}">${c.acc.map((r, i) => lrow('acc', i, r, off)).join('')}</tbody><tbody>
+    ${band('TOTAL SALES', '', `<input id="totsales" data-ts="1" inputmode="numeric" value="${esc(c.totSales)}" placeholder="${fmt(totalSales())}" aria-label="Total sales">`, 'b-sale')}
+    ${band('TOTAL EXPENSES', deb, fmt(cred), 'b-exp')}${band('CARD SALES', cdTot(), fmt(a1), 'b-sale')}${band('G-PAY SALES', gpTot(), fmt(a2), 'b-gp')}
+    ${band('CLOSING BALANCE', '', fmt(bal), 'b-bal')}${band('CASH IN DENOMINATIONS', '', fmt(denTot()), 'b-den')}
+    ${band(ex >= 0 ? 'EXCESS' : 'SHORT', '', `<span style="color:${ex === 0 ? 'var(--ok)' : 'var(--bad)'}">${fmt(Math.abs(ex))}</span>`, 'b-den')}</tbody></table></div></div>
+    <div class="xadd"><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addrows" data-v="acc">${ic('plus')}Add 10 rows</button><button class="btn sm gh" data-a="clearrows" data-v="acc">Remove empty rows</button></span><span class="cs">Money in as Credit, money out as Debit, or a note</span></div>`;
+}
+const denHTML = () => `<div class="xs ${ME()} xc"><div class="xsh"><b>CASH IN DENOMINATIONS</b><span>Closing · ${dShort(CD())}</span></div><div class="xsw"><table class="xt x2">
+  <thead><tr><th>Note</th><th>Count</th><th>Amount</th></tr></thead><tbody>${DENOM.map(d => `<tr><td class="pt" style="text-align:center">${d}</td><td><input id="dn${d}" data-den="${d}" class="${C().denY ? 'yv' : ''}" inputmode="numeric" value="${esc(C().den[d] || '')}" placeholder="0" aria-label="${d} notes"></td><td data-dv="${d}">${fmt(d * num(C().den[d]))}</td></tr>`).join('')}</tbody>
+  <tfoot><tr class="ft"><td colspan="2" class="tlab">TOTAL</td><td data-acc="den2">${fmt(denTot())}</td></tr></tfoot></table></div></div>`;
+VIEWS.closing = () => {
+  const c = C(); carryOver(); LKEYS.forEach(padList);
+  if (!S.days[addDays(CD(), -1)]) loadDay(addDays(CD(), -1));
+  if ((c.photos || []).some(id => !S.photos[id])) loadPhotos(CD());
+  const diffBP = gpTot() - num(c.bp), diffSlip = cdTot() - num(c.slip), ex = denTot() - closingBal(), st = statusPill(c);
+  const bpExtra = `<div class="chk"><span>Total in the payment app</span><input id="bp" data-chk="bp" inputmode="numeric" value="${esc(c.bp)}" placeholder="₹"><span>Difference</span><span class="d" data-diff="bp" style="color:${!c.bp ? 'var(--muted)' : diffBP === 0 ? 'var(--ok)' : 'var(--bad)'}">${c.bp ? (diffBP === 0 ? '✓ Matches' : inr(Math.abs(diffBP))) : '–'}</span></div>`;
+  const cdExtra = `<label class="cs" style="display:flex;gap:6px;align-items:center;margin-top:10px"><input type="checkbox" data-nocard="1" ${c.noCard ? 'checked' : ''}> No card sales this day</label>
+    ${c.noCard ? '' : `<div class="chk"><span>Card settlement total</span><input id="slip" data-chk="slip" inputmode="numeric" value="${esc(c.slip)}" placeholder="₹"><span>Difference</span><span class="d" data-diff="slip" style="color:${!c.slip ? 'var(--muted)' : diffSlip === 0 ? 'var(--ok)' : 'var(--bad)'}">${c.slip ? (diffSlip === 0 ? '✓ Matches' : inr(Math.abs(diffSlip))) : '–'}</span></div>`}`;
+  const dpill = d => { const o = S.days[d].clo; if (o.waived && o.status === 'open') return ['Reminder off', 'p-mu']; return ({ open: ['Not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] })[o.status] || ['Not sent', 'p-warn']; };
+  const picker = `<section class="card"><div class="slots">${[S.yday, S.today].map(d => { const pl = dpill(d); return `<button class="sl ${CD() === d ? 'on' : ''}" data-a="cdate" data-v="${d}"><b>${dLabel(d)}</b><small>${d === S.today ? 'Today · ' : 'Yesterday · '}${pl[0]}</small></button>`; }).join('')}</div></section>`;
+  const photos = c.photos || [];
+  const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} entries from ${dLabel(S.yday)} are still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
+  <div class="cgrid">
+    <div class="cbox" id="accbox">${accHTML()}</div>
+    <div style="display:grid;gap:16px">${xlist('exp')}${denHTML()}</div>
+  </div>
+  <div class="cgrid">${xlist('gpay', bpExtra)}<div style="display:grid;gap:16px">${xlist('card', cdExtra)}</div></div>
+  <section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('camera')}</span>Upload</div><span class="cs">${photos.length} photo${photos.length === 1 ? '' : 's'}</span></div>
+    <div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
+    <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></section>
+  <div id="subres"></div>
+  <button class="btn dk wide" data-a="submit">${c.status === 'sent' ? 'Closing sent · waiting for approval' : c.status === 'approved' ? 'Approved' : c.status === 'changed' || c.status === 'back' ? 'Send closing report again' : 'Send closing report'}</button>`;
+  return { eb: 'Closing report', title: 'Closing', sub: `${esc(ME())} · ${dLabel(CD())} · saved as you type`, right: `<span class="pill ${st[1]}">${st[0]}</span>`, hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Closing balance</small><b>${inr(closingBal())}</b></div><div class="gl"><small>Cash counted</small><b>${inr(denTot())}</b></div><div class="gl"><small>${ex >= 0 ? 'Excess' : 'Short'}</small><b style="color:${ex === 0 ? '#7EE0AE' : '#FFC27A'}">${inr(Math.abs(ex))}</b></div></div>`, body };
+};
+const loading = {};
+async function loadDay(d) { if (loading[d]) return; loading[d] = 1; try { const x = await call('appDay', S.tok, ME(), d); S.days[d] = { att: x.att, rep: x.rep, clo: x.clo }; day(d); persist(); if (S.page === 'closing') render(); } catch (e) {} }
+async function loadPhotos(d) { const key = 'p' + d; if (loading[key]) return; loading[key] = 1; try { const out = await call('appPhoto', S.tok, ME(), d, 'list', S.days[d].clo.photos); Object.assign(S.photos, out); if (S.page === 'closing') render(); } catch (e) {} setTimeout(() => { delete loading[key]; }, 15000); }
+
+/* ---------------- STOCK ---------------- */
+VIEWS.stock = () => {
+  const items = S.stock.filter(x => x.branch === ME());
+  if (S.moves === null) loadMoves();
+  return { eb: 'Retail products', title: 'Stock', sub: esc(ME()) + (items.some(x => x.locked) ? ' · list locked by controller' : ''), right: items.some(x => x.locked) ? `<span class="pill p-mu">${ic('lock', 13)} Locked</span>` : '',
+    hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Pieces</small><b>${sum(items.map(x => x.c))}</b></div><div class="gl"><small>Products</small><b>${items.length}</b></div><div class="gl"><small>Running low</small><b style="color:#FFC27A">${items.filter(x => x.c <= 2).length}</b></div></div>`,
+    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('box')}</span>Products</div><button class="btn sm gh" data-a="sheet" data-v="newprod">Ask for a new product</button></div>
+    ${items.length ? `<div class="fl" style="margin:0 0 6px"><input id="sfind" placeholder="Find a product" autocomplete="off" aria-label="Find a product"></div>` : ''}
+    <div id="slist">${items.map(x => `<div class="row" data-sn="${esc(x.n.toLowerCase())}"><div class="l"><b>${esc(x.n)}</b><small>MRP ${inr(x.mrp)}${x.c <= 2 ? ' · <span style="color:var(--bad)">running low</span>' : ''}</small></div><div class="stp"><button data-a="sminus" data-n="${esc(x.n)}" aria-label="Remove one ${esc(x.n)}">−</button><b class="${x.c <= 2 ? 'lo' : ''}">${x.c}</b><button class="pl" data-a="splus" data-n="${esc(x.n)}" aria-label="Add one ${esc(x.n)}">+</button></div></div>`).join('') || '<div class="empty">No products yet. Ask the controller to add your list.</div>'}</div></section>
+    <section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Recent changes</div></div>${S.moves && S.moves.length ? S.moves.slice(0, 15).map(x => `<div class="row"><div class="l"><b>${esc(x.product)}</b><small>${esc(x.reason)} · ${esc(x.ts)}</small></div><span class="pill ${num(x.qty) > 0 ? 'p-ok' : 'p-bad'}">${num(x.qty) > 0 ? '+' : ''}${x.qty}</span></div>`).join('') : `<div class="empty">${S.moves === null ? 'Loading…' : 'Product sales, stock received and reductions show here.'}</div>`}</section>` };
+};
+async function loadMoves() { S.moves = undefined; try { S.moves = await call('appMoves', S.tok, ME()); } catch (e) { S.moves = []; } if (S.page === 'stock') render(); }
+
+/* ---------------- INSIGHTS (sales only) ---------------- */
+VIEWS.sales = () => {
+  const Cc = liveCalc(), mo = S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === S.today.slice(0, 7)).map(x => ({ d: x.date, net: num(x.svc) + num(x.mc), bills: num(x.bills), staff: x.staff || {}, status: x.status }));
+  const tot = sum(mo.map(x => x.net)) + Cc.net, best = mo.reduce((a, x) => !a || x.net > a.net ? x : a, null);
+  const st = {}; mo.forEach(x => Object.keys(x.staff).forEach(n => st[n] = (st[n] || 0) + num(x.staff[n]))); Object.keys(R().rows).forEach(n => st[n] = (st[n] || 0) + num(R().rows[n].svc));
+  const arr = Object.entries(st).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]), mx = arr.length ? arr[0][1] : 1;
+  const PL = { open: ['Closing not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] };
+  const recent = mo.slice().sort((a, b) => a.d < b.d ? 1 : -1).slice(0, 7).map(x => { const s = x.d === S.yday ? S.days[S.yday].clo.status : x.status, pl = PL[s] || PL.open; return `<div class="row"><div class="l"><b>${dLabel(x.d)}</b><small>${inr(x.net)} · ${x.bills} bills</small></div><span class="pill ${pl[1]}">${pl[0]}</span></div>`; }).join('');
+  return { eb: monthName(S.today) + ' ' + S.today.slice(0, 4), title: 'Insights', sub: esc(ME()), right: '', hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Month so far</small><b>${inr(tot)}</b></div><div class="gl"><small>Per day</small><b>${mo.length ? inr(sum(mo.map(x => x.net)) / mo.length) : '–'}</b></div><div class="gl"><small>Best day</small><b>${best ? inr(best.net) : '–'}</b></div></div>`,
+    body: `<div class="g2"><section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Every day</div></div>${calendar(mo, Cc.net)}</section>
+    <section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('staff')}</span>Staff sales</div><span class="cs">this month</span></div>${arr.length ? arr.map(([n, v]) => `<div style="padding:8px 0"><div style="display:flex;justify-content:space-between;font-weight:800"><span>${esc(n)}</span><span class="num">${inr(v)}</span></div><div class="bar"><i style="width:${Math.round(v / mx * 100)}%"></i></div></div>`).join('') : '<div class="empty">Sales show here as the reports come in.</div>'}</section></div>
+    <section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('today')}</span>Recent days</div></div>${recent || '<div class="empty">Nothing yet.</div>'}</section>` };
+};
+function calendar(mo, todayV) { const by = {}; mo.forEach(x => by[x.d] = x.net); by[S.today] = todayV; const vals = Object.values(by), mx = Math.max(0, ...vals); let h = DOW.map(d => `<div class="dh">${d[0]}</div>`).join('');
+  const first = S.today.slice(0, 8) + '01'; for (let i = 0; i < dowOf(first); i++) h += '<div></div>';
+  monthDays().forEach(d => { const v = by[d] || 0; h += `<div class="dc ${v ? 'has' : ''} ${v && v === mx ? 'hi' : ''} ${d > S.today ? 'fut' : ''} ${d === S.today ? 'tdy' : ''}"><b>${dnum(d)}</b><span>${v ? k(v) : '–'}</span></div>`; }); return `<div class="cal">${h}</div>`; }
+
+/* ---------------- images for WhatsApp ---------------- */
+async function snapImage(html, label) {
+  openSheet(`<h3>${label}</h3><div class="sub">Copy it and paste it in WhatsApp</div><div class="imgbox" id="imgbox"><div class="empty">Making the image…</div></div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Close</button><button class="btn gh" data-a="dlimg">Download</button><button class="btn" data-a="copyimg">Copy image</button></div>`);
+  const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:-9999px;top:0;background:#fff'; host.innerHTML = html; document.body.appendChild(host);
+  host.querySelectorAll('.xs').forEach(x => x.style.borderRadius = '0'); host.querySelectorAll('.xt td.nmc').forEach(x => x.style.position = 'static');
+  try { if (!window.html2canvas) throw 0; const cv = await html2canvas(host.firstElementChild, { scale: 2, backgroundColor: '#ffffff' }); window.__img = cv; window.__imgName = label; const box = document.getElementById('imgbox'); if (box) box.innerHTML = `<img alt="${label}" src="${cv.toDataURL('image/png')}">`; }
+  catch (e) { const box = document.getElementById('imgbox'); if (box) box.innerHTML = '<div class="empty">The image could not be made. Check the internet and try again.</div>'; }
+  host.remove();
+}
+const reportImage = (list, data, mcAmt, at, label) => snapImage(`<div style="width:900px">${sheetHTML(ME(), list, data, mcAmt, { edit: false, at })}</div>`, label);
+
+/* ---------------- pop-up forms ---------------- */
+function openSheet(html) { document.getElementById('layer').innerHTML = `<div class="ov" data-a="close"><div class="sh" role="dialog" aria-modal="true">${html}</div></div>`; const f = document.querySelector('.sh input:not([type=hidden]),.sh select'); if (f && matchMedia('(min-width:900px)').matches) f.focus(); }
+const closeSheet = () => { document.getElementById('layer').innerHTML = ''; };
+const fl = (id, label, v, type, opts) => `<div class="fl"><label for="${id}">${label}</label>${opts ? `<select id="${id}">${opts.map(o => `<option value="${esc(o[0])}" ${String(o[0]) === String(v) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select>` : `<input id="${id}" ${type === 'n' ? 'inputmode="numeric"' : type === 'pin' ? 'inputmode="numeric" maxlength="4" type="password"' : ''} value="${esc(v)}" autocomplete="off">`}</div>`;
+const val = id => (document.getElementById(id) || {}).value || '';
+const busy = (on) => { document.querySelectorAll('.sh .btn:not(.gh)').forEach(b => { b.disabled = on; b.style.opacity = on ? .6 : ''; }); };
+const SHEETS = {
+  prod(n) { const r = R().rows[n] || blankRow(); r.prod = Array.isArray(r.prod) ? r.prod : []; const items = S.stock.filter(x => x.branch === ME() && x.c > 0);
+    return `<h3>${esc(n)} · products sold</h3><div class="sub">Stock goes down by itself</div>
+    ${r.prod.map((x, i) => `<div class="row"><div class="l"><b>${esc(x.n)} × ${x.q}</b><small>${inr(x.p)} each · ${esc(x.pay || '')}</small></div><div style="display:flex;gap:8px;align-items:center"><b class="num">${inr(x.q * x.p)}</b><button class="btn sm gh" data-a="delprod" data-n="${esc(n)}" data-v="${i}" aria-label="Remove">✕</button></div></div>`).join('') || '<div class="empty">Nothing sold yet.</div>'}
+    <div style="border-top:1px solid var(--line);margin-top:10px;padding-top:12px">${fl('pp', 'Product', '', '', [['', 'Pick the product']].concat(items.map(p => [p.n, `${p.n} · ${p.c} left`])))}<div class="f2">${fl('pq', 'Pieces', '1', 'n')}${fl('pm', 'Paid by', 'Cash', '', [['Cash', 'Cash'], ['G-Pay', 'G-Pay'], ['Card', 'Card']])}</div></div>
+    <input type="hidden" id="pn" value="${esc(n)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Done</button><button class="btn" data-a="save" data-v="prod">${ic('plus')}Add</button></div>`; },
+  reduce(n) { const it = S.stock.find(x => x.branch === ME() && x.n === n) || { c: 0 }; return `<h3>Why is 1 ${esc(n)} going out?</h3><div class="sub">${it.c} in hand. Product sales come from the report, not here.</div>
+    <div class="chips">${['Damaged', 'Expired', 'Own use', 'Given to another branch', 'Count mismatch'].map(r => `<button class="btn gh" data-a="sreason" data-n="${esc(n)}" data-v="${r}">${r}</button>`).join('')}</div>
+    ${fl('x_n', 'Other reason', '')}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="sreason" data-n="${esc(n)}" data-v="">Save other reason</button></div>`; },
+  rmstaff(id) { const p = people().find(x => x.id === id) || { n: '' }; return `<h3>Remove ${esc(p.n)}?</h3><div class="sub">They stop showing in attendance and reports. The controller is told.</div>${fl('rm_r', 'Reason', '', '', [['', 'Pick a reason'], ['Left the job', 'Left the job'], ['Moved to another branch', 'Moved to another branch'], ['Added by mistake', 'Added by mistake'], ['Other', 'Other']])}${fl('rm_n', 'Note', '')}<input type="hidden" id="rm_p" value="${esc(id)}">
+    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" style="background:var(--bad)" data-a="save" data-v="rmstaff">Remove</button></div>`; },
+  newprod() { return `<h3>Ask for a new product</h3><div class="sub">The controller adds it to your list</div>${fl('n_p', 'Product name', '')}<div class="f2">${fl('n_m', 'MRP ₹', '', 'n')}${fl('n_q', 'Pieces in hand', '', 'n')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newprod">Send</button></div>`; },
+  other() { const o = S.staff.filter(x => x.branch !== ME() && (x.g === 'G' || x.g === 'L')).map(x => [x.branch + '|' + x.name + '|' + x.g, `${x.name} · ${x.branch}`]);
+    return `<h3>Staff from another branch</h3><div class="sub">Their sales are saved under their own name</div>${fl('o_s', 'Staff', '', '', [['', 'Pick the staff']].concat(o))}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="other">Add for today</button></div>`; },
+  newstaff() { return `<h3>New staff</h3><div class="sub">The controller is told</div>${fl('s_n', 'Name', '')}${fl('s_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newstaff">Add</button></div>`; },
+  me() { return `<h3>${esc(S.me.name)}</h3><div class="sub">Manager · ${esc(ME())}</div><div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
+};
+const SAVE = {
+  async prod() { const n = val('pn'), p = val('pp'), q = num(val('pq')), it = S.stock.find(x => x.branch === ME() && x.n === p); if (!p || !it) throw 'Pick the product.'; if (!q || q % 1 || q < 0) throw 'Pieces must be a whole number.'; if (q > it.c) throw `Only ${it.c} in stock.`;
+    S.stock = mergeStock(await call('appStockOp', S.tok, ME(), 'sale', { n: p, q, staff: n, pay: val('pm') }));
+    const r = R(); r.rows[n] = r.rows[n] || blankRow(); r.rows[n].prod = Array.isArray(r.rows[n].prod) ? r.rows[n].prod : []; r.rows[n].prod.push({ n: p, q, p: it.mrp, pay: val('pm') }); touch(S.today, 'rep'); S.moves = null;
+    const left = (S.stock.find(x => x.branch === ME() && x.n === p) || {}).c; toast(`${p}: ${left} left`); return 'stay'; },
+  async rmstaff() { const id = val('rm_p'), r = val('rm_r'); if (!r) throw 'Pick a reason.'; if (r === 'Other' && !val('rm_n').trim()) throw 'Write the reason in the note.';
+    const p = people().find(x => x.id === id); S.staff = await call('appStaffOp', S.tok, ME(), 'remove', { id, reason: r, note: val('rm_n').trim() }); if (p) { delete A().att[p.n]; touch(S.today, 'att'); } persist(); toast((p ? p.n : 'Staff') + ' removed · controller told'); return true; },
+  async newprod() { const n = val('n_p').trim(); if (!n) throw 'Write the product name.'; await call('appStockOp', S.tok, ME(), 'ask', { n, mrp: val('n_m'), q: val('n_q') }); toast('Sent to the controller'); return true; },
+  async other() { const v = val('o_s'); if (!v) throw 'Pick the staff.'; const [b, n, g] = v.split('|'); if (A().extra.some(x => x.n === n)) throw n + ' is already added.'; A().extra.push({ n, g, from: b }); touch(S.today, 'att'); toast(n + ' added for today'); return true; },
+  async newstaff() { const n = val('s_n').trim(); if (!n) throw 'Write the name.'; const el = document.getElementById('s_n');
+    const sim = people().find(p => p.n.toLowerCase().replace(/\s/g, '').slice(0, 4) === n.toLowerCase().replace(/\s/g, '').slice(0, 4)); if (sim && el.dataset.ok !== n) { el.dataset.ok = n; throw `Is this ${sim.n}? Press Add again if it's someone new.`; }
+    S.staff = await call('appStaffOp', S.tok, ME(), 'add', { name: n, g: val('s_g') }); persist(); toast(n + ' added · controller told'); return true; },
+  async pin() { if (!/^\d{4}$/.test(val('p_old'))) throw 'Type your current PIN.'; if (!/^\d{4}$/.test(val('p_new'))) throw 'The new PIN must be 4 digits.'; await call('appMyPin', S.tok, val('p_old'), val('p_new')); toast('PIN changed'); return true; }
+};
+const mergeStock = list => S.stock.filter(x => x.branch !== ME()).concat(list || []);
+
+/* ---------------- live updates while typing (no re-render) ---------------- */
+function refreshSheetTotals() {
+  const Cc = liveCalc(), t = document.querySelector('.xt'); if (!t) return;
+  const vals = x => [fmt(x.tgt), fmt(x.svc), fmt(x.bills), x.bills ? fmt(x.svc / x.bills) : '–', fmt(x.kids), fmt(x.prod), fmt(x.mc), fmt(x.rev)];
+  const subs = [...t.querySelectorAll('tr.sub')], gt = t.querySelector('tr.gt');
+  Cc.groups.filter(g => g.g !== 'O').forEach((g, i) => { if (subs[i]) vals(g.t).forEach((v, j) => subs[i].children[j + 1].textContent = v); });
+  if (gt) vals(Cc.G).forEach((v, j) => gt.children[j + 1].textContent = v);
+  [['prod', Cc.G.prod], ['net', Cc.net], ['gross', Cc.gross]].forEach(([f, v]) => { const el = t.querySelector(`[data-ft="${f}"]`); if (el) el.textContent = fmt(v); });
+  present().forEach(p => { const el = t.querySelector(`[data-abv="${CSS.escape(p.n)}"]`), r = R().rows[p.n]; if (el && r) { const a = abv(r.svc, r.bills); el.textContent = a === '–' ? '' : fmt(a); } });
+  const gl = document.querySelectorAll('.hd .gl b'); if (gl.length === 3 && S.page === 'report') { gl[0].textContent = inr(Cc.G.tgt); gl[1].textContent = inr(Cc.G.svc); gl[2].textContent = inr(Cc.net); }
+}
+function refreshAccounts() {
+  const box = document.getElementById('accbox'); if (box) { const ae = document.activeElement, keep = ae && box.contains(ae) ? ae.id : '', pos = keep ? ae.selectionStart : 0; box.innerHTML = accHTML(); if (keep) { const n = document.getElementById(keep); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (e) {} } } }
+  ['exp', 'gpay', 'card'].forEach(kk => { const el = document.querySelector(`[data-lcnt="${kk}"]`); if (el) el.textContent = nFilled(kk) + ' filled'; });
+  const ex = denTot() - closingBal();
+  const gl = document.querySelectorAll('.hd .gl'); if (gl.length === 3 && S.page === 'closing') { gl[0].querySelector('b').textContent = inr(closingBal()); gl[1].querySelector('b').textContent = inr(denTot()); gl[2].querySelector('small').textContent = ex >= 0 ? 'Excess' : 'Short'; gl[2].querySelector('b').textContent = inr(Math.abs(ex)); gl[2].querySelector('b').style.color = ex === 0 ? '#7EE0AE' : '#FFC27A'; }
+  ['exp', 'gpay', 'card'].forEach(kk => { const el = document.querySelector(`[data-ltot="${kk}"]`); if (el) el.textContent = fmt(sum(C()[kk].map(x => num(x.a)))); });
+  const d2 = document.querySelector('[data-acc="den2"]'); if (d2) d2.textContent = fmt(denTot());
+  [['bp', gpTot()], ['slip', cdTot()]].forEach(([kk, t]) => { const el = document.querySelector(`[data-diff="${kk}"]`); if (!el) return; const v = C()[kk], d = t - num(v); el.textContent = v ? (d === 0 ? '✓ Matches' : inr(Math.abs(d))) : '–'; el.style.color = !v ? 'var(--muted)' : d === 0 ? 'var(--ok)' : 'var(--bad)'; });
+  DENOM.forEach(d => { const el = document.querySelector(`[data-dv="${d}"]`); if (el) el.textContent = fmt(d * num(C().den[d])); });
+}
+document.addEventListener('input', e => {
+  const t = e.target, d = t.dataset || {};
+  if (t.id === 'sfind') { const q = t.value.trim().toLowerCase(); document.querySelectorAll('#slist .row').forEach(r => r.style.display = !q || r.dataset.sn.includes(q) ? '' : 'none'); return; }
+  if (!S.me || S.me.role !== 'manager') return;
+  if (d.x) { const r = R(); r.rows[d.x] = r.rows[d.x] || blankRow(); r.rows[d.x][d.f] = t.value.replace(/[^\d.]/g, ''); refreshSheetTotals(); touch(S.today, 'rep'); }
+  else if (d.mc) { R().mcAmt = t.value.replace(/[^\d.]/g, ''); refreshSheetTotals(); touch(S.today, 'rep'); }
+  else if (d.l) { const L = C()[d.l]; L[+d.i][d.k] = t.value; if (L[+d.i].y) { delete L[+d.i].y; const tr = t.closest('tr'); if (tr) tr.classList.remove('yrow'); } markChanged(); if (+d.i >= L.length - 2 && t.value.trim()) { const st = L.length; for (let i = 0; i < 5; i++) L.push(blankL(d.l)); const tb = document.querySelector(`[data-lb="${d.l}"]`); if (tb) tb.insertAdjacentHTML('beforeend', L.slice(st).map((r, i) => lrow(d.l, st + i, r, +(tb.dataset.off || 0))).join('')); } refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.den) { C().den[d.den] = t.value.replace(/[^\d]/g, ''); if (C().denY) { C().denY = false; document.querySelectorAll('[data-den]').forEach(x => x.classList.remove('yv')); } markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.chk) { C()[d.chk] = t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.ts) { C().totSales = t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.ot) { C().openTyped = t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.eb) { A()[d.eb] = t.value; touch(S.today, 'att'); }
+  else if (d.in) { (A().att[d.in] = A().att[d.in] || { st: 'in' }).in = t.value; touch(S.today, 'att'); }
+  else if (d.out) { (A().att[d.out] = A().att[d.out] || { st: 'in' }).out = t.value; touch(S.today, 'att'); }
+  else if (d.yout) { A().yout = A().yout || {}; A().yout[d.yout] = t.value; t.classList.toggle('need', !t.value); touch(S.today, 'att'); }
+});
+document.addEventListener('change', async e => {
+  const t = e.target; if (!S.me || S.me.role !== 'manager') return;
+  if (t.dataset.nocard) { C().noCard = t.checked; markChanged(); touch(CD(), 'clo'); render(); return; }
+  if (t.dataset.l && t.tagName === 'SELECT') return;
+  if (t.dataset.up && t.files && t.files.length) { const files = [...t.files]; t.value = ''; await addPhotos(files); return; }
+  if (t.id === 'opentyped') { const c = C(), ao = autoOpening(), v = t.value.trim();
+    if (v === '' || (ao !== null && num(v) === ao)) { c.openTyped = ''; refreshAccounts(); touch(CD(), 'clo'); return; }
+    call('appTell', S.tok, ME(), 'opening', { date: CD(), from: ao === null ? '' : ao, to: num(v) }).then(() => toast('Opening cash changed · controller and owner told'), () => toast('Saved · the controller will be told when online')); }
+});
+async function shrink(file, maxSide, q) { const url = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(file); });
+  const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+  const sc = Math.min(1, maxSide / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', q); }
+async function addPhotos(files) {
+  const c = C(), d = CD(); c.photos = c.photos || []; let ok = 0; toast('Uploading ' + files.length + ' photo' + (files.length > 1 ? 's' : '') + '…');
+  for (const f of files) { try { let data = await shrink(f, 1400, .7); if (data.length > 900000) data = await shrink(f, 1000, .6); const r = await call('appPhoto', S.tok, ME(), d, 'add', data); S.photos[r.id] = data; c.photos.push(r.id); ok++; }
+    catch (e) { toast(e instanceof NetErr ? 'No internet. Upload again when online.' : 'A photo could not be uploaded.'); } }
+  if (ok) { markChanged(); touch(d, 'clo'); await flushNow(); render(); toast(ok + ' photo' + (ok > 1 ? 's' : '') + ' added'); }
+}
+document.addEventListener('submit', async e => { if (e.target.id !== 'lform') return; e.preventDefault();
+  const ph = val('lph').replace(/\D/g, ''), pin = val('lpin'), er = document.getElementById('lerr'), bt = document.getElementById('lbtn');
+  if (ph.length !== 10) { er.textContent = 'Enter your 10-digit mobile number.'; return; } if (!/^\d{4}$/.test(pin)) { er.textContent = 'Enter your 4-digit PIN.'; return; }
+  er.textContent = ''; bt.disabled = true; bt.textContent = 'Signing in…';
+  try { const r = await call('login', ph, pin);
+    if (r.state === 'ok') { S.tok = r.token; ls('gt_tok', r.token); S.me = r.me; S.page = 'today'; S.booted = false; render(); await boot(); return; }
+    er.textContent = r.state === 'password' ? 'Controller sign-in is in the next update.' : r.state === 'waiting' ? 'This number is not set up yet. Ask the controller.' : 'This number cannot sign in.'; }
+  catch (x) { er.textContent = x instanceof NetErr ? 'No internet.' : x.message; }
+  bt.disabled = false; bt.textContent = 'Sign in';
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeSheet(); return; }
+  if (e.key !== 'Enter') return; const t = e.target, d = t.dataset || {};
+  if (t.tagName === 'TEXTAREA' && e.shiftKey) return;
+  let next = null;
+  if (d.l) next = document.getElementById(`l_${d.l}_${+d.i + 1}_${d.k}`);
+  else if (d.x) { const ins = [...document.querySelectorAll(`[data-f="${d.f}"]`)]; next = ins[ins.indexOf(t) + 1]; }
+  else if (d.den) { const i = DENOM.indexOf(+d.den); next = document.getElementById('dn' + DENOM[i + 1]); }
+  if (next) { e.preventDefault(); next.focus(); next.select && next.select(); }
+});
+document.addEventListener('paste', e => {
+  const t = e.target, d = t.dataset || {}; if (!d.l) return;
+  const txt = (e.clipboardData || window.clipboardData).getData('text'); if (!/[\t\n]/.test(txt.trim())) return;
+  e.preventDefault(); const lines = txt.replace(/\r/g, '').split('\n').filter(x => x.trim() !== ''), cols = LCOLS[d.l].map(c => c.k), c0 = cols.indexOf(d.k), L = C()[d.l];
+  lines.forEach((ln, j) => { const row = +d.i + j; while (L.length <= row + 3) L.push(blankL(d.l)); ln.split('\t').forEach((v, q) => { const key = cols[c0 + q]; if (key) L[row][key] = v.trim().replace(/^₹/, ''); }); delete L[row].y; });
+  markChanged(); touch(CD(), 'clo'); render(); toast(lines.length + ' rows pasted');
+});
+
+/* ---------------- actions ---------------- */
+async function sendSlot() {
+  const r = R(), d = due(), w = document.getElementById('gwarn'); if (!d || d === 'cl') return;
+  const Cc = liveCalc(); if (!Cc.G.svc && !Cc.G.bills) { w.innerHTML = `<div class="note n-bad" style="margin-top:12px">Type at least one staff member's sale first.</div>`; return; }
+  const last = SLOTS.map(s => s[0]).filter(kk => r.snaps[kk]).pop(), prev = last ? r.snaps[last].data : null;
+  const lower = prev ? present().filter(p => prev[p.n] && ['svc', 'bills'].some(f => num((r.rows[p.n] || {})[f]) < num(prev[p.n][f]))).map(p => p.n) : [];
+  if (lower.length && w.dataset.ok !== d) { w.dataset.ok = d; w.innerHTML = `<div class="note n-warn" style="margin-top:12px"><b>Lower than the ${slotName(last)} report:</b> ${lower.map(esc).join(', ')}. Press Send again if it's right.</div>`; return; }
+  touch(S.today, 'rep'); if (!(await flushNow())) { toast('No internet. Send again when online.'); return; }
+  try { const x = await call('appSendSlot', S.tok, ME(), S.today, d); r.snaps[d] = { at: x.at, data: clone(r.rows), mcAmt: r.mcAmt, list: clone(r.list) }; r._v = x._v; persist(); toast(slotName(d) + ' report sent'); render(); }
+  catch (e) { toast(e instanceof NetErr ? 'No internet. Send again when online.' : e.message); }
+}
+async function submitClosing() {
+  const c = C(), out = document.getElementById('subres'), d = CD(), tday = isToday(), rr = repOf(d);
+  if (c.status === 'sent' || c.status === 'approved') { toast(c.status === 'sent' ? 'Already sent' : 'Already approved'); return; }
+  const miss = [];
+  if (tday) SLOTS.slice(0, 4).forEach(([id]) => { if (!rr.snaps[id]) miss.push(slotName(id) + ' report not sent'); });
+  if (tday && carriedCount()) miss.push(carriedCount() + ' entries from yesterday not cleared or changed');
+  if (!nFilled('gpay')) miss.push('G-Pay list empty');
+  if (!c.bp) miss.push('Payment app total not typed'); else if (gpTot() !== num(c.bp)) miss.push('G-Pay list differs from the payment app by ' + inr(Math.abs(gpTot() - num(c.bp))));
+  if (!c.noCard) { if (!nFilled('card')) miss.push('Card list empty'); if (!c.slip) miss.push('Card settlement total not typed'); else if (cdTot() !== num(c.slip)) miss.push('Card list differs from the settlement by ' + inr(Math.abs(cdTot() - num(c.slip)))); }
+  if (!(c.photos || []).length) miss.push('No photos uploaded');
+  if (!denTot()) miss.push('Cash not counted');
+  if (miss.length && out.dataset.ok !== '1') { out.dataset.ok = '1'; out.innerHTML = `<div class="note n-warn"><b>These are missing or don't match</b><div style="margin:6px 0">${miss.map(x => '• ' + esc(x)).join('<br>')}</div>You can still send it. The controller will be told about each one.</div>`; out.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+  const exv = denTot() - closingBal(); if (denTot()) miss.push(exv === 0 ? 'Cash matches' : (exv > 0 ? 'Excess ' : 'Short ') + inr(Math.abs(exv)));
+  if (tday) touch(d, 'rep'); touch(d, 'clo');
+  const btn = document.querySelector('[data-a=submit]'); if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  if (!(await flushNow())) { toast('No internet. Send again when online.'); render(); return; }
+  try { await call('appSendClosing', S.tok, ME(), d, miss); const x = await call('appDay', S.tok, ME(), d); S.days[d] = { att: x.att, rep: x.rep, clo: x.clo }; day(d); S.used[d] = true; persist();
+    toast(miss.length > (denTot() ? 1 : 0) ? 'Closing sent · controller told what is missing' : 'Closing sent'); render(); }
+  catch (e) { toast(e instanceof NetErr ? 'No internet. Send again when online.' : e.message); render(); }
+}
+async function stockOp(op, n, extra) { try { S.stock = mergeStock(await call('appStockOp', S.tok, ME(), op, Object.assign({ n, q: 1 }, extra || {}))); S.moves = null; persist(); render(); return true; } catch (e) { toast(e instanceof NetErr ? 'No internet. Try again when online.' : e.message); render(); return false; } }
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  const a = el.dataset.a, v = el.dataset.v; if (a === 'close' && e.target !== el) return;
+  switch (a) {
+    case 'close': closeSheet(); break;
+    case 'logout': signOut(false); break;
+    case 'go': S.page = v; closeSheet(); render(); break;
+    case 'me': openSheet(SHEETS.me()); break;
+    case 'att': { const n = el.dataset.n, cur = A().att[n] || {}; A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
+    case 'attdone': { const left = people().filter(p => !(A().att[p.n] || {}).st); if (left.length) { toast('Mark ' + left.map(p => p.n).join(', ')); break; } const noT = people().filter(p => (A().att[p.n] || {}).st === 'in' && !(A().att[p.n] || {}).in); if (noT.length) { toast('Type the In time for ' + noT.map(p => p.n).join(', ')); const f = document.getElementById('in_' + noT[0].n); if (f) f.focus(); break; }
+      A().attDone = true; touch(S.today, 'att'); render(); const yo2 = people().filter(p => ydAtt(p.n).st === 'in' && !ydAtt(p.n).out).map(p => p.n); toast(yo2.length ? 'Attendance saved · yesterday out still empty: ' + yo2.join(', ') : 'Attendance saved'); break; }
+    case 'attedit': A().attDone = false; touch(S.today, 'att'); render(); break;
+    case 'rmextra': A().extra.splice(+v, 1); touch(S.today, 'att'); render(); break;
+    case 'addother': openSheet(SHEETS.other()); break;
+    case 'addnew': openSheet(SHEETS.newstaff()); break;
+    case 'rmstaff': openSheet(SHEETS.rmstaff(v)); break;
+    case 'openslot': S.view = R().snaps[v] ? v : 'live'; S.page = 'report'; render(); break;
+    case 'view': S.view = v; render(); break;
+    case 'prod': openSheet(SHEETS.prod(v)); break;
+    case 'delprod': { const n = el.dataset.n, r = R().rows[n], x = r.prod[+v]; el.disabled = true;
+      try { S.stock = mergeStock(await call('appStockOp', S.tok, ME(), 'unsale', { n: x.n, q: x.q })); r.prod.splice(+v, 1); touch(S.today, 'rep'); S.moves = null; openSheet(SHEETS.prod(n)); render(); } catch (er) { toast(er instanceof NetErr ? 'No internet.' : er.message); el.disabled = false; } break; }
+    case 'sendslot': el.disabled = true; await sendSlot(); el.disabled = false; break;
+    case 'img': { const r = R(), snap = S.view !== 'live' ? r.snaps[S.view] : null; reportImage(snap ? snap.list : present(), snap ? snap.data : r.rows, snap ? snap.mcAmt : r.mcAmt, snap ? snap.at : now(), (snap ? slotName(S.view) : 'Live') + ' report'); break; }
+    case 'copyimg': { const cv = window.__img, er = document.getElementById('serr'); if (!cv) break; cv.toBlob(b => { try { navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]).then(() => toast('Copied · paste it in WhatsApp'), () => { er.textContent = 'Press Download, or right-click the image and copy it.'; }); } catch (x) { er.textContent = 'Press Download, or right-click the image and copy it.'; } }); break; }
+    case 'dlimg': { const cv = window.__img; if (!cv) break; const l = document.createElement('a'); l.download = (window.__imgName || 'report') + ' ' + S.today + '.png'; l.href = cv.toDataURL('image/png'); l.click(); break; }
+    case 'splus': { const n = el.dataset.n; el.disabled = true; if (await stockOp('plus', n)) toast('1 × ' + n + ' added · controller told'); break; }
+    case 'sminus': { const n = el.dataset.n, it = S.stock.find(x => x.branch === ME() && x.n === n); if (!it || it.c <= 0) { toast('None in stock'); break; } openSheet(SHEETS.reduce(n)); break; }
+    case 'sreason': { const n = el.dataset.n, r = v || val('x_n').trim(); if (!r) { document.getElementById('serr').textContent = 'Pick a reason or write one.'; break; } closeSheet(); if (await stockOp('minus', n, { reason: r })) toast('1 removed · controller told'); break; }
+    case 'attday': { const d = v, list = people().map(p => ({ p, a: attOf(p.n, d) }));
+      openSheet(`<h3>${dLabel(d)}</h3><div class="sub">${list.filter(x => x.a.st === 'in').length} in · ${list.filter(x => x.a.st === 'off').length} week off · ${list.filter(x => x.a.st === 'lv').length} leave</div>
+      ${list.map(({ p, a: x }) => `<div class="row"><div class="nm"><span class="ini ${p.g}">${esc(ini(p.n))}</span><div><b>${esc(p.n)}</b><small>${GN[p.g]}</small></div></div><div style="text-align:right">${x.st ? `<span class="pill ${x.st === 'in' ? 'p-gt' : x.st === 'off' ? 'p-info' : 'p-bad'}">${AST[x.st][0]}</span>` : '<span class="pill p-mu">Not marked</span>'}${x.in ? `<div class="cs" style="margin-top:4px">${t12(x.in)} – ${x.out ? t12(x.out) : '…'}</div>` : ''}</div></div>`).join('')}
+      <div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break; }
+    case 'attperson': { const n = v, s2 = attSummary(n); let cal = DOW.map(x => `<div class="dh">${x[0]}</div>`).join('');
+      for (let i = 0; i < dowOf(S.today.slice(0, 8) + '01'); i++) cal += '<div></div>';
+      monthDays().forEach(d => { const x = attOf(n, d); cal += `<div class="dc2 ${d > S.today ? 'a-fut' : x.st ? AST[x.st][1] : 'a-none'}"><b>${dnum(d)}</b><span>${x.st === 'in' ? t12(x.in).replace(' am', '').replace(' pm', '') : x.st === 'off' ? 'W/O' : x.st === 'lv' ? 'Leave' : ''}</span></div>`; });
+      openSheet(`<h3>${esc(n)}</h3><div class="sub">${monthName(S.today)} · ${esc(ME())}</div><div class="kp" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr)"><div class="k"><div class="kl">Worked</div><div class="kv">${s2.w}</div></div><div class="k"><div class="kl">Week offs</div><div class="kv">${s2.o}<span class="cs"> / ${s2.allowed}</span></div></div><div class="k"><div class="kl">Leave</div><div class="kv" style="color:${s2.l ? 'var(--bad)' : 'inherit'}">${s2.l}</div></div></div>
+      <div class="pcal">${cal}</div><div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break; }
+    case 'ycl': S.page = 'closing'; S.cdate = S.yday; lastPage = ''; render(); break;
+    case 'clearall': { const c = C(); LKEYS.forEach(kk => { c[kk] = c[kk].filter(r => !r.y && filled(r)); }); if (c.denY) { c.den = {}; c.denY = false; } c.init = {}; touch(CD(), 'clo'); render(); toast("Yesterday's entries cleared"); break; }
+    case 'rmphoto': { const c = C(), id = c.photos[+v]; c.photos.splice(+v, 1); markChanged(); touch(CD(), 'clo'); render(); call('appPhoto', S.tok, ME(), CD(), 'remove', id).catch(() => {}); toast('Photo removed'); break; }
+    case 'viewphoto': openSheet(`<div class="imgbox"><img src="${S.photos[v]}" alt="Photo"></div><div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break;
+    case 'attimg': snapImage(v === 'month' ? monthImgHTML() : attImgHTML(), v === 'month' ? 'Month attendance' : 'Attendance today'); break;
+    case 'cdate': S.cdate = v; render(); break;
+    case 'delrow': { const L = C()[el.dataset.l]; L.splice(+v, 1); if (!L.length) L.push(blankL(el.dataset.l)); markChanged(); touch(CD(), 'clo'); render(); break; }
+    case 'clearrows': { const c = C(), before = c[v].length; c[v] = c[v].filter(filled); if (!c[v].length) c[v].push(blankL(v)); touch(CD(), 'clo'); render(); toast((before - c[v].length) + ' empty rows removed'); break; }
+    case 'addrows': { const L = C()[v], st = L.length; for (let i = 0; i < 10; i++) L.push(blankL(v)); const tb = document.querySelector(`[data-lb="${v}"]`); if (tb) tb.insertAdjacentHTML('beforeend', L.slice(st).map((r, i) => lrow(v, st + i, r, +(tb.dataset.off || 0))).join('')); touch(CD(), 'clo'); toast('10 rows added'); break; }
+    case 'sheet': openSheet(SHEETS[v]()); break;
+    case 'save': { const er = document.getElementById('serr'); busy(true); try { const r = await SAVE[v](); if (r === 'stay') openSheet(SHEETS[v](val('pn') || document.querySelector('.sh h3').textContent.split(' · ')[0])); else closeSheet(); render(); } catch (x) { if (er) er.textContent = typeof x === 'string' ? x : x instanceof NetErr ? 'No internet. Try again when online.' : (x.message || 'Something went wrong.'); busy(false); } break; }
+    case 'submit': await submitClosing(); break;
+  }
+});
+document.addEventListener('change', e => { const t = e.target, d = t.dataset || {}; if (d.l && t.tagName === 'SELECT') { C()[d.l][+d.i][d.k] = t.value; markChanged(); touch(CD(), 'clo'); } });
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+boot();
+
+})();
+</script>
+</body></html>
