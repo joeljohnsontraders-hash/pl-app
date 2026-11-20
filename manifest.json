@@ -1,13 +1,13 @@
 {
-  "name": "P&L Book",
-  "short_name": "P&L",
+  "name": "Green Trends",
+  "short_name": "Green Trends",
   "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#FFFFFF",
-  "theme_color": "#0E0C2B",
+  "orientation": "any",
+  "background_color": "#0A1A2B",
+  "theme_color": "#0A1A2B",
   "icons": [
     { "src": "/icon-48.png", "sizes": "48x48", "type": "image/png", "purpose": "any" },
     { "src": "/icon-96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
