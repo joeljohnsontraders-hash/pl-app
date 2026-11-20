@@ -703,9 +703,18 @@ function ndMenu(own, fx, rv, un) { return [
 function ndGroups(own, fx, rv, dv, it) { const G = NDGRP();
   return ndMenu(own, fx, rv, D && D.unread || 0).map(g => { const here = g.items.some(x => x[0] === dv), open = here || (g.id in G ? G[g.id] : (g.id === "today" || g.id === "money")), cnt = g.items.reduce((a, x) => a + (+x[3] || 0), 0);
     return `<div class="ngp${open ? " op" : ""}"><button type="button" class="ngh ngt" data-ngt="${g.id}"><span>${g.t}</span><b class="nc" style="${cnt && !open ? "" : "display:none"}">${cnt}</b><i>${ndi("chev", 14)}</i></button><div class="ngb">${g.items.map(x => it(x[0], x[1], x[2], x[3] || "")).join("")}</div></div>`; }).join(""); }
-function GT_OPEN(p) { let o = document.getElementById("gtov"); if (!o) { o = document.createElement("div"); o.id = "gtov"; o.style.cssText = "position:fixed;inset:0;z-index:2147483000;background:#0A1A2B"; document.body.appendChild(o); }
-  o.innerHTML = '<iframe src="/?embed=1&page=' + encodeURIComponent(p) + '" style="border:0;width:100%;height:100%;display:block" title="Branch app"></iframe>'; }
-window.addEventListener("message", e => { if (e.origin === location.origin && e.data === "gt-close") { const o = document.getElementById("gtov"); if (o) o.remove(); } });
+function GT_FRAME(p) { return '<iframe src="/?embed=1&page=' + encodeURIComponent(p) + '" style="border:0;width:100%;height:100%;display:block" title="Branch app"></iframe>'; }
+function GT_BOX(show) { let o = document.getElementById("gtov"); if (!o) { o = document.createElement("div"); o.id = "gtov"; o.style.cssText = "position:fixed;inset:0;z-index:2147483000;background:#0A1A2B"; document.body.appendChild(o); } o.style.display = show ? "block" : "none"; return o; }
+/* open a branch-app page: instant when the background copy is ready, otherwise it loads straight to that page */
+function GT_OPEN(p) { const o = GT_BOX(true), f = o.querySelector("iframe");
+  if (f && o.dataset.ready === "1") { try { f.contentWindow.postMessage({ gtPage: p }, location.origin); return; } catch (e) {} }
+  if (f && o.dataset.want !== undefined) { o.dataset.want = p; return; }
+  o.dataset.ready = ""; o.innerHTML = GT_FRAME(p); }
+/* after the book opens, load the branch app once, hidden, so its pages open at once */
+function GT_WARM() { try { if (document.getElementById("gtov") || !isOwner()) return; const o = GT_BOX(false); o.dataset.ready = ""; o.dataset.want = ""; o.innerHTML = GT_FRAME("review"); } catch (e) {} }
+window.addEventListener("message", e => { if (e.origin !== location.origin) return; const o = document.getElementById("gtov"); if (!o) return;
+  if (e.data === "gt-close") o.style.display = "none";
+  else if (e.data === "gt-ready") { o.dataset.ready = "1"; const w = o.dataset.want; delete o.dataset.want; const f = o.querySelector("iframe"); if (w && f) f.contentWindow.postMessage({ gtPage: w }, location.origin); } });
 const LIVE = EXEC || (typeof google !== "undefined" && google.script && google.script.run);
 const PREVIEW = window.PREVIEW_DATA || null;
 let BOOKS = [], cur = 0, D = null, M = null, TOKEN = "", ME = null, lastLoad = null, stack = [{ v: "home" }];
@@ -2542,7 +2551,7 @@ function countUp(scope) {
     if (changed && !RM.matches) { r.classList.add("anim"); if (NAVDIR === "fwd" || NAVDIR === "back") r.classList.add(NAVDIR); }
     D0();
     LASTKEY = k; NAVDIR = "";
-    if (changed) { countUp(r); clearTimeout(r._at); r._at = setTimeout(() => r.classList.remove("anim", "fwd", "back"), 1400); }
+    if (changed) { if (!document.body.classList.contains("nboot")) countUp(r); clearTimeout(r._at); r._at = setTimeout(() => r.classList.remove("anim", "fwd", "back"), 1400); }
   }; }
 /* the tab bar: a highlight that slides to the page you are on */
 { const N0 = navSync;
@@ -3536,11 +3545,12 @@ r.scrollLeft = 0; document.documentElement.scrollLeft = 0;
 if (same) { window.scrollTo(0, y); return; }
 r.querySelectorAll('.ND [style*="animation-delay"]').forEach(el => { const v = parseFloat(el.style.animationDelay) || 0; el.style.animationDelay = Math.round(Math.min(160, v * 0.35)) + "ms"; });
 r.classList.remove("nenter"); void r.offsetWidth; r.classList.add("nenter");
+if (document.body.classList.contains("nboot")) { try { r.getAnimations({ subtree: true }).forEach(a => { const n = a.effect && a.effect.getTiming().iterations; if (n !== Infinity) a.finish(); }); } catch (e) {} }
 clearTimeout(r._ne); r._ne = setTimeout(() => r.classList.remove("nenter"), 500);
-if (!document.body.classList.contains("nboot")) setTimeout(() => document.body.classList.add("nboot"), 1200);
+if (!document.body.classList.contains("nboot")) setTimeout(() => { document.body.classList.add("nboot"); GT_WARM(); }, 1200);
 }; }
 { const B0 = ndBind; ndBind = () => { if (!document.body.classList.contains("nstill")) B0(); }; }
-{ const C0 = ndCount; ndCount = (el, to, ms) => { if (document.body.classList.contains("nstill")) { if (el) el.textContent = inr(to); return; } C0(el, to, ms); }; }
+{ const C0 = ndCount; ndCount = (el, to, ms) => { if (document.body.classList.contains("nstill") || document.body.classList.contains("nboot")) { if (el) el.textContent = inr(to); return; } C0(el, to, ms); }; }
 /* ===== stage 8: back like a native app — same scroll, no flash ===== */
 try { history.scrollRestoration = "manual"; } catch (e) {}
 { const G1 = go, B1 = back;
