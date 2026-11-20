@@ -480,6 +480,13 @@ svg.chs{width:100%;height:auto;display:block}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
+.gbar{display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--soft)}.gbar.sm{height:8px;flex:1;min-width:80px}.gbar i{display:block;height:100%}
+.gtile{background:var(--soft);border-radius:16px;padding:12px 14px}.gtile b{display:block;font-family:var(--fd);font-size:22px;margin:4px 0 2px}.gtile small{color:var(--muted);font-weight:700;font-size:11.5px}.gtt{display:flex;align-items:center;gap:7px;font-weight:800}.gtt i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.gtile .bmini b{display:inline;font-family:inherit;font-size:inherit;margin:0}
+.gper{display:grid;gap:10px;margin-top:14px}.gpr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.gpr .bt{display:flex;align-items:center;gap:7px;font-weight:800;width:120px}
+
+.emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
+.eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
 select.csel{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff;max-width:190px}select.csel.need{border-color:var(--bad);background:var(--bads)}
 
 .plate{display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;padding:9px 12px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
@@ -688,10 +695,22 @@ function sheetCalc(list, data, mcAmt) {
   return { groups, G, net, gross };
 }
 const abv = (s, b) => num(b) ? Math.round(num(s) / num(b)) : '–';
+/* gents vs ladies: service sale, bills, ABV, staff — from each day's report rows */
+const secOf = n => { const p = S.staff.find(x => x.name === n); return p ? p.g : ''; };
+function gSplit(days, liveRows) { const o = { G: { svc: 0, bills: 0, ppl: new Set() }, L: { svc: 0, bills: 0, ppl: new Set() } };
+  const add = (n, s, b) => { const g = secOf(n); if (g !== 'G' && g !== 'L') return; o[g].svc += num(s); o[g].bills += num(b); if (num(s) || num(b)) o[g].ppl.add(n); };
+  days.forEach(x => { const st = x.staff || {}, sb = x.staffB || {}; new Set(Object.keys(st).concat(Object.keys(sb))).forEach(n => add(n, st[n], sb[n])); });
+  (liveRows || []).forEach(rows => Object.keys(rows || {}).forEach(n => add(n, rows[n].svc, rows[n].bills)));
+  return o; }
+function gCard(o, sub, per) { const tot = o.G.svc + o.L.svc || 1, tile = (g, t, c) => { const x = o[g]; return `<div class="gtile"><span class="gtt"><i style="background:${c}"></i>${t}</span><b>${inr(x.svc)}</b><small>${Math.round(x.svc / tot * 100)}% of sales</small><div class="bmini"><span>Bills <b>${fmt(x.bills)}</b></span><span>ABV <b>${x.bills ? inr(x.svc / x.bills) : '–'}</b></span><span>Staff <b>${x.ppl.size}</b></span></div></div>`; };
+  return `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('staff')}</span>Gents vs Ladies</div><span class="cs">${sub}</span></div>
+    <div class="gbar"><i style="width:${Math.round(o.G.svc / tot * 100)}%;background:#2D4E9E"></i><i style="width:${Math.round(o.L.svc / tot * 100)}%;background:#E0217A"></i></div>
+    <div class="g2e" style="display:grid;gap:12px;margin-top:12px">${tile('G', 'Gents', '#2D4E9E')}${tile('L', 'Ladies', '#E0217A')}</div>${per || ''}</section>`; }
 
 /* ---------------- manager model ---------------- */
 const people = () => S.staff.filter(x => x.branch === ME()).map(x => ({ id: x.id, n: x.name, g: x.g, t: x.t, from: '', isNew: x.isNew }));
-const present = () => people().filter(p => p.g !== 'H' && (A().attDone ? (A().att[p.n] || {}).st === 'in' : !['off', 'lv'].includes((A().att[p.n] || {}).st))).concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
+const typedIn = n => { const v = (R().rows || {})[n]; return !!v && ['svc', 'bills', 'kids', 'mc', 'rev'].some(f => !blank(v[f])) || !!(v && Array.isArray(v.prod) && v.prod.length); };
+const present = () => people().filter(p => p.g !== 'H' && (typedIn(p.n) || (A().attDone ? (A().att[p.n] || {}).st === 'in' : !['off', 'lv'].includes((A().att[p.n] || {}).st)))).concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
 const strictAtt = () => !!((S.settings.strictAtt || {})[ME()]);
 function noAttTell() { const r = R(); if (A().attDone || r.noAtt || S.asBranch) return; r.noAtt = 1; call('appTell', S.tok, ME(), 'noatt', { date: S.today }).catch(() => { r.noAtt = 0; }); }
 const slotTimes = () => (S.settings.slots || ['12:00', '14:00', '17:00', '19:00']);
@@ -954,6 +973,7 @@ VIEWS.sales = () => {
   return { eb: monthName(S.today) + ' ' + S.today.slice(0, 4), title: 'Insights', sub: esc(ME()), right: '', hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Month so far</small><b>${inr(tot)}</b></div><div class="gl"><small>Per day</small><b>${mo.length ? inr(sum(mo.map(x => x.net)) / mo.length) : '–'}</b></div><div class="gl"><small>Best day</small><b>${best ? inr(best.net) : '–'}</b></div></div>`,
     body: `<div class="g2"><section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Every day</div></div>${calendar(mo, Cc.net)}</section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('staff')}</span>Staff sales</div><span class="cs">this month</span></div>${arr.length ? arr.map(([n, v]) => `<div style="padding:8px 0"><div style="display:flex;justify-content:space-between;font-weight:800"><span>${esc(n)}</span><span class="num">${inr(v)}</span></div><div class="bar"><i style="width:${Math.round(v / mx * 100)}%"></i></div></div>`).join('') : '<div class="empty">Sales show here as the reports come in.</div>'}</section></div>
+    ${gCard(gSplit(S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === S.today.slice(0, 7)), [R().rows]), 'this month')}
     <section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('today')}</span>Recent days</div></div>${recent || '<div class="empty">Nothing yet.</div>'}</section>` };
 };
 function calendar(mo, todayV) { const by = {}; mo.forEach(x => by[x.d] = x.net); by[S.today] = todayV; const vals = Object.values(by), mx = Math.max(0, ...vals); let h = DOW.map(d => `<div class="dh">${d[0]}</div>`).join('');
@@ -1265,6 +1285,9 @@ OVIEWS.home = () => {
     <div class="kp"><div class="k"><div class="kl">Sales this month</div><div class="kv">${inr(msales)}</div><div class="kd">services + retail</div></div><div class="k"><div class="kl">Retail</div><div class="kv">${inr(sum(days.map(x => x.prod)))}</div><div class="kd">from the reports</div></div><div class="k"><div class="kl">Bills</div><div class="kv">${fmt(bills)}</div><div class="kd">ABV ${bills ? inr(sum(days.map(x => x.net)) / bills) : '–'}</div></div><div class="k"><div class="kl">Days closed</div><div class="kv">${days.length}</div><div class="kd">${monthName(O.all.today)}</div></div></div>
     <section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Night summary · ${dLabel(yd)}</div><button class="btn sm gh" data-a="night">${ic('img')}Image for WhatsApp</button></div>
       <div class="ox"><table class="lvt"><thead><tr><th>Branch</th><th>Net sale</th><th>Bills</th><th>ABV</th><th>Excess / short</th></tr></thead><tbody>${nightRows(yd).map(r => `<tr><td><span style="display:inline-flex;align-items:center;gap:8px">${bdot(r.b)}${r.b}</span></td><td>${r.net ? inr(r.net) : '–'}</td><td>${r.bills || '–'}</td><td>${r.abv ? inr(r.abv) : '–'}</td><td>${ex2(r.ex)}</td></tr>`).join('')}</tbody></table></div></section>
+    ${(() => { const live = b => [(dayOf(b, O.all.today).rep || {}).rows || {}], o = gSplit(obr().flatMap(b => mon(b).filter(x => x.date < O.all.today)), obr().flatMap(live));
+      const per = O.ob === 'All' ? `<div class="gper">${BR.map(b => { const x = gSplit(mon(b).filter(y => y.date < O.all.today), live(b)), t = x.G.svc + x.L.svc || 1; return `<div class="gpr"><span class="bt">${bdot(b)}${b}</span><div class="gbar sm"><i style="width:${Math.round(x.G.svc / t * 100)}%;background:#2D4E9E"></i><i style="width:${Math.round(x.L.svc / t * 100)}%;background:#E0217A"></i></div><span class="cs">${inr(x.G.svc)} · ${inr(x.L.svc)}</span></div>`; }).join('')}</div>` : '';
+      return gCard(o, 'this month incl. today', per); })()}
     <section class="card"><div class="ch"><div class="ct"><span class="ib y">${ic('cash')}</span>Cash excess / short</div><button class="btn sm gh" data-a="ogo" data-v="ocash">Open</button></div><div class="xrow">${obr().map((b, i) => { const t = cash[i]; return `<button class="xb2" data-a="ogo" data-v="ocash"><span class="bt">${bdot(b)}${b}</span><b class="${t.net > 0 ? 'pos' : t.net < 0 ? 'neg' : ''}">${t.net >= 0 ? '+' : '−'}${inr(Math.abs(t.net))}</b><small>+${fmt(t.ex)} excess · −${fmt(t.sh)} short</small></button>`; }).join('')}</div></section>
     <div class="g2"><section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('sales')}</span>Daily sales</div>${ONAV[oRole()].some(n => n[0] === 'osales') ? `<button class="btn sm gh" data-a="ogo" data-v="osales">Details</button>` : ''}</div>${areaChart(days.map(x => x.net), days.map(x => dnum(x.d) + ' ' + monthName(x.d).slice(0, 3)))}</section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('box')}</span>Retail stock running low</div><button class="btn sm gh" data-a="ogo" data-v="ostock">Open</button></div>${stockRows().filter(x => x.c <= 2).slice(0, 6).map(x => `<div class="row"><div class="l"><b>${esc(x.n)}</b><small>${O.ob === 'All' ? x.bs : ''}</small></div><span class="pill p-bad">${x.c} pcs</span></div>`).join('') || '<div class="empty">Nothing running low.</div>'}</section></div>` };
@@ -1310,11 +1333,11 @@ function boardData() { const out = []; obr().forEach(b => S.staff.filter(x => x.
   out.push({ id: p.id, n: p.name, g: p.g, b, svc, lent: svc - here, tgt: p.t * Math.max(1, days), days }); })); return out.map(x => Object.assign(x, { pct: x.tgt ? Math.round(x.svc / x.tgt * 100) : 0 })); }
 const BKEYS = [['svc', 'Service sale'], ['pct', 'Target %'], ['days', 'Days worked']];
 OVIEWS.ostaff = () => {
-  const k2 = O.bk || 'svc', list = boardData().sort((a, b) => b[k2] - a[k2]), mx = Math.max(1, ...list.map(x => x[k2])), ctl = oRole() === 'controller';
+  const k2 = O.bk || 'svc', sg = O.sg || 'All', list = boardData().filter(x => sg === 'All' || x.g === sg).sort((a, b) => b[k2] - a[k2]), mx = Math.max(1, ...list.map(x => x[k2])), ctl = oRole() === 'controller';
   const show = (x, kk) => kk === 'pct' ? x.pct + '%' : kk === 'svc' ? inr(x[kk]) : x[kk];
   const roster = obr().map(b => `<section class="card"><div class="ch"><div class="ct">${bdot(b)}${b} staff</div>${ctl ? `<button class="btn sm gh" data-a="ostaffadd" data-b="${b}">${ic('plus')}Add</button>` : ''}</div>${S.staff.filter(x => x.branch === b).map(p => `<div class="row"><div class="nm"><span class="ini ${p.g}">${esc(ini(p.name))}</span><div><b>${esc(p.name)}${p.isNew ? ' <span class="pill p-info">New</span>' : ''}</b><small>${GN[p.g]}${p.t ? ' · target ' + inr(p.t) : ''}</small></div></div>${ctl ? `<button class="btn sm gh" data-a="ostaffedit" data-v="${esc(p.id)}">Edit</button>` : ''}</div>`).join('') || '<div class="empty">No staff.</div>'}</section>`).join('');
   return { eb: monthName(O.all.today) + ' ' + O.all.today.slice(0, 4), title: 'Staff', sub: O.ob === 'All' ? 'All branches' : O.ob, hx: segBar('ob', true),
-    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Leaderboard</div></div><div class="seg segl" style="margin:0 0 12px">${BKEYS.map(([kk, t]) => `<button class="${k2 === kk ? 'on' : ''}" data-a="obk" data-v="${kk}">${t}</button>`).join('')}</div>
+    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Leaderboard</div></div><div class="seg segl" style="margin:0 0 8px">${[['All', 'Everyone'], ['G', 'Gents'], ['L', 'Ladies']].map(([g, t]) => `<button class="${sg === g ? 'on' : ''}" data-a="osg" data-v="${g}">${t}</button>`).join('')}</div><div class="seg segl" style="margin:0 0 12px">${BKEYS.map(([kk, t]) => `<button class="${k2 === kk ? 'on' : ''}" data-a="obk" data-v="${kk}">${t}</button>`).join('')}</div>
     ${list.map((x, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="nm"><span class="rk ${i < 3 ? 'r' + i : ''}">${i + 1}</span><span class="ini ${x.g}">${esc(ini(x.n))}</span><div><b>${esc(x.n)}</b><small>${GN[x.g]}${O.ob === 'All' ? ' · ' + x.b : ''}${x.lent ? ' · incl. ' + inr(x.lent) + ' at other branches' : ''}</small></div></div><span class="num" style="font-weight:800;font-family:var(--fd);font-size:17px">${show(x, k2)}</span></div>
       <div class="bar"><i style="width:${Math.round(x[k2] / mx * 100)}%"></i></div><div class="bmini">${BKEYS.filter(([kk]) => kk !== k2).map(([kk, t]) => `<span>${t} <b>${show(x, kk)}</b></span>`).join('')}</div></div>`).join('') || '<div class="empty">No sales yet.</div>'}</section>${roster}` };
 };
@@ -1418,6 +1441,7 @@ const OACT = {
   odate(el) { O.odate = el.dataset.v; O.ors = null; render(); },
   orep(el) { O.orb = el.dataset.b; O.ors = el.dataset.v; O.odate = O.all.today; S.page = 'oreports'; render(); },
   obk(el) { O.bk = el.dataset.v; render(); },
+  osg(el) { O.sg = el.dataset.v; render(); },
   night() { snapImage(nightHTML(O.all.yday), 'Night summary'); },
   oimg() { const b = O.orb, d = O.odate === O.all.yday ? O.all.yday : O.all.today, x = snapsOf(b, d)[O.ors]; if (!x) return; snapImage(`<div style="width:900px">${sheetHTML(b, x.list || [], x.data || {}, x.mcAmt, { edit: false, at: x.at, date: d })}</div>`, slotName(O.ors) + ' report ' + b); },
   rday(el) { openReview(el.dataset.b, el.dataset.v); },
