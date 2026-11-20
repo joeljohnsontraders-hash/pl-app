@@ -472,6 +472,9 @@ svg.chs{width:100%;height:auto;display:block}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
+
+.emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
+.eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
 select.csel{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff;max-width:190px}select.csel.need{border-color:var(--bad);background:var(--bads)}
 
 .plate{display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;padding:9px 12px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
@@ -756,9 +759,11 @@ VIEWS.today = () => {
 
 /* ---------------- ATTENDANCE ---------------- */
 const ydAtt = n => { const y = S.days[S.yday].att, a = (y.att || {})[n] || {}, yo = A().yout || {}; return a.st === 'in' ? Object.assign({}, a, { out: yo[n] !== undefined ? yo[n] : (a.out || '') }) : a; };
+/* yesterday's out time can always be typed, even when yesterday's attendance was not marked in the app */
+const ydOut = n => { const a = ydAtt(n); return a.st ? a : { st: 'in', out: (A().yout || {})[n] || '', unk: 1 }; };
 const monthAtt = d => { const m = S.month.find(x => x.date === d); return m ? m.att || {} : {}; };
 const attOf = (n, d) => d === S.today ? (A().att[n] || {}) : d === S.yday ? ydAtt(n) : d < S.today ? (((S.days[d] || {}).att || {}).att || monthAtt(d))[n] || {} : {};
-const youtCell = p => { const y = ydAtt(p.n); if (!y.st) return '<span class="cs">–</span>'; if (y.st !== 'in') return `<span class="pill ${y.st === 'off' ? 'p-info' : 'p-bad'}">${y.st === 'off' ? 'Week off' : 'Leave'}</span>`;
+const youtCell = p => { const y = ydOut(p.n); if (!y.st) return '<span class="cs">–</span>'; if (y.st !== 'in') return `<span class="pill ${y.st === 'off' ? 'p-info' : 'p-bad'}">${y.st === 'off' ? 'Week off' : 'Leave'}</span>`;
   return `<input type="time" class="tin tt ${y.out ? '' : 'need'}" id="yo_${esc(p.n)}" data-yout="${esc(p.n)}" value="${esc(y.out || '')}" aria-label="${esc(p.n)} yesterday out time">`; };
 const AST = { in: ['In', 'a-in'], off: ['Week off', 'a-off'], lv: ['Leave', 'a-lv'] };
 const monthDays = () => [...Array(dim(S.today))].map((_, i) => S.today.slice(0, 8) + String(i + 1).padStart(2, '0'));
@@ -767,7 +772,7 @@ function attSummary(n) { let w = 0, o = 0, l = 0; monthDays().filter(d => d <= S
 function attImgHTML() {
   const a = A(), ppl = people(); let n = 1;
   const cell = x => x.st === 'in' ? (x.in ? t12(x.in) : '–') : x.st === 'off' ? '<span class="lv2">week off</span>' : x.st === 'lv' ? '<span class="lv2">leave</span>' : '–';
-  const yo = p => { const y = ydAtt(p.n); return y.st === 'lv' ? '<span class="lv2">leave</span>' : y.st === 'off' ? '<span class="lv2">week off</span>' : y.out ? t12(y.out) : '–'; };
+  const yo = p => { const y = ydOut(p.n); return y.st === 'lv' ? '<span class="lv2">leave</span>' : y.st === 'off' ? '<span class="lv2">week off</span>' : y.out ? t12(y.out) : '–'; };
   const grp = g => { const L = ppl.filter(p => p.g === g); if (!L.length) return ''; const nm = { G: 'Gents ssp', L: 'Ladies ssp', O: 'OM', H: 'HK' }[g];
     return `<tr class="gh"><td>S.No</td><td>${nm}</td><td>IN</td><td>${nm}</td><td>OUT</td></tr>` + L.map(p => `<tr><td>${n++}</td><td>${esc(p.n)}</td><td>${cell(a.att[p.n] || {})}</td><td>${esc(p.n)}</td><td>${yo(p)}</td></tr>`).join(''); };
   const ext = a.extra.length ? `<tr class="gh"><td>S.No</td><td>From other branch</td><td>IN</td><td></td><td></td></tr>` + a.extra.map(x => `<tr><td>${n++}</td><td>${esc(x.n)} (${esc(x.from)})</td><td>in</td><td></td><td></td></tr>`).join('') : '';
@@ -798,7 +803,7 @@ function attCard() {
   if (!ppl.length) return `<section class="card"><div class="ct">No staff in the list yet</div><div class="empty" style="margin:6px 0 12px">Add your staff once. They stay for every day.</div><button class="btn" data-a="addnew">${ic('plus')}New staff</button></section>`;
   if (a.attDone) { const c = s => ppl.filter(p => (a.att[p.n] || {}).st === s).length;
     return `<section class="card" id="attcard"><div class="ch"><div class="ct"><span class="ib g">${ic('staff')}</span><span>Attendance<div class="cs" style="margin-top:2px">${c('in')} in${a.extra.length ? ' + ' + a.extra.length + ' from other branch' : ''} · ${c('off')} week off · ${c('lv')} leave</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="attimg" data-v="day">${ic('img')}Image for WhatsApp</button><button class="btn sm gh" data-a="attedit">Change</button></span></div>
-      <div class="ox"><table class="att2"><thead><tr><th>Staff</th><th>Yesterday out</th><th>Today in</th><th>Today out</th></tr></thead><tbody>${ppl.filter(p => (a.att[p.n] || {}).st === 'in' || ydAtt(p.n).st === 'in').map(p => { const x = a.att[p.n] || {};
+      <div class="ox"><table class="att2"><thead><tr><th>Staff</th><th>Yesterday out</th><th>Today in</th><th>Today out</th></tr></thead><tbody>${ppl.filter(p => (a.att[p.n] || {}).st === 'in' || ydOut(p.n).st === 'in').map(p => { const x = a.att[p.n] || {};
         return `<tr><td><span class="nm"><span class="ini ${p.g}" style="width:30px;height:30px;border-radius:10px;font-size:11px">${esc(ini(p.n))}</span><b>${esc(p.n)}</b></span></td><td>${youtCell(p)}</td><td>${x.st === 'in' ? esc(t12(x.in) || '–') : `<span class="pill ${x.st === 'off' ? 'p-info' : 'p-bad'}">${x.st === 'off' ? 'Week off' : 'Leave'}</span>`}</td><td>${x.st === 'in' ? `<input type="time" class="tin tt" id="out_${esc(p.n)}" data-out="${esc(p.n)}" value="${esc(x.out || '')}" aria-label="${esc(p.n)} out time">` : ''}</td></tr>`; }).join('')}
       <tr><td><span class="nm"><span class="ini H" style="width:30px;height:30px;border-radius:10px">${ic('bolt', 14)}</span><b>EB meter</b></span></td><td>${esc(a.ebY || '–')}</td><td>${esc(a.ebStart)}</td><td><input class="tin" style="width:110px" id="ebe" data-eb="ebEnd" value="${esc(a.ebEnd)}" inputmode="decimal" placeholder="Ending" aria-label="EB ending reading"></td></tr></tbody></table></div>
       <div class="cs" style="margin-top:10px">Out times and the EB ending typed tonight show as yesterday's tomorrow.</div></section>`; }
@@ -1126,7 +1131,7 @@ document.addEventListener('click', async e => {
     case 'me': openSheet(SHEETS.me()); break;
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {}; A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
     case 'attdone': { const left = people().filter(p => !(A().att[p.n] || {}).st); if (left.length) { toast('Mark ' + left.map(p => p.n).join(', ')); break; } const noT = people().filter(p => (A().att[p.n] || {}).st === 'in' && !(A().att[p.n] || {}).in); if (noT.length) { toast('Type the In time for ' + noT.map(p => p.n).join(', ')); const f = document.getElementById('in_' + noT[0].n); if (f) f.focus(); break; }
-      A().attDone = true; touch(S.today, 'att'); render(); const yo2 = people().filter(p => ydAtt(p.n).st === 'in' && !ydAtt(p.n).out).map(p => p.n); toast(yo2.length ? 'Attendance saved · yesterday out still empty: ' + yo2.join(', ') : 'Attendance saved'); break; }
+      A().attDone = true; touch(S.today, 'att'); render(); const yo2 = people().filter(p => ydOut(p.n).st === 'in' && !ydOut(p.n).out).map(p => p.n); toast(yo2.length ? 'Attendance saved · yesterday out still empty: ' + yo2.join(', ') : 'Attendance saved'); break; }
     case 'attedit': A().attDone = false; touch(S.today, 'att'); render(); break;
     case 'rmextra': A().extra.splice(+v, 1); touch(S.today, 'att'); render(); break;
     case 'addother': openSheet(SHEETS.other()); break;
@@ -1376,10 +1381,12 @@ OVIEWS.live = () => {
       <div class="gh4" style="margin-top:14px">History</div>${(W.ownerLog || []).map(h => `<div class="row"><div class="l"><b>${esc(pageName(h.page))}${h.sub ? ' · ' + esc(h.sub) : ''}</b><small>${esc(h.who)} · ${esc(h.ts)}</small></div></div>`).join('') || '<div class="empty">Nothing yet.</div>'}</section>` };
 };
 
-/* ---------- people ---------- */
-OVIEWS.people = () => { const P2 = (O.all.people || []).filter(p => p.role !== 'controller');
-  const grp = (t, list) => `<div class="gh4">${t}</div>${list.map(p => `<div class="row"><div class="nm"><span class="ini">${esc(ini(p.name || '?'))}</span><div><b>${esc(p.name || p.phone)}</b><small>${esc(p.phone)}${p.branch ? ' · ' + esc(p.branch) : ''}${p.pin ? ' · PIN ' + esc(p.pin) : ''}${p.lastLogin ? ' · last in ' + esc(p.lastLogin) : ''}</small></div></div><button class="btn sm gh" data-a="ouser" data-v="${esc(p.id)}">Change</button></div>`).join('') || '<div class="empty">None yet.</div>'}`;
-  return { eb: 'Controller', title: 'People & PINs', sub: 'Who can sign in', body: `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('user')}</span>Logins</div><button class="btn sm" data-a="oaddmgr">${ic('plus')}Add manager</button></div>${grp('Branch managers', P2.filter(p => p.role === 'manager'))}${grp('Owner', P2.filter(p => p.role === 'owner'))}</section>` }; };
+/* ---------- people: managers, owner, people waiting to get in ---------- */
+OVIEWS.people = () => { const P2 = (O.all.people || []).filter(p => p.role !== 'controller'), req = P2.filter(p => p.role === 'request');
+  const row = p => `<div class="row"><div class="nm"><span class="ini">${esc(ini(p.name || p.phone || '?'))}</span><div><b>${esc(p.name || p.phone)}</b><small>${esc(p.phone)}${p.branch ? ' · ' + esc(p.branch) : ''}${p.pin ? ' · PIN ' + esc(p.pin) : ''}${p.lastLogin ? ' · last in ' + esc(p.lastLogin) : ''}</small></div></div><button class="btn sm gh" data-a="ouser" data-v="${esc(p.id)}">Change</button></div>`;
+  const grp = (t, list) => `<div class="gh4">${t}</div>${list.map(row).join('') || '<div class="empty">None yet.</div>'}`;
+  return { eb: 'Controller', title: 'People & PINs', sub: 'Who can sign in', body: `${req.length ? `<section class="card"><div class="ch"><div class="ct"><span class="ib y">${ic('bell')}</span>Waiting to get in</div><span class="pill p-warn">${req.length}</span></div>${req.map(p => `<div class="row"><div class="nm"><span class="ini">${esc(ini(p.phone || '?'))}</span><div><b>${esc(p.phone)}</b><small>Tried to sign in${p.created ? ' · ' + esc(p.created) : ''}</small></div></div><div style="display:flex;gap:8px"><button class="btn sm gh" data-a="oreject" data-v="${esc(p.id)}">Reject</button><button class="btn sm" data-a="oletin" data-v="${esc(p.id)}">Let in</button></div></div>`).join('')}</section>` : ''}
+    <section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('user')}</span>Logins</div><button class="btn sm" data-a="oaddmgr">${ic('plus')}Add a person</button></div>${grp('Branch managers', P2.filter(p => p.role === 'manager'))}${grp('Owner', P2.filter(p => p.role === 'owner'))}</section>` }; };
 /* ---------- settings ---------- */
 OVIEWS.settings = () => { const s = S.settings, rules = s.catRules || {};
   return { eb: 'Controller', title: 'Settings', sub: 'For every branch', body: `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Report times</div></div><div class="f2">${(s.slots || []).map((t, i) => `<div class="fl"><label for="st${i}">Report ${i + 1}</label><input type="time" id="st${i}" value="${esc(t)}"></div>`).join('')}</div>
@@ -1421,8 +1428,11 @@ const OACT = {
   async osendgo(el) { try { await call('appSend', S.tok, el.dataset.u, el.dataset.v); closeSheet(); toast('Sent · it moves within 20 seconds'); } catch (e) { toast(e.message); } },
   mirroron() { O.mirror = true; S.page = 'home'; render(); pollWatch(); },
   mirroroff() { O.mirror = false; S.page = 'live'; render(); pollWatch(); },
-  oaddmgr() { openSheet(`<h3>Add a branch manager</h3><div class="sub">They sign in with this mobile number and PIN</div>${fl('m_n', 'Name', '')}${fl('m_p', 'Mobile number', '', 'n')}<div class="f2">${fl('m_b', 'Branch', 'Potheri', '', BR.map(b => [b, b]))}${fl('m_pin', 'PIN', '', 'n')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="osavemgr">Add</button></div>`); },
-  async osavemgr() { busy(true); try { O.all.people = await call('appAddManager', S.tok, { name: val('m_n').trim(), phone: val('m_p'), branch: val('m_b'), pin: val('m_pin') }); closeSheet(); toast('Added'); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
+  oaddmgr() { openSheet(`<h3>Add a person</h3><div class="sub">They sign in at pl.jjtraders.top with this mobile number and PIN</div>${fl('m_r', 'They are', 'manager', '', [['manager', 'Branch manager'], ['owner', 'Owner (view only)']])}${fl('m_n', 'Name', '')}${fl('m_p', 'Mobile number', '', 'n')}<div class="f2">${fl('m_b', 'Branch (managers)', 'Potheri', '', BR.map(b => [b, b]))}${fl('m_pin', '4-digit PIN', '', 'n')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="osavemgr">Add</button></div>`); },
+  oletin(el) { const p = (O.all.people || []).find(x => x.id === el.dataset.v); if (!p) return; openSheet(`<h3>Let ${esc(p.phone)} in</h3><div class="sub">They keep the PIN they typed</div>${fl('l_r', 'They are', 'manager', '', [['manager', 'Branch manager'], ['owner', 'Owner (view only)']])}${fl('l_n', 'Name', '')}${fl('l_b', 'Branch (managers)', 'Potheri', '', BR.map(b => [b, b]))}<input type="hidden" id="l_id" value="${esc(p.id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="oletsave">Let in</button></div>`); },
+  async oletsave() { busy(true); try { O.all.people = await call('appUserOp', S.tok, 'approve', { id: val('l_id'), role: val('l_r'), name: val('l_n').trim(), branch: val('l_b') }); closeSheet(); toast('Let in'); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
+  async oreject(el) { try { O.all.people = await call('appUserOp', S.tok, 'reject', { id: el.dataset.v }); toast('Rejected'); render(); } catch (e) { toast(e.message); } },
+  async osavemgr() { busy(true); try { O.all.people = await call('appAddManager', S.tok, { role: val('m_r'), name: val('m_n').trim(), phone: val('m_p'), branch: val('m_b'), pin: val('m_pin') }); closeSheet(); toast('Added'); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
   ouser(el) { const p = (O.all.people || []).find(x => x.id === el.dataset.v); if (!p) return; openSheet(`<h3>${esc(p.name || p.phone)}</h3><div class="sub">${p.role === 'manager' ? 'Branch manager' : 'Owner'} · ${esc(p.phone)}</div><div class="f2">${fl('u_pin', 'New PIN', '', 'n')}${p.role === 'manager' ? fl('u_b', 'Branch', p.branch, '', BR.map(b => [b, b])) : ''}</div><input type="hidden" id="u_id" value="${esc(p.id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" style="color:var(--bad)" data-a="ouserop" data-v="remove">Remove</button>${p.role === 'manager' ? `<button class="btn gh" data-a="ouserop" data-v="branch">Save branch</button>` : ''}<button class="btn" data-a="ouserop" data-v="pin">Save PIN</button></div>`); },
   async ouserop(el) { const op = el.dataset.v, er = document.getElementById('serr'); if (op === 'remove' && er.dataset.ok !== '1') { er.dataset.ok = '1'; er.textContent = 'Press Remove again to remove this login.'; return; } busy(true);
     try { O.all.people = await call('appUserOp', S.tok, op, { id: val('u_id'), pin: val('u_pin'), branch: val('u_b') }); closeSheet(); toast('Saved'); render(); } catch (e) { er.textContent = e.message; busy(false); } },
