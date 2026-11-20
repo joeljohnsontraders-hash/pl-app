@@ -682,7 +682,7 @@ body.nstill .ND,body.nstill .ND *,body.nstill #ndnav *,body.nstill #ndside *,bod
 html{scroll-behavior:auto!important}#root.back{display:block;height:auto;min-width:0;padding:0;border-radius:0;gap:0;font-size:inherit;font-weight:inherit;align-items:normal}
 </style>
 
-</head><body>
+<style id="ndgrp">#ndside .ngp{margin-top:4px}#ndside .ngt{width:100%;background:none;border:0;cursor:pointer;font-family:inherit;gap:6px;border-radius:8px;height:30px}#ndside .ngt:hover{color:#C9D6E3}#ndside .ngt span{flex:1;text-align:left}#ndside .ngt i{display:inline-flex;transition:transform .2s;opacity:.7}#ndside .ngp.op .ngt i{transform:rotate(90deg)}#ndside .ngt .nc{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#E8A33D;color:#1B2430;font-size:10.5px;display:inline-grid;place-items:center;letter-spacing:0;margin:0}#ndside .ngp .ngb{display:none}#ndside .ngp.op .ngb{display:block}.mgh{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--mu,#8FA2B7);margin:16px 4px 8px}.mtile{position:relative}.mtile .mcn{position:absolute;top:8px;right:8px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#E8A33D;color:#1B2430;font-size:10.5px;display:grid;place-items:center}</style></head><body>
 <div id="ptr" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5A8 8 0 1 1 17.7 6"/><path d="M20 4v5h-5"/></svg></div><div id="root"></div>
 <script>
 (function(){
@@ -690,6 +690,19 @@ html{scroll-behavior:auto!important}#root.back{display:block;height:auto;min-wid
 const EXEC = window.EXEC_URL || "";
 /* the branch app (manager reports, closings, live view) opens inside this page */
 const GTM = [["review", "Approve closings", "inbox"], ["home", "Today's reports", "clock"], ["oreports", "Branch reports", "sales"], ["live", "Live view", "grid"], ["ocash", "Cash excess / short", "coins"], ["oadv", "Staff advances", "coins"], ["ostaff", "Staff & leaderboard", "staff"], ["ostock", "Retail stock list", "box"], ["settings", "App settings", "gear"]];
+/* one menu for the side bar and the phone's More screen: grouped by job, groups fold away */
+const NDGRP = () => { try { return JSON.parse(localStorage.getItem("nd_grp") || "{}"); } catch (e) { return {}; } };
+const ndGrpSave = (id, o) => { const g = NDGRP(); g[id] = o; try { localStorage.setItem("nd_grp", JSON.stringify(g)); } catch (e) {} };
+function ndMenu(own, fx, rv, un) { return [
+  own && { id: "today", t: "Today", items: [["_g:review", "Approve closings", "inbox"], ["_g:home", "Today's reports", "clock"], ["_g:oreports", "Branch reports", "sales"], ["_g:live", "Live view", "grid"], ["notes", "Notifications", "bell", un]] },
+  { id: "money", t: "Money", items: [["pnl", "Profit &amp; Loss", "pnl"], ["sales", "Daily sales", "sales"], ["pday", "Profit by day", "cal"], ["exp", "Expenses", "exp"], own && ["_g:ocash", "Cash excess / short", "coins"], ["checks", "Month-end checks", "shield", fx]] },
+  { id: "staff", t: "Staff", items: [["staff", "Staff", "staff"], ["att", "Attendance", "clock"], ["salary", "Salary", "coins"], ["inc", "Incentives", "star"], own && ["_g:oadv", "Staff advances", "coins"], own && ["_g:ostaff", "Leaderboard", "star"]] },
+  { id: "stock", t: "Stock", items: [["stock", "Stock &amp; consumables", "box"], own && ["_g:ostock", "Retail stock list", "box"]] },
+  own && { id: "setup", t: "Setup", items: [["people", "People &amp; PINs", "key"], ["_g:settings", "App settings", "gear"], ["settings", "Book settings", "gear"], ["review", "Entry book review", "inbox", rv], ["upload", "Photo upload", "upload"]] }
+].filter(Boolean).map(g => ({ id: g.id, t: g.t, items: g.items.filter(Boolean) })); }
+function ndGroups(own, fx, rv, dv, it) { const G = NDGRP();
+  return ndMenu(own, fx, rv, D && D.unread || 0).map(g => { const here = g.items.some(x => x[0] === dv), open = here || (g.id in G ? G[g.id] : (g.id === "today" || g.id === "money")), cnt = g.items.reduce((a, x) => a + (+x[3] || 0), 0);
+    return `<div class="ngp${open ? " op" : ""}"><button type="button" class="ngh ngt" data-ngt="${g.id}"><span>${g.t}</span><b class="nc" style="${cnt && !open ? "" : "display:none"}">${cnt}</b><i>${ndi("chev", 14)}</i></button><div class="ngb">${g.items.map(x => it(x[0], x[1], x[2], x[3] || "")).join("")}</div></div>`; }).join(""); }
 function GT_OPEN(p) { let o = document.getElementById("gtov"); if (!o) { o = document.createElement("div"); o.id = "gtov"; o.style.cssText = "position:fixed;inset:0;z-index:2147483000;background:#0A1A2B"; document.body.appendChild(o); }
   o.innerHTML = '<iframe src="/?embed=1&page=' + encodeURIComponent(p) + '" style="border:0;width:100%;height:100%;display:block" title="Branch app"></iframe>'; }
 window.addEventListener("message", e => { if (e.origin === location.origin && e.data === "gt-close") { const o = document.getElementById("gtov"); if (o) o.remove(); } });
@@ -2566,16 +2579,16 @@ closeSheet = () => {
   }; }
 /* More: every page as a tile */
 moreSheet = () => {
-  const P = [["exp", "Expenses", NI.exp], ["stock", "Stock", NI.stock], ["att", "Attendance", NI.att], ["salary", "Salary", NI.salary], ["inc", "Incentives", NI.inc], ["pday", "Profit by day", NI.pday], ["checks", "Checks", NI.checks]]
-    .concat(isOwner() ? [["review", "Review", NI.review], ["notes", "Alerts", IC.bell], ["people", "People", NI.people], ["settings", "Settings", NI.settings]] : []);
+  const own = isOwner(), fx = (D.checks || []).filter(c => c[1].startsWith("✗") || c[1] === "Pending").length, rv = revPending(), G = ndMenu(own, fx, rv, D && D.unread || 0);
   const multi = new Set(BOOKS.map(b => b.branch)).size > 1;
-  sheet("More", [{ k: "m", type: "raw", value: `<div class="mgrid">${P.map(([v, l, ic]) => `<button class="mtile" data-mv="${v}"><span class="mi">${ic}</span><span>${l}</span></button>`).join("")}</div>`
+  sheet("More", [{ k: "m", type: "raw", value: G.map((g, gi) => `<div class="mgh"${gi ? "" : ' style="margin-top:0"'}>${g.t.toUpperCase()}</div><div class="mgrid">${g.items.map(([v, l, ic, c]) => `<button class="mtile" data-mv="${v}"><span class="mi">${ndi(ic, 20)}</span><span>${l}</span>${+c ? `<b class="mcn">${c}</b>` : ""}</button>`).join("")}</div>`).join("")
     + (multi ? `<button class="mrow" data-mv="_b"><span class="ic" style="display:grid;place-items:center">${NI.swap}</span><span>Change branch</span><span class="chev">›</span></button>` : "")
     + `<button class="mrow" data-mv="_d"><span class="ic" style="display:grid;place-items:center">${NI.moon}</span><span>Dark mode</span><span class="sw ${document.body.classList.contains("dark") ? "on" : ""}" style="margin-left:auto"><i></i></span></button>`
     + `<button class="mrow" data-mv="_r"><span class="ic" style="display:grid;place-items:center">${IC.refresh}</span><span>Refresh now</span></button>` }], null, { bind: el => el.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => {
       const v = b.dataset.mv;
       if (v === "_d") { const on = document.body.classList.toggle("dark"); try { localStorage.setItem("pl_dark", on ? "1" : ""); } catch (e) {} b.querySelector(".sw").classList.toggle("on", on); return; }
       closeSheet(); if (v === "_r") return doRefresh();
+      if (v.indexOf("_g:") === 0) return GT_OPEN(v.slice(3)); if (v === "people") return GT_OPEN("people");
       if (v === "_b") { try { history.pushState({ p: 1 }, ""); } catch (e) {} return pickBranch(); }
       NAVDIR = "fwd"; stack = [{ v: "home" }, { v }]; draw(); window.scrollTo(0, 0); }) });
 };
@@ -2715,10 +2728,9 @@ let k = 0; const it = (key, l, ic, c = "") => `<button class="nit" data-ndtab="$
 s.innerHTML = `<div class="nlg"><img src="${ND_LOGO}" alt=""><b>P&amp;L Owner</b></div>
 <button class="nbs tap" data-ndtab="_br"><span class="ndt"></span><span style="flex:1"><b>${esc(D.branch)}</b><small>${esc(bk.month || D.month || "")}</small></span>${multi ? "<em>change</em>" : ""}</button>
 ${it("home", "Home", "home")}${own ? it("analysis", "Data analysis", "analysis") : ""}
-<div class="ngh">Money</div>${it("sales", "Daily sales", "sales")}${it("pnl", "Profit &amp; Loss", "pnl")}${it("pday", "Profit by day", "cal")}${it("exp", "Expenses", "exp")}${it("stock", "Stock", "box")}
-<div class="ngh">People</div>${it("staff", "Staff", "staff")}${it("att", "Attendance", "clock")}${it("salary", "Salary", "coins")}${it("inc", "Incentives", "star")}${it("checks", "Checks", "shield", fx || "")}
-${own ? `<div class="ngh">Controller</div>${it("review", "Review &amp; approve", "inbox", rv || "")}${it("upload", "Upload reports", "upload")}${it("notes", "Notifications", "bell", D.unread || "")}${it("people", "People &amp; PINs", "key")}${it("settings", "Book settings", "gear")}<div class="ngh">Branch app</div>${GTM.map(([k, l, i]) => it("_g:" + k, l, i)).join("")}` : ""}
+${ndGroups(own, fx, rv, dv, it)}
 <div class="nft">${multi ? it("_all", "All branches", "grid") : ""}${it("_dark", "Dark mode", "moon")}${it("_out", "Sign out", "out")}</div>`;
+s.querySelectorAll("[data-ngt]").forEach(b => b.onclick = () => { const o = b.parentElement.classList.toggle("op"); ndGrpSave(b.dataset.ngt, o); const c = b.querySelector(".nc"); if (c && +c.textContent) c.style.display = o ? "none" : ""; });
 const on = b => b.onclick = () => {
 const t = b.dataset.ndtab;
 if (t === "people") { closeSheet(); return GT_OPEN("people"); }
@@ -2808,10 +2820,10 @@ const rv = revPending();
 const revC = isOwner() && rv ? `<button class="nbnr tap" ${gp("review")}><div class="nr"><span class="nic46" style="background:#C8703A1F;color:#C8703A">${ndi("inbox", 22)}</span><span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:15px">${rv === 1 ? "A day is" : rv + " days are"} waiting for you</span><span class="nmu nell" style="display:block;font-size:13px">Managers submitted · check and approve</span></span><span class="npl">Review${ndi("chev", 16)}</span></div></button>` : "";
 const qlC = isOwner() ? `<section class="ncard nbare" style="animation-delay:190ms"><div class="ng2"><button class="nql tap" ${gp("analysis")}><span class="nrg"></span><span class="nii">${ndi("analysis", 20)}</span><span style="flex:1;min-width:0"><b>Data analysis</b><small class="nell">Study every number</small></span></button><button class="nql nd tap" ${gp("upload")}><span class="nrg"></span><span class="nii">${ndi("upload", 20)}</span><span style="flex:1;min-width:0"><b>Upload reports</b><small class="nell">Photos in · all branches</small></span></button></div></section>` : "";
 return `<div class="ND">${head}<main class="ndm">
-<div class="ng3">${kt("Profit so far", net, M.P.full ? `${margin.toFixed(1)}% margin` : "before salary &amp; fixed", 80)}${kt("A day", avgD, "average", 140)}${kt("Retail", ret, "separate", 200)}</div>
-${revC}${qlC}
-<div class="ndk2"><div>${lastDayC}${d7C}${qaC}</div><div>${pulseC}${fixC}${topC}</div></div>
-${agC}</main></div>`;
+${revC}
+<div class="ndk2"><div>${lastDayC}${fixC}</div><div>${qaC}${pulseC}${topC}</div></div>
+${agC}
+${d7C}</main></div>`;
 };
 VIEWS.home_bind = s => {
 loadRev();
