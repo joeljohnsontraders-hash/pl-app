@@ -42,6 +42,9 @@ function can(u, b, write) {
   if (r === "manager") { if (u.branch !== b) err("You can only open your own branch."); return true; }
   err("No access.");
 }
+let READY = false;
+async function ready() { if (READY) return true; READY = (await sql`select 1 from app_meta where key = 'imported'`).length > 0; return READY; }
+const OPEN = ["appPing", "appTick", "appAll", "appImport"];
 const ctrl = (u) => { if (u.role !== "owner") err("Only the controller can do this."); return u; };
 const lock = (key, fn) => sql.begin(async (tx) => { await tx`select pg_advisory_xact_lock(hashtext(${key}))`; return fn(tx); });
 
@@ -214,6 +217,7 @@ const API = {
   /* controller + owner: everything for all four branches (the people list comes from Google separately) */
   async appAll(tok, ym) {
     const u = await who(tok), r = role(u); if (r === "manager") err("No access.");
+    if (!(await ready())) { if (r !== "controller") err("NOT_READY"); await API.appImport(tok); }
     const today = istDay(), yday = ydayOf(); ym = ym || today.slice(0, 7);
     const [s, st, sk, sm, dd, all] = await Promise.all([settings(), staff(), stock(), sums(ym), sql`select branch, date, att, rep, clo from app_days where date in (${today}, ${yday})`, alerts(600)]);
     const out = { me: meOf(u), today, yday, now: istTime(), ym, branches: BR, settings: s, staff: st, stock: sk, month: {}, days: {}, review: [] };
@@ -278,10 +282,11 @@ const API = {
     return { beats: bt.map((r) => r.data).filter((b) => b && b.role !== "controller"), ownerLog: lg.map((r) => ({ ts: r.ts, who: r.who, page: r.detail, sub: r.branch })), now: Date.now() };
   },
   async appSend(tok, id, page) { ctrl(await who(tok)); await sql`insert into app_beats (id, cmd, cmd_at) values (${String(id)}, ${String(page || "").slice(0, 30)}, now()) on conflict (id) do update set cmd = excluded.cmd, cmd_at = now()`; return { ok: true }; },
-  /* one-time copy of the Google sheet data (sent by the Apps Script with the controller's login) */
-  async appImport(tok, data) {
-    ctrl(await who(tok)); data = data || {};
-    if ((await sql`select 1 from app_meta where key = 'imported'`).length && !data.again) err("Already imported.");
+  /* one-time copy of the Google sheet data (pulled from Google with the controller's login, on the controller's first open) */
+  async appImport(tok) {
+    ctrl(await who(tok));
+    if (await ready()) return { already: true };
+    const data = await gas("appExportRows", [tok]) || {};
     const T = (v) => v === true || String(v).toUpperCase() === "TRUE", S = (v) => v == null ? "" : String(v), P = (s) => { try { return s ? (typeof s === "string" ? JSON.parse(s) : s) : null; } catch (e) { return null; } };
     const n = { staff: 0, stock: 0, settings: 0, days: 0, alerts: 0, moves: 0, photos: 0 };
     for (const s of data.staff || []) { if (!s.id || !s.name) continue; n.staff++;
@@ -299,6 +304,7 @@ const API = {
     for (const id of Object.keys(ph)) { const x = ph[id].x, s = ph[id].parts.sort((p, q) => N(p.part) - N(q.part)).map((p) => S(p.data)).join(""); n.photos++;
       await sql`insert into app_photos (id, branch, date, data, ts, by) values (${S(id)}, ${S(x.branch)}, ${S(x.date).replace(/^'/, "")}, ${s}, ${S(x.ts)}, ${S(x.by)}) on conflict (id) do nothing`; }
     await sql`insert into app_meta (key, value) values ('imported', ${new Date().toISOString()}) on conflict (key) do update set value = excluded.value`;
+    READY = true; try { await gas("appMarkMoved", [tok]); } catch (e) { console.error("mark moved", e); }
     return n;
   },
   /* reminders: run every 10 minutes by the database clock */
@@ -324,7 +330,8 @@ Deno.serve(async (req) => {
   try {
     const q = JSON.parse(await req.text() || "{}");
     if (!Object.prototype.hasOwnProperty.call(API, q.fn)) throw new Error("Unknown call");
+    if (OPEN.indexOf(q.fn) < 0 && !(await ready())) throw new Error("NOT_READY");
     out = { result: await API[q.fn].apply(null, q.args || []) };
-  } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The )/.test(out.error)) console.error(e); }
+  } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|NOT_READY|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The )/.test(out.error)) console.error(e); }
   return new Response(JSON.stringify(out), { headers: CORS });
 });
