@@ -475,6 +475,11 @@ svg.chs{width:100%;height:auto;display:block}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
+.yo2{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}.ydb{border:1px solid var(--line);border-radius:8px;padding:4px 7px;font-size:11px;font-weight:800;color:var(--muted);background:#fff}.ydb:hover{color:var(--ink)}
+#totsales.need{background:var(--warns)}
+
+.emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
+.eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
 select.csel{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff;max-width:190px}select.csel.need{border-color:var(--bad);background:var(--bads)}
 
 .plate{display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;padding:9px 12px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
@@ -686,11 +691,14 @@ const abv = (s, b) => num(b) ? Math.round(num(s) / num(b)) : '–';
 
 /* ---------------- manager model ---------------- */
 const people = () => S.staff.filter(x => x.branch === ME()).map(x => ({ id: x.id, n: x.name, g: x.g, t: x.t, from: '', isNew: x.isNew }));
-const present = () => people().filter(p => p.g !== 'H' && (A().att[p.n] || {}).st === 'in').concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
+const present = () => people().filter(p => p.g !== 'H' && (A().attDone ? (A().att[p.n] || {}).st === 'in' : !['off', 'lv'].includes((A().att[p.n] || {}).st))).concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
+const strictAtt = () => !!((S.settings.strictAtt || {})[ME()]);
+function noAttTell() { const r = R(); if (A().attDone || r.noAtt || S.asBranch) return; r.noAtt = 1; call('appTell', S.tok, ME(), 'noatt', { date: S.today }).catch(() => { r.noAtt = 0; }); }
 const slotTimes = () => (S.settings.slots || ['12:00', '14:00', '17:00', '19:00']);
 const slotName = key => { const i = SLOTS.findIndex(s => s[0] === key); return i < 0 ? '' : i < 4 ? slotLabel(slotTimes()[i] || '') : 'Closing'; };
 const due = () => { const s = SLOTS.find(([key]) => !R().snaps[key]); return s ? s[0] : null; };
-const liveCalc = () => { const r = R(); present().forEach(p => { if (!r.rows[p.n]) r.rows[p.n] = blankRow(); }); r.list = present(); return sheetCalc(r.list, r.rows, r.mcAmt); };
+const mcRate = () => num(S.settings.mcRate) || 95;
+const liveCalc = () => { const r = R(), L = present(); L.forEach(p => { if (!r.rows[p.n]) r.rows[p.n] = blankRow(); }); r.list = L; r.mcAmt = String(sum(L.map(p => num((r.rows[p.n] || {}).mc))) * mcRate()); return sheetCalc(r.list, r.rows, r.mcAmt); };
 const repOf = d => (S.days[d] || {}).rep || repDef();
 const calcOf = d => { if (d === S.today) return liveCalc(); const r = repOf(d), sn = r.snaps && r.snaps.cl; const list = (sn && sn.list && sn.list.length) ? sn.list : (r.list || []); return sheetCalc(list, sn ? sn.data : r.rows, sn ? sn.mcAmt : r.mcAmt); };
 const markChanged = () => { const c = C(); if (['sent', 'approved'].includes(c.status)) c.status = 'changed'; };
@@ -699,7 +707,7 @@ const statusPill = c => { const s = ST[c.status] || ST.open; return c.status ===
 const gpTot = () => sum(C().gpay.map(x => num(x.a))), cdTot = () => sum(C().card.map(x => num(x.a))), exTot = () => sum(C().exp.map(x => num(x.a))), inTot = () => sum(C().acc.map(x => num(x.c))), accDeb = () => sum(C().acc.map(x => num(x.d)));
 const prodSales = () => calcOf(CD()).G.prod;
 const denTot = () => sum(DENOM.map(d => d * num(C().den[d])));
-const totalSales = () => blank(C().totSales) ? calcOf(CD()).net : num(C().totSales);
+const totalSales = () => num(C().totSales);
 const isToday = () => CD() === S.today;
 const ydUsed = () => !!S.used[S.yday] || S.days[S.yday].clo.status !== 'open' || S.days[S.yday].clo.exp.some(filled);
 const autoOpening = () => { const p = S.days[addDays(CD(), -1)]; if (!p || !p.clo) return null; const t = sum(DENOM.map(d => d * num(p.clo.den[d]))); return t ? t : null; };
@@ -758,13 +766,14 @@ VIEWS.today = () => {
 };
 
 /* ---------------- ATTENDANCE ---------------- */
-const ydAtt = n => { const y = S.days[S.yday].att, a = (y.att || {})[n] || {}, yo = A().yout || {}; return a.st === 'in' ? Object.assign({}, a, { out: yo[n] !== undefined ? yo[n] : (a.out || '') }) : a; };
+const ydAtt = n => { const y = S.days[S.yday].att, a = (y.att || {})[n] || {}, yo = A().yout || {}, ys = (A().ydst || {})[n]; if (!a.st && ys) return { st: ys }; return a.st === 'in' ? Object.assign({}, a, { out: yo[n] !== undefined ? yo[n] : (a.out || '') }) : a; };
 /* yesterday's out time can always be typed, even when yesterday's attendance was not marked in the app */
 const ydOut = n => { const a = ydAtt(n); return a.st ? a : { st: 'in', out: (A().yout || {})[n] || '', unk: 1 }; };
 const monthAtt = d => { const m = S.month.find(x => x.date === d); return m ? m.att || {} : {}; };
 const attOf = (n, d) => d === S.today ? (A().att[n] || {}) : d === S.yday ? ydAtt(n) : d < S.today ? (((S.days[d] || {}).att || {}).att || monthAtt(d))[n] || {} : {};
-const youtCell = p => { const y = ydOut(p.n); if (!y.st) return '<span class="cs">–</span>'; if (y.st !== 'in') return `<span class="pill ${y.st === 'off' ? 'p-info' : 'p-bad'}">${y.st === 'off' ? 'Week off' : 'Leave'}</span>`;
-  return `<input type="time" class="tin tt ${y.out ? '' : 'need'}" id="yo_${esc(p.n)}" data-yout="${esc(p.n)}" value="${esc(y.out || '')}" aria-label="${esc(p.n)} yesterday out time">`; };
+const youtCell = p => { const y = ydOut(p.n); if (!y.st) return '<span class="cs">–</span>';
+  if (y.st !== 'in') return `<span class="pill ${y.st === 'off' ? 'p-info' : 'p-bad'}">${y.st === 'off' ? 'Week off' : 'Leave'}</span>${(A().ydst || {})[p.n] ? `<button class="xb" data-a="ydst" data-n="${esc(p.n)}" data-v="" aria-label="Undo" title="Undo">↺</button>` : ''}`;
+  return `<span class="yo2"><input type="time" class="tin tt ${y.out ? '' : 'need'}" id="yo_${esc(p.n)}" data-yout="${esc(p.n)}" value="${esc(y.out || '')}" aria-label="${esc(p.n)} yesterday out time">${y.unk ? `<button class="ydb" data-a="ydst" data-n="${esc(p.n)}" data-v="off" title="Week off yesterday">W/O</button><button class="ydb" data-a="ydst" data-n="${esc(p.n)}" data-v="lv" title="Leave yesterday">Leave</button>` : ''}</span>`; };
 const AST = { in: ['In', 'a-in'], off: ['Week off', 'a-off'], lv: ['Leave', 'a-lv'] };
 const monthDays = () => [...Array(dim(S.today))].map((_, i) => S.today.slice(0, 8) + String(i + 1).padStart(2, '0'));
 function attSummary(n) { let w = 0, o = 0, l = 0; monthDays().filter(d => d <= S.today).forEach(d => { const a = attOf(n, d); if (a.st === 'in') w++; else if (a.st === 'off') o++; else if (a.st === 'lv') l++; });
@@ -830,7 +839,7 @@ function sheetHTML(branch, list, data, mcAmt, opt) {
     <thead><tr><th style="text-align:left;padding-left:10px">SSP name</th><th>Day target</th><th>Service sale</th><th>Bills</th><th>ABV</th><th>Kids cut</th><th>Product</th><th>Mem card</th><th>Google reviews</th></tr></thead><tbody>
     ${Cc.groups.map(gr => gr.rows.map(row).join('') + (gr.g === 'O' ? '' : tot(GN[gr.g] + ' total', gr.t, 'sub'))).join('')}
     ${tot('Grand total', Cc.G, 'gt')}
-    <tr class="ft"><td class="nmc">Mem card ₹</td><td colspan="8">${ed ? `<input id="x_mcamt" data-mc="1" inputmode="numeric" value="${esc(mcAmt)}" placeholder="0">` : fmt(num(mcAmt))}</td></tr>
+    <tr class="ft"><td class="nmc">Mem card ₹</td><td colspan="8" data-ft="mcamt">${fmt(num(mcAmt))}</td></tr>
     <tr class="ft"><td class="nmc">Product</td><td colspan="8" data-ft="prod">${fmt(Cc.G.prod)}</td></tr>
     <tr class="ft"><td class="nmc">Service net sale</td><td colspan="8" data-ft="net">${fmt(Cc.net)}</td></tr>
     <tr class="ft"><td class="nmc">Service gross sale</td><td colspan="8" data-ft="gross">${fmt(Cc.gross)}</td></tr>
@@ -844,7 +853,7 @@ VIEWS.report = () => {
   const chips = `<div class="slots"><button class="sl ${live ? 'on' : ''} ${d ? 'due' : ''}" data-a="view" data-v="live"><b>Live sheet</b><small>${d ? (d === 'cl' ? 'Closing next' : slotName(d) + ' next') : 'All sent'}</small></button>${SLOTS.map(([id]) => { const s = r.snaps[id], t = slotName(id);
     return s ? `<button class="sl sent ${S.view === id ? 'on' : ''}" data-a="view" data-v="${id}"><b>${t}</b><small>✓ ${s.at}</small></button>` : `<div class="sl" style="opacity:.55"><b>${t}</b><small>${id === d ? 'Next' : 'Later'}</small></div>`; }).join('')}</div>`;
   const hx = `<div class="glass" style="margin-top:18px"><div class="gl"><small>Target</small><b>${inr(Cc.G.tgt)}</b></div><div class="gl"><small>Service sale</small><b>${inr(Cc.G.svc)}</b></div><div class="gl"><small>Net sale</small><b>${inr(Cc.net)}</b></div></div>`;
-  if (!a.attDone) return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body: `<section class="card"><div class="ct">Mark attendance first</div><div class="empty" style="margin:6px 0 12px">Staff who are In become the rows of the sheet.</div><button class="btn" data-a="go" data-v="att">Go to attendance</button></section>` };
+  if (!a.attDone && strictAtt()) return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body: `<section class="card"><div class="ct">Mark attendance first</div><div class="empty" style="margin:6px 0 12px">Staff who are In become the rows of the sheet.</div><button class="btn" data-a="go" data-v="att">Go to attendance</button></section>` };
   const body = `<section class="card">${chips}</section>
     ${live ? sheetHTML(ME(), present(), r.rows, r.mcAmt, { edit: true, prev: last ? r.snaps[last].data : null }) : sheetHTML(ME(), snap.list || [], snap.data || {}, snap.mcAmt, { edit: false, at: 'sent ' + snap.at })}
     <section class="card"><div class="xbar" style="margin:0">${live ? `<span class="saved" id="savedmark">Saved as you type</span>` : `<span class="cs">The ${slotName(S.view)} report as it was sent.</span>`}
@@ -884,7 +893,7 @@ function accHTML() {
   return `<div class="xs ${ME()} xc"><div class="xsh"><b>${ME().toUpperCase()} ACCOUNTS SHEET ${monthName(CD()).toUpperCase()}-${CD().slice(0, 4)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 acc2">
     <thead><tr><th style="width:52px">S.No</th><th>Particulars</th><th style="width:96px">Advance to</th><th style="width:90px">Debit</th><th style="width:96px">Credit</th><th style="width:34px"></th></tr></thead><tbody>${head}</tbody>
     <tbody data-lb="acc" data-off="${off}">${c.acc.map((r, i) => lrow('acc', i, r, off)).join('')}</tbody><tbody>
-    ${band('TOTAL SALES', '', `<input id="totsales" data-ts="1" inputmode="numeric" value="${esc(c.totSales)}" placeholder="${fmt(totalSales())}" aria-label="Total sales">`, 'b-sale')}
+    ${band('TOTAL SALES', '', `<input id="totsales" data-ts="1" inputmode="numeric" value="${esc(c.totSales)}" placeholder="Type" aria-label="Total sales" class="${blank(c.totSales) ? 'need' : ''}">`, 'b-sale')}
     ${band('TOTAL EXPENSES', deb, fmt(cred), 'b-exp')}${band('CARD SALES', cdTot(), fmt(a1), 'b-sale')}${band('G-PAY SALES', gpTot(), fmt(a2), 'b-gp')}
     ${band('CLOSING BALANCE', '', fmt(bal), 'b-bal')}${band('CASH IN DENOMINATIONS', '', fmt(denTot()), 'b-den')}
     ${band(ex >= 0 ? 'EXCESS' : 'SHORT', '', `<span style="color:${ex === 0 ? 'var(--ok)' : 'var(--bad)'}">${fmt(Math.abs(ex))}</span>`, 'b-den')}</tbody></table></div></div>
@@ -972,7 +981,7 @@ const SHEETS = {
   prod(n) { const r = R().rows[n] || blankRow(); r.prod = Array.isArray(r.prod) ? r.prod : []; const items = S.stock.filter(x => x.branch === ME() && x.c > 0);
     return `<h3>${esc(n)} · products sold</h3><div class="sub">Stock goes down by itself</div>
     ${r.prod.map((x, i) => `<div class="row"><div class="l"><b>${esc(x.n)} × ${x.q}</b><small>${inr(x.p)} each · ${esc(x.pay || '')}</small></div><div style="display:flex;gap:8px;align-items:center"><b class="num">${inr(x.q * x.p)}</b><button class="btn sm gh" data-a="delprod" data-n="${esc(n)}" data-v="${i}" aria-label="Remove">✕</button></div></div>`).join('') || '<div class="empty">Nothing sold yet.</div>'}
-    <div style="border-top:1px solid var(--line);margin-top:10px;padding-top:12px">${fl('pp', 'Product', '', '', [['', 'Pick the product']].concat(items.map(p => [p.n, `${p.n} · ${p.c} left`])))}<div class="f2">${fl('pq', 'Pieces', '1', 'n')}${fl('pm', 'Paid by', 'Cash', '', [['Cash', 'Cash'], ['G-Pay', 'G-Pay'], ['Card', 'Card']])}</div></div>
+    <div style="border-top:1px solid var(--line);margin-top:10px;padding-top:12px">${fl('pp', 'Product', '', '', [['', 'Pick the product']].concat(items.map(p => [p.n, `${p.n} · ${p.c} left${p.mrp ? ' · ₹' + p.mrp : ''}`])))}<div class="f2">${fl('pr', 'Price ₹ (each)', '', 'n')}${fl('pq', 'Pieces', '1', 'n')}</div>${fl('pm', 'Paid by', 'Cash', '', [['Cash', 'Cash'], ['G-Pay', 'G-Pay'], ['Card', 'Card']])}</div>
     <input type="hidden" id="pn" value="${esc(n)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Done</button><button class="btn" data-a="save" data-v="prod">${ic('plus')}Add</button></div>`; },
   reduce(n) { const it = S.stock.find(x => x.branch === ME() && x.n === n) || { c: 0 }; return `<h3>Why is 1 ${esc(n)} going out?</h3><div class="sub">${it.c} in hand. Product sales come from the report, not here.</div>
     <div class="chips">${['Damaged', 'Expired', 'Own use', 'Given to another branch', 'Count mismatch'].map(r => `<button class="btn gh" data-a="sreason" data-n="${esc(n)}" data-v="${r}">${r}</button>`).join('')}</div>
@@ -986,9 +995,9 @@ const SHEETS = {
   me() { return `<h3>${esc(S.me.name)}</h3><div class="sub">Manager · ${esc(ME())}</div><div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
 };
 const SAVE = {
-  async prod() { const n = val('pn'), p = val('pp'), q = num(val('pq')), it = S.stock.find(x => x.branch === ME() && x.n === p); if (!p || !it) throw 'Pick the product.'; if (!q || q % 1 || q < 0) throw 'Pieces must be a whole number.'; if (q > it.c) throw `Only ${it.c} in stock.`;
+  async prod() { const n = val('pn'), p = val('pp'), q = num(val('pq')), it = S.stock.find(x => x.branch === ME() && x.n === p); if (!p || !it) throw 'Pick the product.'; const pr = num(val('pr')); if (!pr || pr < 0) throw 'Type the price.'; if (!q || q % 1 || q < 0) throw 'Pieces must be a whole number.'; if (q > it.c) throw `Only ${it.c} in stock.`;
     S.stock = mergeStock(await call('appStockOp', S.tok, ME(), 'sale', { n: p, q, staff: n, pay: val('pm') }));
-    const r = R(); r.rows[n] = r.rows[n] || blankRow(); r.rows[n].prod = Array.isArray(r.rows[n].prod) ? r.rows[n].prod : []; r.rows[n].prod.push({ n: p, q, p: it.mrp, pay: val('pm') }); touch(S.today, 'rep'); S.moves = null;
+    const r = R(); r.rows[n] = r.rows[n] || blankRow(); r.rows[n].prod = Array.isArray(r.rows[n].prod) ? r.rows[n].prod : []; r.rows[n].prod.push({ n: p, q, p: pr, pay: val('pm') }); touch(S.today, 'rep'); S.moves = null;
     const left = (S.stock.find(x => x.branch === ME() && x.n === p) || {}).c; toast(`${p}: ${left} left`); return 'stay'; },
   async rmstaff() { const id = val('rm_p'), r = val('rm_r'); if (!r) throw 'Pick a reason.'; if (r === 'Other' && !val('rm_n').trim()) throw 'Write the reason in the note.';
     const p = people().find(x => x.id === id); S.staff = await call('appStaffOp', S.tok, ME(), 'remove', { id, reason: r, note: val('rm_n').trim() }); if (p) { delete A().att[p.n]; touch(S.today, 'att'); } persist(); toast((p ? p.n : 'Staff') + ' removed · controller told'); return true; },
@@ -1008,7 +1017,7 @@ function refreshSheetTotals() {
   const subs = [...t.querySelectorAll('tr.sub')], gt = t.querySelector('tr.gt');
   Cc.groups.filter(g => g.g !== 'O').forEach((g, i) => { if (subs[i]) vals(g.t).forEach((v, j) => subs[i].children[j + 1].textContent = v); });
   if (gt) vals(Cc.G).forEach((v, j) => gt.children[j + 1].textContent = v);
-  [['prod', Cc.G.prod], ['net', Cc.net], ['gross', Cc.gross]].forEach(([f, v]) => { const el = t.querySelector(`[data-ft="${f}"]`); if (el) el.textContent = fmt(v); });
+  [['mcamt', num(R().mcAmt)], ['prod', Cc.G.prod], ['net', Cc.net], ['gross', Cc.gross]].forEach(([f, v]) => { const el = t.querySelector(`[data-ft="${f}"]`); if (el) el.textContent = fmt(v); });
   present().forEach(p => { const el = t.querySelector(`[data-abv="${CSS.escape(p.n)}"]`), r = R().rows[p.n]; if (el && r) { const a = abv(r.svc, r.bills); el.textContent = a === '–' ? '' : fmt(a); } });
   const gl = document.querySelectorAll('.hd .gl b'); if (gl.length === 3 && S.page === 'report') { gl[0].textContent = inr(Cc.G.tgt); gl[1].textContent = inr(Cc.G.svc); gl[2].textContent = inr(Cc.net); }
 }
@@ -1026,7 +1035,7 @@ document.addEventListener('input', e => {
   const t = e.target, d = t.dataset || {};
   if (t.id === 'sfind') { const q = t.value.trim().toLowerCase(); document.querySelectorAll('#slist .row').forEach(r => r.style.display = !q || r.dataset.sn.includes(q) ? '' : 'none'); return; }
   if (!S.me || S.me.role !== 'manager') return;
-  if (d.x) { const r = R(); r.rows[d.x] = r.rows[d.x] || blankRow(); r.rows[d.x][d.f] = t.value.replace(/[^\d.]/g, ''); refreshSheetTotals(); touch(S.today, 'rep'); }
+  if (d.x) { const r = R(); r.rows[d.x] = r.rows[d.x] || blankRow(); r.rows[d.x][d.f] = t.value.replace(/[^\d.]/g, ''); noAttTell(); refreshSheetTotals(); touch(S.today, 'rep'); }
   else if (d.mc) { R().mcAmt = t.value.replace(/[^\d.]/g, ''); refreshSheetTotals(); touch(S.today, 'rep'); }
   else if (d.l) { const L = C()[d.l]; L[+d.i][d.k] = t.value; if (L[+d.i].y) { delete L[+d.i].y; const tr = t.closest('tr'); if (tr) tr.classList.remove('yrow'); } markChanged(); if (+d.i >= L.length - 2 && t.value.trim()) { const st = L.length; for (let i = 0; i < 5; i++) L.push(blankL(d.l)); const tb = document.querySelector(`[data-lb="${d.l}"]`); if (tb) tb.insertAdjacentHTML('beforeend', L.slice(st).map((r, i) => lrow(d.l, st + i, r, +(tb.dataset.off || 0))).join('')); } refreshAccounts(); touch(CD(), 'clo'); }
   else if (d.den) { C().den[d.den] = t.value.replace(/[^\d]/g, ''); if (C().denY) { C().denY = false; document.querySelectorAll('[data-den]').forEach(x => x.classList.remove('yv')); } markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
@@ -1105,6 +1114,7 @@ async function submitClosing() {
   const miss = [];
   if (tday) SLOTS.slice(0, 4).forEach(([id]) => { if (!rr.snaps[id]) miss.push(slotName(id) + ' report not sent'); });
   if (tday && carriedCount()) miss.push(carriedCount() + ' entries from yesterday not cleared or changed');
+  if (blank(c.totSales)) miss.push('Total sales not typed');
   if (!nFilled('gpay')) miss.push('G-Pay list empty');
   if (!c.bp) miss.push('Payment app total not typed'); else if (gpTot() !== num(c.bp)) miss.push('G-Pay list differs from the payment app by ' + inr(Math.abs(gpTot() - num(c.bp))));
   if (!c.noCard) { if (!nFilled('card')) miss.push('Card list empty'); if (!c.slip) miss.push('Card settlement total not typed'); else if (cdTot() !== num(c.slip)) miss.push('Card list differs from the settlement by ' + inr(Math.abs(cdTot() - num(c.slip)))); }
@@ -1132,6 +1142,7 @@ document.addEventListener('click', async e => {
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {}; A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
     case 'attdone': { const left = people().filter(p => !(A().att[p.n] || {}).st); if (left.length) { toast('Mark ' + left.map(p => p.n).join(', ')); break; } const noT = people().filter(p => (A().att[p.n] || {}).st === 'in' && !(A().att[p.n] || {}).in); if (noT.length) { toast('Type the In time for ' + noT.map(p => p.n).join(', ')); const f = document.getElementById('in_' + noT[0].n); if (f) f.focus(); break; }
       A().attDone = true; touch(S.today, 'att'); render(); const yo2 = people().filter(p => ydOut(p.n).st === 'in' && !ydOut(p.n).out).map(p => p.n); toast(yo2.length ? 'Attendance saved · yesterday out still empty: ' + yo2.join(', ') : 'Attendance saved'); break; }
+    case 'ydst': { const a = A(); a.ydst = a.ydst || {}; if (v) a.ydst[el.dataset.n] = v; else delete a.ydst[el.dataset.n]; touch(S.today, 'att'); render(); break; }
     case 'attedit': A().attDone = false; touch(S.today, 'att'); render(); break;
     case 'rmextra': A().extra.splice(+v, 1); touch(S.today, 'att'); render(); break;
     case 'addother': openSheet(SHEETS.other()); break;
@@ -1172,6 +1183,7 @@ document.addEventListener('click', async e => {
     case 'submit': await submitClosing(); break;
   }
 });
+document.addEventListener('change', e => { const t = e.target; if (t.id === 'pp') { const it = S.stock.find(x => x.branch === ME() && x.n === t.value), pr = document.getElementById('pr'); if (pr) { pr.value = it && it.mrp ? it.mrp : ''; if (!pr.value) pr.focus(); } } });
 document.addEventListener('change', e => { const t = e.target, d = t.dataset || {}; if (d.l && t.tagName === 'SELECT') { C()[d.l][+d.i][d.k] = t.value; markChanged(); touch(CD(), 'clo'); } });
 
 /* ======================= CONTROLLER + OWNER ======================= */
@@ -1391,7 +1403,8 @@ OVIEWS.people = () => { const P2 = (O.all.people || []).filter(p => p.role !== '
 OVIEWS.settings = () => { const s = S.settings, rules = s.catRules || {};
   return { eb: 'Controller', title: 'Settings', sub: 'For every branch', body: `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Report times</div></div><div class="f2">${(s.slots || []).map((t, i) => `<div class="fl"><label for="st${i}">Report ${i + 1}</label><input type="time" id="st${i}" value="${esc(t)}"></div>`).join('')}</div>
     <div class="f2">${fl('st_late', 'Late after (minutes)', s.lateMin || 30, 'n')}${fl('st_cl', 'Closing reminder next day at', s.closingAlert || '11:00')}</div><button class="btn" data-a="osave" data-v="times">Save times</button></section>
-    <section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('sheet')}</span>Report sheet</div></div><div class="f2">${fl('st_gst', 'Gross = net + GST %', s.gst || 5, 'n')}</div><button class="btn" data-a="osave" data-v="gst">Save</button></section>
+    <section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('sheet')}</span>Report sheet</div></div><div class="f2">${fl('st_gst', 'Gross = net + GST %', s.gst || 5, 'n')}${fl('st_mc', 'One Trendy Circle card ₹', s.mcRate || 95, 'n')}</div><button class="btn" data-a="osave" data-v="gst">Save</button></section>
+    <section class="card"><div class="ch"><div class="ct"><span class="ib y">${ic('staff')}</span>Report before attendance</div></div>${BR.map(b => { const off = !!((s.strictAtt || {})[b]), n = (O.all.noatt || {})[b] || 0; return `<div class="row"><div class="l"><b>${b}</b><small>${n ? 'Started the report before attendance ' + n + ' time' + (n > 1 ? 's' : '') + ' this month' : 'Not this month'}</small></div><button class="btn sm ${off ? '' : 'gh'}" data-a="ostrict" data-v="${b}">${off ? 'Attendance first: on' : 'Allowed'}</button></div>`; }).join('')}<div class="cs" style="margin-top:8px">Allowed: they can fill the report before marking attendance and you are told. Attendance first: the report opens only after attendance.</div></section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('cal')}</span>Week offs</div></div><div class="f2">${fl('st_wp', 'One week off per days worked', s.woPer || 6, 'n')}${fl('st_wm', 'Most in a month', s.woMax || 4, 'n')}</div><button class="btn" data-a="osave" data-v="wo">Save</button></section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib y">${ic('cash')}</span>Expense categories it has learned</div></div>${Object.keys(rules).map(k3 => `<div class="row"><div class="l"><b>${esc(k3)}</b><small>${esc(rules[k3])}</small></div><button class="xb" data-a="orule" data-v="${esc(k3)}" aria-label="Forget ${esc(k3)}">✕</button></div>`).join('') || '<div class="empty">It learns when you change a category while approving.</div>'}</section>` }; };
 
@@ -1437,9 +1450,10 @@ const OACT = {
   async ouserop(el) { const op = el.dataset.v, er = document.getElementById('serr'); if (op === 'remove' && er.dataset.ok !== '1') { er.dataset.ok = '1'; er.textContent = 'Press Remove again to remove this login.'; return; } busy(true);
     try { O.all.people = await call('appUserOp', S.tok, op, { id: val('u_id'), pin: val('u_pin'), branch: val('u_b') }); closeSheet(); toast('Saved'); render(); } catch (e) { er.textContent = e.message; busy(false); } },
   async osave(el) { const v = el.dataset.v; try { if (v === 'times') { S.settings = await call('appSetting', S.tok, 'slots', [0, 1, 2, 3].map(i => val('st' + i))); S.settings = await call('appSetting', S.tok, 'lateMin', num(val('st_late')) || 30); S.settings = await call('appSetting', S.tok, 'closingAlert', val('st_cl') || '11:00'); }
-    if (v === 'gst') S.settings = await call('appSetting', S.tok, 'gst', num(val('st_gst')) || 0);
+    if (v === 'gst') { S.settings = await call('appSetting', S.tok, 'gst', num(val('st_gst')) || 0); S.settings = await call('appSetting', S.tok, 'mcRate', num(val('st_mc')) || 95); }
     if (v === 'wo') { S.settings = await call('appSetting', S.tok, 'woPer', num(val('st_wp')) || 6); S.settings = await call('appSetting', S.tok, 'woMax', num(val('st_wm')) || 4); }
     O.all.settings = S.settings; toast('Saved'); render(); } catch (e) { toast(e instanceof NetErr ? 'No internet.' : e.message); } },
+  async ostrict(el) { const m2 = Object.assign({}, S.settings.strictAtt || {}); m2[el.dataset.v] = !m2[el.dataset.v]; try { S.settings = await call('appSetting', S.tok, 'strictAtt', m2); O.all.settings = S.settings; toast(el.dataset.v + (m2[el.dataset.v] ? ': attendance first' : ': report before attendance allowed')); render(); } catch (e) { toast(e instanceof NetErr ? 'No internet.' : e.message); } },
   async orule(el) { const r = Object.assign({}, S.settings.catRules || {}); delete r[el.dataset.v]; try { S.settings = await call('appSetting', S.tok, 'catRules', r); O.all.settings = S.settings; render(); } catch (e) { toast(e.message); } },
   ostaffadd(el) { openSheet(`<h3>Add staff · ${esc(el.dataset.b)}</h3>${fl('sa_n', 'Name', '')}<div class="f2">${fl('sa_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}${fl('sa_t', 'Day target ₹', '', 'n')}</div><input type="hidden" id="sa_b" value="${esc(el.dataset.b)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="ostaffsave">Add</button></div>`); },
   async ostaffsave() { busy(true); try { const b = val('sa_b'); S.staff = await call('appStaffOp', S.tok, b, 'add', { name: val('sa_n').trim(), g: val('sa_g') }); const p = S.staff.filter(x => x.branch === b && x.name === val('sa_n').trim()).pop(); if (p && val('sa_t')) S.staff = await call('appStaffOp', S.tok, b, 'edit', { id: p.id, t: val('sa_t') }); O.all.staff = S.staff; closeSheet(); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
