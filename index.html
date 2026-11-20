@@ -529,11 +529,21 @@ const LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiQAAAB2CAYAAAD4Koil
 const EMBED = new URLSearchParams(location.search).get('embed') === '1', EPAGE = new URLSearchParams(location.search).get('page') || 'review';
 const EXEC = 'https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8j5xbIAD4j7qssGd_J5dZAfIE32sw5nm61mrdjwhjK/exec';
 class NetErr extends Error {}
-async function call(fn, ...args) {
+/* fast server (Supabase) for the daily work; Google keeps logins, people and the P&L books */
+const SBAPI = 'https://wfklonhvjjmugzyquchf.supabase.co/functions/v1/api';
+const FAST = new Set(['appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend']);
+const MOVED = 'The app was updated. Close it and open it again.';
+async function post(url, fn, args) {
   let r;
-  try { r = await fetch(window.__API || EXEC, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, args }) }); }
+  try { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, args }) }); }
   catch (e) { throw new NetErr('offline'); }
-  let j; try { j = await r.json(); } catch (e) { throw new NetErr('bad reply'); }
+  try { return await r.json(); } catch (e) { throw new NetErr('bad reply'); }
+}
+async function call(fn, ...args) {
+  const fast = !window.__API && FAST.has(fn);
+  let j = await post(window.__API || (fast ? SBAPI : EXEC), fn, args);
+  if (fast && j.error === 'NOT_READY') j = await post(EXEC, fn, args);
+  else if (!fast && FAST.has(fn) && j.error === MOVED) j = await post(SBAPI, fn, args);
   if (j.error) { if (j.error === 'SESSION') { signOut(true); } throw new Error(j.error); }
   return j.result;
 }
@@ -1232,7 +1242,8 @@ function exStats(b) { let ex = 0, sh = 0, n0 = 0, nE = 0, nS = 0; mon(b).forEach
 const oEb = () => `${DOW[dowOf(O.all.today)]} · ${dnum(O.all.today)} ${monthName(O.all.today).slice(0, 3)}`;
 
 async function loadAll(quiet) {
-  try { const r = await call('appAll', S.tok); O.all = r; S.today = r.today; S.yday = r.yday; S.settings = r.settings; S.staff = r.staff; S.stock = r.stock; ls('gt_office', JSON.stringify(r)); setOffline(false); if (!quiet || !document.querySelector('.ov')) render(); }
+  try { const r = await call('appAll', S.tok); if (!r.people && O.all && O.all.people) r.people = O.all.people; O.all = r;
+    if (r.me && r.me.role === 'controller') call('appPeople', S.tok).then(p => { if (O.all) { O.all.people = p; ls('gt_office', JSON.stringify(O.all)); if (S.page === 'people') render(); } }).catch(() => {}); S.today = r.today; S.yday = r.yday; S.settings = r.settings; S.staff = r.staff; S.stock = r.stock; ls('gt_office', JSON.stringify(r)); setOffline(false); if (!quiet || !document.querySelector('.ov')) render(); }
   catch (e) { if (e instanceof NetErr) { setOffline(true); if (!O.all) { try { O.all = JSON.parse(ls('gt_office') || 'null'); } catch (x) {} render(); } } else if (S.tok) toast(e.message); }
 }
 setInterval(() => { if (S.tok && isOffice() && !S.asBranch && document.visibilityState === 'visible' && !document.querySelector('.ov') && !(document.activeElement && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))) loadAll(true); }, 60000);
