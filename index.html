@@ -469,17 +469,8 @@ svg.chs{width:100%;height:auto;display:block}
 .asbar span{display:inline-flex;align-items:center;gap:6px}.asbar .btn{background:#fff;color:#B4185F}
 .side .it .nb{margin-left:auto;background:var(--pink);color:#fff;border-radius:99px;font-size:11px;padding:1px 7px}
 .bellb{position:relative}.bellb .dot{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:99px;background:var(--pink);color:#fff;font-size:10.5px;display:grid;place-items:center;padding:0 4px}
-
-.emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
-.eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
-
-.emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
-.eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
 .yo2{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}.ydb{border:1px solid var(--line);border-radius:8px;padding:4px 7px;font-size:11px;font-weight:800;color:var(--muted);background:#fff}.ydb:hover{color:var(--ink)}
 #totsales.need{background:var(--warns)}
-
-.emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
-.eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
 .gbar{display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--soft)}.gbar.sm{height:8px;flex:1;min-width:80px}.gbar i{display:block;height:100%}
 .gtile{background:var(--soft);border-radius:16px;padding:12px 14px}.gtile b{display:block;font-family:var(--fd);font-size:22px;margin:4px 0 2px}.gtile small{color:var(--muted);font-weight:700;font-size:11.5px}.gtt{display:flex;align-items:center;gap:7px;font-weight:800}.gtt i{width:10px;height:10px;border-radius:3px;display:inline-block}
 .gtile .bmini b{display:inline;font-family:inherit;font-size:inherit;margin:0}
@@ -1149,7 +1140,10 @@ async function submitClosing() {
     toast(miss.length > (denTot() ? 1 : 0) ? 'Closing sent · controller told what is missing' : 'Closing sent'); render(); }
   catch (e) { toast(e instanceof NetErr ? 'No internet. Send again when online.' : e.message); render(); }
 }
-async function stockOp(op, n, extra) { try { S.stock = mergeStock(await call('appStockOp', S.tok, ME(), op, Object.assign({ n, q: 1 }, extra || {}))); S.moves = null; persist(); render(); return true; } catch (e) { toast(e instanceof NetErr ? 'No internet. Try again when online.' : e.message); render(); return false; } }
+async function stockOp(op, n, extra) { const it = S.stock.find(x => x.branch === ME() && x.n === n), was = it ? it.c : null;
+  if (it && (op === 'plus' || op === 'minus')) { it.c = Math.max(0, num(it.c) + (op === 'plus' ? 1 : -1)); render(); } /* show the new count at once; the server confirms in the background */
+  try { S.stock = mergeStock(await call('appStockOp', S.tok, ME(), op, Object.assign({ n, q: 1 }, extra || {}))); S.moves = null; persist(); render(); return true; }
+  catch (e) { if (it && was !== null) it.c = was; toast(e instanceof NetErr ? 'No internet. The count was put back — try again when online.' : e.message); render(); return false; } }
 document.addEventListener('click', async e => {
   const el = e.target.closest('[data-a]'); if (!el) return;
   const a = el.dataset.a, v = el.dataset.v; if (a === 'close' && e.target !== el) return;
@@ -1507,14 +1501,14 @@ let lastBeat = '', beatT = 0;
 function beatCheck() { const key = S.page + '|' + (isOffice() ? O.ob : ''); if (key !== lastBeat) { lastBeat = key; clearTimeout(beatT); beatT = setTimeout(beatNow, 400); } }
 function beatNow() { if (!S.tok || !S.me || S.asBranch || O.mirror || S.me.role === 'controller' || document.visibilityState !== 'visible') return;
   call('appBeat', S.tok, { page: S.page, sub: isOffice() ? O.ob : '' }).then(r => { if (r && r.cmd && S.me.role === 'manager' && NAV.some(n => n[0] === r.cmd)) { S.page = r.cmd; closeSheet(); render(); } }).catch(() => {}); }
-setInterval(beatNow, 20000);
+setInterval(beatNow, 45000);
 const typing = () => { const a = document.activeElement; return !!(a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) || !!document.querySelector('.ov'); };
 async function refreshDay() { if (!S.tok || !S.me || !S.booted || !S.today || (S.me.role !== 'manager' && !S.asBranch) || document.visibilityState !== 'visible' || dirty.size || flushing || typing()) return;
   try { const ds2 = [S.today]; if (S.page === 'closing' && CD() !== S.today) ds2.push(CD()); let ch = false;
     for (const d of ds2) { const x = await call('appDay', S.tok, ME(), d); if (dirty.size || typing()) return; const cur = S.days[d] || {};
       ['att', 'rep', 'clo'].forEach(p => { const sv = x[p]; if (sv && (sv._v || 0) > ((cur[p] || {})._v || 0)) { cur[p] = sv; ch = true; } }); S.days[d] = cur; day(d); }
     if (ch) { persist(); render(); } } catch (e) {} }
-setInterval(() => refreshDay(), 20000); setInterval(() => { if (S.asBranch) refreshDay(); }, 6000);
+setInterval(() => refreshDay(), 30000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refreshDay(); beatNow(); } }); setInterval(() => { if (S.asBranch) refreshDay(); }, 6000);
 const reminded = {};
 setInterval(() => { if (!S.me || S.me.role !== 'manager' || !S.today || !S.days[S.today]) return; const hm = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date()), [h, m] = hm.split(':').map(Number), nowM = h * 60 + m;
   slotTimes().forEach((t, i) => { const key = SLOTS[i][0], [th, tm] = t.split(':').map(Number), at = th * 60 + tm, before = num(S.settings.remindMin) || 5; if (R().snaps[key] || reminded[S.today + key] || nowM < at - before || nowM > at + 60) return;
