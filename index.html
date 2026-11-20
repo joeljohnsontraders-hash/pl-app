@@ -478,6 +478,8 @@ svg.chs{width:100%;height:auto;display:block}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
+
+.page>*{animation-duration:.24s!important}.page>*:nth-child(2){animation-delay:.03s!important}.page>*:nth-child(3){animation-delay:.05s!important}.page>*:nth-child(4){animation-delay:.07s!important}.page>*:nth-child(n+5){animation-delay:.09s!important}
 select.csel{border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff;max-width:190px}select.csel.need{border-color:var(--bad);background:var(--bads)}
 
 .plate{display:inline-flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;padding:9px 12px;box-shadow:0 8px 22px rgba(0,0,0,.18)}
@@ -648,7 +650,12 @@ async function toController(tok) {
 }
 /* ---------------- boot ---------------- */
 async function boot() {
-  if (EMBED) { S.tok = ls('plbook_session') || ls('gt_tok') || ''; document.body.classList.add('emb'); S.page = EPAGE; if (!S.tok) { parent.postMessage('gt-close', location.origin); return; } }
+  if (EMBED) { S.tok = ls('plbook_session') || ls('gt_tok') || ''; document.body.classList.add('emb'); S.page = EPAGE; if (!S.tok) { parent.postMessage('gt-close', location.origin); return; }
+    /* kept open in the background by the P&L book: it tells us which page to show, so opening is instant */
+    window.addEventListener('message', e => { if (e.origin !== location.origin || !e.data || !e.data.gtPage) return; const p = String(e.data.gtPage);
+      if (S.asBranch || O.mirror) { location.replace('/?embed=1&page=' + encodeURIComponent(p)); return; }
+      closeSheet(); if (p === 'live') O.watch = null; S.page = p; window.scrollTo(0, 0); render(); if (p === 'live') pollWatch(); loadAll(true); });
+    const rd = setInterval(() => { if (S.booted && O.all) { clearInterval(rd); parent.postMessage('gt-ready', location.origin); } }, 150); }
   else if (S.tok && ls('gt_role') === 'controller') { toController(S.tok); return; }
   if (!S.tok) { render(); return; }
   if (fromCache()) { S.booted = true; prepDays(); render(); }
