@@ -194,6 +194,10 @@ const API = {
       return stock(b, tx);
     });
   },
+  /* the manager's own arrangement of the closing tables (kept per branch) */
+  async appLayout(tok, b, L) { const u = await who(tok); can(u, b, true);
+    if (L !== null && (typeof L !== "object" || Array.isArray(L) || JSON.stringify(L).length > 4000)) err("This layout could not be saved.");
+    await setSetting(sql, "cloLayout|" + b, L); return { ok: true }; },
   async appMoves(tok, b) { const u = await who(tok); can(u, b, false); return sql`select ts, date, branch, product, qty, reason, by from app_moves where branch = ${b} order by id desc limit 60`; },
   async appMonthApi(tok, b, ym) { const u = await who(tok); can(u, b, false); return monthSums(await sums(ym, b), b, ym, false); },
   async appAlerts(tok) { const u = await who(tok); if (role(u) === "manager") err("No access."); return alerts(150); },
