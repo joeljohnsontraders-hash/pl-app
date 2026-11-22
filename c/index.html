@@ -723,9 +723,16 @@ const call = (fn, ...a) => EXEC ? fetch(EXEC, { method: "POST", body: JSON.strin
 const api = (fn, ...a) => LIVE ? call(fn, ...a) : new Promise((ok, no) => setTimeout(() => { try { ok(window.MOCK_API[fn](...a)); } catch (e) { no(e); } }, 120));
 try { if (localStorage.getItem("pl_dark")) document.body.classList.add("dark"); } catch (e) {}
 const KEY = "plbook_session", CK = "plbook_cache";
-const keep = t => { if ((t || "") !== TOKEN) try { localStorage.removeItem(CK); } catch (e) {} TOKEN = t || ""; try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {} };
+const keep = t => { if ((t || "") !== TOKEN) try { localStorage.removeItem(CK); Object.keys(localStorage).filter(k => k.indexOf(CK + ":") === 0).forEach(k => localStorage.removeItem(k)); } catch (e) {} TOKEN = t || ""; try { t ? localStorage.setItem(KEY, t) : localStorage.removeItem(KEY); } catch (e) {} };
 const readCache = () => { try { return JSON.parse(localStorage.getItem(CK) || "null"); } catch (e) { return null; } };
-const saveCache = raw => { try { localStorage.setItem(CK, JSON.stringify({ t: Date.now(), me: ME, books: BOOKS, cur: cur, data: raw })); } catch (e) {} };
+const saveCache = raw => { try { localStorage.setItem(CK, JSON.stringify({ t: Date.now(), me: ME, books: BOOKS, cur: cur, data: raw })); } catch (e) {} try { const b = BOOKS[cur]; if (b) localStorage.setItem(CK + ":" + b.i, JSON.stringify({ t: Date.now(), data: raw })); } catch (e) {} setTimeout(warmBooks, 0); };
+/* every branch keeps its own saved copy, so changing branch opens at once; the latest comes from the sheet in the background */
+const bookCache = i => { try { return JSON.parse(localStorage.getItem(CK + ":" + i) || "null"); } catch (e) { return null; } };
+let WARMB = false;
+function warmBooks() { if (WARMB || !TOKEN || !BOOKS.length) return; WARMB = true; const seen = {}, here = (BOOKS[cur] || {}).branch, list = BOOKS.filter(b => b.branch !== here && !seen[b.branch] && (seen[b.branch] = 1)); let k = 0;
+  const next = () => { const b = list[k++]; if (!b) return; const c = bookCache(b.i); if (c && Date.now() - c.t < 10 * 60e3) return next();
+    api("getBook", TOKEN, b.i).then(raw => { try { localStorage.setItem(CK + ":" + b.i, JSON.stringify({ t: Date.now(), data: raw })); } catch (e) {} }).catch(() => {}).finally(() => setTimeout(next, 1500)); };
+  setTimeout(next, 4000); }
 function useData(raw) { D = JSON.parse(raw); ME = D.me; lastLoad = new Date(); M = model(D); M.P = buildPV(); saveCache(raw); }
 try { TOKEN = localStorage.getItem(KEY) || ""; } catch (e) {}
 const msgOf = e => String(e && e.message || e).replace(/^Error:\s*/, "").replace(/^Exception:\s*/, "");
@@ -2975,7 +2982,7 @@ root().innerHTML = `<div class="ND"><header class="ndh">${ndRings0}<div class="n
 ${br.map((b, i) => { const [a] = ndAcc(b), bk = BOOKS.find(x => x.branch === b) || {};
 return `<button class="nbnr tap nbrc" data-b="${esc(b)}" style="animation-delay:${120 + i * 70}ms"><div class="nr" style="height:56px"><span class="nic46" style="background:${a};color:#fff;font-family:var(--OF);font-weight:600;font-size:20px">${esc(b[0])}</span><span style="flex:1;min-width:0"><span style="display:block;font-family:var(--OF);font-size:19px;font-weight:600">${esc(b)}</span><span class="nmu" style="display:block;font-size:13px">${esc(bk.month || "")}</span></span><span style="width:10px;height:10px;border-radius:50%;background:${a}"></span><span class="nmu" style="display:inline-flex">${ndi("chev", 20)}</span></div></button>`; }).join("")}</main></div>`;
 const pa = $("#pAll"); if (pa) pa.onclick = () => { stack = [{ v: "home" }, { v: "all" }]; ALLB = null; draw(); };
-root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; try { history.pushState({ p: 1 }, ""); } catch (e) {} root().innerHTML = SKEL(); await refresh(); });
+root().querySelectorAll("[data-b]").forEach(x => x.onclick = async () => { cur = BOOKS.findIndex(k => k.branch === x.dataset.b); stack = [{ v: "home" }]; try { history.pushState({ p: 1 }, ""); } catch (e) {} const c = bookCache((BOOKS[cur] || {}).i); if (c && c.data) { try { D = JSON.parse(c.data); M = model(D); M.P = buildPV(); lastLoad = new Date(c.t); draw(); refresh(); return; } catch (e) {} } root().innerHTML = SKEL(); await refresh(); });
 deskLayout();
 }
 const NA_SEC = [["ov", "Overview"], ["sales", "Sales"], ["ret", "Retail"], ["pl", "Profit &amp; Loss"], ["exp", "Expenses"], ["staff", "Staff"], ["att", "Attendance"], ["pay", "Salary"], ["stock", "Stock"], ["cash", "Cash &amp; checks"], ["br", "Branches"], ["x", "Explorer"]];
