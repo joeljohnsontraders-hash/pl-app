@@ -475,7 +475,8 @@ svg.chs{width:100%;height:auto;display:block}
 .gtile{background:var(--soft);border-radius:16px;padding:12px 14px}.gtile b{display:block;font-family:var(--fd);font-size:22px;margin:4px 0 2px}.gtile small{color:var(--muted);font-weight:700;font-size:11.5px}.gtt{display:flex;align-items:center;gap:7px;font-weight:800}.gtt i{width:10px;height:10px;border-radius:3px;display:inline-block}
 .gtile .bmini b{display:inline;font-family:inherit;font-size:inherit;margin:0}
 .gper{display:grid;gap:10px;margin-top:14px}.gpr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.gpr .bt{display:flex;align-items:center;gap:7px;font-weight:800;width:120px}
-.cvtools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px}.cvs{overflow-x:auto;border-radius:22px;background:#fff;background-image:radial-gradient(rgba(10,26,43,.11) 1px,transparent 1.2px);background-size:16px 16px;border:1px solid rgba(10,26,43,.08);padding:16px;box-shadow:0 1px 2px rgba(10,26,43,.04)}.cvc{position:relative;min-height:420px}.cvi{position:absolute;left:0;top:0}.cvc.cvset .cvi{transition:top .18s ease,left .18s ease}.cvi.cvmv{transition:none;z-index:5;filter:drop-shadow(0 18px 28px rgba(10,26,43,.18))}.cvi>.card,.cvi>.cbox{margin:0}.cvbar{height:24px;display:flex;align-items:center;gap:7px;padding:0 10px;margin-bottom:5px;border-radius:10px;background:rgba(10,26,43,.06);color:var(--muted,#6B7A8C);font-size:11.5px;font-weight:700;cursor:grab;user-select:none;touch-action:none}.cvbar:hover{background:rgba(10,26,43,.1)}.cvmv .cvbar{cursor:grabbing;background:rgba(14,165,113,.16);color:#0B7A55}.cvg{font-size:14px;letter-spacing:-1px;opacity:.7}.cvrz{position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;cursor:nwse-resize;touch-action:none;border-right:3px solid rgba(10,26,43,.22);border-bottom:3px solid rgba(10,26,43,.22);border-radius:0 0 6px 0}.cvrz:hover{border-color:#0EA571}
+.cvtools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px}.cvs{overflow-x:auto;scrollbar-width:none;cursor:grab;border-radius:22px;background:#fff;background-image:radial-gradient(rgba(10,26,43,.11) 1px,transparent 1.2px);background-size:16px 16px;border:1px solid rgba(10,26,43,.08);padding:16px;box-shadow:0 1px 2px rgba(10,26,43,.04)}.cvc{position:relative;min-height:420px}.cvi{position:absolute;left:0;top:0}.cvc.cvset .cvi{transition:top .18s ease,left .18s ease}.cvi.cvmv{transition:none;z-index:5;filter:drop-shadow(0 18px 28px rgba(10,26,43,.18))}.cvi>.card,.cvi>.cbox{margin:0}.cvbar{height:24px;display:flex;align-items:center;gap:7px;padding:0 10px;margin-bottom:5px;border-radius:10px;background:rgba(10,26,43,.06);color:var(--muted,#6B7A8C);font-size:11.5px;font-weight:700;cursor:grab;user-select:none;touch-action:none}.cvbar:hover{background:rgba(10,26,43,.1)}.cvmv .cvbar{cursor:grabbing;background:rgba(14,165,113,.16);color:#0B7A55}.cvg{font-size:14px;letter-spacing:-1px;opacity:.7}.cvrz{position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;cursor:nwse-resize;touch-action:none;border-right:3px solid rgba(10,26,43,.22);border-bottom:3px solid rgba(10,26,43,.22);border-radius:0 0 6px 0}.cvrz:hover{border-color:#0EA571}
+.cvs::-webkit-scrollbar{display:none}.cvs.cvpan{cursor:grabbing;user-select:none}.cvs .cvi{cursor:auto}.cvhs{position:sticky;bottom:6px;z-index:20;height:16px;overflow-x:scroll;overflow-y:hidden;margin-top:-16px;visibility:hidden;background:#fff;border:1px solid rgba(10,26,43,.12);border-radius:9px;box-shadow:0 4px 14px rgba(10,26,43,.12)}.cvhs.on{visibility:visible;margin-top:6px}.cvhs>div{height:1px}.cvhs::-webkit-scrollbar{height:12px}.cvhs::-webkit-scrollbar-track{background:transparent}.cvhs::-webkit-scrollbar-thumb{background:rgba(10,26,43,.45);border-radius:6px;border:3px solid transparent;background-clip:content-box}.cvhs::-webkit-scrollbar-thumb:hover{background-color:rgba(10,26,43,.55)}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -801,10 +802,26 @@ function cvPlace(save) {
     done.push(id); });
   let R = 0, B = 0; els.forEach(el => { const p = P[el.dataset.cv]; el.style.left = p.x + 'px'; el.style.top = p.y + 'px'; el.style.width = p.w + 'px'; R = Math.max(R, p.x + p.w); B = Math.max(B, p.y + H[el.dataset.cv]); });
   box.style.width = Math.max(W, R) + 'px'; box.style.height = (B + 24) + 'px';
+  cvBar();
   if (save) { cvSave(P); clearTimeout(box._st); box._st = setTimeout(() => box.classList.remove('cvset'), 260); }
 }
+/* Excel-style sideways scrolling: a scrollbar pinned to the bottom of the screen, drag on empty canvas to slide it, Shift + wheel */
+function cvBar() {
+  const sc = document.querySelector('.cvs'), hb = document.getElementById('cvhs'), hi = document.getElementById('cvhsi'); if (!sc || !hb || !hi) return;
+  hi.style.width = sc.scrollWidth + 'px'; hb.classList.toggle('on', sc.scrollWidth > sc.clientWidth + 2); hb.scrollLeft = sc.scrollLeft;
+  if (!sc._bound) { sc._bound = 1; let lock = false;
+    sc.addEventListener('scroll', () => { if (lock) return; lock = true; hb.scrollLeft = sc.scrollLeft; requestAnimationFrame(() => { lock = false; }); }, { passive: true });
+    hb.addEventListener('scroll', () => { if (lock) return; lock = true; sc.scrollLeft = hb.scrollLeft; requestAnimationFrame(() => { lock = false; }); }, { passive: true });
+    sc.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || (e.target !== sc && e.target.id !== 'cvc')) return;
+      e.preventDefault(); const sx = e.clientX, sy = e.clientY, l0 = sc.scrollLeft, y0 = window.scrollY; sc.classList.add('cvpan'); try { sc.setPointerCapture(e.pointerId); } catch (x) {}
+      const mv = ev => { sc.scrollLeft = l0 - (ev.clientX - sx); window.scrollTo(window.scrollX, y0 - (ev.clientY - sy)); };
+      const up = () => { sc.classList.remove('cvpan'); sc.removeEventListener('pointermove', mv); sc.removeEventListener('pointerup', up); sc.removeEventListener('pointercancel', up); };
+      sc.addEventListener('pointermove', mv); sc.addEventListener('pointerup', up); sc.addEventListener('pointercancel', up); });
+  }
+}
 function cvGrow() { const box = document.getElementById('cvc'); if (!box) return; let R = 0, B = 0; box.querySelectorAll('.cvi').forEach(el => { R = Math.max(R, el.offsetLeft + el.offsetWidth); B = Math.max(B, el.offsetTop + el.offsetHeight); });
-  box.style.width = Math.max(box.parentElement.clientWidth - 32, R + 24) + 'px'; box.style.height = (B + 120) + 'px'; }
+  box.style.width = Math.max(box.parentElement.clientWidth - 32, R + 24) + 'px'; box.style.height = (B + 120) + 'px'; cvBar(); }
 function cvSave(P) { const L = {}; Object.keys(P).forEach(id => { L[id] = { x: Math.round(P[id].x), y: Math.round(P[id].y), w: Math.round(P[id].w) }; });
   S.settings[cvKey()] = L; persist(); call('appLayout', S.tok, ME(), L).catch(() => {}); }
 document.addEventListener('pointerdown', e => {
@@ -990,8 +1007,8 @@ VIEWS.closing = () => {
     <div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
     <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></section>`;
   const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} entries from ${dLabel(S.yday)} are still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
-  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar to move it · drag the corner to widen it</span><button class="btn sm gh" data-a="cvreset">Tidy up</button></div>
-  <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div>`
+  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><button class="btn sm gh" data-a="cvreset">Tidy up</button></div>
+  <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div><div class="cvhs" id="cvhs"><div id="cvhsi"></div></div>`
   : `<div class="cgrid">
     <div class="cbox" id="accbox">${accHTML()}</div>
     <div style="display:grid;gap:16px">${xlist('exp')}${denHTML()}</div>
