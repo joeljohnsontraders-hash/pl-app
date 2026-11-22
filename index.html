@@ -475,6 +475,7 @@ svg.chs{width:100%;height:auto;display:block}
 .gtile{background:var(--soft);border-radius:16px;padding:12px 14px}.gtile b{display:block;font-family:var(--fd);font-size:22px;margin:4px 0 2px}.gtile small{color:var(--muted);font-weight:700;font-size:11.5px}.gtt{display:flex;align-items:center;gap:7px;font-weight:800}.gtt i{width:10px;height:10px;border-radius:3px;display:inline-block}
 .gtile .bmini b{display:inline;font-family:inherit;font-size:inherit;margin:0}
 .gper{display:grid;gap:10px;margin-top:14px}.gpr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.gpr .bt{display:flex;align-items:center;gap:7px;font-weight:800;width:120px}
+.cvtools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px}.cvs{overflow-x:auto;border-radius:22px;background:#fff;background-image:radial-gradient(rgba(10,26,43,.11) 1px,transparent 1.2px);background-size:16px 16px;border:1px solid rgba(10,26,43,.08);padding:16px;box-shadow:0 1px 2px rgba(10,26,43,.04)}.cvc{position:relative;min-height:420px}.cvi{position:absolute;left:0;top:0}.cvc.cvset .cvi{transition:top .18s ease,left .18s ease}.cvi.cvmv{transition:none;z-index:5;filter:drop-shadow(0 18px 28px rgba(10,26,43,.18))}.cvi>.card,.cvi>.cbox{margin:0}.cvbar{height:24px;display:flex;align-items:center;gap:7px;padding:0 10px;margin-bottom:5px;border-radius:10px;background:rgba(10,26,43,.06);color:var(--muted,#6B7A8C);font-size:11.5px;font-weight:700;cursor:grab;user-select:none;touch-action:none}.cvbar:hover{background:rgba(10,26,43,.1)}.cvmv .cvbar{cursor:grabbing;background:rgba(14,165,113,.16);color:#0B7A55}.cvg{font-size:14px;letter-spacing:-1px;opacity:.7}.cvrz{position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;cursor:nwse-resize;touch-action:none;border-right:3px solid rgba(10,26,43,.22);border-bottom:3px solid rgba(10,26,43,.22);border-radius:0 0 6px 0}.cvrz:hover{border-color:#0EA571}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -533,7 +534,7 @@ const EXEC = 'https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8
 class NetErr extends Error {}
 /* fast server (Supabase) for the daily work; Google keeps logins, people and the P&L books */
 const SBAPI = 'https://wfklonhvjjmugzyquchf.supabase.co/functions/v1/api';
-const FAST = new Set(['appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend']);
+const FAST = new Set(['appLayout', 'appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend']);
 const MOVED = 'The app was updated. Close it and open it again.';
 async function post(url, fn, args) {
   let r;
@@ -763,6 +764,7 @@ function render() {
       <div class="wrap"><div class="page">${V.body}</div></div></main></div>
     <nav class="nav"><div class="navin">${NAV.map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
   setSaved(dirty.size ? 'saving' : 'saved');
+  if (S.page === 'closing' && cvOn()) cvPlace(false);
   window.scrollTo(0, still ? y : 0);
   const am = document.querySelector('.amon'); if (am) { const ox = am.closest('.ox'), td = am.querySelector('th.td'); if (ox && td && ox.scrollWidth > ox.clientWidth) ox.scrollLeft = Math.max(0, td.offsetLeft - ox.clientWidth * 0.6); }
 }
@@ -773,6 +775,50 @@ const ring = (pct, label, sub) => { const r = 44, c = 2 * Math.PI * r, off = c *
   return `<div class="ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="${r}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/><circle class="v" cx="52" cy="52" r="${r}" fill="none" stroke="#7EE0AE" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--c:${c.toFixed(1)}"/></svg><div class="rv"><b>${label}</b><small>${sub}</small></div></div>`; };
 const greet = () => { const h = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: 'numeric', hourCycle: 'h23' }).format(new Date()); return (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + (S.me.name || '').split(' ')[0]; };
 const ebDate = () => `${DOW[dowOf(S.today)]} · ${dnum(S.today)} ${monthName(S.today).slice(0, 3)}`;
+
+
+/* ---------- closing sheet as a white canvas (laptop / desktop): every table can be dragged anywhere and widened; the layout is kept per branch ---------- */
+const CV = { acc: 'Main accounts', exp: 'Expenses', den: 'Cash count', gpay: 'G-Pay list', card: 'Card list', photos: 'Upload' };
+const cvMQ = window.matchMedia('(min-width: 900px)');
+const cvOn = () => cvMQ.matches;
+const cvKey = () => 'cloLayout|' + ME();
+const cvGet = () => { const v = S.settings && S.settings[cvKey()]; return v && typeof v === 'object' ? v : null; };
+const cvItem = (id, html) => `<div class="cvi" data-cv="${id}"><div class="cvbar" data-cvd="${id}"><span class="cvg">⠿</span><span>${CV[id]}</span></div>${html}<span class="cvrz" data-cvr="${id}" aria-hidden="true"></span></div>`;
+function cvPlace(save) {
+  const box = document.getElementById('cvc'); if (!box) return; const G = 16, W = box.parentElement.clientWidth - 32, L = cvGet() || {}, els = [...box.querySelectorAll('.cvi')], has = Object.keys(L).length > 0;
+  const a = Math.round((W - G) * 0.58), b = W - G - a, colA = ['acc', 'gpay', 'photos'];
+  const P = {}; els.forEach(el => { const id = el.dataset.cv, q = L[id]; P[id] = q && isFinite(q.x) && isFinite(q.y) ? { x: +q.x, y: +q.y, w: Math.max(260, +q.w || 360) } : null; });
+  els.forEach(el => { const id = el.dataset.cv; el.style.width = (P[id] ? P[id].w : (colA.includes(id) ? a : b)) + 'px'; });
+  const H = {}; els.forEach(el => { H[el.dataset.cv] = el.offsetHeight; });
+  const yc = { a: 0, b: 0 };
+  els.forEach(el => { const id = el.dataset.cv; if (P[id]) return; const k = colA.includes(id) ? 'a' : 'b';
+    const below = Object.keys(P).filter(i => P[i]).reduce((m, i) => Math.max(m, P[i].y + H[i] + G), 0);
+    P[id] = { x: k === 'a' ? 0 : a + G, y: has ? below : yc[k], w: k === 'a' ? a : b }; yc[k] = P[id].y + H[id] + G; });
+  /* no table sits on top of another: one that would overlap moves down below it */
+  const ids = els.map(el => el.dataset.cv).sort((p, q) => P[p].y - P[q].y || P[p].x - P[q].x), done = [];
+  ids.forEach(id => { const p = P[id]; let moved = true, n = 0;
+    while (moved && n++ < 20) { moved = false; done.forEach(j => { const q = P[j]; if (p.x < q.x + q.w && q.x < p.x + p.w && p.y < q.y + H[j] + G && q.y < p.y + H[id] + G) { p.y = q.y + H[j] + G; moved = true; } }); }
+    done.push(id); });
+  let R = 0, B = 0; els.forEach(el => { const p = P[el.dataset.cv]; el.style.left = p.x + 'px'; el.style.top = p.y + 'px'; el.style.width = p.w + 'px'; R = Math.max(R, p.x + p.w); B = Math.max(B, p.y + H[el.dataset.cv]); });
+  box.style.width = Math.max(W, R) + 'px'; box.style.height = (B + 24) + 'px';
+  if (save) { cvSave(P); clearTimeout(box._st); box._st = setTimeout(() => box.classList.remove('cvset'), 260); }
+}
+function cvGrow() { const box = document.getElementById('cvc'); if (!box) return; let R = 0, B = 0; box.querySelectorAll('.cvi').forEach(el => { R = Math.max(R, el.offsetLeft + el.offsetWidth); B = Math.max(B, el.offsetTop + el.offsetHeight); });
+  box.style.width = Math.max(box.parentElement.clientWidth - 32, R + 24) + 'px'; box.style.height = (B + 120) + 'px'; }
+function cvSave(P) { const L = {}; Object.keys(P).forEach(id => { L[id] = { x: Math.round(P[id].x), y: Math.round(P[id].y), w: Math.round(P[id].w) }; });
+  S.settings[cvKey()] = L; persist(); call('appLayout', S.tok, ME(), L).catch(() => {}); }
+document.addEventListener('pointerdown', e => {
+  const h = e.target.closest('[data-cvd],[data-cvr]'); if (!h) return; const el = h.closest('.cvi'), box = document.getElementById('cvc'); if (!el || !box) return;
+  e.preventDefault(); const rz = h.hasAttribute('data-cvr'), sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop, ow = el.offsetWidth, sn = v => Math.round(v / 8) * 8;
+  el.classList.add('cvmv'); try { h.setPointerCapture(e.pointerId); } catch (x) {}
+  const mv = ev => { const dx = ev.clientX - sx, dy = ev.clientY - sy;
+    if (rz) el.style.width = Math.max(260, sn(ow + dx)) + 'px'; else { el.style.left = Math.max(0, sn(ox + dx)) + 'px'; el.style.top = Math.max(0, sn(oy + dy)) + 'px'; } cvGrow(); };
+  const up = () => { h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); el.classList.remove('cvmv');
+    const L = {}; box.querySelectorAll('.cvi').forEach(x => { L[x.dataset.cv] = { x: x.offsetLeft, y: x.offsetTop, w: x.offsetWidth }; }); S.settings[cvKey()] = L; box.classList.add('cvset'); cvPlace(true); };
+  h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+});
+cvMQ.addEventListener('change', () => { if (S.me && S.page === 'closing') render(); });
+window.addEventListener('resize', () => { if (S.me && S.page === 'closing' && cvOn()) cvPlace(false); });
 
 /* ---------------- TODAY ---------------- */
 const VIEWS = {};
@@ -940,15 +986,18 @@ VIEWS.closing = () => {
   const dpill = d => { const o = S.days[d].clo; if (o.waived && o.status === 'open') return ['Reminder off', 'p-mu']; return ({ open: ['Not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] })[o.status] || ['Not sent', 'p-warn']; };
   const picker = `<section class="card"><div class="slots">${[S.yday, S.today].map(d => { const pl = dpill(d); return `<button class="sl ${CD() === d ? 'on' : ''}" data-a="cdate" data-v="${d}"><b>${dLabel(d)}</b><small>${d === S.today ? 'Today · ' : 'Yesterday · '}${pl[0]}</small></button>`; }).join('')}</div></section>`;
   const photos = c.photos || [];
+  const upCard = `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('camera')}</span>Upload</div><span class="cs">${photos.length} photo${photos.length === 1 ? '' : 's'}</span></div>
+    <div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
+    <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></section>`;
   const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} entries from ${dLabel(S.yday)} are still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
-  <div class="cgrid">
+  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar to move it · drag the corner to widen it</span><button class="btn sm gh" data-a="cvreset">Tidy up</button></div>
+  <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div>`
+  : `<div class="cgrid">
     <div class="cbox" id="accbox">${accHTML()}</div>
     <div style="display:grid;gap:16px">${xlist('exp')}${denHTML()}</div>
   </div>
   <div class="cgrid">${xlist('gpay', bpExtra)}<div style="display:grid;gap:16px">${xlist('card', cdExtra)}</div></div>
-  <section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('camera')}</span>Upload</div><span class="cs">${photos.length} photo${photos.length === 1 ? '' : 's'}</span></div>
-    <div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
-    <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></section>
+  ${upCard}`}
   <div id="subres"></div>
   <button class="btn dk wide" data-a="submit">${c.status === 'sent' ? 'Closing sent · waiting for approval' : c.status === 'approved' ? 'Approved' : c.status === 'changed' || c.status === 'back' ? 'Send closing report again' : 'Send closing report'}</button>`;
   return { eb: 'Closing report', title: 'Closing', sub: `${esc(ME())} · ${dLabel(CD())} · saved as you type`, right: `<span class="pill ${st[1]}">${st[0]}</span>`, hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Closing balance</small><b>${inr(closingBal())}</b></div><div class="gl"><small>Cash counted</small><b>${inr(denTot())}</b></div><div class="gl"><small>${ex >= 0 ? 'Excess' : 'Short'}</small><b style="color:${ex === 0 ? '#7EE0AE' : '#FFC27A'}">${inr(Math.abs(ex))}</b></div></div>`, body };
@@ -1168,6 +1217,7 @@ document.addEventListener('click', async e => {
     case 'close': closeSheet(); break;
     case 'logout': signOut(false); break;
     case 'asexit': leaveBranch(); break;
+    case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
     case 'go': S.page = v; closeSheet(); render(); break;
     case 'me': openSheet(SHEETS.me()); break;
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {}; A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
