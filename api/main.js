@@ -70,6 +70,12 @@ async function alert(q, b, type, text, key) {
 }
 const doneKey = (q, key) => q`update app_alerts set done = true where key = ${key}`;
 const log = (q, u, asName, b, d, what, detail) => q`insert into app_log (ts, who, in_app_of, branch, date, what, detail) values (${stamp()}, ${u.name || ""}, ${asName || ""}, ${b || ""}, ${d || ""}, ${what}, ${detail || ""})`;
+/* the managers' inbox: one row per message; branch "*" goes to every branch */
+async function note(q, b, kind, title, body, by, key) {
+  if (key) await q`delete from app_inbox where key = ${key}`;
+  await q`insert into app_inbox (id, ts, branch, kind, title, body, by, key) values (${uid()}, ${stamp()}, ${b}, ${kind}, ${String(title || "").slice(0, 140)}, ${String(body || "").slice(0, 2000)}, ${by || ""}, ${key || ""})`;
+}
+const dNice = (d) => { const p = String(d || "").split("-"); return p.length === 3 ? +p[2] + " " + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][+p[1] - 1] : d; };
 async function setSetting(q, k, v) { await q`insert into app_settings (key, value) values (${k}, ${J(v)}) on conflict (key) do update set value = excluded.value`; }
 
 /* the small summary of a branch-day (kept with every save) */
@@ -198,10 +204,13 @@ const API = {
         return stock(b, tx); }
       if (op === "pedit" && role(u) === "controller") { if (!r) err("Product not found."); const nn = String(f.nn || "").trim().replace(/\s+/g, " ") || r.product;
         if (nn !== r.product && (await tx`select 1 from app_stock where branch = ${b} and product = ${nn}`).length) err("A product with this name is already in the list.");
-        await tx`update app_stock set product = ${nn}, mrp = ${N(f.mrp) || Number(r.mrp) || 0}, added_by = '', updated = ${stamp()} where branch = ${b} and product = ${r.product}`;
+        const nm = N(f.mrp) || Number(r.mrp) || 0;
+        await tx`update app_stock set product = ${nn}, mrp = ${nm}, added_by = '', updated = ${stamp()} where branch = ${b} and product = ${r.product}`;
+        if (nn !== r.product || nm !== Number(r.mrp)) await note(tx, b, "stock", "Product changed by the controller", r.product + " · ₹" + Number(r.mrp) + "  →  " + nn + " · ₹" + nm, u.name);
         await tx`update app_alerts set done = true where key = ${"np|" + b + "|" + r.product.toLowerCase()}`; return stock(b, tx); }
       if (op === "premove" && role(u) === "controller") { if (!r) err("Product not found.");
         await tx`delete from app_stock where branch = ${b} and product = ${r.product}`; await move(0, "Removed from the list by the controller");
+        await note(tx, b, "stock", "Product removed by the controller", r.product + " is no longer in your list.", u.name);
         await tx`update app_alerts set done = true where key = ${"np|" + b + "|" + r.product.toLowerCase()}`; return stock(b, tx); }
       if (!r) err("Product not found.");
       const c = Number(r.count) || 0, q = Math.round(N(f.q));
@@ -271,6 +280,7 @@ const API = {
         await setSetting(tx, "catRules", rules);
         const clo = (await getDay(b, d, tx)).clo || {}; clo.status = "approved"; clo.approvedAt = istTime(); clo.note = ""; clo._v = (clo._v || 0) + 1;
         await putPart(tx, b, d, "clo", clo, u.name); await doneKey(tx, "clo|" + b + "|" + d);
+        await note(tx, b, "ok", "Closing approved · " + dNice(d), "", u.name, "clo|" + b + "|" + d);
         await log(tx, u, "", b, d, "approved", (r.missing || []).length ? "not in STAFF SALES: " + r.missing.join(", ") : "");
       });
       return { ok: true, missing: r.missing || [], day: await getDay(b, d) };
@@ -282,10 +292,39 @@ const API = {
         if (act === "back") { clo.status = "back"; clo.note = String(f.note).trim(); } else clo.waived = true;
         clo._v = (clo._v || 0) + 1; await putPart(tx, b, d, "clo", clo, u.name);
         await doneKey(tx, (act === "back" ? "clo|" : "ycl|") + b + "|" + d);
-        if (act === "back") await log(tx, u, "", b, d, "sent back", clo.note);
+        if (act === "back") { await log(tx, u, "", b, d, "sent back", clo.note); await note(tx, b, "back", "Closing sent back · " + dNice(d), clo.note, u.name, "clo|" + b + "|" + d); }
+        else await note(tx, b, "info", "Reminder removed · " + dNice(d), "You don't need to send the " + dNice(d) + " closing.", u.name, "ycl|" + b + "|" + d);
       });
       return { ok: true, day: await getDay(b, d) };
     }
+    err("Unknown.");
+  },
+  /* inbox. Managers: list / read / peek. Controller: send / sent / del */
+  async appInbox(tok, op, x) {
+    const u = await who(tok), r = role(u); x = x || {};
+    const ver = async () => { const v = (await sql`select value from app_settings where key = 'appVer'`)[0]; return v ? v.value : { v: 0 }; };
+    if (r === "manager") {
+      const b = u.branch, rk = "inboxRead|" + u.id;
+      if (op === "peek") { const [m, v] = await Promise.all([sql`select coalesce(max(seq), 0) as m from app_inbox where branch = ${b} or branch = '*'`, ver()]); return { last: Number(m[0].m), ver: v }; }
+      if (op === "list") {
+        const [rows, rd, v] = await Promise.all([sql`select seq, id, ts, kind, title, body, by from app_inbox where branch = ${b} or branch = '*' order by seq desc limit 80`, sql`select value from app_settings where key = ${rk}`, ver()]);
+        return { items: rows.map((y) => Object.assign({}, y, { seq: Number(y.seq) })), read: rd.length ? Number(rd[0].value.seq) || 0 : 0, ver: v };
+      }
+      if (op === "read") { await setSetting(sql, rk, { seq: Number(x.seq) || 0, name: u.name || "", branch: b, at: stamp() }); return { ok: true }; }
+      err("Only the controller can do this.");
+    }
+    ctrl(u);
+    if (op === "send") {
+      const text = String(x.text || "").trim(); if (!text) err("Type the message."); const to = x.to === "*" ? ["*"] : (Array.isArray(x.to) ? x.to : []).filter((b) => BR.indexOf(b) >= 0);
+      if (!to.length) err("Pick the branch."); const kind = x.important ? "flag" : "msg", title = String(x.title || "").trim() || "Message from " + (u.name || "the controller");
+      for (const b of to) await note(sql, b, kind, title, text, u.name || "Controller");
+      return { ok: true };
+    }
+    if (op === "sent") {
+      const [rows, rd] = await Promise.all([sql`select seq, id, ts, branch, kind, title, body, by from app_inbox order by seq desc limit 60`, sql`select key, value from app_settings where key like 'inboxRead|%'`]);
+      return { items: rows.map((y) => Object.assign({}, y, { seq: Number(y.seq) })), readers: rd.map((y) => ({ name: y.value.name || "", branch: y.value.branch || "", seq: Number(y.value.seq) || 0, at: y.value.at || "" })) };
+    }
+    if (op === "del") { await sql`delete from app_inbox where id = ${String(x.id || "")}`; return { ok: true }; }
     err("Unknown.");
   },
   async appAlertDone(tok, id) { ctrl(await who(tok)); await sql`update app_alerts set done = true where id = ${String(id)}`; return { ok: true }; },
@@ -347,6 +386,7 @@ const API = {
         if ((yd.att || yd.rep || c) && (!c || ["open", "back", "changed"].indexOf(c.status) >= 0) && !(c && c.waived)) await alert(sql, b, "ycl", b + ": the " + yday + " closing is not sent yet", "ycl|" + b + "|" + yday); }
     }
     await sql`delete from app_alerts where seq < (select coalesce(min(seq), 0) from (select seq from app_alerts order by seq desc limit 600) t)`;
+    await sql`delete from app_inbox where at < now() - interval '90 days'`;
     await sql`delete from app_sessions where checked < now() - interval '40 days'`;
     return { ok: true };
   }
