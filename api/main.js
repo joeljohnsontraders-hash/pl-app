@@ -136,6 +136,18 @@ const API = {
       return { ok: true, at: rep.snaps[slot].at, _v: rep._v };
     });
   },
+  /* a manager skips a report time; the controller and the owner are told */
+  async appSkipSlot(tok, b, d, slot) {
+    const u = await who(tok); can(u, b, true); if (["s12", "s2", "s5", "s7"].indexOf(slot) < 0) err("Unknown report time.");
+    return lock(b + "|" + d, async (tx) => {
+      const rep = (await getDay(b, d, tx)).rep || {}; rep.snaps = rep.snaps || {}; rep.skip = rep.skip || {};
+      if (rep.snaps[slot]) err("This report is already sent.");
+      if (!rep.skip[slot]) { rep.skip[slot] = { at: istTime(), by: u.name || u.id }; rep._v = (rep._v || 0) + 1; await putPart(tx, b, d, "rep", rep, u.name || u.id);
+        const t = { s12: "12 pm", s2: "2 pm", s5: "5 pm", s7: "7 pm" }[slot];
+        await alert(tx, b, "skip", b + " skipped the " + t + " report (" + d + ") · " + (u.name || "manager"), "skip|" + b + "|" + d + "|" + slot); }
+      return { ok: true, skip: rep.skip, _v: rep._v };
+    });
+  },
   async appSendClosing(tok, b, d, issues) {
     const u = await who(tok); can(u, b, true);
     return lock(b + "|" + d, async (tx) => {
@@ -243,7 +255,7 @@ const API = {
     sm.forEach((x) => { if (x.status === "sent" || x.status === "changed") out.review.push({ b: x.branch, date: x.date, status: x.status, sentAt: x.sentAt || "", issues: x.issues || [] }); });
     out.review.sort((p, q) => p.date < q.date ? -1 : 1);
     const al = all.filter((a) => !a.done);
-    out.alerts = (r === "controller" ? al : al.filter((a) => a.type === "opening" || a.type === "closing")).slice(0, 120).map((a) => ({ id: a.id, ts: a.ts, b: a.branch, type: a.type, text: a.text, key: a.key }));
+    out.alerts = (r === "controller" ? al : al.filter((a) => a.type === "opening" || a.type === "closing" || a.type === "skip")).slice(0, 120).map((a) => ({ id: a.id, ts: a.ts, b: a.branch, type: a.type, text: a.text, key: a.key }));
     if (r === "controller") { out.noatt = {}; all.forEach((a) => { const k = String(a.key || ""); if (k.indexOf("noatt|") === 0 && String(k.split("|")[2]).slice(0, 7) === ym) out.noatt[a.branch] = (out.noatt[a.branch] || 0) + 1; }); }
     return out;
   },
@@ -330,7 +342,7 @@ const API = {
     for (const b of BR) {
       const d = await getDay(b, today), snaps = (d.rep || {}).snaps || {}, started = !!(d.att && d.att.attDone);
       if (started) for (let i = 0; i < (s.slots || []).length; i++) { const t = s.slots[i], key = ["s12", "s2", "s5", "s7"][i];
-        if (!snaps[key] && nowM >= toMin(t) + late && nowM < toMin(t) + late + 120) await alert(sql, b, "late", b + ": the " + t + " report is " + late + " minutes late", "late|" + b + "|" + today + "|" + key); }
+        if (!snaps[key] && !((d.rep || {}).skip || {})[key] && nowM >= toMin(t) + late && nowM < toMin(t) + late + 120) await alert(sql, b, "late", b + ": the " + t + " report is " + late + " minutes late", "late|" + b + "|" + today + "|" + key); }
       if (nowM >= toMin(s.closingAlert || "11:00")) { const yd = await getDay(b, yday), c = yd.clo;
         if ((yd.att || yd.rep || c) && (!c || ["open", "back", "changed"].indexOf(c.status) >= 0) && !(c && c.waived)) await alert(sql, b, "ycl", b + ": the " + yday + " closing is not sent yet", "ycl|" + b + "|" + yday); }
     }
