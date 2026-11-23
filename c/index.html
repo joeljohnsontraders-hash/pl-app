@@ -689,12 +689,12 @@ html{scroll-behavior:auto!important}#root.back{display:block;height:auto;min-wid
 /* ================= data: live from Google Sheets (Apps Script), or the preview's stand-in server ================= */
 const EXEC = window.EXEC_URL || "";
 /* the branch app (manager reports, closings, live view) opens inside this page */
-const GTM = [["review", "Approve closings", "inbox"], ["home", "Today's reports", "clock"], ["oreports", "Branch reports", "sales"], ["live", "Live view", "grid"], ["ocash", "Cash excess / short", "coins"], ["oadv", "Staff advances", "coins"], ["ostaff", "Staff & leaderboard", "staff"], ["ostock", "Retail stock list", "box"], ["settings", "App settings", "gear"]];
+const GTM = [["review", "Approve closings", "inbox"], ["home", "Today's reports", "clock"], ["oreports", "Branch reports", "sales"], ["ocash", "Cash excess / short", "coins"], ["oadv", "Staff advances", "coins"], ["ostaff", "Staff & leaderboard", "staff"], ["ostock", "Retail stock list", "box"], ["settings", "App settings", "gear"]];
 /* one menu for the side bar and the phone's More screen: grouped by job, groups fold away */
 const NDGRP = () => { try { return JSON.parse(localStorage.getItem("nd_grp") || "{}"); } catch (e) { return {}; } };
 const ndGrpSave = (id, o) => { const g = NDGRP(); g[id] = o; try { localStorage.setItem("nd_grp", JSON.stringify(g)); } catch (e) {} };
 function ndMenu(own, fx, rv, un) { return [
-  own && { id: "today", t: "Today", items: [["_g:review", "Approve closings", "inbox"], ["_g:home", "Today's reports", "clock"], ["_g:oreports", "Branch reports", "sales"], ["_g:live", "Live view", "grid"], ["notes", "Notifications", "bell", un]] },
+  own && { id: "today", t: "Today", items: [["_g:review", "Approve closings", "inbox"], ["_g:home", "Today's reports", "clock"], ["_g:oreports", "Branch reports", "sales"], ["notes", "Notifications", "bell", un]] },
   { id: "money", t: "Money", items: [["pnl", "Profit &amp; Loss", "pnl"], ["sales", "Daily sales", "sales"], ["pday", "Profit by day", "cal"], ["exp", "Expenses", "exp"], own && ["_g:ocash", "Cash excess / short", "coins"], ["checks", "Month-end checks", "shield", fx]] },
   { id: "staff", t: "Staff", items: [["staff", "Staff", "staff"], ["att", "Attendance", "clock"], ["salary", "Salary", "coins"], ["inc", "Incentives", "star"], own && ["_g:oadv", "Staff advances", "coins"], own && ["_g:ostaff", "Leaderboard", "star"]] },
   { id: "stock", t: "Stock", items: [["stock", "Stock &amp; consumables", "box"], own && ["_g:ostock", "Retail stock list", "box"]] },
