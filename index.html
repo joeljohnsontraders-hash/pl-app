@@ -1292,7 +1292,7 @@ I.more = '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circ
 const BR = ['Potheri', 'Guduvanchery', 'Chengalpattu', 'Urapakkam'];
 const BCOL = { Potheri: '#CF0165', Guduvanchery: '#7E9BD9', Chengalpattu: '#7FB960', Urapakkam: '#E9915E' };
 const O = { all: null, ob: 'All', orb: 'Potheri', ors: null, odate: '', rd: null, rv: null, bk: 'svc', watch: null, mirror: false, pl: {}, photos: {} };
-const ONAV = { controller: [['review', 'Review', 'today'], ['home', 'Branches', 'home'], ['oreports', 'Reports', 'sheet'], ['ocash', 'Cash', 'cash'], ['ostaff', 'Staff', 'staff'], ['oadv', 'Advances', 'wallet'], ['ostock', 'Stock', 'box'], ['live', 'Live', 'eye'], ['people', 'People', 'user'], ['settings', 'Settings', 'gear']],
+const ONAV = { controller: [['review', 'Review', 'today'], ['home', 'Branches', 'home'], ['oreports', 'Reports', 'sheet'], ['ocash', 'Cash', 'cash'], ['ostaff', 'Staff', 'staff'], ['oadv', 'Advances', 'wallet'], ['ostock', 'Stock', 'box'], ['people', 'People', 'user'], ['settings', 'Settings', 'gear']],
   owner: [['home', 'Home', 'home'], ['oreports', 'Reports', 'sheet'], ['osales', 'Sales', 'sales'], ['pl', 'P&L', 'pl'], ['ostaff', 'Staff', 'staff'], ['ocash', 'Cash', 'cash'], ['ostock', 'Stock', 'box']] };
 const isOffice = () => S.me && (S.me.role === 'controller' || S.me.role === 'owner');
 const oRole = () => O.mirror ? 'owner' : S.me.role;
@@ -1544,7 +1544,7 @@ const OACT = {
   osend(el) { const id = el.dataset.v; openSheet(`<h3>Send them to</h3><div class="sub">Their app moves there quietly</div>${NAV.map(([p, t]) => `<button class="row tap" data-a="osendgo" data-v="${p}" data-u="${esc(id)}" style="width:100%"><b>${t}</b></button>`).join('')}<div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); },
   async osendgo(el) { try { await call('appSend', S.tok, el.dataset.u, el.dataset.v); closeSheet(); toast('Sent · it moves within 20 seconds'); } catch (e) { toast(e.message); } },
   mirroron() { O.mirror = true; S.page = 'home'; render(); pollWatch(); },
-  mirroroff() { O.mirror = false; S.page = 'live'; render(); pollWatch(); },
+  mirroroff() { O.mirror = false; S.page = 'home'; render(); },
   oaddmgr() { openSheet(`<h3>Add a person</h3><div class="sub">They sign in at pl.jjtraders.top with this mobile number and PIN</div>${fl('m_r', 'They are', 'manager', '', [['manager', 'Branch manager'], ['owner', 'Owner (view only)']])}${fl('m_n', 'Name', '')}${fl('m_p', 'Mobile number', '', 'n')}<div class="f2">${fl('m_b', 'Branch (managers)', 'Potheri', '', BR.map(b => [b, b]))}${fl('m_pin', '4-digit PIN', '', 'n')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="osavemgr">Add</button></div>`); },
   oletin(el) { const p = (O.all.people || []).find(x => x.id === el.dataset.v); if (!p) return; openSheet(`<h3>Let ${esc(p.phone)} in</h3><div class="sub">They keep the PIN they typed</div>${fl('l_r', 'They are', 'manager', '', [['manager', 'Branch manager'], ['owner', 'Owner (view only)']])}${fl('l_n', 'Name', '')}${fl('l_b', 'Branch (managers)', 'Potheri', '', BR.map(b => [b, b]))}<input type="hidden" id="l_id" value="${esc(p.id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="oletsave">Let in</button></div>`); },
   async oletsave() { busy(true); try { O.all.people = await call('appUserOp', S.tok, 'approve', { id: val('l_id'), role: val('l_r'), name: val('l_n').trim(), branch: val('l_b') }); closeSheet(); toast('Let in'); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
@@ -1581,11 +1581,12 @@ async function enterBranch(b) {
     S.booted = true; prepDays(); render(); pollWatch(); }
   catch (e) { S.asBranch = null; toast(e instanceof NetErr ? 'No internet.' : e.message); render(); }
 }
-function leaveBranch() { S.asBranch = null; S.follow = false; S.days = {}; S.page = 'live'; lastPage = ''; loadAll(); pollWatch(); }
+function leaveBranch() { S.asBranch = null; S.follow = false; S.days = {}; S.page = 'home'; lastPage = ''; loadAll(); }
 /* ---------- beats (which page is open), quiet refresh, reminders ---------- */
 let lastBeat = '', beatT = 0;
 function beatCheck() { const key = S.page + '|' + (isOffice() ? O.ob : ''); if (key !== lastBeat) { lastBeat = key; clearTimeout(beatT); beatT = setTimeout(beatNow, 400); } }
-function beatNow() { if (!S.tok || !S.me || S.asBranch || O.mirror || S.me.role === 'controller' || document.visibilityState !== 'visible') return;
+/* live view removed: apps no longer report which page is open */
+function beatNow() { return; if (!S.tok || !S.me || S.asBranch || O.mirror || S.me.role === 'controller' || document.visibilityState !== 'visible') return;
   call('appBeat', S.tok, { page: S.page, sub: isOffice() ? O.ob : '' }).then(r => { if (r && r.cmd && S.me.role === 'manager' && NAV.some(n => n[0] === r.cmd)) { S.page = r.cmd; closeSheet(); render(); } }).catch(() => {}); }
 setInterval(beatNow, 45000);
 const typing = () => { const a = document.activeElement; return !!(a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) || !!document.querySelector('.ov'); };
