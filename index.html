@@ -478,6 +478,7 @@ svg.chs{width:100%;height:auto;display:block}
 .cvtools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px}.cvs{overflow-x:auto;scrollbar-width:none;cursor:grab;border-radius:22px;background:#fff;background-image:radial-gradient(rgba(10,26,43,.11) 1px,transparent 1.2px);background-size:16px 16px;border:1px solid rgba(10,26,43,.08);padding:16px;box-shadow:0 1px 2px rgba(10,26,43,.04)}.cvc{position:relative;min-height:420px}.cvi{position:absolute;left:0;top:0}.cvc.cvset .cvi{transition:top .18s ease,left .18s ease}.cvi.cvmv{transition:none;z-index:5;filter:drop-shadow(0 18px 28px rgba(10,26,43,.18))}.cvi>.card,.cvi>.cbox{margin:0}.cvbar{height:24px;display:flex;align-items:center;gap:7px;padding:0 10px;margin-bottom:5px;border-radius:10px;background:rgba(10,26,43,.06);color:var(--muted,#6B7A8C);font-size:11.5px;font-weight:700;cursor:grab;user-select:none;touch-action:none}.cvbar:hover{background:rgba(10,26,43,.1)}.cvmv .cvbar{cursor:grabbing;background:rgba(14,165,113,.16);color:#0B7A55}.cvg{font-size:14px;letter-spacing:-1px;opacity:.7}.cvrz{position:absolute;right:-5px;bottom:-5px;width:16px;height:16px;cursor:nwse-resize;touch-action:none;border-right:3px solid rgba(10,26,43,.22);border-bottom:3px solid rgba(10,26,43,.22);border-radius:0 0 6px 0}.cvrz:hover{border-color:#0EA571}
 .cvs::-webkit-scrollbar{display:none}.cvs.cvpan{cursor:grabbing;user-select:none}.cvs .cvi{cursor:auto}.cvhs{position:sticky;bottom:6px;z-index:20;height:16px;overflow-x:scroll;overflow-y:hidden;margin-top:-16px;visibility:hidden;background:#fff;border:1px solid rgba(10,26,43,.12);border-radius:9px;box-shadow:0 4px 14px rgba(10,26,43,.12)}.cvhs.on{visibility:visible;margin-top:6px}.cvhs>div{height:1px}.cvhs::-webkit-scrollbar{height:12px}.cvhs::-webkit-scrollbar-track{background:transparent}.cvhs::-webkit-scrollbar-thumb{background:rgba(10,26,43,.45);border-radius:6px;border:3px solid transparent;background-clip:content-box}.cvhs::-webkit-scrollbar-thumb:hover{background-color:rgba(10,26,43,.55)}
 @media (min-width:980px){.side{position:fixed;left:0;top:0;bottom:0;height:100vh;width:72px;z-index:45;overflow-x:hidden;overflow-y:auto;scrollbar-width:none;padding:22px 12px;transition:width .2s ease .28s,box-shadow .2s ease .28s}.side::-webkit-scrollbar{display:none}.side:hover,.side:focus-within{width:244px;box-shadow:18px 0 44px rgba(10,26,43,.3);transition-delay:.1s}.shell>.main{margin-left:72px}.wrap,.hdin{max-width:1600px}.wrap{padding-left:28px;padding-right:28px}.hdin{padding:0 12px}.emb .shell>.main{margin-left:0}.side button.it{white-space:nowrap;padding:11px 13px;overflow:hidden}.side button.it svg{flex:none}.side:not(:hover):not(:focus-within) button.it{font-size:0;gap:0}.side .who{white-space:nowrap;overflow:hidden;padding:12px 8px}.side .lg2,.side .sl2,.side .who>span:last-child,.side .it .nb{transition:opacity .15s ease .28s}.side:hover .lg2,.side:hover .sl2,.side:hover .who>span:last-child,.side:hover .it .nb,.side:focus-within .lg2,.side:focus-within .sl2,.side:focus-within .who>span:last-child,.side:focus-within .it .nb{transition-delay:.12s}.side:not(:hover):not(:focus-within) .lg2,.side:not(:hover):not(:focus-within) .sl2,.side:not(:hover):not(:focus-within) .who>span:last-child{opacity:0}.side button.it{position:relative}.side:not(:hover):not(:focus-within) .it .nb{position:absolute;top:7px;left:31px;width:9px;height:9px;min-width:0;padding:0;font-size:0;border-radius:50%}.side::before{content:"";position:absolute;left:24px;top:30px;width:24px;height:16px;background:linear-gradient(#A9B8C8,#A9B8C8) 0 0/100% 2.5px no-repeat,linear-gradient(#A9B8C8,#A9B8C8) 0 50%/100% 2.5px no-repeat,linear-gradient(#A9B8C8,#A9B8C8) 0 100%/100% 2.5px no-repeat;border-radius:2px;opacity:1;transition:opacity .15s ease .28s;pointer-events:none}.side:hover::before,.side:focus-within::before{opacity:0;transition-delay:0s}}
+.cig{display:grid;gap:14px;max-height:62vh;overflow:auto;padding:2px}.cig figure{margin:0;border:1px solid rgba(10,26,43,.1);border-radius:14px;overflow:hidden;background:#fff}.cig img{display:block;width:100%;height:auto}.cig figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;font-weight:700;font-size:13px;border-top:1px solid rgba(10,26,43,.08)}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -1008,9 +1009,9 @@ VIEWS.closing = () => {
     <div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
     <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></section>`;
   const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} entries from ${dLabel(S.yday)} are still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
-  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><button class="btn sm gh" data-a="cvreset">Tidy up</button></div>
+  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><span style="display:flex;gap:8px"><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button><button class="btn sm gh" data-a="cvreset">Tidy up</button></span></div>
   <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div><div class="cvhs" id="cvhs"><div id="cvhsi"></div></div>`
-  : `<div class="cgrid">
+  : `<div class="cvtools"><span></span><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button></div><div class="cgrid">
     <div class="cbox" id="accbox">${accHTML()}</div>
     <div style="display:grid;gap:16px">${xlist('exp')}${denHTML()}</div>
   </div>
@@ -1054,6 +1055,50 @@ VIEWS.sales = () => {
 function calendar(mo, todayV) { const by = {}; mo.forEach(x => by[x.d] = x.net); by[S.today] = todayV; const vals = Object.values(by), mx = Math.max(0, ...vals); let h = DOW.map(d => `<div class="dh">${d[0]}</div>`).join('');
   const first = S.today.slice(0, 8) + '01'; for (let i = 0; i < dowOf(first); i++) h += '<div></div>';
   monthDays().forEach(d => { const v = by[d] || 0; h += `<div class="dc ${v ? 'has' : ''} ${v && v === mx ? 'hi' : ''} ${d > S.today ? 'fut' : ''} ${d === S.today ? 'tdy' : ''}"><b>${dnum(d)}</b><span>${v ? k(v) : '–'}</span></div>`; }); return `<div class="cal">${h}</div>`; }
+
+
+/* ---------- closing tables as clean pictures (WhatsApp): no boxes, no empty rows; salary advance shown in Debit ---------- */
+const CLO_PARTS = [['acc', 'Accounts sheet'], ['exp', 'Expenses'], ['gpay', 'G-Pay list'], ['card', 'Card list'], ['den', 'Cash count']];
+function cloSrc(id) { if (id === 'den') { const x = document.getElementById('dn500'); return x && x.closest('.xs'); } const tb = document.querySelector(`tbody[data-lb="${id}"]`); return tb && tb.closest('.xs'); }
+function dropCol(table, idx) { [...table.rows].forEach(tr => { let c = 0; for (const td of [...tr.cells]) { const sp = td.colSpan || 1; if (idx >= c && idx < c + sp) { if (sp > 1) td.colSpan = sp - 1; else td.remove(); break; } c += sp; } }); }
+function cloClone(id) {
+  const src = cloSrc(id); if (!src) return null;
+  const cl = src.cloneNode(true), sel = 'input:not([type=checkbox]),select,textarea', si = [...src.querySelectorAll(sel)], ci = [...cl.querySelectorAll(sel)], val = new Map();
+  ci.forEach((c, k) => { const o = si[k]; val.set(c, o.tagName === 'SELECT' ? (o.value ? o.options[o.selectedIndex].text : '') : String(o.value || '').trim()); });
+  const tbl = cl.querySelector('table'), hd = [...tbl.querySelectorAll('thead th')].map(th => th.textContent.trim().toLowerCase());
+  if (id === 'acc') cl.querySelectorAll('tbody[data-lb="acc"] tr').forEach(tr => { const s = tr.querySelector('select'), nm = s ? val.get(s) : ''; if (!nm) return;
+    const t = tr.querySelector('textarea'); if (t) { const v = val.get(t); const keep = v && !/advance/i.test(v) && v.trim().toLowerCase() !== nm.trim().toLowerCase(); val.set(t, (keep ? v.toUpperCase() + ' · ' : '') + 'SALARY ADVANCE · ' + nm.toUpperCase()); } });
+  ci.forEach((c, k) => { const sp = document.createElement('span'); sp.className = 'iv'; sp.textContent = val.get(c); const al = getComputedStyle(si[k]).textAlign, ptd = si[k].closest('td'), tp = ptd ? parseFloat(getComputedStyle(ptd).paddingLeft) || 0 : 0, ip = tp ? 0 : 10;
+    sp.style.cssText = `display:block;text-align:${al === 'start' ? 'left' : al};text-transform:${getComputedStyle(si[k]).textTransform};white-space:pre-wrap;padding:0 ${ip}px;font-weight:600`; c.replaceWith(sp); });
+  cl.querySelectorAll('tbody[data-lb]').forEach(tb => { [...tb.rows].forEach(tr => { const iv = [...tr.querySelectorAll('.iv')]; if (iv.length && iv.every(x => !x.textContent.trim())) tr.remove(); });
+    let n = +(tb.dataset.off || 0); [...tb.rows].forEach(tr => { const s = tr.querySelector('.sn'); if (s) s.textContent = ++n; }); });
+  const last = hd.length - 1; if (last > 0 && !hd[last]) dropCol(tbl, last);
+  const adv = hd.indexOf('advance to'); if (adv >= 0) dropCol(tbl, adv);
+  cl.querySelectorAll('button,.ftag').forEach(x => x.remove()); cl.querySelectorAll('.yrow,.yl,.need,.low,.chg').forEach(x => x.classList.remove('yrow', 'yl', 'need', 'low', 'chg'));
+  cl.style.borderRadius = '0'; cl.querySelectorAll('.xsw').forEach(x => { x.style.overflow = 'visible'; }); cl.querySelectorAll('td.nmc').forEach(x => { x.style.position = 'static'; });
+  return cl;
+}
+async function cloCanvas(id) {
+  const cl = cloClone(id); if (!cl) return null; const host = document.createElement('div');
+  host.style.cssText = `position:fixed;left:-9999px;top:0;background:#fff;width:${id === 'acc' ? 760 : id === 'den' ? 460 : 620}px`; host.appendChild(cl); document.body.appendChild(host);
+  try { return await html2canvas(cl, { scale: 2, backgroundColor: '#ffffff' }); } finally { host.remove(); }
+}
+const cloName = l => `${ME()} ${l} ${CD()}.png`;
+async function cloImages() {
+  const share = !!(navigator.canShare && window.File && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] }));
+  openSheet(`<h3>Closing images</h3><div class="sub">${esc(ME())} · ${dLabel(CD())}</div><div class="cig" id="cig"><div class="empty">Making the images…</div></div><div class="err" id="serr"></div>
+    <div class="sha"><button class="btn gh" data-a="close">Close</button>${share ? '<button class="btn gh" data-a="closhare">Share all</button>' : ''}<button class="btn" data-a="cloall">Download all</button></div>`);
+  if (!window.html2canvas) { document.getElementById('cig').innerHTML = '<div class="empty">The image maker did not load. Check the internet and try again.</div>'; return; }
+  window.__clo = [];
+  for (const [id, l] of CLO_PARTS) { try { const cv = await cloCanvas(id); if (cv) window.__clo.push({ l, cv }); } catch (e) {} }
+  const box = document.getElementById('cig'); if (!box) return;
+  box.innerHTML = window.__clo.length ? window.__clo.map((x, i) => `<figure><img src="${x.cv.toDataURL('image/png')}" alt="${esc(x.l)}"><figcaption><span>${esc(x.l)}</span><button class="btn sm gh" data-a="clo1" data-v="${i}">Download</button></figcaption></figure>`).join('') : '<div class="empty">Nothing to show yet.</div>';
+}
+function cloSave(i) { const x = (window.__clo || [])[i]; if (!x) return; const a = document.createElement('a'); a.download = cloName(x.l); a.href = x.cv.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }
+async function cloSaveAll() { const L = window.__clo || []; for (let i = 0; i < L.length; i++) { cloSave(i); await new Promise(r => setTimeout(r, 350)); } toast(L.length + ' images downloaded'); }
+async function cloShareAll() { const L = window.__clo || []; if (!L.length) return;
+  const files = await Promise.all(L.map(x => new Promise(r => x.cv.toBlob(b => r(new File([b], cloName(x.l), { type: 'image/png' })), 'image/png'))));
+  try { await navigator.share({ files, title: ME() + ' closing ' + CD() }); } catch (e) { if (e && e.name !== 'AbortError') { const er = document.getElementById('serr'); if (er) er.textContent = 'Sharing did not work here. Use Download all.'; } } }
 
 /* ---------------- images for WhatsApp ---------------- */
 async function snapImage(html, label) {
@@ -1235,6 +1280,10 @@ document.addEventListener('click', async e => {
     case 'close': closeSheet(); break;
     case 'logout': signOut(false); break;
     case 'asexit': leaveBranch(); break;
+    case 'cloimgs': cloImages(); break;
+    case 'clo1': cloSave(+v); break;
+    case 'cloall': cloSaveAll(); break;
+    case 'closhare': cloShareAll(); break;
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
     case 'go': S.page = v; closeSheet(); render(); break;
     case 'me': openSheet(SHEETS.me()); break;
