@@ -1001,9 +1001,8 @@ VIEWS.closing = () => {
   if (!S.days[addDays(CD(), -1)]) loadDay(addDays(CD(), -1));
   if ((c.photos || []).some(id => !S.photos[id])) loadPhotos(CD());
   const diffBP = gpTot() - num(c.bp), diffSlip = cdTot() - num(c.slip), ex = denTot() - closingBal(), st = statusPill(c);
-  const bpExtra = `<div class="chk"><span>Total in the payment app</span><input id="bp" data-chk="bp" inputmode="numeric" value="${esc(c.bp)}" placeholder="₹"><span>Difference</span><span class="d" data-diff="bp" style="color:${!c.bp ? 'var(--muted)' : diffBP === 0 ? 'var(--ok)' : 'var(--bad)'}">${c.bp ? (diffBP === 0 ? '✓ Matches' : inr(Math.abs(diffBP))) : '–'}</span></div>`;
-  const cdExtra = `<label class="cs" style="display:flex;gap:6px;align-items:center;margin-top:10px"><input type="checkbox" data-nocard="1" ${c.noCard ? 'checked' : ''}> No card sales this day</label>
-    ${c.noCard ? '' : `<div class="chk"><span>Card settlement total</span><input id="slip" data-chk="slip" inputmode="numeric" value="${esc(c.slip)}" placeholder="₹"><span>Difference</span><span class="d" data-diff="slip" style="color:${!c.slip ? 'var(--muted)' : diffSlip === 0 ? 'var(--ok)' : 'var(--bad)'}">${c.slip ? (diffSlip === 0 ? '✓ Matches' : inr(Math.abs(diffSlip))) : '–'}</span></div>`}`;
+  const bpExtra = '';
+  const cdExtra = `<label class="cs" style="display:flex;gap:6px;align-items:center;margin-top:10px"><input type="checkbox" data-nocard="1" ${c.noCard ? 'checked' : ''}> No card sales this day</label>`;
   const dpill = d => { const o = S.days[d].clo; if (o.waived && o.status === 'open') return ['', 'p-mu']; return ({ open: ['Not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] })[o.status] || ['Not sent', 'p-warn']; };
   const picker = `<section class="card"><div class="slots">${[S.yday, S.today].map(d => { const pl = dpill(d); return `<button class="sl ${CD() === d ? 'on' : ''}" data-a="cdate" data-v="${d}"><b>${dLabel(d)}</b><small>${d === S.today ? 'Today' : 'Yesterday'}${pl[0] ? ' · ' + pl[0] : ''}</small></button>`; }).join('')}</div></section>`;
   const photos = c.photos || [];
@@ -1059,7 +1058,7 @@ function calendar(mo, todayV) { const by = {}; mo.forEach(x => by[x.d] = x.net);
   monthDays().forEach(d => { const v = by[d] || 0; h += `<div class="dc ${v ? 'has' : ''} ${v && v === mx ? 'hi' : ''} ${d > S.today ? 'fut' : ''} ${d === S.today ? 'tdy' : ''}"><b>${dnum(d)}</b><span>${v ? k(v) : '–'}</span></div>`; }); return `<div class="cal">${h}</div>`; }
 
 
-/* ---------- closing tables as clean pictures (WhatsApp): no boxes, no empty rows; salary advance shown in Debit ---------- */
+/* ---------- closing tables as clean pictures (WhatsApp): empty tables left out, empty rows dropped (the accounts sheet is always made, with all its rows); salary advance shown in Debit ---------- */
 const CLO_PARTS = [['acc', 'Accounts sheet'], ['exp', 'Expenses'], ['gpay', 'G-Pay list'], ['card', 'Card list'], ['den', 'Cash count']];
 function cloSrc(id) { if (id === 'den') { const x = document.getElementById('dn500'); return x && x.closest('.xs'); } const tb = document.querySelector(`tbody[data-lb="${id}"]`); return tb && tb.closest('.xs'); }
 function dropCol(table, idx) { [...table.rows].forEach(tr => { let c = 0; for (const td of [...tr.cells]) { const sp = td.colSpan || 1; if (idx >= c && idx < c + sp) { if (sp > 1) td.colSpan = sp - 1; else td.remove(); break; } c += sp; } }); }
@@ -1072,7 +1071,7 @@ function cloClone(id) {
     const t = tr.querySelector('textarea'); if (t) { const v = val.get(t); const keep = v && !/advance/i.test(v) && v.trim().toLowerCase() !== nm.trim().toLowerCase(); val.set(t, (keep ? v.toUpperCase() + ' · ' : '') + 'SALARY ADVANCE · ' + nm.toUpperCase()); } });
   ci.forEach((c, k) => { const sp = document.createElement('span'); sp.className = 'iv'; sp.textContent = val.get(c); const al = getComputedStyle(si[k]).textAlign, ptd = si[k].closest('td'), tp = ptd ? parseFloat(getComputedStyle(ptd).paddingLeft) || 0 : 0, ip = tp ? 0 : 10;
     sp.style.cssText = `display:block;text-align:${al === 'start' ? 'left' : al};text-transform:${getComputedStyle(si[k]).textTransform};white-space:pre-wrap;padding:0 ${ip}px;font-weight:600`; c.replaceWith(sp); });
-  cl.querySelectorAll('tbody[data-lb]').forEach(tb => { [...tb.rows].forEach(tr => { const iv = [...tr.querySelectorAll('.iv')]; if (iv.length && iv.every(x => !x.textContent.trim())) tr.remove(); });
+  cl.querySelectorAll('tbody[data-lb]').forEach(tb => { if (id !== 'acc') [...tb.rows].forEach(tr => { const iv = [...tr.querySelectorAll('.iv')]; if (iv.length && iv.every(x => !x.textContent.trim())) tr.remove(); });
     let n = +(tb.dataset.off || 0); [...tb.rows].forEach(tr => { const s = tr.querySelector('.sn'); if (s) s.textContent = ++n; }); });
   const last = hd.length - 1; if (last > 0 && !hd[last]) dropCol(tbl, last);
   const adv = hd.indexOf('advance to'); if (adv >= 0) dropCol(tbl, adv);
@@ -1092,7 +1091,8 @@ async function cloImages() {
     <div class="sha"><button class="btn gh" data-a="close">Close</button>${share ? '<button class="btn gh" data-a="closhare">Share all</button>' : ''}<button class="btn" data-a="cloall">Download all</button></div>`);
   if (!window.html2canvas) { document.getElementById('cig').innerHTML = '<div class="empty">The image maker did not load. Check the internet and try again.</div>'; return; }
   window.__clo = [];
-  for (const [id, l] of CLO_PARTS) { try { const cv = await cloCanvas(id); if (cv) window.__clo.push({ l, cv }); } catch (e) {} }
+  const hasVal = id => id === 'acc' || (id === 'den' ? denTot() > 0 : !(id === 'card' && C().noCard) && nFilled(id) > 0);
+  for (const [id, l] of CLO_PARTS) { if (!hasVal(id)) continue; try { const cv = await cloCanvas(id); if (cv) window.__clo.push({ l, cv }); } catch (e) {} }
   const box = document.getElementById('cig'); if (!box) return;
   box.innerHTML = window.__clo.length ? window.__clo.map((x, i) => `<figure><img src="${x.cv.toDataURL('image/png')}" alt="${esc(x.l)}"><figcaption><span>${esc(x.l)}</span><button class="btn sm gh" data-a="clo1" data-v="${i}">Download</button></figcaption></figure>`).join('') : '<div class="empty">Nothing to show yet.</div>';
 }
@@ -1259,8 +1259,7 @@ async function submitClosing() {
   if (tday && carriedCount()) miss.push(carriedCount() + ' entries from yesterday not cleared or changed');
   if (blank(c.totSales)) miss.push('Total sales not typed');
   if (!nFilled('gpay')) miss.push('G-Pay list empty');
-  if (!c.bp) miss.push('Payment app total not typed'); else if (gpTot() !== num(c.bp)) miss.push('G-Pay list differs from the payment app by ' + inr(Math.abs(gpTot() - num(c.bp))));
-  if (!c.noCard) { if (!nFilled('card')) miss.push('Card list empty'); if (!c.slip) miss.push('Card settlement total not typed'); else if (cdTot() !== num(c.slip)) miss.push('Card list differs from the settlement by ' + inr(Math.abs(cdTot() - num(c.slip)))); }
+  if (!c.noCard && !nFilled('card')) miss.push('Card list empty');
   if (!(c.photos || []).length) miss.push('No photos uploaded');
   if (!denTot()) miss.push('Cash not counted');
   if (miss.length && out.dataset.ok !== '1') { out.dataset.ok = '1'; out.innerHTML = `<div class="note n-warn"><b>These are missing or don't match</b><div style="margin:6px 0">${miss.map(x => '• ' + esc(x)).join('<br>')}</div>You can still send it. The controller will be told about each one.</div>`; out.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
@@ -1525,8 +1524,8 @@ OVIEWS.rday = () => {
     <div class="cgrid"><section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('receipt')}</span>Accounts</div></div>
       <div class="acc"><div class="row"><b>Opening cash${m.opened ? ' <span class="ftag">changed by manager</span>' : ''}</b><span>${m.open !== undefined ? inr(m.open) : '–'}</span></div><div class="row"><b>Expenses</b><span>− ${inr(m.exp || 0)}</span></div><div class="row"><b>Card</b><span>− ${inr(m.cd || 0)}</span></div><div class="row"><b>G-Pay</b><span>− ${inr(m.gp || 0)}</span></div>
       <div class="row"><b class="big">Closing balance</b><span class="big">${inr(m.bal || 0)}</span></div><div class="row"><b>Cash counted</b><span>${inr(m.den || 0)}</span></div><div class="row"><b>${(m.ex || 0) >= 0 ? 'Excess' : 'Short'}</b><span>${m.ex === null || m.ex === undefined ? '–' : inr(Math.abs(m.ex))}</span></div></div></section>
-    <section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('upi')}</span>G-Pay</div><span class="cs">App total ${clo.bp ? inr(num(clo.bp)) : 'not typed'}</span></div>${lst(gp, sum(gp.map(x => num(x.a))))}
-      <div class="ch" style="margin-top:14px"><div class="ct"><span class="ib p">${ic('card')}</span>Card</div><span class="cs">${clo.noCard ? 'No card sales' : 'Settlement ' + (clo.slip ? inr(num(clo.slip)) : 'not typed')}</span></div>${clo.noCard ? '' : lst(cd, sum(cd.map(x => num(x.a))))}</section></div>
+    <section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('upi')}</span>G-Pay</div><span class="cs">Total ${inr(sum(gp.map(x => num(x.a))))}</span></div>${lst(gp, sum(gp.map(x => num(x.a))))}
+      <div class="ch" style="margin-top:14px"><div class="ct"><span class="ib p">${ic('card')}</span>Card</div><span class="cs">${clo.noCard ? 'No card sales' : 'Total ' + inr(sum(cd.map(x => num(x.a))))}</span></div>${clo.noCard ? '' : lst(cd, sum(cd.map(x => num(x.a))))}</section></div>
     <section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('camera')}</span>Photos</div><span class="cs">${photos.length}</span></div>${photos.length ? `<div class="pgrid">${photos.map(id => `<div class="ph">${O.photos[id] ? `<img src="${O.photos[id]}" alt="Uploaded photo" data-a="oview" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}</div>`).join('')}</div>` : '<div class="empty">No photos uploaded.</div>'}</section>` };
 };
 
