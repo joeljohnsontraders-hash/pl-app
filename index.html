@@ -495,6 +495,8 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .att3 .tg{display:inline-flex}.att3 .nm{display:flex;align-items:center;gap:10px}.att3 .nm b{font-weight:800}.att3 .tin.tt{width:118px}.att3 tr.unm td:first-child b{color:var(--ink)}.att3 tr.unm td:first-child{box-shadow:inset 3px 0 0 var(--warn)}
 .att3 tr.gh5 td{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:16px 10px 4px;border-top:0;background:transparent}
 .att3 .tin.need{background:#FFF6E5;border-color:#F3C77A}.ydq{margin-left:6px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:underline;background:none}
+.pzone{border-radius:14px;outline:none;position:relative;padding:8px;margin:-8px}.pzone:focus{box-shadow:0 0 0 3px rgba(37,99,235,.35);background:rgba(37,99,235,.04)}
+.phint{display:none;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#1D4ED8;margin:0 0 8px}.phint svg{width:15px;height:15px}.pzone:focus .phint{display:flex}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -780,6 +782,7 @@ function render() {
   if (S.page !== 'closing' || !S.cdate) S.cdate = S.today;
   const still = lastPage === S.page || SEEN.has(S.page); lastPage = S.page; SEEN.add(S.page); beatCheck();
   if (S.page !== 'inbox') S.inboxVisit = false;
+  const pzf = !!(document.activeElement && document.activeElement.classList && document.activeElement.classList.contains('pzone'));
   const y = window.scrollY, V = VIEWS[S.page](), cst = statusPill(S.days[S.today].clo);
   app.innerHTML = `<div class="shell ${still ? 'still' : ''}">
     <aside class="side"><div class="lg2"><img class="lgo" src="${LOGO}" alt="Green Trends"><small>${esc(ME())}</small></div>
@@ -791,6 +794,7 @@ function render() {
     <nav class="nav"><div class="navin">${NAV.filter(n => n[0] !== 'inbox').map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
   setSaved(dirty.size ? 'saving' : 'saved');
   if (S.page === 'closing' && cvOn()) cvPlace(false);
+  if (pzf) { const z = document.querySelector('.pzone'); if (z) z.focus({ preventScroll: true }); }
   window.scrollTo(0, still ? y : 0);
   const am = document.querySelector('.amon'); if (am) { const ox = am.closest('.ox'), td = am.querySelector('th.td'); if (ox && td && ox.scrollWidth > ox.clientWidth) ox.scrollLeft = Math.max(0, td.offsetLeft - ox.clientWidth * 0.6); }
 }
@@ -1032,8 +1036,8 @@ VIEWS.closing = () => {
   const picker = `<section class="card"><div class="slots">${[S.yday, S.today].map(d => { const pl = dpill(d); return `<button class="sl ${CD() === d ? 'on' : ''}" data-a="cdate" data-v="${d}"><b>${dLabel(d)}</b><small>${d === S.today ? 'Today' : 'Yesterday'}${pl[0] ? ' · ' + pl[0] : ''}</small></button>`; }).join('')}</div></section>`;
   const photos = c.photos || [];
   const upCard = `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('camera')}</span>Upload</div><span class="cs">${photos.length} photo${photos.length === 1 ? '' : 's'}</span></div>
-    <div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
-    <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></section>`;
+    <div class="pzone" tabindex="0" aria-label="Photos. Click here and press Ctrl + V to paste a photo"><div class="phint">${ic('img')}Press Ctrl + V to paste</div><div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
+    <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></div></section>`;
   const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) && !(c.waived && c.status === 'open') ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} entries from ${dLabel(S.yday)} are still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
   ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><span style="display:flex;gap:8px"><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button><button class="btn sm gh" data-a="cvreset">Tidy up</button></span></div>
   <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div><div class="cvhs" id="cvhs"><div id="cvhsi"></div></div>`
@@ -1148,12 +1152,12 @@ const upBar = () => !S.asBranch && outdated() ? `<div class="upbar"><span>A new 
 async function inboxLoad() {
   if (!S.tok || !S.me || S.me.role !== 'manager' || S.asBranch || !S.booted) return;
   try {
-    const p = await call('appInbox', S.tok, 'peek'), ov = outdated(); S.inbox.ver = p.ver || { v: 0 };
+    const p = await call('appInbox', S.tok, 'peek'), ov = outdated(), u0 = unreadN(); S.inbox.ver = p.ver || { v: 0 };
     if (!S.inbox.loaded || p.last > S.inbox.last) {
       const L = await call('appInbox', S.tok, 'list'), had = S.inbox.loaded, fresh = had ? L.items.filter(x => x.seq > S.inbox.last) : [];
       Object.assign(S.inbox, { items: L.items, read: Math.max(num(L.read), S.inbox.read), last: Math.max(p.last, 0, ...L.items.map(x => x.seq)), loaded: true, ver: L.ver || S.inbox.ver });
       if (fresh.length && S.page !== 'inbox') toast(fresh.length === 1 ? (fresh[0].kind === 'flag' ? 'Important · ' : '') + fresh[0].title : fresh.length + ' new messages in your inbox');
-      if (!typing()) render();
+      if (!typing() && (S.page === 'inbox' || unreadN() !== u0 || ov !== outdated())) render();
     } else if (ov !== outdated() && !typing()) render();
   } catch (e) {}
 }
@@ -1272,6 +1276,13 @@ document.addEventListener('change', async e => {
 async function shrink(file, maxSide, q) { const url = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(file); });
   const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
   const sc = Math.min(1, maxSide / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc); c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); return c.toDataURL('image/jpeg', q); }
+/* paste photos: click the photo area, then Ctrl + V */
+document.addEventListener('click', e => { const z = e.target.closest && e.target.closest('.pzone'); if (z && !e.target.closest('label,button,img,input')) z.focus({ preventScroll: true }); });
+document.addEventListener('paste', async e => { const z = document.activeElement && document.activeElement.closest && document.activeElement.closest('.pzone'); if (!z || S.page !== 'closing') return;
+  const files = [...((e.clipboardData && e.clipboardData.items) || [])].filter(i => i.kind === 'file' && /^image\//.test(i.type)).map(i => i.getAsFile()).filter(Boolean);
+  e.preventDefault(); if (!files.length) { toast('No photo to paste. Copy a photo first.'); return; }
+  await addPhotos(files.map((f, i) => new File([f], f.name || 'pasted-' + (i + 1) + '.png', { type: f.type || 'image/png' })));
+  const z2 = document.querySelector('.pzone'); if (z2) z2.focus({ preventScroll: true }); });
 async function addPhotos(files) {
   const c = C(), d = CD(); c.photos = c.photos || []; let ok = 0; toast('Uploading ' + files.length + ' photo' + (files.length > 1 ? 's' : '') + '…');
   for (const f of files) { try { let data = await shrink(f, 1400, .7); if (data.length > 900000) data = await shrink(f, 1000, .6); const r = await call('appPhoto', S.tok, ME(), d, 'add', data); S.photos[r.id] = data; c.photos.push(r.id); ok++; }
