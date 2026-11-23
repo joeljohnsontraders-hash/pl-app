@@ -53,7 +53,7 @@ async function settings(q = sql) { const o = Object.assign({}, DEFAULTS); (await
 async function staff(q = sql) { return (await q`select * from app_staff where status = 'active' order by ord`).map((x) => ({ id: x.id, branch: x.branch, name: x.name, g: x.section, t: x.target == null ? 0 : Number(x.target) || 0,
   isNew: x.added_by !== "set-up" && x.added_by !== "controller" && String(x.note || "").indexOf("new") === 0 })); }
 async function stock(b, q = sql) { const rows = b ? await q`select * from app_stock where branch = ${b} order by ord` : await q`select * from app_stock order by ord`;
-  return rows.map((x) => ({ branch: x.branch, n: x.product, mrp: Number(x.mrp) || 0, c: Number(x.count) || 0, locked: !!x.locked })); }
+  return rows.map((x) => ({ branch: x.branch, n: x.product, mrp: Number(x.mrp) || 0, c: Number(x.count) || 0, locked: !!x.locked, by: x.added_by || "" })); }
 async function alerts(n, q = sql) { return (await q`select id, ts, branch, type, text, key, done from app_alerts order by seq desc limit ${n}`); }
 async function getDay(b, d, q = sql) { const r = await q`select att, rep, clo, updated, by from app_days where branch = ${b} and date = ${d}`;
   return r.length ? { branch: b, date: d, att: r[0].att, rep: r[0].rep, clo: r[0].clo, updated: r[0].updated, by: r[0].by } : { branch: b, date: d, att: null, rep: null, clo: null }; }
@@ -178,6 +178,19 @@ const API = {
       if (op === "add" && role(u) === "controller") { if (r) err("Already in the list.");
         await tx`insert into app_stock (branch, product, mrp, count, locked, updated) values (${b}, ${f.n}, ${N(f.mrp)}, ${Math.round(N(f.q))}, true, ${stamp()})`; await move(Math.round(N(f.q)), "Added by controller"); return stock(b, tx); }
       if (op === "lock" && role(u) === "controller") { await tx`update app_stock set locked = true where branch = ${b}`; return stock(b, tx); }
+      if (op === "sale" && !r && f.isNew) {
+        const n = String(f.n || "").trim().replace(/\s+/g, " "), pr = N(f.p), q = Math.max(1, Math.round(N(f.q))); if (!n) err("Write the product name."); if (!pr) err("Type the price.");
+        await tx`insert into app_stock (branch, product, mrp, count, locked, updated, added_by) values (${b}, ${n}, ${pr}, 0, false, ${stamp()}, ${u.name || u.id}) on conflict (branch, product) do nothing`;
+        await tx`insert into app_moves (ts, date, branch, product, qty, reason, by) values (${stamp()}, ${istDay()}, ${b}, ${n}, ${-q}, ${"New product · sold by " + (f.staff || "?") + (f.pay ? " · " + f.pay : "")}, ${u.name || u.id})`;
+        await alert(tx, b, "newprod", b + " added a new product in the report: " + n + " · ₹" + pr + (f.staff ? " · sold by " + f.staff : ""), "np|" + b + "|" + n.toLowerCase());
+        return stock(b, tx); }
+      if (op === "pedit" && role(u) === "controller") { if (!r) err("Product not found."); const nn = String(f.nn || "").trim().replace(/\s+/g, " ") || r.product;
+        if (nn !== r.product && (await tx`select 1 from app_stock where branch = ${b} and product = ${nn}`).length) err("A product with this name is already in the list.");
+        await tx`update app_stock set product = ${nn}, mrp = ${N(f.mrp) || Number(r.mrp) || 0}, added_by = '', updated = ${stamp()} where branch = ${b} and product = ${r.product}`;
+        await tx`update app_alerts set done = true where key = ${"np|" + b + "|" + r.product.toLowerCase()}`; return stock(b, tx); }
+      if (op === "premove" && role(u) === "controller") { if (!r) err("Product not found.");
+        await tx`delete from app_stock where branch = ${b} and product = ${r.product}`; await move(0, "Removed from the list by the controller");
+        await tx`update app_alerts set done = true where key = ${"np|" + b + "|" + r.product.toLowerCase()}`; return stock(b, tx); }
       if (!r) err("Product not found.");
       const c = Number(r.count) || 0, q = Math.round(N(f.q));
       if (op === "mrp" && role(u) === "controller") await tx`update app_stock set mrp = ${N(f.mrp)}, updated = ${stamp()} where branch = ${b} and product = ${r.product}`;
@@ -185,8 +198,8 @@ const API = {
         if (q <= 0) err("Pieces must be a whole number.");
         if (op === "plus") { await tx`update app_stock set count = ${c + q}, updated = ${stamp()} where branch = ${b} and product = ${r.product}`; await move(q, "Received" + (f.bill ? " · bill " + f.bill : ""));
           await alert(tx, b, "stock", b + " received stock: " + f.n, "rcv|" + b + "|" + f.n + "|" + istDay()); }
-        else if (op === "minus" || op === "sale") { if (q > c) err("Only " + c + " in stock."); if (op === "minus" && !f.reason) err("Pick a reason.");
-          await tx`update app_stock set count = ${c - q}, updated = ${stamp()} where branch = ${b} and product = ${r.product}`; await move(-q, op === "sale" ? "Sold by " + (f.staff || "?") + (f.pay ? " · " + f.pay : "") : f.reason);
+        else if (op === "minus" || op === "sale") { if (op === "minus" && q > c) err("Only " + c + " in stock."); if (op === "minus" && !f.reason) err("Pick a reason.");
+          await tx`update app_stock set count = ${Math.max(0, c - q)}, updated = ${stamp()} where branch = ${b} and product = ${r.product}`; await move(-q, op === "sale" ? "Sold by " + (f.staff || "?") + (f.pay ? " · " + f.pay : "") : f.reason);
           if (op === "minus") await alert(tx, b, "stock", b + " took " + q + " × " + f.n + " out of stock: " + f.reason); }
         else if (op === "unsale") { await tx`update app_stock set count = ${c + q}, updated = ${stamp()} where branch = ${b} and product = ${r.product}`; await move(q, "Sale removed"); }
         else err("Unknown change.");
