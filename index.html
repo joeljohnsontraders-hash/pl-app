@@ -507,6 +507,19 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .sha .btn[disabled]{opacity:.42;cursor:not-allowed}.bchk{margin:6px 0;padding:9px 12px;border-radius:10px;font-size:13px;font-weight:600}.bchk.ok{background:var(--oks);color:var(--ok)}.bchk.warn{background:var(--warns);color:#8a5a00}.bchk.bad{background:#FDE7EA;color:#B0213B}
 .btab small.blow{display:block;color:#B0213B;font-weight:700;font-size:11px}
 @media(max-width:700px){.bcols{grid-template-columns:1fr}}
+.rsplit.on{display:grid;gap:16px}.rmain{min-width:0}
+@media(min-width:1180px){.rsplit.on{grid-template-columns:minmax(0,1fr) 360px;align-items:start}.rsplit.on .bref{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}}
+@media(max-width:1179px){.rsplit.on .bref{order:-1}}
+.bref{background:var(--card);border-radius:16px;box-shadow:0 0 0 1px rgba(10,26,43,.1),0 8px 24px rgba(10,26,43,.06);padding:14px 14px 12px;display:grid;gap:10px;min-width:0}
+.bref-h{display:flex;align-items:center;justify-content:space-between;gap:8px}.bref-t{display:flex;align-items:center;gap:8px;min-width:0}.bref-t svg{width:17px;height:17px;color:var(--gt)}.bref-t b{font-size:15px}.bref-t small{color:var(--muted);font-size:12px;font-weight:600}.bref-a{display:flex;align-items:center;gap:6px}
+.bpaste.bsm{margin:0;padding:22px 14px}.bpaste.bsm b{font-size:14px}.bpaste.bsm small{font-size:12px;line-height:1.4}
+.bref-tb{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}.bref-tb th{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:right;padding:4px 6px 6px;white-space:nowrap}.bref-tb th:first-child{text-align:left}
+.bref-tb td{border-top:1px solid var(--line);padding:7px 6px;text-align:right;font-weight:700;white-space:nowrap}.bref-tb td:first-child{text-align:left;white-space:normal;font-weight:600}.bref-tb td:first-child b{font-weight:700;font-size:12.5px}.bref-tb td small{display:block;color:var(--muted);font-size:11px;margin-left:14px}
+.bref-tb tr.go{cursor:pointer}.bref-tb tr.go:hover td{background:var(--soft)}.bref-tb tfoot td{border-top:2px solid var(--line);font-weight:800}
+.bdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#C9D2DE;margin-right:7px;vertical-align:1px}.bdot.ok{background:var(--ok)}.bdot.df{background:#E8A317}
+.bref-x{overflow-x:auto;margin:0 -4px}.bref-tb.all td,.bref-tb.all th{white-space:nowrap}.bref-tb.all td:first-child,.bref-tb.all th:first-child{position:sticky;left:0;background:var(--card);z-index:1}.bref-tb.all td.hl{background:rgba(46,204,140,.12);color:var(--gt)}.bref-tb.all tr.tot td{font-weight:800;border-top:2px solid var(--line)}
+.bref-f{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.bref-f .cs{font-size:11.5px}.bref-f .bdot{margin:0 4px 0 6px}.bref-f .bdot:first-child{margin-left:0}
+.btn.gh.on{background:var(--soft)}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -804,6 +817,7 @@ function render() {
     <nav class="nav"><div class="navin">${NAV.filter(n => n[0] !== 'inbox').map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
   setSaved(dirty.size ? 'saving' : 'saved');
   if (S.page === 'closing' && cvOn()) { cvPlace(false); cvWatch(); }
+  if (S.page === 'report') brefDots();
   if (pzf) { const z = document.querySelector('.pzone'); if (z) z.focus({ preventScroll: true }); }
   window.scrollTo(0, still ? y : 0);
   const am = document.querySelector('.amon'); if (am) { const ox = am.closest('.ox'), td = am.querySelector('th.td'); if (ox && td && ox.scrollWidth > ox.clientWidth) ox.scrollLeft = Math.max(0, td.offsetLeft - ox.clientWidth * 0.6); }
@@ -989,11 +1003,11 @@ VIEWS.report = () => {
   const live = S.view === 'live', snap = live ? null : r.snaps[S.view], Cc = liveCalc();
   const last = SLOTS.map(s => s[0]).filter(key => r.snaps[key]).pop();
   const chips = `<div class="slots"><button class="sl ${live ? 'on' : ''} ${d ? 'due' : ''}" data-a="view" data-v="live"><b>Live sheet</b><small>${d ? (d === 'cl' ? 'Closing next' : slotName(d) + ' next') : 'All sent'}</small></button>${SLOTS.map(([id]) => { const s = r.snaps[id], t = slotName(id);
-    return s ? `<button class="sl sent ${S.view === id ? 'on' : ''}" data-a="view" data-v="${id}"><b>${t}</b><small>✓ ${s.at}</small></button>` : skipped(id) ? `<div class="sl skp"><b>${t}</b><small>Skipped</small></div>` : `<div class="sl" style="opacity:.55"><b>${t}</b><small>${id === d ? 'Next' : 'Later'}</small></div>`; }).join('')}</div>${live ? `<div class="skrow"><span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn sm" data-a="billopen">${ic('sheet')}Fill from billing</button><span class="cs">or copy the staff table in billing and press Ctrl + V here</span></span>${d && d !== 'cl' ? `<button class="btn sm gh" data-a="skipask" data-v="${d}">Skip the ${slotName(d)} report</button>` : ''}</div>` : ''}`;
+    return s ? `<button class="sl sent ${S.view === id ? 'on' : ''}" data-a="view" data-v="${id}"><b>${t}</b><small>✓ ${s.at}</small></button>` : skipped(id) ? `<div class="sl skp"><b>${t}</b><small>Skipped</small></div>` : `<div class="sl" style="opacity:.55"><b>${t}</b><small>${id === d ? 'Next' : 'Later'}</small></div>`; }).join('')}</div>${live ? `<div class="skrow"><span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn sm" data-a="billopen">${ic('sheet')}Fill from billing</button><button class="btn sm gh ${S.bref ? 'on' : ''}" data-a="brefshow">${S.bref ? 'Hide billing' : 'Show billing beside the report'}</button></span>${d && d !== 'cl' ? `<button class="btn sm gh" data-a="skipask" data-v="${d}">Skip the ${slotName(d)} report</button>` : ''}</div>` : ''}`;
   const hx = `<div class="glass" style="margin-top:18px"><div class="gl"><small>Target</small><b>${inr(Cc.G.tgt)}</b></div><div class="gl"><small>Service sale</small><b>${inr(Cc.G.svc)}</b></div><div class="gl"><small>Net sale</small><b>${inr(Cc.net)}</b></div></div>`;
   if (!a.attDone && strictAtt()) return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body: `<section class="card"><div class="ct">Mark attendance first</div><div class="empty" style="margin:6px 0 12px">Staff who are In become the rows of the sheet.</div><button class="btn" data-a="go" data-v="att">Go to attendance</button></section>` };
   const body = `<section class="card">${chips}</section>
-    ${live ? sheetHTML(ME(), present(), r.rows, r.mcAmt, { edit: true, prev: last ? r.snaps[last].data : null }) : sheetHTML(ME(), snap.list || [], snap.data || {}, snap.mcAmt, { edit: false, at: 'sent ' + snap.at })}
+    ${live ? `<div class="rsplit ${S.bref ? 'on' : ''}"><div class="rmain">${sheetHTML(ME(), present(), r.rows, r.mcAmt, { edit: true, prev: last ? r.snaps[last].data : null })}</div>${S.bref ? brefHTML() : ''}</div>` : sheetHTML(ME(), snap.list || [], snap.data || {}, snap.mcAmt, { edit: false, at: 'sent ' + snap.at })}
     <section class="card"><div class="xbar" style="margin:0">${live ? `<span class="saved" id="savedmark">Saved as you type</span>` : `<span class="cs">The ${slotName(S.view)} report as it was sent.</span>`}
       <div style="display:flex;gap:8px;flex-wrap:wrap">${live ? `<button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button>` : ''}<button class="btn sm gh" data-a="img">${ic('img')}Image for WhatsApp</button>${live && d && d !== 'cl' ? `<button class="btn sm" data-a="sendslot">${ic('send')}Send ${slotName(d)} report</button>` : ''}${live && d === 'cl' ? `<button class="btn sm" data-a="go" data-v="closing">Closing report</button>` : ''}</div></div><div id="gwarn"></div></section>`;
   return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body };
@@ -1253,9 +1267,12 @@ function billSheet() {
 function billOpen(keepScroll) { const y = keepScroll ? (document.querySelector('.sh') || {}).scrollTop : 0; openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) { sh.classList.add('wide'); if (y) sh.scrollTop = y; } const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
 document.addEventListener('paste', e => {
   if (!S.me || S.me.role !== 'manager' || S.page !== 'report' || S.view !== 'live' || (!A().attDone && strictAtt())) return;
-  const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || '', B = parseBilling(t);
-  if (!B || !B.rows.some(x => !x.total)) { if (document.activeElement && document.activeElement.id === 'bpaste') { e.preventDefault(); S.bill = null; S.billErr = 'That does not look like the staff sales table. Copy it again from the billing software, with its headings.'; billOpen(); S.billErr = ''; } return; }
-  e.preventDefault(); B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen();
+  const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || '', B = parseBilling(t), ae = document.activeElement || {}, modal = !!document.querySelector('.ov');
+  if (!B || !B.rows.some(x => !x.total)) { if (ae.id === 'bpaste') { e.preventDefault(); S.bill = null; S.billErr = 'That does not look like the staff sales table. Copy it again from the billing software, with its headings.'; billOpen(); S.billErr = ''; }
+    else if (ae.id === 'brefzone') { e.preventDefault(); toast('That does not look like the staff sales table. Copy it again from billing.'); } return; }
+  e.preventDefault(); brefSet(t);
+  if (!modal) { S.bref = true; ls('gt_bref', '1'); render(); toast('Billing pasted next to the report'); return; }
+  B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen();
 });
 document.addEventListener('change', e => { const d = e.target.dataset || {}; if (!S.bill) return;
   if (d.bm !== undefined && S.bill.rows[+d.bm]) { S.bill.rows[+d.bm].pick = e.target.value; billOpen(true); }
@@ -1273,6 +1290,29 @@ function billFill() {
   try { ls(billKey(), JSON.stringify(M)); ls(billColKey(), JSON.stringify(C2)); } catch (x) {}
   noAttTell(); touch(S.today, 'rep'); S.bill = null; closeSheet(); render(); toast(rows.length + ' staff filled from billing');
 }
+
+/* ---------------- billing kept next to the report, to read from while typing ---------------- */
+const brefKey = () => 'gt_billref|' + ME() + '|' + S.today;
+const brefGet = () => { try { return JSON.parse(ls(brefKey()) || 'null'); } catch (e) { return null; } };
+const brefSet = text => { const at = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' }).format(new Date()).toLowerCase(); try { ls(brefKey(), JSON.stringify({ text, at })); } catch (e) {} };
+S.bref = ls('gt_bref') === '1';
+function brefHTML() {
+  const ref = brefGet(), B = ref ? parseBilling(ref.text) : null;
+  const head = (right) => `<div class="bref-h"><span class="bref-t">${ic('sheet')}<b>Billing</b>${ref && B ? `<small>pasted ${esc(ref.at)}</small>` : ''}</span><span class="bref-a">${right || ''}<button class="xb" data-a="brefshow" aria-label="Hide billing" title="Hide">✕</button></span></div>`;
+  if (!B) return `<aside class="bref">${head()}<div class="bpaste bsm" id="brefzone" tabindex="0">${ic('sheet')}<b>Paste the billing table here</b><small>Copy the staff table in billing, click here and press Ctrl + V. It stays next to the report while you type.</small></div></aside>`;
+  const g = billGuess(B), cands = billCands(), all = !!S.brefAll, st = B.rows.filter(x => !x.total), tot = B.rows.find(x => x.total);
+  const nv = (x, i) => i < 0 ? '–' : Number.isInteger(x.v[i]) ? String(x.v[i]) : bfmt(x.v[i]);
+  let body;
+  if (all) body = `<div class="bref-x"><table class="bref-tb all"><thead><tr><th>Name</th>${B.cols.map(c => `<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>
+    ${B.rows.map(x => `<tr class="${x.total ? 'tot' : ''}"><td>${esc(x.name)}</td>${B.cols.map(c => `<td class="${c.i === g.svc ? 'hl' : ''}">${nv(x, c.i)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  else body = `<table class="bref-tb"><thead><tr><th>Name</th><th>Net</th><th>Bills</th><th>Mem</th></tr></thead><tbody>
+    ${st.map(x => { const m = billMatch(x, cands); return `<tr class="${m ? 'go' : ''}" ${m ? `data-a="brefgo" data-v="${esc(m)}" data-svc="${g.svc >= 0 ? x.v[g.svc] : ''}" data-bills="${g.bills >= 0 ? x.v[g.bills] : ''}" title="Go to ${esc(m)} in the report"` : ''}><td><i class="bdot"></i><b>${esc(x.name)}</b>${m && bnrm(m) !== bnrm(x.name) ? `<small>${esc(m)}</small>` : ''}</td><td>${g.svc >= 0 ? bfmt(x.v[g.svc]) : '–'}</td><td>${nv(x, g.bills)}</td><td>${g.mc >= 0 && x.v[g.mc] ? nv(x, g.mc) : ''}</td></tr>`; }).join('')}</tbody>
+    ${tot ? `<tfoot><tr><td>Total</td><td>${g.svc >= 0 ? bfmt(tot.v[g.svc]) : '–'}</td><td>${nv(tot, g.bills)}</td><td>${g.mc >= 0 && tot.v[g.mc] ? nv(tot, g.mc) : ''}</td></tr></tfoot>` : ''}</table>`;
+  return `<aside class="bref">${head(`<button class="btn sm gh" data-a="brefall">${all ? 'Short' : 'All columns'}</button>`)}${body}
+    <div class="bref-f"><span class="cs">${all ? 'The service sale column is marked.' : '<i class="bdot ok"></i>same as the report <i class="bdot df"></i>different'}</span><button class="btn sm" data-a="brefuse">Fill the report from this</button></div></aside>`;
+}
+function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref-tb tr[data-a=brefgo]').forEach(tr => { const x = r[tr.dataset.v] || {}, a = tr.dataset.svc, b = tr.dataset.bills;
+  const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
 const APP_VER = 1;
@@ -1395,7 +1435,7 @@ document.addEventListener('input', e => {
   const t = e.target, d = t.dataset || {};
   if (t.id === 'sfind') { const q = t.value.trim().toLowerCase(); document.querySelectorAll('#slist .row').forEach(r => r.style.display = !q || r.dataset.sn.includes(q) ? '' : 'none'); return; }
   if (!S.me || S.me.role !== 'manager') return;
-  if (d.x) { const r = R(); r.rows[d.x] = r.rows[d.x] || blankRow(); r.rows[d.x][d.f] = t.value.replace(/[^\d.]/g, ''); noAttTell(); refreshSheetTotals(); touch(S.today, 'rep'); }
+  if (d.x) { const r = R(); r.rows[d.x] = r.rows[d.x] || blankRow(); r.rows[d.x][d.f] = t.value.replace(/[^\d.]/g, ''); noAttTell(); refreshSheetTotals(); brefDots(); touch(S.today, 'rep'); }
   else if (d.mc) { R().mcAmt = t.value.replace(/[^\d.]/g, ''); refreshSheetTotals(); touch(S.today, 'rep'); }
   else if (d.l) { const L = C()[d.l]; L[+d.i][d.k] = t.value; if (L[+d.i].y) { delete L[+d.i].y; const tr = t.closest('tr'); if (tr) tr.classList.remove('yrow'); } markChanged(); if (+d.i >= L.length - 2 && t.value.trim()) { const st = L.length; for (let i = 0; i < 5; i++) L.push(blankL(d.l)); const tb = document.querySelector(`[data-lb="${d.l}"]`); if (tb) tb.insertAdjacentHTML('beforeend', L.slice(st).map((r, i) => lrow(d.l, st + i, r, +(tb.dataset.off || 0))).join('')); } refreshAccounts(); touch(CD(), 'clo'); }
   else if (d.den) { C().den[d.den] = t.value.replace(/[^\d]/g, ''); if (C().denY) { C().denY = false; document.querySelectorAll('[data-den]').forEach(x => x.classList.remove('yv')); } markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
@@ -1551,6 +1591,10 @@ document.addEventListener('click', async e => {
     case 'billopen': S.bill = null; billOpen(); break;
     case 'billagain': S.bill = null; billOpen(); break;
     case 'billfill': billFill(); break;
+    case 'brefshow': S.bref = !S.bref; ls('gt_bref', S.bref ? '1' : '0'); render(); if (S.bref) { const z = document.getElementById('brefzone'); if (z) z.focus({ preventScroll: true }); } break;
+    case 'brefall': S.brefAll = !S.brefAll; render(); break;
+    case 'brefuse': { const ref = brefGet(), B = ref ? parseBilling(ref.text) : null; if (!B) break; B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen(); break; }
+    case 'brefgo': { const f = document.getElementById('x_' + v + '_svc'); if (f) { f.scrollIntoView({ block: 'center', behavior: 'smooth' }); f.focus({ preventScroll: true }); f.select && f.select(); } break; }
     case 'appupdate': el.disabled = true; el.textContent = 'Updating…'; try { await flushNow(); } catch (x) {} location.reload(); break;
     case 'ycl': S.page = 'closing'; S.cdate = S.yday; lastPage = ''; render(); break;
     case 'clearall': { const c = C(); LKEYS.forEach(kk => { c[kk] = c[kk].filter(r => !r.y && filled(r)); }); if (c.denY) { c.den = {}; c.denY = false; } c.init = {}; touch(CD(), 'clo'); render(); toast("Yesterday's entries cleared"); break; }
