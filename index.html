@@ -793,7 +793,7 @@ function render() {
       <div class="wrap"><div class="page">${S.page === 'inbox' ? '' : upBar()}${V.body}</div></div></main></div>
     <nav class="nav"><div class="navin">${NAV.filter(n => n[0] !== 'inbox').map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
   setSaved(dirty.size ? 'saving' : 'saved');
-  if (S.page === 'closing' && cvOn()) cvPlace(false);
+  if (S.page === 'closing' && cvOn()) { cvPlace(false); cvWatch(); }
   if (pzf) { const z = document.querySelector('.pzone'); if (z) z.focus({ preventScroll: true }); }
   window.scrollTo(0, still ? y : 0);
   const am = document.querySelector('.amon'); if (am) { const ox = am.closest('.ox'), td = am.querySelector('th.td'); if (ox && td && ox.scrollWidth > ox.clientWidth) ox.scrollLeft = Math.max(0, td.offsetLeft - ox.clientWidth * 0.6); }
@@ -849,6 +849,11 @@ function cvBar() {
       sc.addEventListener('pointermove', mv); sc.addEventListener('pointerup', up); sc.addEventListener('pointercancel', up); });
   }
 }
+/* tables that grow while typing (new rows, accounts lines) push the ones below them down instead of covering them */
+function cvWatch() { const box = document.getElementById('cvc'); if (!box || box._ro || !window.ResizeObserver) return; let t = 0, last = '';
+  box._ro = new ResizeObserver(() => { cancelAnimationFrame(t); t = requestAnimationFrame(() => { if (!document.body.contains(box) || box.querySelector('.cvmv')) return;
+    const sig = [...box.querySelectorAll('.cvi')].map(el => el.offsetHeight).join(','); if (sig === last) return; last = sig; cvPlace(false); }); });
+  box.querySelectorAll('.cvi').forEach(el => box._ro.observe(el)); }
 function cvGrow() { const box = document.getElementById('cvc'); if (!box) return; let R = 0, B = 0; box.querySelectorAll('.cvi').forEach(el => { R = Math.max(R, el.offsetLeft + el.offsetWidth); B = Math.max(B, el.offsetTop + el.offsetHeight); });
   box.style.width = Math.max(box.parentElement.clientWidth - 32, R + 24) + 'px'; box.style.height = (B + 120) + 'px'; cvBar(); }
 function cvSave(P) { const L = {}; Object.keys(P).forEach(id => { L[id] = { x: Math.round(P[id].x), y: Math.round(P[id].y), w: Math.round(P[id].w) }; });
@@ -1038,7 +1043,7 @@ VIEWS.closing = () => {
   const upCard = `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('camera')}</span>Upload</div><span class="cs">${photos.length} photo${photos.length === 1 ? '' : 's'}</span></div>
     <div class="pzone" tabindex="0" aria-label="Photos. Click here and press Ctrl + V to paste a photo"><div class="phint">${ic('img')}Press Ctrl + V to paste</div><div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
     <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></div></section>`;
-  const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) && !(c.waived && c.status === 'open') ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} entries from ${dLabel(S.yday)} are still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
+  const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) && !(c.waived && c.status === 'open') ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} ${carriedCount() === 1 ? 'entry' : 'entries'} from ${dLabel(S.yday)} ${carriedCount() === 1 ? 'is' : 'are'} still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
   ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><span style="display:flex;gap:8px"><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button><button class="btn sm gh" data-a="cvreset">Tidy up</button></span></div>
   <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div><div class="cvhs" id="cvhs"><div id="cvhsi"></div></div>`
   : `<div class="cvtools"><span></span><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button></div><div class="cgrid">
