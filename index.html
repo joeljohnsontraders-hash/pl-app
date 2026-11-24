@@ -497,6 +497,12 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .att3 .tin.need{background:#FFF6E5;border-color:#F3C77A}.ydq{margin-left:6px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:underline;background:none}
 .pzone{border-radius:14px;outline:none;position:relative;padding:8px;margin:-8px}.pzone:focus{box-shadow:0 0 0 3px rgba(37,99,235,.35);background:rgba(37,99,235,.04)}
 .phint{display:none;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#1D4ED8;margin:0 0 8px}.phint svg{width:15px;height:15px}.pzone:focus .phint{display:flex}
+.sh.wide{max-width:860px}
+.bpaste{margin:14px 0 6px;border:2px dashed #C9D2DE;border-radius:16px;padding:34px 18px;display:grid;justify-items:center;gap:6px;text-align:center;color:var(--muted);background:var(--soft);outline:none;cursor:text}.bpaste svg{width:26px;height:26px}.bpaste b{color:var(--ink);font-size:16px}.bpaste:focus{border-color:#2563EB;background:rgba(37,99,235,.05);box-shadow:0 0 0 3px rgba(37,99,235,.18)}
+.btab{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}.btab th{font-size:11px;color:var(--muted);text-align:left;padding:6px 8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.btab td{border-top:1px solid var(--line);padding:8px;vertical-align:middle}.btab td b{display:block}.btab td small{color:var(--muted);font-size:11.5px}.btab .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}.btab th:nth-child(n+3){text-align:right}
+.btab select{width:100%;min-width:170px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;font:inherit;font-weight:600}.btab tr.skip td{color:var(--muted)}.btab tr.skip td b{color:var(--muted)}.btab tr.dup select{border-color:var(--bad);box-shadow:0 0 0 2px rgba(208,43,71,.15)}
+.btab tfoot td{font-weight:800;border-top:2px solid var(--line)}.btab tfoot tr.bt td{border-top:0;color:var(--muted);font-weight:700}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -979,7 +985,7 @@ VIEWS.report = () => {
   const live = S.view === 'live', snap = live ? null : r.snaps[S.view], Cc = liveCalc();
   const last = SLOTS.map(s => s[0]).filter(key => r.snaps[key]).pop();
   const chips = `<div class="slots"><button class="sl ${live ? 'on' : ''} ${d ? 'due' : ''}" data-a="view" data-v="live"><b>Live sheet</b><small>${d ? (d === 'cl' ? 'Closing next' : slotName(d) + ' next') : 'All sent'}</small></button>${SLOTS.map(([id]) => { const s = r.snaps[id], t = slotName(id);
-    return s ? `<button class="sl sent ${S.view === id ? 'on' : ''}" data-a="view" data-v="${id}"><b>${t}</b><small>✓ ${s.at}</small></button>` : skipped(id) ? `<div class="sl skp"><b>${t}</b><small>Skipped</small></div>` : `<div class="sl" style="opacity:.55"><b>${t}</b><small>${id === d ? 'Next' : 'Later'}</small></div>`; }).join('')}</div>${d && d !== 'cl' && live ? `<div class="skrow"><span class="cs">Can't send the ${slotName(d)} report?</span><button class="btn sm gh" data-a="skipask" data-v="${d}">Skip the ${slotName(d)} report</button></div>` : ''}`;
+    return s ? `<button class="sl sent ${S.view === id ? 'on' : ''}" data-a="view" data-v="${id}"><b>${t}</b><small>✓ ${s.at}</small></button>` : skipped(id) ? `<div class="sl skp"><b>${t}</b><small>Skipped</small></div>` : `<div class="sl" style="opacity:.55"><b>${t}</b><small>${id === d ? 'Next' : 'Later'}</small></div>`; }).join('')}</div>${live ? `<div class="skrow"><span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn sm" data-a="billopen">${ic('sheet')}Fill from billing</button><span class="cs">or copy the staff table in billing and press Ctrl + V here</span></span>${d && d !== 'cl' ? `<button class="btn sm gh" data-a="skipask" data-v="${d}">Skip the ${slotName(d)} report</button>` : ''}</div>` : ''}`;
   const hx = `<div class="glass" style="margin-top:18px"><div class="gl"><small>Target</small><b>${inr(Cc.G.tgt)}</b></div><div class="gl"><small>Service sale</small><b>${inr(Cc.G.svc)}</b></div><div class="gl"><small>Net sale</small><b>${inr(Cc.net)}</b></div></div>`;
   if (!a.attDone && strictAtt()) return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body: `<section class="card"><div class="ct">Mark attendance first</div><div class="empty" style="margin:6px 0 12px">Staff who are In become the rows of the sheet.</div><button class="btn" data-a="go" data-v="att">Go to attendance</button></section>` };
   const body = `<section class="card">${chips}</section>
@@ -1135,6 +1141,73 @@ async function cloSaveAll() { const L = window.__clo || []; for (let i = 0; i < 
 async function cloShareAll() { const L = window.__clo || []; if (!L.length) return;
   const files = await Promise.all(L.map(x => new Promise(r => x.cv.toBlob(b => r(new File([b], cloName(x.l), { type: 'image/png' })), 'image/png'))));
   try { await navigator.share({ files, title: ME() + ' closing ' + CD() }); } catch (e) { if (e && e.name !== 'AbortError') { const er = document.getElementById('serr'); if (er) er.textContent = 'Sharing did not work here. Use Download all.'; } } }
+
+/* ---------------- fill the report from the billing software: copy the staff table there, paste it here ---------------- */
+const billKey = () => 'gt_billmap|' + ME();
+const billMap = () => { try { return JSON.parse(ls(billKey()) || '{}') || {}; } catch (e) { return {}; } };
+const bnrm = s => String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+const bnum = s => { const v = parseFloat(String(s || '').replace(/[₹,\s]/g, '')); return isNaN(v) ? 0 : v; };
+const bfmt = v => (Math.round(v * 100) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const bRowKey = x => x.id && /\d/.test(x.id) ? 'id:' + x.id : 'n:' + bnrm(x.name);
+function parseBilling(text) {
+  const lines = String(text || '').replace(/ /g, ' ').split(/\r?\n/).filter(l => l.trim()); let sub = null; const rows = [];
+  for (const l of lines) {
+    let c = l.includes('\t') ? l.split('\t').map(x => x.trim()) : null;
+    if (c && c.some(x => /net service/i.test(x))) { sub = c.filter(x => x !== ''); continue; }
+    if (!c) { const m = l.match(/^\s*([\d.]+|-)\s+(.+?)\s+(\d{4,}|-)\s+(.+?)\s+(Active|Inactive|-)\s+(\S+)\s+(.*)$/i); if (!m) continue; c = m.slice(1, 7).concat(m[7].trim().split(/\s+/)); }
+    const name = (c[1] || '').trim(); if (!name || /employee/i.test(name)) continue;
+    const nums = c.slice(6).filter(x => x !== ''); if (nums.length < 8 || !nums.every(x => /^-?[\d,]*\.?\d+$/.test(x))) continue;
+    let ni = 3; if (sub) { const k = sub.findIndex(x => /net service/i.test(x)); if (k >= 0 && k < nums.length) ni = k; }
+    const n = nums.map(bnum), L = n.length;
+    rows.push({ name, id: (c[2] || '').trim(), total: /^total$/i.test(name), svc: Math.round(n[ni] * 100) / 100, bills: n[L - 3], mc: n[L - 6] });
+  }
+  return rows;
+}
+function billCands() { const pr = present(), seen = new Set(pr.map(p => p.n)); return pr.map(p => ({ n: p.n, note: p.from ? p.from : '' })).concat(people().filter(p => !seen.has(p.n)).map(p => { const st = (A().att[p.n] || {}).st; return { n: p.n, note: st === 'off' ? 'week off today' : st === 'lv' ? 'leave today' : 'not marked In' }; })); }
+function billMatch(x, cands) {
+  const M = billMap(), k = M[bRowKey(x)]; if (k && cands.some(c => c.n === k)) return k;
+  const bt = bnrm(x.name).split(' ').filter(w => w.length > 1), full = bt.join(' '); let best = '', bs = 0;
+  cands.forEach(c => { const ct = bnrm(c.n).split(' ').filter(Boolean); let s = 0;
+    if (!ct.length) return;
+    if (ct.join(' ') === full) s = 5; else if (ct.every(w => bt.includes(w))) s = 4; else if (ct.some(w => w.length > 2 && bt.includes(w))) s = 3;
+    else if (ct[0].length > 2 && bt.some(w => w.length > 2 && (w.startsWith(ct[0]) || ct[0].startsWith(w)))) s = 2;
+    if (s > bs) { bs = s; best = c.n; } });
+  return bs >= 2 ? best : '';
+}
+function billSheet() {
+  const rows = S.bill || [], cands = billCands(), staffRows = rows.filter(x => !x.total), tot = rows.find(x => x.total);
+  if (!staffRows.length) return `<h3>Fill from billing</h3><div class="sub">In the billing software, select the staff sales table and copy it (Ctrl + C). Then press Ctrl + V here.</div>
+    <div class="bpaste" id="bpaste" tabindex="0">${ic('sheet')}<b>Press Ctrl + V to paste</b><small>The numbers fill the report by themselves</small></div><div class="err" id="serr">${S.billErr || ''}</div>
+    <div class="sha"><button class="btn gh" data-a="close">Cancel</button></div>`;
+  const used = {}; staffRows.forEach(x => { x.pick = x.pick !== undefined ? x.pick : billMatch(x, cands); if (x.pick) used[x.pick] = (used[x.pick] || 0) + 1; });
+  const sum = f => staffRows.filter(x => x.pick).reduce((t, x) => t + x[f], 0);
+  return `<h3>Fill from billing</h3><div class="sub">Check each name. The numbers replace what is in the report now. Kids cut, products and Google reviews stay as they are.</div>
+    <div class="ox"><table class="btab"><thead><tr><th>In billing</th><th>Staff in the report</th><th>Service sale</th><th>Bills</th><th>Mem card</th></tr></thead><tbody>
+    ${rows.map((x, i) => x.total ? '' : `<tr class="${x.pick ? '' : 'skip'} ${x.pick && used[x.pick] > 1 ? 'dup' : ''}"><td><b>${esc(x.name)}</b>${x.id && /\d/.test(x.id) ? `<small>${esc(x.id)}</small>` : ''}</td>
+      <td><select id="bm_${i}" data-bm="${i}"><option value="">Leave out</option>${cands.map(c => `<option value="${esc(c.n)}" ${c.n === x.pick ? 'selected' : ''}>${esc(c.n)}${c.note ? ' · ' + esc(c.note) : ''}</option>`).join('')}</select></td>
+      <td class="num">${bfmt(x.svc)}</td><td class="num">${x.bills}</td><td class="num">${x.mc || ''}</td></tr>`).join('')}</tbody>
+    <tfoot><tr><td colspan="2">Going into the report</td><td class="num">${bfmt(sum('svc'))}</td><td class="num">${sum('bills')}</td><td class="num">${sum('mc') || ''}</td></tr>
+    ${tot ? `<tr class="bt"><td colspan="2">Billing total</td><td class="num">${bfmt(tot.svc)}</td><td class="num">${tot.bills}</td><td class="num">${tot.mc || ''}</td></tr>` : ''}</tfoot></table></div>
+    ${Object.values(used).some(v => v > 1) ? '<div class="note n-warn" style="margin-top:10px">Two billing names are going to the same staff. Change one of them.</div>' : ''}
+    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn gh" data-a="billagain">Paste again</button><button class="btn" data-a="billfill">Fill the report</button></div>`;
+}
+function billOpen() { openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) sh.classList.add('wide'); const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
+document.addEventListener('paste', e => {
+  if (!S.me || S.me.role !== 'manager' || S.page !== 'report' || S.view !== 'live' || (A && !A().attDone && strictAtt())) return;
+  const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || ''; const rows = parseBilling(t);
+  if (!rows.some(x => !x.total)) { if (document.activeElement && document.activeElement.id === 'bpaste') { e.preventDefault(); S.bill = []; S.billErr = 'That does not look like the staff sales table. Copy it again from the billing software.'; billOpen(); S.billErr = ''; } return; }
+  e.preventDefault(); S.bill = rows; billOpen();
+});
+document.addEventListener('change', e => { const i = e.target.dataset && e.target.dataset.bm; if (i === undefined || !S.bill || !S.bill[+i]) return; S.bill[+i].pick = e.target.value; const y = (document.querySelector('.sh') || {}).scrollTop; billOpen(); const sh = document.querySelector('.sh'); if (sh) sh.scrollTop = y || 0; });
+function billFill() {
+  const rows = (S.bill || []).filter(x => !x.total && x.pick), cnt = {}; rows.forEach(x => { cnt[x.pick] = (cnt[x.pick] || 0) + 1; });
+  if (!rows.length) { document.getElementById('serr').textContent = 'Pick at least one staff name.'; return; }
+  if (Object.values(cnt).some(v => v > 1)) { document.getElementById('serr').textContent = 'Two billing names are going to the same staff. Change one of them.'; return; }
+  const r = R(), M = billMap(); r.rows = r.rows || {};
+  rows.forEach(x => { const row = r.rows[x.pick] = r.rows[x.pick] || blankRow(); row.svc = x.svc ? String(x.svc) : ''; row.bills = x.bills ? String(x.bills) : ''; row.mc = x.mc ? String(x.mc) : ''; M[bRowKey(x)] = x.pick; });
+  try { ls(billKey(), JSON.stringify(M)); } catch (x) {}
+  noAttTell(); touch(S.today, 'rep'); S.bill = null; closeSheet(); render(); toast(rows.length + ' staff filled from billing');
+}
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
 const APP_VER = 1;
@@ -1410,6 +1483,9 @@ document.addEventListener('click', async e => {
       monthDays().forEach(d => { const x = attOf(n, d); cal += `<div class="dc2 ${d > S.today ? 'a-fut' : x.st ? AST[x.st][1] : 'a-none'}"><b>${dnum(d)}</b><span>${x.st === 'in' ? t12(x.in).replace(' am', '').replace(' pm', '') : x.st === 'off' ? 'W/O' : x.st === 'lv' ? 'Leave' : ''}</span></div>`; });
       openSheet(`<h3>${esc(n)}</h3><div class="sub">${monthName(S.today)} · ${esc(ME())}</div><div class="kp" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr)"><div class="k"><div class="kl">Worked</div><div class="kv">${s2.w}</div></div><div class="k"><div class="kl">Week offs</div><div class="kv">${s2.o}<span class="cs"> / ${s2.allowed}</span></div></div><div class="k"><div class="kl">Leave</div><div class="kv" style="color:${s2.l ? 'var(--bad)' : 'inherit'}">${s2.l}</div></div></div>
       <div class="pcal">${cal}</div><div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break; }
+    case 'billopen': S.bill = []; billOpen(); break;
+    case 'billagain': S.bill = []; billOpen(); break;
+    case 'billfill': billFill(); break;
     case 'appupdate': el.disabled = true; el.textContent = 'Updating…'; try { await flushNow(); } catch (x) {} location.reload(); break;
     case 'ycl': S.page = 'closing'; S.cdate = S.yday; lastPage = ''; render(); break;
     case 'clearall': { const c = C(); LKEYS.forEach(kk => { c[kk] = c[kk].filter(r => !r.y && filled(r)); }); if (c.denY) { c.den = {}; c.denY = false; } c.init = {}; touch(CD(), 'clo'); render(); toast("Yesterday's entries cleared"); break; }
