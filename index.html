@@ -503,6 +503,10 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .btab td{border-top:1px solid var(--line);padding:8px;vertical-align:middle}.btab td b{display:block}.btab td small{color:var(--muted);font-size:11.5px}.btab .num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}.btab th:nth-child(n+3){text-align:right}
 .btab select{width:100%;min-width:170px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;font:inherit;font-weight:600}.btab tr.skip td{color:var(--muted)}.btab tr.skip td b{color:var(--muted)}.btab tr.dup select{border-color:var(--bad);box-shadow:0 0 0 2px rgba(208,43,71,.15)}
 .btab tfoot td{font-weight:800;border-top:2px solid var(--line)}.btab tfoot tr.bt td{border-top:0;color:var(--muted);font-weight:700}
+.bcols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 8px}.bcol{display:grid;gap:4px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.bcol select{text-transform:none;letter-spacing:0;font:inherit;font-size:13px;font-weight:600;color:var(--ink);padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;min-width:0;width:100%}
+.sha .btn[disabled]{opacity:.42;cursor:not-allowed}.bchk{margin:6px 0;padding:9px 12px;border-radius:10px;font-size:13px;font-weight:600}.bchk.ok{background:var(--oks);color:var(--ok)}.bchk.warn{background:var(--warns);color:#8a5a00}.bchk.bad{background:#FDE7EA;color:#B0213B}
+.btab small.blow{display:block;color:#B0213B;font-weight:700;font-size:11px}
+@media(max-width:700px){.bcols{grid-template-columns:1fr}}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -1142,70 +1146,131 @@ async function cloShareAll() { const L = window.__clo || []; if (!L.length) retu
   const files = await Promise.all(L.map(x => new Promise(r => x.cv.toBlob(b => r(new File([b], cloName(x.l), { type: 'image/png' })), 'image/png'))));
   try { await navigator.share({ files, title: ME() + ' closing ' + CD() }); } catch (e) { if (e && e.name !== 'AbortError') { const er = document.getElementById('serr'); if (er) er.textContent = 'Sharing did not work here. Use Download all.'; } } }
 
-/* ---------------- fill the report from the billing software: copy the staff table there, paste it here ---------------- */
-const billKey = () => 'gt_billmap|' + ME();
-const billMap = () => { try { return JSON.parse(ls(billKey()) || '{}') || {}; } catch (e) { return {}; } };
+/* ---------------- fill the report from the billing software: copy the staff table there, paste it here ----------------
+   Columns are found by their names, then checked with arithmetic: net + GST = gross, mem cards x card rate = mem card value.
+   If the billing layout changes or net and gross are swapped, the arithmetic wins, and the manager can change any column. */
+const billKey = () => 'gt_billmap|' + ME(), billColKey = () => 'gt_billcols|' + ME();
+const lsj = k => { try { return JSON.parse(ls(k) || '{}') || {}; } catch (e) { return {}; } };
 const bnrm = s => String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
 const bnum = s => { const v = parseFloat(String(s || '').replace(/[₹,\s]/g, '')); return isNaN(v) ? 0 : v; };
+const isNum = x => /^-?[\d,]*\.?\d+$/.test(String(x).replace(/[₹\s]/g, ''));
 const bfmt = v => (Math.round(v * 100) / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const bRowKey = x => x.id && /\d/.test(x.id) ? 'id:' + x.id : 'n:' + bnrm(x.name);
 function parseBilling(text) {
-  const lines = String(text || '').replace(/ /g, ' ').split(/\r?\n/).filter(l => l.trim()); let sub = null; const rows = [];
+  const lines = String(text || '').replace(/ /g, ' ').split(/\r?\n/).filter(l => l.trim()), heads = [], rows = [];
   for (const l of lines) {
     let c = l.includes('\t') ? l.split('\t').map(x => x.trim()) : null;
-    if (c && c.some(x => /net service/i.test(x))) { sub = c.filter(x => x !== ''); continue; }
-    if (!c) { const m = l.match(/^\s*([\d.]+|-)\s+(.+?)\s+(\d{4,}|-)\s+(.+?)\s+(Active|Inactive|-)\s+(\S+)\s+(.*)$/i); if (!m) continue; c = m.slice(1, 7).concat(m[7].trim().split(/\s+/)); }
-    const name = (c[1] || '').trim(); if (!name || /employee/i.test(name)) continue;
-    const nums = c.slice(6).filter(x => x !== ''); if (nums.length < 8 || !nums.every(x => /^-?[\d,]*\.?\d+$/.test(x))) continue;
-    let ni = 3; if (sub) { const k = sub.findIndex(x => /net service/i.test(x)); if (k >= 0 && k < nums.length) ni = k; }
-    const n = nums.map(bnum), L = n.length;
-    rows.push({ name, id: (c[2] || '').trim(), total: /^total$/i.test(name), svc: Math.round(n[ni] * 100) / 100, bills: n[L - 3], mc: n[L - 6] });
+    if (!c) { const m = l.match(/^\s*([\d.]+|-)?\s*([A-Za-z][A-Za-z .'&()-]*?)\s+((?:-?[\d,]*\.?\d+\s*){4,})$/); if (m) c = [m[1] || '', m[2]].concat(m[3].trim().split(/\s+/));
+      else { const m2 = l.match(/^\s*([\d.]+|-)\s+(.+?)\s+(\d{4,}|-)\s+(.+?)\s+(Active|Inactive|-)\s+(\S+)\s+(.*)$/i); if (m2) c = m2.slice(1, 7).concat(m2[7].trim().split(/\s+/)); } }
+    if (!c) continue;
+    let k = c.length; while (k > 0 && (c[k - 1] === '' || isNum(c[k - 1]))) k--;
+    const tail = c.slice(k).filter(x => x !== '');
+    const name = (c.slice(0, k).find(x => /[a-z]/i.test(x) && !/^(active|inactive)$/i.test(x)) || '').replace(/(\s+-)+\s*$/, '').trim();
+    if (tail.length >= 3 && name && !/employee/i.test(name)) { const idc = c.slice(0, k).find(x => /^\d{4,}$/.test(x)) || ''; rows.push({ name, id: idc, total: /^(grand )?total$/i.test(name), v: tail.map(bnum) }); }
+    else if (!rows.length && c.some(x => /[a-z]/i.test(x))) heads.push(c.filter(x => x !== ''));
   }
-  return rows;
+  if (!rows.length) return null;
+  const N = Math.max(...rows.map(r => r.v.length)); rows.forEach(r => { while (r.v.length < N) r.v.unshift(0); });
+  /* column names: the header line whose length fits the number columns best */
+  let labels = null; for (let i = heads.length - 1; i >= 0 && !labels; i--) { const h = heads[i]; if (h.length === N) labels = h.slice(); else if (h.length > N) labels = h.slice(h.length - N); }
+  const cols = Array.from({ length: N }, (_, i) => ({ i, label: labels && labels[i] ? labels[i].replace(/\s+/g, ' ') : 'Column ' + (i + 1) }));
+  return { rows, cols, N };
+}
+function billGuess(B) {
+  const st = B.rows.filter(x => !x.total), g = 1 + (num(S.settings.gst) || 5) / 100, rate = mcRate(), N = B.N, L = B.cols.map(c => c.label.toLowerCase());
+  const col = i => st.map(r => r.v[i]), whole = i => col(i).every(v => Math.abs(v - Math.round(v)) < 1e-9);
+  const fits = (i, j, f) => { const pr = st.filter(r => r.v[j] > 0 || r.v[i] > 0); return pr.length > 0 && pr.every(r => Math.abs(r.v[j] - r.v[i] * f) <= Math.max(0.02, r.v[j] * 0.0002)); };
+  const out = { svc: -1, bills: -1, mc: -1, gross: -1, how: '' };
+  /* net and gross: the pair where one is the other plus GST; the smaller one is net, whatever the labels say */
+  let pairs = []; for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) if (i !== j && Math.max(...col(i)) >= 100 && fits(i, j, g)) pairs.push([i, j]);
+  const byName = re => L.findIndex(x => re.test(x));
+  const nNet = byName(/net\s*serv|net\s*sale|^net/), nGross = byName(/gross\s*serv|gross/);
+  if (pairs.length) { const pr = pairs.find(p => p[0] === nNet) || pairs.find(p => p[1] === nGross) || pairs[0]; out.svc = pr[0]; out.gross = pr[1];
+    out.how = nNet >= 0 && nNet !== pr[0] ? 'swapped' : 'checked'; }
+  else if (nNet >= 0) { out.svc = nNet; out.how = 'name'; }
+  /* mem cards: whole numbers where count x card rate = the mem card value column */
+  const nMc = L.findIndex(x => /mem\s*cards?$/.test(x) && !/₹|value/.test(x));
+  const mcPairs = []; for (let i = 0; i < N; i++) if (whole(i) && col(i).some(v => v > 0)) for (let j = 0; j < N; j++) if (i !== j && fits(i, j, rate)) mcPairs.push(i);
+  out.mc = mcPairs.includes(nMc) ? nMc : mcPairs.length ? mcPairs[0] : nMc;
+  /* bills: the bills "Service" column, else "bills", else the last whole-number column */
+  let nB = -1; for (let i = N - 1; i >= 0; i--) if (/^service$|^bills?$|service\s*bills|bill\s*count/.test(L[i]) && whole(i)) { nB = i; break; }
+  if (nB < 0) for (let i = N - 1; i >= 0; i--) if (whole(i) && i !== out.mc && col(i).some(v => v > 0)) { nB = i; break; }
+  out.bills = nB;
+  /* what the manager picked last time wins when that column is still there and still adds up */
+  const mem = lsj(billColKey()); ['bills', 'mc'].forEach(k => { const i = mem[k] ? B.cols.findIndex(c => c.label === mem[k]) : -1; if (i >= 0 && B.cols[i].label.indexOf('Column ') !== 0) out[k] = i; });
+  if (mem.svc && out.how !== 'checked' && out.how !== 'swapped') { const i = B.cols.findIndex(c => c.label === mem.svc); if (i >= 0) { out.svc = i; out.how = 'name'; } }
+  return out;
+}
+function billCheck(B) {
+  const st = B.rows.filter(x => !x.total), g = 1 + (num(S.settings.gst) || 5) / 100, p = B.pick, w = [];
+  if (p.svc < 0) w.push(['bad', 'Pick which column is the service sale.']);
+  else { const gi = B.cols.findIndex((c, j) => j !== p.svc && st.filter(r => r.v[j] > 0 || r.v[p.svc] > 0).every(r => Math.abs(r.v[j] - r.v[p.svc] * g) <= Math.max(0.02, r.v[j] * 0.0002)) && Math.max(...st.map(r => r.v[j])) >= 100);
+    const lo = B.cols.findIndex((c, j) => j !== p.svc && Math.max(...st.map(r => r.v[j])) >= 100 && st.filter(r => r.v[j] > 0 || r.v[p.svc] > 0).every(r => Math.abs(r.v[p.svc] - r.v[j] * g) <= Math.max(0.02, r.v[p.svc] * 0.0002)));
+    if (lo >= 0) w.push(['bad', `This is the gross sale (with ${num(S.settings.gst) || 5}% GST). The net sale is “${B.cols[lo].label}”.`]);
+    else if (gi >= 0) w.push(['ok', `Service sale + ${num(S.settings.gst) || 5}% GST = “${B.cols[gi].label}” for every staff. The service sale column is right.`]);
+    else w.push(['warn', 'The app could not check this column against the gross sale. Make sure it is the net service sale.']);
+    if (B.guess.how === 'swapped' && p.svc === B.guess.svc) w.push(['warn', 'In this copy the column named net had the bigger numbers, so the app took the smaller one as the net sale.']); }
+  if (p.bills >= 0 && st.some(r => Math.abs(r.v[p.bills] - Math.round(r.v[p.bills])) > 1e-9)) w.push(['bad', 'Bills must be whole numbers. Pick the bills column.']);
+  if (p.mc >= 0 && st.some(r => Math.abs(r.v[p.mc] - Math.round(r.v[p.mc])) > 1e-9)) w.push(['bad', 'Mem cards must be a count, not rupees. Pick the mem card count column.']);
+  const tot = B.rows.find(x => x.total);
+  if (tot && p.svc >= 0) { const s = st.reduce((t, r) => t + r.v[p.svc], 0); if (Math.abs(s - tot.v[p.svc]) > 1) w.push(['warn', `The staff rows add up to ${bfmt(s)} but the billing total is ${bfmt(tot.v[p.svc])}. Some rows may be missing from the copy.`]); }
+  return w;
 }
 function billCands() { const pr = present(), seen = new Set(pr.map(p => p.n)); return pr.map(p => ({ n: p.n, note: p.from ? p.from : '' })).concat(people().filter(p => !seen.has(p.n)).map(p => { const st = (A().att[p.n] || {}).st; return { n: p.n, note: st === 'off' ? 'week off today' : st === 'lv' ? 'leave today' : 'not marked In' }; })); }
 function billMatch(x, cands) {
-  const M = billMap(), k = M[bRowKey(x)]; if (k && cands.some(c => c.n === k)) return k;
+  const M = lsj(billKey()), k = M[bRowKey(x)]; if (k && cands.some(c => c.n === k)) return k;
   const bt = bnrm(x.name).split(' ').filter(w => w.length > 1), full = bt.join(' '); let best = '', bs = 0;
-  cands.forEach(c => { const ct = bnrm(c.n).split(' ').filter(Boolean); let s = 0;
-    if (!ct.length) return;
+  cands.forEach(c => { const ct = bnrm(c.n).split(' ').filter(Boolean); let s = 0; if (!ct.length) return;
     if (ct.join(' ') === full) s = 5; else if (ct.every(w => bt.includes(w))) s = 4; else if (ct.some(w => w.length > 2 && bt.includes(w))) s = 3;
     else if (ct[0].length > 2 && bt.some(w => w.length > 2 && (w.startsWith(ct[0]) || ct[0].startsWith(w)))) s = 2;
     if (s > bs) { bs = s; best = c.n; } });
   return bs >= 2 ? best : '';
 }
 function billSheet() {
-  const rows = S.bill || [], cands = billCands(), staffRows = rows.filter(x => !x.total), tot = rows.find(x => x.total);
-  if (!staffRows.length) return `<h3>Fill from billing</h3><div class="sub">In the billing software, select the staff sales table and copy it (Ctrl + C). Then press Ctrl + V here.</div>
+  const B = S.bill;
+  if (!B) return `<h3>Fill from billing</h3><div class="sub">In the billing software, select the staff sales table with its headings and copy it (Ctrl + C). Then press Ctrl + V here.</div>
     <div class="bpaste" id="bpaste" tabindex="0">${ic('sheet')}<b>Press Ctrl + V to paste</b><small>The numbers fill the report by themselves</small></div><div class="err" id="serr">${S.billErr || ''}</div>
     <div class="sha"><button class="btn gh" data-a="close">Cancel</button></div>`;
-  const used = {}; staffRows.forEach(x => { x.pick = x.pick !== undefined ? x.pick : billMatch(x, cands); if (x.pick) used[x.pick] = (used[x.pick] || 0) + 1; });
-  const sum = f => staffRows.filter(x => x.pick).reduce((t, x) => t + x[f], 0);
-  return `<h3>Fill from billing</h3><div class="sub">Check each name. The numbers replace what is in the report now. Kids cut, products and Google reviews stay as they are.</div>
+  const cands = billCands(), st = B.rows.filter(x => !x.total), tot = B.rows.find(x => x.total), p = B.pick, used = {};
+  st.forEach(x => { x.pick = x.pick !== undefined ? x.pick : billMatch(x, cands); if (x.pick) used[x.pick] = (used[x.pick] || 0) + 1; });
+  const last = SLOTS.map(s => s[0]).filter(k => R().snaps[k]).pop(), prev = last ? (R().snaps[last].data || {}) : {};
+  const v = (x, k) => p[k] >= 0 ? x.v[p[k]] : 0, sum = k => st.filter(x => x.pick).reduce((t, x) => t + v(x, k), 0);
+  const colSel = (k, label) => `<label class="bcol"><span>${label}</span><select data-bcol="${k}"><option value="-1">${k === 'svc' ? 'Pick the column' : 'Leave empty'}</option>${B.cols.map(c => `<option value="${c.i}" ${c.i === p[k] ? 'selected' : ''}>${esc(c.label)} · ${esc(String(st[0] ? (Number.isInteger(st[0].v[c.i]) ? st[0].v[c.i] : bfmt(st[0].v[c.i])) : ''))}</option>`).join('')}</select></label>`;
+  const W = billCheck(B), bad = W.some(x => x[0] === 'bad');
+  return `<h3>Fill from billing</h3><div class="sub">Check the columns and the names. The numbers replace what is in the report now. Kids cut, products and Google reviews stay as they are.</div>
+    <div class="bcols">${colSel('svc', 'Service sale (net)')}${colSel('bills', 'Bills')}${colSel('mc', 'Mem cards (count)')}</div>
+    ${W.map(([t, m]) => `<div class="bchk ${t}">${t === 'ok' ? '✓' : '!'} ${esc(m)}</div>`).join('')}
     <div class="ox"><table class="btab"><thead><tr><th>In billing</th><th>Staff in the report</th><th>Service sale</th><th>Bills</th><th>Mem card</th></tr></thead><tbody>
-    ${rows.map((x, i) => x.total ? '' : `<tr class="${x.pick ? '' : 'skip'} ${x.pick && used[x.pick] > 1 ? 'dup' : ''}"><td><b>${esc(x.name)}</b>${x.id && /\d/.test(x.id) ? `<small>${esc(x.id)}</small>` : ''}</td>
+    ${B.rows.map((x, i) => { if (x.total) return ''; const pv = x.pick && prev[x.pick] ? num(prev[x.pick].svc) : 0, low = x.pick && pv && v(x, 'svc') < pv;
+      return `<tr class="${x.pick ? '' : 'skip'} ${x.pick && used[x.pick] > 1 ? 'dup' : ''}"><td><b>${esc(x.name)}</b>${x.id ? `<small>${esc(x.id)}</small>` : ''}</td>
       <td><select id="bm_${i}" data-bm="${i}"><option value="">Leave out</option>${cands.map(c => `<option value="${esc(c.n)}" ${c.n === x.pick ? 'selected' : ''}>${esc(c.n)}${c.note ? ' · ' + esc(c.note) : ''}</option>`).join('')}</select></td>
-      <td class="num">${bfmt(x.svc)}</td><td class="num">${x.bills}</td><td class="num">${x.mc || ''}</td></tr>`).join('')}</tbody>
+      <td class="num">${p.svc >= 0 ? bfmt(v(x, 'svc')) : '–'}${low ? `<small class="blow">lower than ${slotName(last)} (${bfmt(pv)})</small>` : ''}</td><td class="num">${p.bills >= 0 ? v(x, 'bills') : '–'}</td><td class="num">${p.mc >= 0 && v(x, 'mc') ? v(x, 'mc') : ''}</td></tr>`; }).join('')}</tbody>
     <tfoot><tr><td colspan="2">Going into the report</td><td class="num">${bfmt(sum('svc'))}</td><td class="num">${sum('bills')}</td><td class="num">${sum('mc') || ''}</td></tr>
-    ${tot ? `<tr class="bt"><td colspan="2">Billing total</td><td class="num">${bfmt(tot.svc)}</td><td class="num">${tot.bills}</td><td class="num">${tot.mc || ''}</td></tr>` : ''}</tfoot></table></div>
-    ${Object.values(used).some(v => v > 1) ? '<div class="note n-warn" style="margin-top:10px">Two billing names are going to the same staff. Change one of them.</div>' : ''}
-    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn gh" data-a="billagain">Paste again</button><button class="btn" data-a="billfill">Fill the report</button></div>`;
+    ${tot ? `<tr class="bt"><td colspan="2">Billing total</td><td class="num">${p.svc >= 0 ? bfmt(tot.v[p.svc]) : '–'}</td><td class="num">${p.bills >= 0 ? tot.v[p.bills] : '–'}</td><td class="num">${p.mc >= 0 && tot.v[p.mc] ? tot.v[p.mc] : ''}</td></tr>` : ''}</tfoot></table></div>
+    ${Object.values(used).some(n => n > 1) ? '<div class="bchk bad">! Two billing names are going to the same staff. Change one of them.</div>' : ''}
+    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn gh" data-a="billagain">Paste again</button><button class="btn" data-a="billfill" ${bad ? 'disabled' : ''}>Fill the report</button></div>`;
 }
-function billOpen() { openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) sh.classList.add('wide'); const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
+function billOpen(keepScroll) { const y = keepScroll ? (document.querySelector('.sh') || {}).scrollTop : 0; openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) { sh.classList.add('wide'); if (y) sh.scrollTop = y; } const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
 document.addEventListener('paste', e => {
-  if (!S.me || S.me.role !== 'manager' || S.page !== 'report' || S.view !== 'live' || (A && !A().attDone && strictAtt())) return;
-  const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || ''; const rows = parseBilling(t);
-  if (!rows.some(x => !x.total)) { if (document.activeElement && document.activeElement.id === 'bpaste') { e.preventDefault(); S.bill = []; S.billErr = 'That does not look like the staff sales table. Copy it again from the billing software.'; billOpen(); S.billErr = ''; } return; }
-  e.preventDefault(); S.bill = rows; billOpen();
+  if (!S.me || S.me.role !== 'manager' || S.page !== 'report' || S.view !== 'live' || (!A().attDone && strictAtt())) return;
+  const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || '', B = parseBilling(t);
+  if (!B || !B.rows.some(x => !x.total)) { if (document.activeElement && document.activeElement.id === 'bpaste') { e.preventDefault(); S.bill = null; S.billErr = 'That does not look like the staff sales table. Copy it again from the billing software, with its headings.'; billOpen(); S.billErr = ''; } return; }
+  e.preventDefault(); B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen();
 });
-document.addEventListener('change', e => { const i = e.target.dataset && e.target.dataset.bm; if (i === undefined || !S.bill || !S.bill[+i]) return; S.bill[+i].pick = e.target.value; const y = (document.querySelector('.sh') || {}).scrollTop; billOpen(); const sh = document.querySelector('.sh'); if (sh) sh.scrollTop = y || 0; });
+document.addEventListener('change', e => { const d = e.target.dataset || {}; if (!S.bill) return;
+  if (d.bm !== undefined && S.bill.rows[+d.bm]) { S.bill.rows[+d.bm].pick = e.target.value; billOpen(true); }
+  else if (d.bcol) { S.bill.pick[d.bcol] = +e.target.value; billOpen(true); } });
 function billFill() {
-  const rows = (S.bill || []).filter(x => !x.total && x.pick), cnt = {}; rows.forEach(x => { cnt[x.pick] = (cnt[x.pick] || 0) + 1; });
-  if (!rows.length) { document.getElementById('serr').textContent = 'Pick at least one staff name.'; return; }
-  if (Object.values(cnt).some(v => v > 1)) { document.getElementById('serr').textContent = 'Two billing names are going to the same staff. Change one of them.'; return; }
-  const r = R(), M = billMap(); r.rows = r.rows || {};
-  rows.forEach(x => { const row = r.rows[x.pick] = r.rows[x.pick] || blankRow(); row.svc = x.svc ? String(x.svc) : ''; row.bills = x.bills ? String(x.bills) : ''; row.mc = x.mc ? String(x.mc) : ''; M[bRowKey(x)] = x.pick; });
-  try { ls(billKey(), JSON.stringify(M)); } catch (x) {}
+  const B = S.bill; if (!B) return; const rows = B.rows.filter(x => !x.total && x.pick), cnt = {}, p = B.pick; rows.forEach(x => { cnt[x.pick] = (cnt[x.pick] || 0) + 1; });
+  const er = document.getElementById('serr');
+  if (billCheck(B).some(x => x[0] === 'bad')) { er.textContent = 'Fix the red notes first.'; return; }
+  if (!rows.length) { er.textContent = 'Pick at least one staff name.'; return; }
+  if (Object.values(cnt).some(v => v > 1)) { er.textContent = 'Two billing names are going to the same staff. Change one of them.'; return; }
+  const r = R(), M = lsj(billKey()), set = (row, k, i) => { if (i < 0) return; const x = row.__v[i]; row.r[k] = x ? String(Math.round(x * 100) / 100) : ''; };
+  r.rows = r.rows || {};
+  rows.forEach(x => { const row = r.rows[x.pick] = r.rows[x.pick] || blankRow(), o = { r: row, __v: x.v }; set(o, 'svc', p.svc); set(o, 'bills', p.bills); set(o, 'mc', p.mc); M[bRowKey(x)] = x.pick; });
+  const C2 = {}; ['svc', 'bills', 'mc'].forEach(k => { if (p[k] >= 0) C2[k] = B.cols[p[k]].label; });
+  try { ls(billKey(), JSON.stringify(M)); ls(billColKey(), JSON.stringify(C2)); } catch (x) {}
   noAttTell(); touch(S.today, 'rep'); S.bill = null; closeSheet(); render(); toast(rows.length + ' staff filled from billing');
 }
 
@@ -1483,8 +1548,8 @@ document.addEventListener('click', async e => {
       monthDays().forEach(d => { const x = attOf(n, d); cal += `<div class="dc2 ${d > S.today ? 'a-fut' : x.st ? AST[x.st][1] : 'a-none'}"><b>${dnum(d)}</b><span>${x.st === 'in' ? t12(x.in).replace(' am', '').replace(' pm', '') : x.st === 'off' ? 'W/O' : x.st === 'lv' ? 'Leave' : ''}</span></div>`; });
       openSheet(`<h3>${esc(n)}</h3><div class="sub">${monthName(S.today)} · ${esc(ME())}</div><div class="kp" style="margin-bottom:14px;grid-template-columns:repeat(3,1fr)"><div class="k"><div class="kl">Worked</div><div class="kv">${s2.w}</div></div><div class="k"><div class="kl">Week offs</div><div class="kv">${s2.o}<span class="cs"> / ${s2.allowed}</span></div></div><div class="k"><div class="kl">Leave</div><div class="kv" style="color:${s2.l ? 'var(--bad)' : 'inherit'}">${s2.l}</div></div></div>
       <div class="pcal">${cal}</div><div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break; }
-    case 'billopen': S.bill = []; billOpen(); break;
-    case 'billagain': S.bill = []; billOpen(); break;
+    case 'billopen': S.bill = null; billOpen(); break;
+    case 'billagain': S.bill = null; billOpen(); break;
     case 'billfill': billFill(); break;
     case 'appupdate': el.disabled = true; el.textContent = 'Updating…'; try { await flushNow(); } catch (x) {} location.reload(); break;
     case 'ycl': S.page = 'closing'; S.cdate = S.yday; lastPage = ''; render(); break;
