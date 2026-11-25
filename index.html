@@ -636,6 +636,50 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .tm-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted);font-weight:700;flex-wrap:wrap}.tm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#1E9E63}.tm-leg i.off{background:#9DB2E6}.tm-leg i.lv{background:#E8A49C}
 .tm-sec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:14px 18px}.tm-sec b{display:block;font-size:14px}.tm-sec small{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}.tm-sec .tm-tg{margin:0}
 .bref-mvh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.bref-mvr{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:4px 0}.bref-mvr .xb{flex:none}.mvd{margin-top:4px}
+#app,#layer{zoom:var(--uz,1)}
+.dstrip{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.ds{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:99px;font-size:12.5px;font-weight:700;background:var(--card);color:var(--ink);box-shadow:0 1px 0 rgba(10,26,43,.04),0 4px 14px rgba(10,26,43,.06);white-space:nowrap}
+button.ds{cursor:pointer}button.ds:hover{filter:brightness(.97)}
+.ds i{font-style:normal;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:900;flex:none}
+.ds.ok i{background:var(--gts);color:var(--gt)}.ds.ok{color:var(--muted)}
+.ds.soon i{background:var(--warns);color:var(--warn)}.ds.soon{box-shadow:inset 0 0 0 1.5px #F3C77A}
+.ds.late i{background:var(--bads);color:var(--bad)}.ds.late{color:var(--bad);box-shadow:inset 0 0 0 1.5px #F0A69C}
+.ds.mu i{background:var(--soft);color:var(--muted)}.ds.mu{color:var(--muted)}
+@media (max-width:700px){.dstrip{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px 14px;padding:2px 16px 4px}.dstrip::-webkit-scrollbar{display:none}}
+.donev{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:rgba(6,14,24,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:dvIn .25s ease both}
+.donev.out{animation:dvOut .3s ease forwards}
+.donec{display:grid;justify-items:center;gap:10px;background:#0F2236;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:34px 40px 30px;min-width:260px;max-width:86vw;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:dcIn .45s cubic-bezier(.2,1.4,.4,1) both}
+.donec svg{width:84px;height:84px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.donec circle{stroke:#2EBF7E;stroke-width:3;stroke-dasharray:150;stroke-dashoffset:150;animation:dvDraw .55s .1s ease-out forwards;fill:rgba(46,191,126,.12)}
+.donec path{stroke:#7EE0AE;stroke-width:4.5;stroke-dasharray:40;stroke-dashoffset:40;animation:dvDraw .35s .5s ease-out forwards}
+.donec b{font-family:var(--fd);font-size:22px;font-weight:700}.donec small{font-size:14px;color:#A9C1D6;font-weight:600}
+@keyframes dvIn{from{opacity:0}}@keyframes dvOut{to{opacity:0}}@keyframes dcIn{from{opacity:0;transform:scale(.85)}}@keyframes dvDraw{to{stroke-dashoffset:0}}
+.uiset{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}.uiset b{display:block;font-size:14px}.uiset small{display:block;font-size:12px;color:var(--muted);font-weight:600}.uiset .tm-tg{margin:0}
+.uiset+.f2{margin-top:14px}
+/* dark look: only the app area changes; the WhatsApp images and the Excel-style sheets keep their colours */
+html.dark{color-scheme:dark}
+html.dark body{background:#0B1522}
+html.dark #app,html.dark #layer{--ground:#0B1522;--card:#132030;--ink:#E6EDF5;--muted:#95A5B8;--line:#24364B;--soft:#1A2A3C;--gts:#123A2B;--pinks:#3B1630;--oks:#123A2B;--warns:#3A2D12;--bads:#3E1D1B;--infos:#182A4C;--gt:#34C584;--ok:#4CC98A;--warn:#E8AE45;--bad:#F2786B;--info:#93AEF5;--pink:#F25FA2;color:var(--ink)}
+html.dark #app .xs,html.dark #app .xt,html.dark #app .mrep,html.dark #layer .xs,html.dark #layer .xt,html.dark #layer .mrep,html.dark #app .ai,html.dark #layer .ai{--card:#fff;--ink:#0A1A2B;--muted:#5A6779;--line:#E2E7EF;--soft:#F6F8FB;--gt:#1E9E63;--ok:#14804A;--warn:#9A6200;--bad:#B4362B;--info:#2D4E9E;--pink:#E0217A;--gts:#E2F5EC;--pinks:#FCE4EF;--oks:#DFF3E8;--warns:#FDF0D5;--bads:#FBE6E3;--infos:#E6EDFB;color:#0A1A2B;color-scheme:light}
+html.dark .ib.n{background:#1E2D40;color:var(--ink)}
+html.dark .tile:hover{background:#1A2A3C}
+html.dark .ini.H,html.dark .ftag{background:#223246;color:var(--muted)}
+html.dark .tg button,html.dark .stp button{background:#0F1A27;color:var(--muted)}
+html.dark .att2 td:first-child,html.dark .att2 th:first-child,html.dark .att3 td:first-child,html.dark .att3 th:first-child,html.dark .amon .anm{background:var(--card)}
+html.dark .a-lv{background:#4A221F}
+html.dark .x-ex{background:var(--warns)}
+html.dark .att3 .tin.need{background:#3A2D12;border-color:#8A6A2A}
+html.dark .ib.r,html.dark .bchk.bad{background:#47202A;color:#F5A3B0}
+html.dark #app :where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea),html.dark #layer :where(input:not([type=checkbox]):not([type=radio]):not([type=range]),select,textarea){background-color:#0F1A27;color:var(--ink);border-color:#2A3D53}
+html.dark #app .xs input,html.dark #app .xt input,html.dark #app .xt select,html.dark #app .xt textarea,html.dark #layer .xt input{background-color:transparent;color:#0A1A2B;border-color:transparent}
+html.dark .bref-sw button.on,html.dark .tm-tg button.on{background:#2A3D53;color:var(--ink)}
+html.dark .tm-wk td,html.dark .tm-wk td.tm-n,html.dark .tm-pd.tm-wk{background:#1A2B3F}
+html.dark .tm-today td,html.dark .tm-today td.tm-n,html.dark .tm-pd.tm-today{background:#12301F}
+html.dark .cvs{background-color:#0F1A27}
+html.dark .n-warn{color:#F3C77A}html.dark .n-bad{color:#F5A3A0}html.dark .n-ok{color:#8FE0B8}html.dark .n-info{color:#AFC4F7}
+.nav{zoom:var(--uzi,1)}
+@media(max-width:600px){html.uzl .hd .hrow{flex-wrap:wrap;row-gap:12px}html.uzl .hd .hrow>div:first-child{flex:1 1 100%;order:2}html.uzl .hd .rt{margin-left:auto}}
+html.dark .ds.soon{box-shadow:inset 0 0 0 1.5px #7A5A1E}html.dark .ds.late{box-shadow:inset 0 0 0 1.5px #7A3A33}
 .tm-ml{display:none}
 .tm-back{display:inline-flex;align-items:center;gap:6px;color:#C9F3DD;font-weight:800;font-size:13px;margin:-4px 0 10px}
 .tm-mg{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 2px 6px}
@@ -1090,7 +1134,7 @@ VIEWS.today = () => {
   const yb = ydUsed() && ['open', 'back', 'changed'].includes(yc.status) && !yc.waived ? `<div class="next ywait"><span class="ib" style="background:rgba(255,255,255,.22);color:#fff">${ic('wallet')}</span><div class="tx"><small>${yc.status === 'back' ? 'Sent back' : 'Not sent yet'}</small><b>${dLabel(S.yday)} closing</b></div><button class="btn sm" data-a="ycl">Open</button></div>` : '';
   const tl = `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Reports today</div><span class="pill p-mu">${SLOTS.filter(s => r.snaps[s[0]]).length} of 5 sent</span></div><div class="tl">${SLOTS.map(([id]) => { const s = r.snaps[id], nm = slotName(id);
     return `<button class="tli ${s ? 'sent' : id === d ? 'due' : ''}" data-a="openslot" data-v="${id}"><b>${nm}</b><small>${s ? '✓ ' + s.at : id === d ? 'Next' : 'Later'}</small></button>`; }).join('')}</div></section>`;
-  return { eb: ebDate(), title: esc(ME()), sub: greet(), hx, body: notice + `<div class="duo ${yb ? '' : 'one'}">${next}${yb}</div>` + tl };
+  return { eb: ebDate(), title: esc(ME()), sub: greet(), hx, body: dayStrip() + notice + `<div class="duo ${yb ? '' : 'one'}">${next}${yb}</div>` + tl };
 };
 
 /* ---------------- ATTENDANCE ---------------- */
@@ -1585,7 +1629,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 2;
+const APP_VER = 3;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -1818,6 +1862,47 @@ function tmPerson(n) {
     body: `${tmSecRow(n)}${kp}${bars}${table}${prods}` };
 }
 
+/* ---------------- the day at a glance: one line on Today with attendance, every report time and the closing ---------------- */
+const fmtMin = m => m < 60 ? m + ' min' : Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) + ' min' : '');
+function dayStrip() {
+  if (!S.today || !S.days[S.today]) return '';
+  const a = A(), r = R(), c = S.days[S.today].clo, nowM = istMin(), times = slotTimes(), it = [];
+  it.push(a.attDone ? ['ok', 'Attendance done'] : ['late', 'Attendance not marked', 'att']);
+  SLOTS.forEach(([k], i) => { if (k === 'cl') return; const nm = slotName(k), sn = r.snaps[k];
+    if (sn) { it.push(['ok', nm + ' sent ' + sn.at]); return; }
+    if (skipped(k)) { it.push(['mu', nm + ' skipped']); return; }
+    const [h, m] = String(times[i] || '0:0').split(':').map(Number), dif = h * 60 + m - nowM;
+    it.push(dif > 60 ? ['mu', nm + ' at ' + t12(times[i]), 'report'] : dif > 0 ? ['soon', nm + ' due in ' + fmtMin(dif), 'report'] : ['late', nm + ' due ' + fmtMin(-dif) + ' ago', 'report']); });
+  const started = !!(c.totSales || (c.exp || []).some(filled) || Object.values(c.den || {}).some(v => num(v)));
+  it.push(c.status === 'approved' ? ['ok', 'Day approved'] : c.status === 'sent' ? ['ok', 'Closing sent' + (c.sentAt ? ' ' + c.sentAt : '')]
+    : c.status === 'back' ? ['late', 'Closing sent back', 'closing'] : c.status === 'changed' ? ['soon', 'Closing changed, send again', 'closing']
+    : [started ? 'soon' : 'mu', started ? 'Closing started' : 'Closing not started', 'closing']);
+  const mark = { ok: '✓', soon: '●', late: '!', mu: '○' };
+  return `<div class="dstrip" role="status">${it.map(([t, txt, pg]) => `<${pg ? `button data-a="go" data-v="${pg}"` : 'span'} class="ds ${t}"><i>${mark[t]}</i>${esc(txt)}</${pg ? 'button' : 'span'}>`).join('')}</div>`;
+}
+setInterval(() => { if (S.page !== 'today' || typing()) return; const el = document.querySelector('.dstrip'); if (el) el.outerHTML = dayStrip(); }, 60000);
+
+/* ---------------- a clear "sent" moment after a report or the closing goes ---------------- */
+function doneShow(title, sub) {
+  document.querySelectorAll('.donev').forEach(x => x.remove());
+  const o = document.createElement('div'); o.className = 'donev'; o.setAttribute('role', 'alert');
+  o.innerHTML = `<div class="donec"><svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23"/><path d="M15.5 27.5l7 7 14-15"/></svg><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</div>`;
+  const bye = () => { if (!o.isConnected || o.classList.contains('out')) return; o.classList.add('out'); setTimeout(() => o.remove(), 350); };
+  o.addEventListener('click', bye); document.body.appendChild(o); setTimeout(bye, 2200);
+}
+
+/* ---------------- look: light / dark / same as the phone, and the text size (kept on this device) ---------------- */
+const uiP = () => { try { return Object.assign({ theme: 'light', size: '1' }, JSON.parse(ls('gt_ui') || '{}')); } catch (e) { return { theme: 'light', size: '1' }; } };
+const darkMQ = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : { matches: false, addEventListener() {} };
+function uiApply() { const p = uiP(), dk = p.theme === 'dark' || (p.theme === 'auto' && darkMQ.matches), de = document.documentElement;
+  de.classList.toggle('dark', dk); de.style.setProperty('--uz', String(+p.size || 1)); de.style.setProperty('--uzi', String(1 / (+p.size || 1))); de.classList.toggle('uzl', +p.size > 1); }
+try { darkMQ.addEventListener('change', uiApply); } catch (e) {}
+uiApply();
+const uiSet = (k, v) => { const p = uiP(); p[k] = v; ls('gt_ui', JSON.stringify(p)); uiApply(); };
+const uiRows = () => { const p = uiP();
+  return `<div class="uiset"><div><b>Look</b><small>Only on this phone or computer</small></div>${tmTg('uitheme', p.theme, [['light', 'Light'], ['dark', 'Dark'], ['auto', 'Same as phone']])}</div>
+    <div class="uiset"><div><b>Text size</b></div>${tmTg('uisize', String(p.size), [['1', 'Normal'], ['1.12', 'Large'], ['1.25', 'Extra large']])}</div>`; };
+
 const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + mrId();
 const dmy = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
 const MRC = ['ts', 'svc', 'bills', 'abv', 'pend', 'tp', 'prod', 'ppend', 'rev', 'mc'];
@@ -1922,7 +2007,7 @@ const SHEETS = {
   other() { const o = S.staff.filter(x => x.branch !== ME() && (x.g === 'G' || x.g === 'L')).map(x => [x.branch + '|' + x.name + '|' + x.g, `${x.name} · ${x.branch}`]);
     return `<h3>Staff from another branch</h3><div class="sub">Their sales are saved under their own name</div>${fl('o_s', 'Staff', '', '', [['', 'Pick the staff']].concat(o))}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="other">Add for today</button></div>`; },
   newstaff() { return `<h3>New staff</h3><div class="sub">The controller is told</div>${fl('s_n', 'Name', '')}${fl('s_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newstaff">Add</button></div>`; },
-  me() { return `<h3>${esc(S.me.name)}</h3><div class="sub">Manager · ${esc(ME())}</div><div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
+  me() { return `<h3>${esc(S.me.name)}</h3><div class="sub">Manager · ${esc(ME())}</div>${uiRows()}<div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
 };
 const SAVE = {
   async prod() { const n = val('pn'), isNew = val('pp') === '__new', p = isNew ? String(val('pnn') || '').trim().replace(/\s+/g, ' ') : val('pp'), q = num(val('pq')), it = S.stock.find(x => x.branch === ME() && x.n.toLowerCase() === String(p).toLowerCase());
@@ -2043,7 +2128,7 @@ async function sendSlot() {
   const lower = prev ? present().filter(p => prev[p.n] && ['svc', 'bills'].some(f => num((r.rows[p.n] || {})[f]) < num(prev[p.n][f]))).map(p => p.n) : [];
   if (lower.length && w.dataset.ok !== d) { w.dataset.ok = d; w.innerHTML = `<div class="note n-warn" style="margin-top:12px"><b>Lower than the ${slotName(last)} report:</b> ${lower.map(esc).join(', ')}. Press Send again if it's right.</div>`; return; }
   touch(S.today, 'rep'); if (!(await flushNow())) { toast('No internet. Send again when online.'); return; }
-  try { const x = await call('appSendSlot', S.tok, ME(), S.today, d); r.snaps[d] = { at: x.at, data: clone(r.rows), mcAmt: r.mcAmt, list: clone(r.list) }; r._v = x._v; persist(); toast(slotName(d) + ' report sent'); render(); }
+  try { const x = await call('appSendSlot', S.tok, ME(), S.today, d); r.snaps[d] = { at: x.at, data: clone(r.rows), mcAmt: r.mcAmt, list: clone(r.list) }; r._v = x._v; persist(); render(); doneShow(slotName(d) + ' report sent', 'Sent at ' + x.at); }
   catch (e) { toast(e instanceof NetErr ? 'No internet. Send again when online.' : e.message); }
 }
 async function submitClosing() {
@@ -2063,7 +2148,7 @@ async function submitClosing() {
   const btn = document.querySelector('[data-a=submit]'); if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
   if (!(await flushNow())) { toast('No internet. Send again when online.'); render(); return; }
   try { await call('appSendClosing', S.tok, ME(), d, miss); const x = await call('appDay', S.tok, ME(), d); S.days[d] = { att: x.att, rep: x.rep, clo: x.clo }; day(d); S.used[d] = true; persist();
-    toast(miss.length > (denTot() ? 1 : 0) ? 'Closing sent · controller told what is missing' : 'Closing sent'); render(); }
+    render(); doneShow('Closing sent', 'Sent at ' + now() + (miss.length > (denTot() ? 1 : 0) ? ' · the controller can see what is missing' : '')); }
   catch (e) { toast(e instanceof NetErr ? 'No internet. Send again when online.' : e.message); render(); }
 }
 async function stockOp(op, n, extra) { const it = S.stock.find(x => x.branch === ME() && x.n === n), was = it ? it.c : null;
@@ -2103,6 +2188,8 @@ document.addEventListener('click', async e => {
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
     case 'go': if (v === 'team') S.tmSel = null; S.page = v; closeSheet(); render(); break;
     case 'me': openSheet(SHEETS.me()); break;
+    case 'uitheme': uiSet('theme', v); sheetUpdate(SHEETS.me()); break;
+    case 'uisize': uiSet('size', v); sheetUpdate(SHEETS.me()); break;
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {};
       if (cur.st === v) { A().att[n] = { st: '', in: cur.in || '', out: cur.out || '' }; touch(S.today, 'att'); render(); break; } /* tapping the chosen option again clears it */
       A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
