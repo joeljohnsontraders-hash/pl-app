@@ -19,6 +19,8 @@
 #gti.out{animation:gtiOut .38s .14s cubic-bezier(.4,0,.2,1) forwards;pointer-events:none}
 #gti.out .gti-in{animation:gtiLift .22s cubic-bezier(.3,0,.6,1) forwards}
 #gti.hold *{animation-play-state:paused!important}
+html:has(#gti:not(.out)),html:has(#gti:not(.out)) body{overflow:hidden!important;scrollbar-width:none}
+html:has(#gti:not(.out))::-webkit-scrollbar{display:none}
 #gti.quick::before,#gti.quick .gti-st,#gti.quick .gti-in{display:none}
 #gti.quick.slow .gti-in{display:flex;animation:gtiFade .3s ease forwards}
 #gti.quick .gti-fx{display:none}#gti.quick .gti-logo,#gti.quick .gti-logo *{animation:none!important}
