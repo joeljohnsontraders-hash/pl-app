@@ -235,6 +235,12 @@ const API = {
     const clean = {}; Object.keys(T).slice(0, 60).forEach((n) => { const x = T[n] || {}; clean[String(n).slice(0, 60)] = { s: Math.max(0, N(x.s)), p: Math.max(0, N(x.p)) }; });
     await setSetting(sql, "mtgt|" + b + "|" + ym, clean); return { ok: true, targets: clean };
   },
+  /* month report cells the manager typed over (cell key -> text); an empty cell goes back to the app's number */
+  async appMonthEdit(tok, b, ym, E) {
+    const u = await who(tok); can(u, b, true); if (!/^\d{4}-\d{2}$/.test(String(ym))) err("Pick the month."); E = E && typeof E === "object" ? E : {};
+    const clean = {}; Object.keys(E).slice(0, 600).forEach((k) => { const v = String(E[k] == null ? "" : E[k]).trim().slice(0, 80); if (v !== "") clean[String(k).slice(0, 90)] = v; });
+    await setSetting(sql, "medit|" + b + "|" + ym, clean); return { ok: true, edits: clean };
+  },
   async appLayout(tok, b, L) { const u = await who(tok); can(u, b, true);
     if (L !== null && (typeof L !== "object" || Array.isArray(L) || JSON.stringify(L).length > 4000)) err("This layout could not be saved.");
     await setSetting(sql, "cloLayout|" + b, L); return { ok: true }; },
