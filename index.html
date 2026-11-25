@@ -543,6 +543,10 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .btab.mt input{width:130px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;font-weight:600;text-align:right}
 .mr-edit td[contenteditable]{cursor:text;outline:none;position:relative}.mr-edit td[contenteditable]:hover{box-shadow:inset 0 0 0 2px rgba(37,99,235,.25)}.mr-edit td[contenteditable]:focus{box-shadow:inset 0 0 0 2px #2563EB;background:#fff!important}
 .mr-edit td.mr-ov::after{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 9px 9px 0;border-color:transparent #F4B400 transparent transparent}
+.mc{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:10px}.mc-n{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.mc-n b{font-size:15px}.mc-n .xb{font-size:20px;color:var(--ink)}.mc-n .xb:disabled{opacity:.3}
+.mc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.mc-h{text-align:center;font-size:11px;font-weight:800;color:var(--muted);padding:4px 0}.mc-d{height:38px;border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);background:transparent;font-variant-numeric:tabular-nums}.mc-d:hover:not(:disabled){background:var(--soft)}.mc-d:disabled{color:#C3CBD6}
+.mc-d.td{box-shadow:inset 0 0 0 1.5px var(--line)}.mc-d.in{background:rgba(46,204,140,.14);border-radius:0}.mc-d.lo,.mc-d.hi{background:var(--gt);color:#fff}.mc-d.lo{border-radius:10px 0 0 10px}.mc-d.hi{border-radius:0 10px 10px 0}.mc-d.lo.hi{border-radius:10px}
+.mc-q{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.mc-r{margin-top:10px;font-size:14px}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -1129,7 +1133,7 @@ VIEWS.sales = () => {
   const PL = { open: ['Closing not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] };
   const recent = mo.slice().sort((a, b) => a.d < b.d ? 1 : -1).slice(0, 7).map(x => { const s = x.d === S.yday ? S.days[S.yday].clo.status : x.status, pl = PL[s] || PL.open; return `<div class="row"><div class="l"><b>${dLabel(x.d)}</b><small>${inr(x.net)} · ${x.bills} bills</small></div><span class="pill ${pl[1]}">${pl[0]}</span></div>`; }).join('');
   return { eb: monthName(S.today) + ' ' + S.today.slice(0, 4), title: 'Insights', sub: esc(ME()), right: '', hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Month so far</small><b>${inr(tot)}</b></div><div class="gl"><small>Per day</small><b>${mo.length ? inr(sum(mo.map(x => x.net)) / mo.length) : '–'}</b></div><div class="gl"><small>Best day</small><b>${best ? inr(best.net) : '–'}</b></div></div>`,
-    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('sheet')}</span><span>Month report<div class="cs" style="margin-top:2px">till ${dLabel(S.today)} · for the WhatsApp group</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" id="mereset" data-a="mereset" ${Object.keys(S.settings[meKey()] || {}).length ? '' : 'hidden'}>Undo typed numbers</button><button class="btn sm" data-a="mrimg">${ic('img')}Image</button></span></div><div class="cs" style="margin:2px 0 8px">Click any cell to type over it, like Excel. Totals follow. Clear a cell to bring back the app's number. Yellow corner = typed by hand.</div><div class="ox mrbox">${monthRepHTML(true)}</div></section>
+    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('sheet')}</span><span>${mrWhole() ? 'Month report' : 'Report'}<div class="cs" style="margin-top:2px">${mrCustom() ? dLabel(mrRange().from) + ' to ' + dLabel(mrRange().to) : 'till ' + dLabel(S.today)} · for the WhatsApp group</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="mrcal">${ic('cal')}${dShortR(mrRange().from)} – ${dShortR(mrRange().to)}</button><button class="btn sm gh" id="mereset" data-a="mereset" ${Object.keys(S.settings[meKey()] || {}).length ? '' : 'hidden'}>Undo typed numbers</button><button class="btn sm" data-a="mrimg">${ic('img')}Image</button></span></div><div class="cs" style="margin:2px 0 8px">Click any cell to type over it, like Excel. Totals follow. Clear a cell to bring back the app's number. Yellow corner = typed by hand.</div><div class="ox mrbox">${S.mrLoading ? '<div class="spin dk" style="margin:30px auto"></div>' : monthRepHTML(true)}</div></section>
     <div class="g2"><section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Every day</div></div>${calendar(mo, Cc.net)}</section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('staff')}</span>Staff sales</div><span class="cs">this month</span></div>${arr.length ? arr.map(([n, v]) => `<div style="padding:8px 0"><div style="display:flex;justify-content:space-between;font-weight:800"><span>${esc(n)}</span><span class="num">${inr(v)}</span></div><div class="bar"><i style="width:${Math.round(v / mx * 100)}%"></i></div></div>`).join('') : '<div class="empty">Sales show here as the reports come in.</div>'}</section></div>
     ${gCard(gSplit(S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === S.today.slice(0, 7)), [R().rows]), 'this month')}
@@ -1264,7 +1268,7 @@ function billMatch(x, cands) {
     if (s > bs) { bs = s; best = c.n; } });
   return bs >= 2 ? best : '';
 }
-function billOpen(keepScroll) { mvCapture(); const y = keepScroll ? (document.querySelector('.sh') || {}).scrollTop : 0; openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) { sh.classList.add('wide'); if (y) sh.scrollTop = y; } const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
+function billOpen(keepScroll) { mvCapture(); const y = keepScroll ? (document.querySelector('.sh') || {}).scrollTop : 0; if (keepScroll && document.querySelector('#layer .sh')) sheetUpdate(billSheet()); else openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) { sh.classList.add('wide'); if (y) sh.scrollTop = y; } const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
 document.addEventListener('paste', e => {
   if (!S.me || S.me.role !== 'manager' || S.page !== 'report' || S.view !== 'live' || (!A().attDone && strictAtt())) return;
   const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || '', B = parseBilling(t), ae = document.activeElement || {}, modal = !!document.querySelector('.ov');
@@ -1475,15 +1479,46 @@ function cloJoined() {
 /* ---------------- month report till date: the same sheet they post in the group ----------------
    Rows are the staff who are in the daily reports (gents and ladies; OM and house keeping go in the unnamed row, as in their Excel).
    Every cell can be typed over by the manager; totals follow the typed numbers. Clearing a cell brings back the app's number. */
-const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + S.today.slice(0, 7);
+/* report dates: the month so far by default, or any dates picked on the calendar (a week, last month...) */
+const mrRange = () => S.mrRange || { from: S.today.slice(0, 8) + '01', to: S.today };
+const mrCustom = () => { const r = mrRange(); return !(r.from === S.today.slice(0, 8) + '01' && r.to === S.today); };
+const mrWhole = () => { const r = mrRange(); return r.from.slice(8) === '01' && r.from.slice(0, 7) === r.to.slice(0, 7) && (r.to === S.today || +r.to.slice(8) === dim(r.to)); };
+const mrId = () => mrCustom() ? mrRange().from + '_' + mrRange().to : S.today.slice(0, 7);
+const ymOf = d => d.slice(0, 7), addMon = (ym, k) => { const d = new Date(Date.UTC(+ym.slice(0, 4), +ym.slice(5, 7) - 1 + k, 1)); return d.toISOString().slice(0, 7); };
+const mrDays = () => { const r = mrRange(), cur = S.today.slice(0, 7), pool = [], S2 = S.mcache || {};
+  for (let ym = ymOf(r.from); ym <= ymOf(r.to); ym = addMon(ym, 1)) pool.push(...(ym === cur ? S.month : (S2[ym] || []))); return pool.filter(x => x.date >= r.from && x.date <= r.to && x.date < S.today); };
+async function mrLoad() { const r = mrRange(), cur = S.today.slice(0, 7); S.mcache = S.mcache || {}; const need = [];
+  for (let ym = ymOf(r.from); ym <= ymOf(r.to); ym = addMon(ym, 1)) if (ym !== cur && !S.mcache[ym]) need.push(ym);
+  if (!need.length) return true; S.mrLoading = true; render();
+  try { for (const ym of need) S.mcache[ym] = await call('appMonthApi', S.tok, ME(), ym); return true; } catch (e) { toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); return false; } finally { S.mrLoading = false; render(); } }
+const dShortR = d => dnum(d) + ' ' + monthName(d).slice(0, 3);
+function mrCalSheet() {
+  const c = S.mrCal, ym = c.ym, first = ym + '-01', n = dim(first), a = c.a, b = c.b || c.a; let g = DOW.map(d => `<div class="mc-h">${d[0]}</div>`).join('');
+  for (let i = 0; i < dowOf(first); i++) g += '<div></div>';
+  for (let i = 1; i <= n; i++) { const d = ym + '-' + String(i).padStart(2, '0'), fut = d > S.today, lo = a && b ? (a < b ? a : b) : a, hi = a && b ? (a < b ? b : a) : a, inR = lo && d >= lo && d <= hi;
+    g += `<button class="mc-d ${inR ? 'in' : ''} ${d === lo ? 'lo' : ''} ${d === hi ? 'hi' : ''} ${d === S.today ? 'td' : ''}" ${fut ? 'disabled' : `data-a="mrday" data-v="${d}"`}>${i}</button>`; }
+  const lo = a && b ? (a < b ? a : b) : a, hi = a && b ? (a < b ? b : a) : a;
+  return `<h3>Report dates</h3><div class="sub">Tap the first day, then the last day.</div>
+    <div class="chips mc-q"><button class="btn sm gh" data-a="mrquick" data-v="month">This month</button><button class="btn sm gh" data-a="mrquick" data-v="week">This week</button><button class="btn sm gh" data-a="mrquick" data-v="w1">1st week</button><button class="btn sm gh" data-a="mrquick" data-v="last">Last month</button></div>
+    <div class="mc"><div class="mc-n"><button class="xb" data-a="mrmon" data-v="-1" aria-label="Previous month">‹</button><b>${monthName(first)} ${ym.slice(0, 4)}</b><button class="xb" data-a="mrmon" data-v="1" ${ym >= S.today.slice(0, 7) ? 'disabled' : ''} aria-label="Next month">›</button></div><div class="mc-g">${g}</div></div>
+    <div class="mc-r">${lo ? `<b>${dLabel(lo)}</b>${hi && hi !== lo ? ' to <b>' + dLabel(hi) + '</b>' : c.b ? '' : ' · now tap the last day'}` : 'No dates picked'}</div>
+    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="mrapply" ${lo ? '' : 'disabled'}>Show the report</button></div>`;
+}
+function mrQuick(v) { const t = S.today, m1 = t.slice(0, 8) + '01';
+  if (v === 'month') return { from: m1, to: t };
+  if (v === 'week') { const dw = (dowOf(t) + 6) % 7; const d = new Date(Date.UTC(+t.slice(0, 4), +t.slice(5, 7) - 1, +t.slice(8, 10) - dw)).toISOString().slice(0, 10); return { from: d < m1 ? m1 : d, to: t }; }
+  if (v === 'w1') { const e = m1.slice(0, 8) + '07'; return { from: m1, to: e < t ? e : t }; }
+  const lm = addMon(t.slice(0, 7), -1); return { from: lm + '-01', to: lm + '-' + String(dim(lm + '-01')).padStart(2, '0') }; }
+
+const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + mrId();
 const dmy = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
 const MRC = ['ts', 'svc', 'bills', 'abv', 'pend', 'tp', 'prod', 'ppend', 'rev', 'mc'];
 function monthRep() {
-  const ym = S.today.slice(0, 7), days = S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === ym), rows = R().rows || {}, T = S.settings[mtKey()] || {}, E = S.settings[meKey()] || {};
+  const RG = mrRange(), days = mrDays(), withToday = RG.from <= S.today && RG.to >= S.today, rows = withToday ? (R().rows || {}) : {}, T = mrCustom() ? {} : (S.settings[mtKey()] || {}), E = S.settings[meKey()] || {};
   liveCalc(); const A = {}, add = (n, k, v) => { v = num(v); if (!n || !v) return; (A[n] = A[n] || { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 })[k] += v; };
   days.forEach(x => { ['staff', 'staffB', 'staffM', 'staffR'].forEach((f, i) => Object.entries(x[f] || {}).forEach(([n, v]) => add(n, ['svc', 'bills', 'mc', 'rev'][i], v))); (x.prods || []).forEach(p => add(p.staff || '?', 'prod', num(p.q) * num(p.p))); });
   Object.entries(rows).forEach(([n, v]) => { add(n, 'svc', v.svc); add(n, 'bills', v.bills); add(n, 'mc', v.mc); add(n, 'rev', v.rev); add(n, 'prod', prodSum(v)); });
-  const inReport = new Set(Object.keys(A).concat(present().map(p => p.n))), order = S.staff.filter(x => x.branch === ME()).map(x => x.name);
+  const inReport = new Set(Object.keys(A).concat(withToday ? present().map(p => p.n) : [])), order = S.staff.filter(x => x.branch === ME()).map(x => x.name);
   const ov = (k, auto) => E[k] !== undefined && E[k] !== '' ? num(E[k]) : auto, isOv = k => E[k] !== undefined && E[k] !== '';
   const tgt = n => { const t = T[n] || {}; return { s: num(t.s), p: num(t.p) }; };
   const mk = (key, base) => { const o = { key, n: base.n }; ['ts', 'svc', 'bills', 'tp', 'prod', 'rev', 'mc'].forEach(c => { o[c] = ov(key + '|' + c, num(base[c])); });
@@ -1496,7 +1531,7 @@ function monthRep() {
   const sumOf = (key, list) => { const b = { n: '' }; ['ts', 'svc', 'bills', 'tp', 'prod', 'rev', 'mc'].forEach(c => { b[c] = list.reduce((t, x) => t + x[c], 0); }); return mk(key, b); };
   const tG = sumOf('_G', G), tL = sumOf('_L', L), all = sumOf('_T', [tG, tL, O]);
   const mcAmt = ov('_F|mc', all.mc * mcRate()), prodT = ov('_F|prod', all.prod), net = ov('_F|net', all.svc + mcAmt), gross = ov('_F|gross', Math.round(net * gstF()));
-  return { from: ym + '-01', to: S.today, G, L, O, tG, tL, all, mcAmt, prodT, net, gross, E, isOv, hasO: O.svc || O.prod || O.bills || O.mc || O.rev };
+  return { from: RG.from, to: RG.to, G, L, O, tG, tL, all, mcAmt, prodT, net, gross, E, isOv, hasO: O.svc || O.prod || O.bills || O.mc || O.rev };
 }
 function monthRepHTML(edit) {
   const M = monthRep(), R0 = v => v ? String(Math.round(v)) : '', stars = n => !n ? '' : n <= 5 ? '<span class="mr-st">' + '★'.repeat(n) + '</span>' : `<span class="mr-st">★</span> ${n}`;
@@ -1506,14 +1541,14 @@ function monthRepHTML(edit) {
   const ft = (k, lab, v) => `<tr class="mr-ft">${txt(k + '|name', lab, 'mr-nm')}${cell(k, v, '').replace('<td ', '<td colspan="10" ')}</tr>`;
   return `<div class="mrep ${edit ? 'mr-edit' : ''}"><table>
     <tr>${txt('_H|h1', '🔥 GT-' + ME().toUpperCase() + ' 🔥', 'mr-h1').replace('<td ', '<td colspan="11" ')}</tr>
-    <tr>${txt('_H|h2', monthName(S.today) + ' Month Report ' + dmy(M.from) + ' to ' + dmy(M.to), 'mr-h2').replace('<td ', '<td colspan="11" ')}</tr>
+    <tr>${txt('_H|h2', monthName(M.from) + (mrWhole() ? ' Month Report ' : ' Report ') + dmy(M.from) + ' to ' + dmy(M.to), 'mr-h2').replace('<td ', '<td colspan="11" ')}</tr>
     <tr class="mr-hd"><td>Staff</td><td>Service target</td><td>Achieved</td><td>No of bills</td><td>Abv</td><td>Pending</td><td>Product target</td><td>Achieved</td><td>Pending</td><td>Review</td><td>Mem card</td></tr>
     ${M.G.map(x => row(x, x.n)).join('')}${M.G.length ? row(M.tG, 'Gents sales', 'mr-sub') : ''}${M.L.map(x => row(x, x.n)).join('')}${M.L.length ? row(M.tL, 'Ladies sales', 'mr-sub') : ''}
     ${M.hasO || edit ? row(M.O, '') : ''}${row(M.all, 'Total', 'mr-tot')}
     ${ft('_F|mc', 'Mem card', R0(M.mcAmt))}${ft('_F|prod', 'Product', R0(M.prodT))}${ft('_F|net', 'Net sales', R0(M.net))}${ft('_F|gross', 'Gross sales', M.gross ? Math.round(M.gross).toLocaleString('en-US') : '')}</table></div>`;
 }
 let meT = 0;
-function meSave() { clearTimeout(meT); meT = setTimeout(() => { call('appMonthEdit', S.tok, ME(), S.today.slice(0, 7), S.settings[meKey()] || {}).catch(() => toast('Not saved. Check the internet.')); }, 500); }
+function meSave() { clearTimeout(meT); meT = setTimeout(() => { call('appMonthEdit', S.tok, ME(), mrId(), S.settings[meKey()] || {}).catch(() => toast('Not saved. Check the internet.')); }, 500); }
 function meRedraw(focusKey) { const ub = document.getElementById('mereset'); if (ub) ub.hidden = !Object.keys(S.settings[meKey()] || {}).length; const box = document.querySelector('.mrbox'); if (!box) return; const sc = box.scrollLeft; box.innerHTML = monthRepHTML(true); box.scrollLeft = sc;
   if (focusKey) { const c = box.querySelector(`[data-mk="${CSS.escape(focusKey)}"]`); if (c) { c.focus(); const r = document.createRange(); r.selectNodeContents(c); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } } }
 document.addEventListener('focusin', e => { const c = e.target.closest && e.target.closest('[data-mk]'); if (!c) return; c.dataset.was = c.textContent.trim(); const r = document.createRange(); r.selectNodeContents(c); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
@@ -1537,6 +1572,8 @@ const reportImage = (list, data, mcAmt, at, label) => snapImage(`<div style="wid
 
 /* ---------------- pop-up forms ---------------- */
 function openSheet(html) { document.getElementById('layer').innerHTML = `<div class="ov" data-a="close"><div class="sh" role="dialog" aria-modal="true">${html}</div></div>`; const f = document.querySelector('.sh input:not([type=hidden]),.sh select'); if (f && matchMedia('(min-width:900px)').matches) f.focus(); }
+/* change what an open sheet shows without playing its opening animation again */
+function sheetUpdate(html) { const sh = document.querySelector('#layer .sh'); if (!sh) { openSheet(html); return; } const y = sh.scrollTop; sh.innerHTML = html; sh.scrollTop = y; }
 const closeSheet = () => { document.getElementById('layer').innerHTML = ''; };
 const fl = (id, label, v, type, opts) => `<div class="fl"><label for="${id}">${label}</label>${opts ? `<select id="${id}">${opts.map(o => `<option value="${esc(o[0])}" ${String(o[0]) === String(v) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select>` : `<input id="${id}" ${type === 'n' ? 'inputmode="numeric"' : type === 'pin' ? 'inputmode="numeric" maxlength="4" type="password"' : ''} value="${esc(v)}" autocomplete="off">`}</div>`;
 const val = id => (document.getElementById(id) || {}).value || '';
@@ -1717,6 +1754,11 @@ document.addEventListener('click', async e => {
     case 'clocopyall': { const c = cloJoined(); if (c) copyCanvas(c, 'All closing tables copied as one picture · paste it in WhatsApp'); break; }
     case 'mrimg': snapImage(monthRepHTML(false), 'Month report'); break;
     case 'mereset': meReset(); render(); break;
+    case 'mrcal': { const r = mrRange(); S.mrCal = { ym: r.to.slice(0, 7), a: r.from, b: r.to }; openSheet(mrCalSheet()); break; }
+    case 'mrday': { const c = S.mrCal; if (!c.a || c.b) { c.a = v; c.b = null; } else { c.b = v; if (c.b < c.a) [c.a, c.b] = [c.b, c.a]; } sheetUpdate(mrCalSheet()); break; }
+    case 'mrmon': { S.mrCal.ym = addMon(S.mrCal.ym, +v); sheetUpdate(mrCalSheet()); break; }
+    case 'mrquick': { const q = mrQuick(v); S.mrCal = { ym: q.to.slice(0, 7), a: q.from, b: q.to }; sheetUpdate(mrCalSheet()); break; }
+    case 'mrapply': { const c = S.mrCal; const a = c.a, b = c.b || c.a; S.mrRange = { from: a < b ? a : b, to: a < b ? b : a }; closeSheet(); if (await mrLoad()) render(); break; }
     case 'cloall': cloSaveAll(); break;
     case 'closhare': cloShareAll(); break;
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
