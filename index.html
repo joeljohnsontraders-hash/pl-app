@@ -646,6 +646,11 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .tm-mt{display:flex;align-items:center;gap:10px;padding:12px 2px 2px}.tm-mt span{flex:1;font-size:11.5px;color:var(--muted);font-weight:600}.tm-mt b:last-child{font-family:var(--fd);font-size:16px}
 @media (max-width:700px){.tm-ml{display:block}.tm-wide{display:none}.tm-kp{grid-template-columns:repeat(2,minmax(0,1fr))}.navin button{min-width:0;font-size:9.5px;padding:7px 1px;letter-spacing:-.1px}}
 @media (max-width:700px){.tm-t{font-size:12.5px}.tm-t td,.tm-t th{padding-left:8px;padding-right:8px}.tm-t td.tm-n{min-width:120px}}
+.xl-on{box-shadow:inset 0 0 0 2px rgba(30,158,99,.6)!important;background-color:rgba(30,158,99,.09)!important}
+.xl-fill{box-shadow:inset 0 0 0 2px #1E9E63!important;background-color:rgba(30,158,99,.14)!important}
+.xl-h{position:fixed;z-index:45;width:24px;height:24px;margin:-12px 0 0 -12px;display:none;touch-action:none;cursor:crosshair}
+.xl-h::after{content:"";position:absolute;left:8px;top:8px;width:8px;height:8px;background:#1E9E63;border:1.5px solid #fff;border-radius:2px;box-shadow:0 0 0 1px #1E9E63}
+body.xl-dragging,body.xl-dragging *{cursor:crosshair!important;user-select:none!important;-webkit-user-select:none!important}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -2491,6 +2496,119 @@ document.addEventListener('click', e => { const el = e.target.closest('[data-a=a
 setInterval(() => inboxLoad(), 60000); setTimeout(() => inboxLoad(), 2500);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') inboxLoad(); });
 try { const pv = num(ls('gt_ver')); if (pv && pv < APP_VER) setTimeout(() => toast('App updated · see what is new in Inbox'), 3000); ls('gt_ver', APP_VER); } catch (e) {}
+/* ---------------- Excel tools in every table ----------------
+   Fill handle: the small square on the corner of the cell you are in. Drag it down, up or sideways to copy the cell there.
+   Ctrl+D fills down, Ctrl+R fills right. Shift+arrows or Shift+click pick a block of cells: Delete clears it,
+   Ctrl+C copies it (it pastes into Excel), Ctrl+V pastes a block copied from Excel. Ctrl+Z undoes the last fill, clear or paste. */
+const XSEL = NAVSEL.replace(':not([type=time])', '');
+const XAR = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+const xEd = td => !td ? null : td.matches('[contenteditable="true"]') ? td : td.querySelector(XSEL);
+const xOk = el => !!(el && el.matches && el.matches(XSEL) && el.isConnected && !el.closest('.sh,.ov') && el.closest('td') && el.closest('table'));
+const xGet = el => el.matches('[contenteditable="true"]') ? el.textContent.trim() : el.value;
+const xPos = el => { const td = el.matches('td') ? el : el.closest('td'), tr = td.parentElement, tb = tr.closest('table'); return { tb, r: [...tb.rows].indexOf(tr), c: navCol(td) }; };
+const xTd = (tb, r, c) => { const tr = tb.rows[r]; if (!tr || tr.offsetParent === null) return null; return navAt(tr, c); };
+const xAt = (tb, r, c) => { const el = xEd(xTd(tb, r, c)); return el && el.matches(XSEL) ? el : null; };
+const xKey = el => el.id ? '#' + CSS.escape(el.id) : el.dataset && el.dataset.mk ? `[data-mk="${CSS.escape(el.dataset.mk)}"]` : null;
+let xs = null, xUndo = [], xTyped = false, xBusy = false;
+function xSet(el, v) {
+  v = String(v == null ? '' : v);
+  if (el.matches('[contenteditable="true"]')) { el.dataset.was = el.textContent.trim(); el.textContent = v; el.dispatchEvent(new FocusEvent('focusout', { bubbles: true })); return true; }
+  if (el.tagName === 'SELECT') { if (![...el.options].some(o => o.value === v)) return false; el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); return true; }
+  if (el.type === 'time' && v && !/^\d{2}:\d{2}$/.test(v)) return false;
+  el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); return true;
+}
+/* write many cells at once, remembering the old values for Ctrl+Z */
+function xWrite(list, what) {
+  const undo = []; let n = 0; xBusy = true;
+  list.forEach(([el, v]) => { const k = xKey(el), old = xGet(el); if (old === String(v)) return; if (xSet(el, v)) { n++; if (k) undo.push([k, old]); } });
+  xBusy = false; xTyped = false; if (undo.length) { xUndo.push(undo); if (xUndo.length > 30) xUndo.shift(); }
+  if (n) toast(what.replace('#', n + (n === 1 ? ' cell' : ' cells'))); return n;
+}
+function xUndoLast() { const u = xUndo.pop(); if (!u) return; xBusy = true; let n = 0; u.slice().reverse().forEach(([k, v]) => { const el = document.querySelector(k); if (el && xSet(el, v)) n++; }); xBusy = false; xSelClear(); toast('Undone · ' + n + (n === 1 ? ' cell' : ' cells')); }
+document.addEventListener('input', e => { if (!xBusy && e.isTrusted) xTyped = true; }, true);
+
+/* the picked block */
+function xSelPaint() { document.querySelectorAll('.xl-on').forEach(x => x.classList.remove('xl-on')); if (!xs || !xs.tb.isConnected) { xs = null; return; }
+  const r0 = Math.min(xs.r0, xs.r1), r1 = Math.max(xs.r0, xs.r1), c0 = Math.min(xs.c0, xs.c1), c1 = Math.max(xs.c0, xs.c1);
+  if (r0 === r1 && c0 === c1) return; for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) { const td = xTd(xs.tb, r, c); if (td) td.classList.add('xl-on'); } }
+function xSelClear() { xs = null; xSelPaint(); }
+const xRect = () => ({ r0: Math.min(xs.r0, xs.r1), r1: Math.max(xs.r0, xs.r1), c0: Math.min(xs.c0, xs.c1), c1: Math.max(xs.c0, xs.c1) });
+const xCount = () => { if (!xs) return 0; const q = xRect(); return (q.r1 - q.r0 + 1) * (q.c1 - q.c0 + 1); };
+function xExtend(el, k) {
+  if (!xs || xs.tb !== xPos(el).tb) { const p = xPos(el); xs = { tb: p.tb, r0: p.r, c0: p.c, r1: p.r, c1: p.c }; }
+  const dr = k === 'ArrowUp' ? -1 : k === 'ArrowDown' ? 1 : 0, dc = k === 'ArrowLeft' ? -1 : k === 'ArrowRight' ? 1 : 0, rows = xs.tb.rows.length;
+  if (dr) { for (let r = xs.r1 + dr; r >= 0 && r < rows; r += dr) if (xAt(xs.tb, r, xs.c1)) { xs.r1 = r; break; } }
+  else { const tr = xs.tb.rows[xs.r1], last = tr ? [...tr.cells].reduce((t, c) => t + (c.colSpan || 1), 0) : 0; for (let c = xs.c1 + dc; c >= 0 && c < last; c += dc) if (xAt(xs.tb, xs.r1, c)) { xs.c1 = c; break; } }
+  xSelPaint(); const td = xTd(xs.tb, xs.r1, xs.c1); if (td) td.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+/* Ctrl+D / Ctrl+R: with a block picked, the first row (or column) goes into the rest; otherwise the cell above (or to the left) comes into this one */
+function xFill(el, dir) {
+  const down = dir === 'down', list = [];
+  if (xs && xCount() > 1) { const q = xRect();
+    if (down) { for (let c = q.c0; c <= q.c1; c++) { const s = xAt(xs.tb, q.r0, c); if (!s) continue; for (let r = q.r0 + 1; r <= q.r1; r++) { const t = xAt(xs.tb, r, c); if (t) list.push([t, xGet(s)]); } } }
+    else { for (let r = q.r0; r <= q.r1; r++) { const s = xAt(xs.tb, r, q.c0); if (!s) continue; for (let c = q.c0 + 1; c <= q.c1; c++) { const t = xAt(xs.tb, r, c); if (t) list.push([t, xGet(s)]); } } }
+  } else { const p = xPos(el); let s = null;
+    if (down) { for (let r = p.r - 1; r >= 0 && !s; r--) s = xAt(p.tb, r, p.c); }
+    else { for (let c = p.c - 1; c >= 0 && !s; c--) s = xAt(p.tb, p.r, c); }
+    if (!s) { toast(down ? 'Nothing above to copy' : 'Nothing on the left to copy'); return; } list.push([el, xGet(s)]); }
+  xWrite(list, down ? 'Filled down · #' : 'Filled right · #');
+}
+function xClear() { const q = xRect(), list = []; for (let r = q.r0; r <= q.r1; r++) for (let c = q.c0; c <= q.c1; c++) { const t = xAt(xs.tb, r, c); if (t && t.tagName !== 'SELECT') list.push([t, '']); } xWrite(list, 'Cleared · #'); }
+function xCopy() { const q = xRect(), lines = [];
+  for (let r = q.r0; r <= q.r1; r++) { const row = []; let last = null; for (let c = q.c0; c <= q.c1; c++) { const td = xTd(xs.tb, r, c); if (!td || td === last) continue; last = td; const ed = xEd(td); row.push(ed && ed.matches(XSEL) ? xGet(ed) : td.innerText.trim()); } lines.push(row.join('\t')); }
+  const txt = lines.join('\n'); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Copied · ' + (q.r1 - q.r0 + 1) + ' × ' + (q.c1 - q.c0 + 1) + ' cells'), () => toast('Copy did not work here'));
+}
+
+document.addEventListener('keydown', e => {
+  const el = e.target; if (!xOk(el)) return; const k = e.key, mod = e.ctrlKey || e.metaKey;
+  if (e.shiftKey && !mod && !e.altKey && XAR.includes(k) && navEdit !== el) { e.preventDefault(); xExtend(el, k); return; }
+  if (mod && !e.shiftKey && !e.altKey && (k === 'd' || k === 'D')) { e.preventDefault(); xFill(el, 'down'); return; }
+  if (mod && !e.shiftKey && !e.altKey && (k === 'r' || k === 'R')) { e.preventDefault(); xFill(el, 'right'); return; }
+  if (mod && !e.shiftKey && (k === 'z' || k === 'Z') && xUndo.length && !xTyped) { e.preventDefault(); xUndoLast(); return; }
+  if ((k === 'Delete' || k === 'Backspace') && xCount() > 1) { e.preventDefault(); xClear(); return; }
+  if (mod && (k === 'c' || k === 'C') && xCount() > 1) { e.preventDefault(); xCopy(); return; }
+  if (k === 'Escape' && xs) { xSelClear(); return; }
+  if (XAR.includes(k) && !e.shiftKey) xSelClear();
+}, true);
+/* Shift+click picks the block from the cell you are in */
+document.addEventListener('mousedown', e => { if (!e.shiftKey) { if (!(e.target.closest && e.target.closest('.xl-h'))) xSelClear(); return; }
+  const a = document.activeElement; if (!xOk(a)) return; const td = e.target.closest && e.target.closest('td'); if (!td || td.closest('table') !== a.closest('table') || !xEd(td)) return;
+  e.preventDefault(); const p = xPos(a), q = xPos(td); xs = { tb: p.tb, r0: p.r, c0: p.c, r1: q.r, c1: q.c }; xSelPaint(); }, true);
+document.addEventListener('focusin', e => { if (xs && !(xOk(e.target) && e.target.closest('table') === xs.tb && e.target.closest('td').classList.contains('xl-on'))) xSelClear(); });
+/* a block copied from Excel (tabs / several lines) goes into the cells from here, right and down */
+document.addEventListener('paste', e => {
+  if (e.defaultPrevented) return; const el = e.target; if (!xOk(el) || (el.dataset && el.dataset.l)) return;
+  const txt = ((e.clipboardData || window.clipboardData).getData('text') || '').replace(/\r/g, '').replace(/\n+$/, ''); if (!/[\t\n]/.test(txt)) return;
+  e.preventDefault(); const p = xPos(el), list = [];
+  txt.split('\n').forEach((ln, i) => ln.split('\t').forEach((v, j) => { const t = xAt(p.tb, p.r + i, p.c + j); if (t) list.push([t, v.trim().replace(/^₹\s?/, '')]); }));
+  xWrite(list, 'Pasted · #');
+});
+
+/* the fill handle */
+let xh = null, xDrag = null, xRaf = 0;
+function xhEl() { if (xh) return xh; xh = document.createElement('div'); xh.className = 'xl-h'; xh.title = 'Drag to copy this cell'; document.body.appendChild(xh);
+  xh.addEventListener('pointerdown', xDragStart); return xh; }
+function xhPlace() { cancelAnimationFrame(xRaf); const a = xDrag ? xDrag.src : document.activeElement;
+  if (!xOk(a) || a.tagName === 'SELECT') { if (xh) xh.style.display = 'none'; return; }
+  const r = a.closest('td').getBoundingClientRect(), h = xhEl(); h.style.display = 'block'; h.style.left = r.right + 'px'; h.style.top = r.bottom + 'px';
+  xRaf = requestAnimationFrame(xhPlace); }
+document.addEventListener('focusin', () => setTimeout(xhPlace, 0));
+document.addEventListener('focusout', () => setTimeout(xhPlace, 0));
+function xRangeTo(x, y) { const d = xDrag, hit = document.elementFromPoint(x, y), td = hit && hit.closest && hit.closest('td'); if (!td || td.closest('table') !== d.p.tb) return;
+  const q = xPos(td), vert = Math.abs(q.r - d.p.r) >= Math.abs(q.c - d.p.c); d.to = vert ? { r: q.r, c: d.p.c } : { r: d.p.r, c: q.c };
+  document.querySelectorAll('.xl-fill').forEach(z => z.classList.remove('xl-fill')); d.list = [];
+  const r0 = Math.min(d.p.r, d.to.r), r1 = Math.max(d.p.r, d.to.r), c0 = Math.min(d.p.c, d.to.c), c1 = Math.max(d.p.c, d.to.c);
+  for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) { const cell = xTd(d.p.tb, r, c); if (cell) cell.classList.add('xl-fill'); const t = xAt(d.p.tb, r, c); if (t && t !== d.src && !d.list.includes(t)) d.list.push(t); } }
+function xDragStart(e) { const a = document.activeElement; if (!xOk(a)) return; e.preventDefault(); xh.setPointerCapture(e.pointerId); xSelClear();
+  xDrag = { src: a, p: xPos(a), v: xGet(a), list: [] }; document.body.classList.add('xl-dragging');
+  const mv = ev => { const d = xDrag; if (!d) return; ev.preventDefault(); xRangeTo(ev.clientX, ev.clientY);
+      if (ev.clientY > innerHeight - 50) window.scrollBy(0, 18); else if (ev.clientY < 60) window.scrollBy(0, -18);
+      const ox = d.p.tb.closest('.ox'); if (ox) { const b = ox.getBoundingClientRect(); if (ev.clientX > b.right - 30) ox.scrollLeft += 18; else if (ev.clientX < b.left + 30) ox.scrollLeft -= 18; } },
+    up = () => { xh.removeEventListener('pointermove', mv); xh.removeEventListener('pointerup', up); xh.removeEventListener('pointercancel', up); const d = xDrag; xDrag = null; document.body.classList.remove('xl-dragging');
+      document.querySelectorAll('.xl-fill').forEach(z => z.classList.remove('xl-fill'));
+      if (d && d.list.length) { xWrite(d.list.map(t => [t, d.v]), 'Copied to #'); const q = d.to; xs = { tb: d.p.tb, r0: d.p.r, c0: d.p.c, r1: q.r, c1: q.c }; xSelPaint(); }
+      if (d && d.src.isConnected) d.src.focus({ preventScroll: true }); xhPlace(); };
+  xh.addEventListener('pointermove', mv); xh.addEventListener('pointerup', up); xh.addEventListener('pointercancel', up); }
 
 if ('serviceWorker' in navigator && !EMBED) navigator.serviceWorker.register('/sw.js').catch(() => {});
 boot();
