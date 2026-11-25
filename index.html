@@ -602,6 +602,50 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .mc-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.mc-h{text-align:center;font-size:11px;font-weight:800;color:var(--muted);padding:4px 0}.mc-d{height:38px;border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);background:transparent;font-variant-numeric:tabular-nums}.mc-d:hover:not(:disabled){background:var(--soft)}.mc-d:disabled{color:#C3CBD6}
 .mc-d.td{box-shadow:inset 0 0 0 1.5px var(--line)}.mc-d.in{background:rgba(46,204,140,.14);border-radius:0}.mc-d.lo,.mc-d.hi{background:var(--gt);color:#fff}.mc-d.lo{border-radius:10px 0 0 10px}.mc-d.hi{border-radius:0 10px 10px 0}.mc-d.lo.hi{border-radius:10px}
 .mc-q{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.mc-r{margin-top:10px;font-size:14px}
+.tm-tg{display:inline-flex;gap:4px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line);border-radius:12px;padding:3px;flex-wrap:wrap;margin-bottom:12px}
+.ch .tm-tg{margin-bottom:0}
+.tm-tg button{padding:7px 11px;border-radius:9px;font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap}
+.tm-tg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(10,26,43,.14)}
+.tm-t{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;font-variant-numeric:tabular-nums}
+.tm-t th{font-size:11px;font-weight:800;color:var(--muted);text-align:right;padding:0 10px 8px;white-space:nowrap;border-bottom:1px solid var(--line)}
+.tm-t th button{font-weight:800;color:var(--ink);font-size:11.5px;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+.tm-t td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+.tm-t td.b{font-weight:800}.tm-t td.bad{color:var(--bad);font-weight:800}
+.tm-t td small{color:var(--muted);font-weight:600}
+.tm-t .tm-n{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
+.tm-t td.tm-n{min-width:150px}.tm-nm{display:flex;align-items:center;gap:9px}
+.tm-t td.tm-n b{display:block;font-size:13px}.tm-t td.tm-n small{display:block;font-size:11px}
+.tm-m td.tm-n,.tm-p td.tm-n{min-width:110px}
+.tm-r{cursor:pointer}.tm-r:hover td{background:var(--soft)}.tm-r.dim td{color:#98A3B3}.tm-r.dim .ini{opacity:.55}
+.tm-go{color:var(--muted);font-size:18px;width:20px}
+.tm-g td{text-align:left!important;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--soft)!important;padding:6px 10px}
+.tm-g td.tm-n,.tm-g td{position:static}
+.tm-tot td{border-bottom:0;font-weight:800;background:var(--soft)}.tm-tot td.tm-n{background:var(--soft)}
+.tm-wk td{background:#F3F7FB;font-weight:700}.tm-wk td.tm-n{background:#F3F7FB}
+.tm-today td{background:#F4FBF7}.tm-today td.tm-n{background:#F4FBF7}
+.tm-a{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--gts);color:var(--gt)}
+.tm-a.off{background:var(--infos);color:var(--info)}.tm-a.lv{background:var(--bads);color:var(--bad)}
+.tm-p td.tm-att{text-align:left}
+.tm-it{font-size:11px;color:var(--muted);white-space:normal;max-width:220px;margin-top:2px;text-align:right}
+.tm-kp{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:16px}.tm-ks{font-size:11.5px;color:var(--muted);font-weight:700;margin-top:2px}.tm-kp .kv.bad{color:var(--bad)}
+.tm-bars{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:150px;padding-top:8px;overflow-x:auto}
+.tm-bar{flex:1 0 12px;max-width:64px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.tm-bar i{display:block;width:100%;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#2EA36B,#1E9E63)}
+.tm-bar small{font-size:9.5px;color:var(--muted);font-weight:700}
+.tm-bar.off i,.tm-bar.lv i{height:6px!important}.tm-bar.off i{background:#9DB2E6}.tm-bar.lv i{background:#E8A49C}
+.tm-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted);font-weight:700;flex-wrap:wrap}.tm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#1E9E63}.tm-leg i.off{background:#9DB2E6}.tm-leg i.lv{background:#E8A49C}
+.tm-ml{display:none}
+.tm-back{display:inline-flex;align-items:center;gap:6px;color:#C9F3DD;font-weight:800;font-size:13px;margin:-4px 0 10px}
+.tm-mg{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 2px 6px}
+.tm-mc{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 2px;border-bottom:1px solid var(--line)}
+.tm-mc.dim{opacity:.55}.tm-mb{flex:1;min-width:0}.tm-mb b{display:block;font-size:14px}.tm-mb small{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px}.tm-mb em{color:var(--bad);font-style:normal;font-weight:800}
+.tm-ms{font-family:var(--fd);font-weight:700;font-size:15px;white-space:nowrap}
+.tm-pd{display:flex;align-items:flex-start;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}.tm-pd.tm-wk{background:#F3F7FB;border-radius:10px;padding:10px;border-bottom:0;margin:4px 0}.tm-pd.tm-today{background:#F4FBF7;border-radius:10px;padding:10px}
+.tm-pl{flex:1;min-width:0}.tm-pl b{display:block;font-size:13.5px}.tm-pl small{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:3px}.tm-pl small.tm-pi{font-weight:500}
+.tm-pr{font-family:var(--fd);font-size:15px;white-space:nowrap}.tm-pt .tm-pr{font-size:16px}
+.tm-mt{display:flex;align-items:center;gap:10px;padding:12px 2px 2px}.tm-mt span{flex:1;font-size:11.5px;color:var(--muted);font-weight:600}.tm-mt b:last-child{font-family:var(--fd);font-size:16px}
+@media (max-width:700px){.tm-ml{display:block}.tm-wide{display:none}.tm-kp{grid-template-columns:repeat(2,minmax(0,1fr))}.navin button{min-width:0;font-size:9.5px;padding:7px 1px;letter-spacing:-.1px}}
+@media (max-width:700px){.tm-t{font-size:12.5px}.tm-t td,.tm-t th{padding-left:8px;padding-right:8px}.tm-t td.tm-n{min-width:120px}}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -911,7 +955,7 @@ const openingCash = () => { const c = C(); if (!blank(c.openTyped)) return num(c
 const closingBal = () => (openingCash() || 0) + totalSales() + prodSales() + inTot() - exTot() - accDeb() - cdTot() - gpTot();
 
 /* ---------------- shell ---------------- */
-const NAV = [['today', 'Today', 'today'], ['att', 'Attendance', 'staff'], ['report', 'Report', 'sheet'], ['closing', 'Closing', 'wallet'], ['stock', 'Stock', 'box'], ['sales', 'Insights', 'chart'], ['inbox', 'Inbox', 'bell']];
+const NAV = [['today', 'Today', 'today'], ['att', 'Attendance', 'staff'], ['report', 'Report', 'sheet'], ['closing', 'Closing', 'wallet'], ['stock', 'Stock', 'box'], ['team', 'Staff', 'user'], ['sales', 'Insights', 'chart'], ['inbox', 'Inbox', 'bell']];
 let lastPage = ''; const SEEN = new Set(); /* pages already opened this session open without the entrance animation */
 function render() {
   const app = document.getElementById('app');
@@ -1589,17 +1633,150 @@ function mrCalSheet() {
   for (let i = 1; i <= n; i++) { const d = ym + '-' + String(i).padStart(2, '0'), fut = d > S.today, lo = a && b ? (a < b ? a : b) : a, hi = a && b ? (a < b ? b : a) : a, inR = lo && d >= lo && d <= hi;
     g += `<button class="mc-d ${inR ? 'in' : ''} ${d === lo ? 'lo' : ''} ${d === hi ? 'hi' : ''} ${d === S.today ? 'td' : ''}" ${fut ? 'disabled' : `data-a="mrday" data-v="${d}"`}>${i}</button>`; }
   const lo = a && b ? (a < b ? a : b) : a, hi = a && b ? (a < b ? b : a) : a;
-  return `<h3>Report dates</h3><div class="sub">Tap the first day, then the last day.</div>
-    <div class="chips mc-q"><button class="btn sm gh" data-a="mrquick" data-v="month">This month</button><button class="btn sm gh" data-a="mrquick" data-v="week">This week</button><button class="btn sm gh" data-a="mrquick" data-v="w1">1st week</button><button class="btn sm gh" data-a="mrquick" data-v="last">Last month</button></div>
+  const tm = c.tgt === 'tm', QK = tm ? [['td', 'Today'], ['week', 'This week'], ['lweek', 'Last week'], ['month', 'This month'], ['last', 'Last month']] : [['month', 'This month'], ['week', 'This week'], ['w1', '1st week'], ['last', 'Last month']];
+  return `<h3>${tm ? 'Staff dates' : 'Report dates'}</h3><div class="sub">Tap the first day, then the last day.</div>
+    <div class="chips mc-q">${QK.map(([k, t]) => `<button class="btn sm gh" data-a="mrquick" data-v="${k}">${t}</button>`).join('')}</div>
     <div class="mc"><div class="mc-n"><button class="xb" data-a="mrmon" data-v="-1" aria-label="Previous month">‹</button><b>${monthName(first)} ${ym.slice(0, 4)}</b><button class="xb" data-a="mrmon" data-v="1" ${ym >= S.today.slice(0, 7) ? 'disabled' : ''} aria-label="Next month">›</button></div><div class="mc-g">${g}</div></div>
     <div class="mc-r">${lo ? `<b>${dLabel(lo)}</b>${hi && hi !== lo ? ' to <b>' + dLabel(hi) + '</b>' : c.b ? '' : ' · now tap the last day'}` : 'No dates picked'}</div>
-    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="mrapply" ${lo ? '' : 'disabled'}>Show the report</button></div>`;
+    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="mrapply" ${lo ? '' : 'disabled'}>${tm ? 'Show' : 'Show the report'}</button></div>`;
 }
 function mrQuick(v) { const t = S.today, m1 = t.slice(0, 8) + '01';
   if (v === 'month') return { from: m1, to: t };
   if (v === 'week') { const dw = (dowOf(t) + 6) % 7; const d = new Date(Date.UTC(+t.slice(0, 4), +t.slice(5, 7) - 1, +t.slice(8, 10) - dw)).toISOString().slice(0, 10); return { from: d < m1 ? m1 : d, to: t }; }
   if (v === 'w1') { const e = m1.slice(0, 8) + '07'; return { from: m1, to: e < t ? e : t }; }
   const lm = addMon(t.slice(0, 7), -1); return { from: lm + '-01', to: lm + '-' + String(dim(lm + '-01')).padStart(2, '0') }; }
+
+/* ---------------- Staff tab: every staff member's attendance, sales, products, mem cards and reviews for any dates ----------------
+   Totals for the dates picked, a day-by-day or week-by-week grid for the whole team, and one page per person. */
+const tmRange = () => S.tmRange || { from: S.today.slice(0, 8) + '01', to: S.today };
+const tmPool = r => { const cur = S.today.slice(0, 7), S2 = S.mcache || {}, pool = [];
+  for (let ym = ymOf(r.from); ym <= ymOf(r.to); ym = addMon(ym, 1)) pool.push(...(ym === cur ? S.month : (S2[ym] || [])));
+  return pool.filter(x => x.date >= r.from && x.date <= r.to && x.date < S.today); };
+async function tmLoad() { const r = tmRange(), cur = S.today.slice(0, 7); S.mcache = S.mcache || {}; const need = [];
+  for (let ym = ymOf(r.from); ym <= ymOf(r.to); ym = addMon(ym, 1)) if (ym !== cur && !S.mcache[ym]) need.push(ym);
+  if (!need.length) return true; S.tmLoading = true; render();
+  try { for (const ym of need) S.mcache[ym] = await call('appMonthApi', S.tok, ME(), ym); return true; } catch (e) { toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); return false; } finally { S.tmLoading = false; render(); } }
+const monOf = d => addDays(d, -((dowOf(d) + 6) % 7));
+function tmQuick(v) { const t = S.today, m1 = t.slice(0, 8) + '01', wk = monOf(t);
+  if (v === 'td') return { from: t, to: t };
+  if (v === 'yd') return { from: S.yday, to: S.yday };
+  if (v === 'week') return { from: wk, to: t };
+  if (v === 'lweek') return { from: addDays(wk, -7), to: addDays(wk, -1) };
+  if (v === 'month') return { from: m1, to: t };
+  const lm = addMon(t.slice(0, 7), -1); return { from: lm + '-01', to: lm + '-' + String(dim(lm + '-01')).padStart(2, '0') }; }
+const tmQKey = () => { const r = tmRange(); return ['td', 'yd', 'week', 'lweek', 'month', 'last'].find(k => { const q = tmQuick(k); return q.from === r.from && q.to === r.to; }) || ''; };
+const tmRLabel = () => { const r = tmRange(); return r.from === r.to ? dLabel(r.from) : dShortR(r.from) + ' – ' + dShortR(r.to); };
+
+function tmData() {
+  const r = tmRange(), to = r.to > S.today ? S.today : r.to, dates = [];
+  for (let d = r.from; d <= to; d = addDays(d, 1)) dates.push(d);
+  const by = {}; tmPool(r).forEach(x => { by[x.date] = x; });
+  const P = {}, cell = (n, d) => { P[n] = P[n] || {}; return (P[n][d] = P[n][d] || { st: '', in: '', out: '', svc: 0, bills: 0, prod: 0, pq: 0, items: [], mc: 0, rev: 0 }); };
+  const addItem = (c, p) => { const q = num(p.q), a = q * num(p.p); c.prod += a; c.pq += q; c.items.push({ n: p.n || 'Product', q, a }); };
+  const addAtt = (att, d) => Object.entries(att || {}).forEach(([n, a]) => { if (a && a.st) Object.assign(cell(n, d), { st: a.st, in: a.in || '', out: a.out || '' }); });
+  dates.forEach(d => {
+    if (d === S.today) {
+      addAtt(A().att, d); (A().extra || []).forEach(x => { const c = cell(x.n, d); if (!c.st) c.st = 'in'; });
+      Object.entries(R().rows || {}).forEach(([n, v]) => { if (!v) return; const c = cell(n, d); c.svc += num(v.svc); c.bills += num(v.bills); c.mc += num(v.mc); c.rev += num(v.rev); (Array.isArray(v.prod) ? v.prod : []).forEach(p => addItem(c, p)); });
+    } else {
+      const x = by[d], local = ((S.days[d] || {}).att || {}).att;
+      addAtt(x && x.att, d); if (local) addAtt(local, d);
+      if (x) { [['staff', 'svc'], ['staffB', 'bills'], ['staffM', 'mc'], ['staffR', 'rev']].forEach(([f, k]) => Object.entries(x[f] || {}).forEach(([n, v]) => { cell(n, d)[k] += num(v); }));
+        (x.prods || []).forEach(p => addItem(cell(p.staff || '?', d), p)); }
+    }
+  });
+  Object.values(P).forEach(o => Object.values(o).forEach(c => { if (!c.st && (c.svc || c.bills || c.prod)) c.st = 'in'; }));
+  const order = people().map(p => p.n), gOf = n => secOf(n) || ((A().extra || []).find(x => x.n === n) || {}).g || 'O';
+  const names = order.concat(Object.keys(P).filter(n => !order.includes(n) && n !== '?'));
+  const tot = n => { const o = { in: 0, off: 0, lv: 0, none: 0, svc: 0, bills: 0, prod: 0, pq: 0, mc: 0, rev: 0, items: {} };
+    dates.forEach(d => { const c = (P[n] || {})[d]; if (!c || !c.st) o.none++; else if (c.st === 'in') o.in++; else if (c.st === 'off') o.off++; else o.lv++;
+      if (c) { ['svc', 'bills', 'prod', 'pq', 'mc', 'rev'].forEach(k => { o[k] += c[k]; }); c.items.forEach(it => { const m = o.items[it.n] = o.items[it.n] || { q: 0, a: 0 }; m.q += it.q; m.a += it.a; }); } });
+    o.any = o.in + o.off + o.lv + o.svc + o.bills + o.prod + o.mc + o.rev > 0; return o; };
+  const T = {}; names.forEach(n => { T[n] = tot(n); });
+  return { dates, P, names, gOf, T, at: (n, d) => (P[n] || {})[d] || null };
+}
+const tmWeeks = dates => { const w = []; dates.forEach(d => { const k = monOf(d); if (!w.length || w[w.length - 1].k !== k) w.push({ k, ds: [] }); w[w.length - 1].ds.push(d); }); return w; };
+const tmWLabel = w => w.ds.length === 1 ? dShortR(w.ds[0]) : dShortR(w.ds[0]) + ' – ' + dShortR(w.ds[w.ds.length - 1]);
+const TMM = [['svc', 'Service'], ['bills', 'Bills'], ['prod', 'Product'], ['mc', 'Mem card'], ['rev', 'Review'], ['att', 'Attendance']];
+const tmVal = (k, v) => !v ? '' : k === 'svc' || k === 'prod' ? fmt(v) : fmt(v);
+const tmAttTag = c => !c || !c.st ? '' : c.st === 'off' ? '<span class="tm-a off">W/O</span>' : c.st === 'lv' ? '<span class="tm-a lv">Leave</span>' : '';
+
+function tmRangeBar() {
+  const q = tmQKey(), Q = [['td', 'Today'], ['yd', 'Yesterday'], ['week', 'This week'], ['lweek', 'Last week'], ['month', 'This month'], ['last', 'Last month']];
+  return `<div class="seg">${Q.map(([k, t]) => `<button class="${q === k ? 'on' : ''}" data-a="tmq" data-v="${k}">${t}</button>`).join('')}<button class="${q ? '' : 'on'}" data-a="tmcal">${ic('cal')}${q ? 'Pick dates' : esc(tmRLabel())}</button></div>`;
+}
+const tmTg = (act, cur, list) => `<div class="tm-tg">${list.map(([k, t]) => `<button class="${cur === k ? 'on' : ''}" data-a="${act}" data-v="${k}">${t}</button>`).join('')}</div>`;
+
+VIEWS.team = () => {
+  if (S.tmSel) return tmPerson(S.tmSel);
+  const D = tmData(), mode = S.tmMode || 'sum', met = S.tmMet || 'svc', act = D.names.filter(n => D.T[n].any);
+  const all = k => sum(D.names.map(n => D.T[n][k])), daysN = D.dates.length;
+  const hx = tmRangeBar() + `<div class="glass" style="margin-top:14px"><div class="gl"><small>Service sale</small><b>${inr(all('svc'))}</b></div><div class="gl"><small>Product sale</small><b>${inr(all('prod'))}</b></div><div class="gl"><small>Bills</small><b>${fmt(all('bills'))}</b></div></div>`;
+  let body;
+  if (S.tmLoading) body = '<section class="card"><div class="empty">Loading those dates…</div></section>';
+  else {
+    const head = `<div class="ch"><div class="ct"><span class="ib p">${ic('user')}</span><span>Staff<div class="cs" style="margin-top:2px">${esc(tmRLabel())} · ${daysN} day${daysN === 1 ? '' : 's'}</div></span></div>${tmTg('tmmode', mode, [['sum', 'Totals'], ['day', 'Day by day'], ['week', 'Week by week']])}</div>`;
+    let inner;
+    if (mode === 'sum') {
+      const row = n => { const t = D.T[n], g = D.gOf(n); return `<tr class="tm-r ${t.any ? '' : 'dim'}" data-a="tmsel" data-v="${esc(n)}"><td class="tm-n"><div class="tm-nm"><span class="ini ${g}">${esc(ini(n))}</span><span><b>${esc(n)}</b><small>${GN[g] || ''}</small></span></div></td>
+        <td>${t.in || ''}</td><td>${t.off || ''}</td><td class="${t.lv ? 'bad' : ''}">${t.lv || ''}</td><td class="b">${t.svc ? inr(t.svc) : ''}</td><td>${t.bills || ''}</td><td>${t.bills ? fmt(t.svc / t.bills) : ''}</td><td>${t.prod ? inr(t.prod) : ''}${t.pq ? `<small> · ${t.pq}</small>` : ''}</td><td>${t.mc || ''}</td><td>${t.rev || ''}</td><td class="tm-go">›</td></tr>`; };
+      const grp = ['G', 'L', 'O', 'H'].map(g => { const ns = D.names.filter(n => D.gOf(n) === g); return ns.length ? `<tr class="tm-g"><td colspan="11">${{ G: 'Gents', L: 'Ladies', O: 'Others', H: 'House keeping' }[g]}</td></tr>` + ns.map(row).join('') : ''; }).join('');
+      const mrow = n => { const t = D.T[n], g = D.gOf(n), bits = [t.bills ? t.bills + ' bills' : '', t.bills ? 'ABV ' + fmt(t.svc / t.bills) : '', t.prod ? 'Product ' + inr(t.prod) : '', t.mc ? t.mc + ' mem card' : '', t.rev ? t.rev + ' review' : ''].filter(Boolean);
+        return `<button class="tm-mc ${t.any ? '' : 'dim'}" data-a="tmsel" data-v="${esc(n)}"><span class="ini ${g}">${esc(ini(n))}</span><span class="tm-mb"><b>${esc(n)}</b><small>${t.in} worked${t.off ? ' · ' + t.off + ' W/O' : ''}${t.lv ? ` · <em>${t.lv} leave</em>` : ''}</small>${bits.length ? `<small>${bits.join(' · ')}</small>` : ''}</span><span class="tm-ms">${t.svc ? inr(t.svc) : ''}</span><span class="tm-go">›</span></button>`; };
+      const mlist = ['G', 'L', 'O', 'H'].map(g => { const ns = D.names.filter(n => D.gOf(n) === g); return ns.length ? `<div class="tm-mg">${{ G: 'Gents', L: 'Ladies', O: 'Others', H: 'House keeping' }[g]}</div>` + ns.map(mrow).join('') : ''; }).join('') + `<div class="tm-mt"><b>Total</b><span>${fmt(all('bills'))} bills · Product ${inr(all('prod'))}</span><b>${inr(all('svc'))}</b></div>`;
+      inner = `<div class="tm-ml">${mlist}</div><div class="ox tm-wide"><table class="tm-t"><thead><tr><th class="tm-n">Staff</th><th>Worked</th><th>Week off</th><th>Leave</th><th>Service</th><th>Bills</th><th>ABV</th><th>Product</th><th>Mem card</th><th>Review</th><th></th></tr></thead><tbody>${grp}
+        <tr class="tm-tot"><td class="tm-n"><b>Total</b></td><td></td><td></td><td></td><td class="b">${inr(all('svc'))}</td><td>${fmt(all('bills'))}</td><td>${all('bills') ? fmt(all('svc') / all('bills')) : ''}</td><td>${inr(all('prod'))}</td><td>${fmt(all('mc'))}</td><td>${fmt(all('rev'))}</td><td></td></tr></tbody></table></div>
+        <div class="cs" style="margin-top:10px">Tap a name to see that person day by day.</div>`;
+    } else {
+      const cols = act.length ? act : D.names, isAtt = met === 'att';
+      const cellOf = (n, ds) => { if (ds.length === 1) { const c = D.at(n, ds[0]); if (isAtt) return !c || !c.st ? '<span class="cs">–</span>' : c.st === 'in' ? `<span class="tm-a in">${c.in ? esc(t12(c.in)) : 'In'}</span>` : tmAttTag(c);
+          const v = c ? c[met] : 0; return v ? fmt(v) : tmAttTag(c); }
+        if (isAtt) { let i = 0, o = 0, l = 0; ds.forEach(d => { const c = D.at(n, d); if (c && c.st === 'in') i++; else if (c && c.st === 'off') o++; else if (c && c.st === 'lv') l++; }); return i + o + l ? `${i ? `<b>${i}</b> in` : ''}${o ? ` <span class="tm-a off">${o} W/O</span>` : ''}${l ? ` <span class="tm-a lv">${l} L</span>` : ''}` : '<span class="cs">–</span>'; }
+        const v = sum(ds.map(d => (D.at(n, d) || {})[met] || 0)); return v ? fmt(v) : ''; };
+      const rowTot = ds => isAtt ? `${sum(cols.map(n => ds.filter(d => (D.at(n, d) || {}).st === 'in').length))} in` : fmt(sum(cols.map(n => sum(ds.map(d => (D.at(n, d) || {})[met] || 0)))));
+      const groups = mode === 'day' ? D.dates.map(d => ({ lab: `${DOW[dowOf(d)].slice(0, 3)} ${dnum(d)} ${MON[+d.slice(5, 7) - 1].slice(0, 3)}`, ds: [d], td: d === S.today })) : tmWeeks(D.dates).map(w => ({ lab: tmWLabel(w), ds: w.ds }));
+      inner = tmTg('tmmet', met, TMM) + `<div class="ox"><table class="tm-t tm-m"><thead><tr><th class="tm-n">${mode === 'day' ? 'Day' : 'Week'}</th>${cols.map(n => `<th><button data-a="tmsel" data-v="${esc(n)}">${esc(n)}</button></th>`).join('')}<th>Total</th></tr></thead><tbody>
+        ${groups.map(gp => `<tr class="${gp.td ? 'tm-today' : ''}"><td class="tm-n"><b>${esc(gp.lab)}</b>${gp.td ? '<small>today so far</small>' : ''}</td>${cols.map(n => `<td>${cellOf(n, gp.ds)}</td>`).join('')}<td class="b">${rowTot(gp.ds)}</td></tr>`).join('')}
+        <tr class="tm-tot"><td class="tm-n"><b>Total</b></td>${cols.map(n => `<td class="b">${isAtt ? `${D.T[n].in} in` : fmt(D.T[n][met])}</td>`).join('')}<td class="b">${isAtt ? '' : fmt(sum(cols.map(n => D.T[n][met])))}</td></tr></tbody></table></div>
+        <div class="cs" style="margin-top:10px">${isAtt ? 'In times are shown on working days. W/O is a week off.' : 'A day with W/O or Leave means the person was not working.'} Tap a name for the full picture.</div>`;
+    }
+    body = `<section class="card">${head}${inner}</section>`;
+  }
+  return { eb: 'Team report', title: 'Staff', sub: esc(ME()) + ' · ' + esc(tmRLabel()), right: '', hx, body };
+};
+
+function tmPerson(n) {
+  const D = tmData(), t = D.T[n] || { in: 0, off: 0, lv: 0, svc: 0, bills: 0, prod: 0, pq: 0, mc: 0, rev: 0, items: {} }, g = D.gOf(n), pm = S.tmPm || 'day';
+  const hx = `<button class="tm-back" data-a="tmback">← All staff</button>` + tmRangeBar() + `<div class="glass" style="margin-top:14px"><div class="gl"><small>Service sale</small><b>${inr(t.svc)}</b></div><div class="gl"><small>Product sale</small><b>${inr(t.prod)}</b></div><div class="gl"><small>Worked</small><b>${t.in} day${t.in === 1 ? '' : 's'}</b></div></div>`;
+  if (S.tmLoading) return { eb: 'Staff · ' + (GN[g] || ''), title: esc(n), sub: esc(tmRLabel()), right: '', hx, body: '<section class="card"><div class="empty">Loading those dates…</div></section>' };
+  const k = (l, v, sub2, cls) => `<div class="k"><div class="kl">${l}</div><div class="kv ${cls || ''}">${v}</div>${sub2 ? `<div class="tm-ks">${sub2}</div>` : ''}</div>`;
+  const kp = `<div class="kp tm-kp">${k('Worked', t.in + (t.in === 1 ? ' day' : ' days'))}${k('Week off', t.off)}${k('Leave', t.lv, '', t.lv ? 'bad' : '')}${k('Service sale', inr(t.svc))}${k('Bills', fmt(t.bills))}${k('ABV', t.bills ? inr(t.svc / t.bills) : '–')}${k('Product sale', inr(t.prod), t.pq ? t.pq + ' pcs' : '')}${k('Mem cards', fmt(t.mc))}${k('Reviews', fmt(t.rev))}${k('Per working day', t.in ? inr(t.svc / t.in) : '–')}</div>`;
+  const mx = Math.max(1, ...D.dates.map(d => (D.at(n, d) || {}).svc || 0));
+  const bars = D.dates.length > 1 ? `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Service sale every day</div></div><div class="tm-bars">${D.dates.map(d => { const c = D.at(n, d) || {}, v = c.svc || 0;
+    return `<div class="tm-bar ${c.st === 'off' ? 'off' : c.st === 'lv' ? 'lv' : ''}" title="${esc(dLabel(d))}: ${v ? inr(v) : c.st === 'off' ? 'Week off' : c.st === 'lv' ? 'Leave' : '–'}"><i style="height:${v ? Math.max(4, Math.round(v / mx * 100)) : 0}%"></i><small>${dnum(d)}</small></div>`; }).join('')}</div>
+    <div class="tm-leg"><span><i class="sv"></i>Service sale</span><span><i class="off"></i>Week off</span><span><i class="lv"></i>Leave</span></div></section>` : '';
+  const line = (lab, ds, cls) => { let s = 0, b = 0, p = 0, pq = 0, mc = 0, rv = 0, i = 0; ds.forEach(d => { const c = D.at(n, d) || {}; s += c.svc || 0; b += c.bills || 0; p += c.prod || 0; pq += c.pq || 0; mc += c.mc || 0; rv += c.rev || 0; if (c.st === 'in') i++; });
+    const c1 = ds.length === 1 ? (D.at(n, ds[0]) || {}) : null;
+    const att = c1 ? (!c1.st ? '<span class="cs">Not marked</span>' : c1.st === 'in' ? `<span class="tm-a in">In</span>${c1.in ? ` <span class="cs">${esc(t12(c1.in))}${c1.out ? ' – ' + esc(t12(c1.out)) : ''}</span>` : ''}` : tmAttTag(c1)) : `<b>${i}</b> <span class="cs">worked</span>`;
+    const items = c1 && c1.items.length ? `<div class="tm-it">${c1.items.map(x => `${esc(x.n)} × ${x.q}`).join(', ')}</div>` : '';
+    return `<tr class="${cls || ''}"><td class="tm-n"><b>${esc(lab)}</b></td><td class="tm-att">${att}</td><td class="b">${s ? inr(s) : ''}</td><td>${b || ''}</td><td>${b ? fmt(s / b) : ''}</td><td>${p ? inr(p) : ''}${pq ? `<small> · ${pq}</small>` : ''}${items}</td><td>${mc || ''}</td><td>${rv || ''}</td></tr>`; };
+  const mline = (lab, ds, cls) => { let s = 0, b = 0, p = 0, pq = 0, mc = 0, rv = 0, i = 0; const its = []; ds.forEach(d => { const c = D.at(n, d) || {}; s += c.svc || 0; b += c.bills || 0; p += c.prod || 0; pq += c.pq || 0; mc += c.mc || 0; rv += c.rev || 0; if (c.st === 'in') i++; if (ds.length === 1) (c.items || []).forEach(x => its.push(x)); });
+    const c1 = ds.length === 1 ? (D.at(n, ds[0]) || {}) : null;
+    const att = c1 ? (!c1.st ? 'Not marked' : c1.st === 'in' ? `<span class="tm-a in">In</span>${c1.in ? ' ' + esc(t12(c1.in)) + (c1.out ? ' – ' + esc(t12(c1.out)) : '') : ''}` : tmAttTag(c1)) : `${i} worked`;
+    const bits = [b ? b + ' bills' : '', b ? 'ABV ' + fmt(s / b) : '', p ? 'Product ' + inr(p) + (pq ? ' (' + pq + ')' : '') : '', mc ? mc + ' mem card' : '', rv ? rv + ' review' : ''].filter(Boolean);
+    return `<div class="tm-pd ${cls || ''}"><div class="tm-pl"><b>${esc(lab)}</b><small>${att}</small>${bits.length ? `<small>${bits.join(' · ')}</small>` : ''}${its.length ? `<small class="tm-pi">${its.map(x => esc(x.n) + ' × ' + x.q).join(', ')}</small>` : ''}</div><b class="tm-pr">${s ? inr(s) : ''}</b></div>`; };
+  const wks = tmWeeks(D.dates); let rows = '', mrows = '';
+  const dl = d => `${DOW[dowOf(d)].slice(0, 3)} ${dnum(d)} ${MON[+d.slice(5, 7) - 1].slice(0, 3)}`;
+  if (pm === 'week') { rows = wks.map(w => line(tmWLabel(w), w.ds)).join(''); mrows = wks.map(w => mline(tmWLabel(w), w.ds)).join(''); }
+  else wks.forEach(w => { rows += w.ds.map(d => line(dl(d), [d], d === S.today ? 'tm-today' : '')).join(''); mrows += w.ds.map(d => mline(dl(d), [d], d === S.today ? 'tm-today' : '')).join('');
+    if (wks.length > 1 && w.ds.length > 1) { rows += line('Week total · ' + tmWLabel(w), w.ds, 'tm-wk'); mrows += mline('Week total · ' + tmWLabel(w), w.ds, 'tm-wk'); } });
+  const table = `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('cal')}</span>${pm === 'week' ? 'Week by week' : 'Day by day'}</div>${tmTg('tmpm', pm, [['day', 'Day by day'], ['week', 'Week by week']])}</div>
+    <div class="tm-ml">${mrows}${mline('Total', D.dates, 'tm-wk tm-pt')}</div><div class="ox tm-wide"><table class="tm-t tm-p"><thead><tr><th class="tm-n">${pm === 'week' ? 'Week' : 'Day'}</th><th>Attendance</th><th>Service</th><th>Bills</th><th>ABV</th><th>Product</th><th>Mem card</th><th>Review</th></tr></thead><tbody>${rows}${line('Total', D.dates, 'tm-tot')}</tbody></table></div></section>`;
+  const it = Object.entries(t.items).sort((a, b) => b[1].a - a[1].a);
+  const prods = `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('box')}</span>Products sold</div><span class="cs">${t.pq} pcs · ${inr(t.prod)}</span></div>${it.length ? it.map(([nm, x]) => `<div class="row"><div class="l"><b>${esc(nm)}</b><small>${x.q} pcs</small></div><b>${inr(x.a)}</b></div>`).join('') : '<div class="empty">No products sold on these dates.</div>'}</section>`;
+  return { eb: 'Staff · ' + (GN[g] || ''), title: esc(n), sub: esc(ME()) + ' · ' + esc(tmRLabel()), right: '', hx,
+    body: `${kp}${bars}${table}${prods}` };
+}
 
 const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + mrId();
 const dmy = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
@@ -1869,12 +2046,19 @@ document.addEventListener('click', async e => {
     case 'mrcal': { const r = mrRange(); S.mrCal = { ym: r.to.slice(0, 7), a: r.from, b: r.to }; openSheet(mrCalSheet()); break; }
     case 'mrday': { const c = S.mrCal; if (!c.a || c.b) { c.a = v; c.b = null; } else { c.b = v; if (c.b < c.a) [c.a, c.b] = [c.b, c.a]; } sheetUpdate(mrCalSheet()); break; }
     case 'mrmon': { S.mrCal.ym = addMon(S.mrCal.ym, +v); sheetUpdate(mrCalSheet()); break; }
-    case 'mrquick': { const q = mrQuick(v); S.mrCal = { ym: q.to.slice(0, 7), a: q.from, b: q.to }; sheetUpdate(mrCalSheet()); break; }
-    case 'mrapply': { const c = S.mrCal; const a = c.a, b = c.b || c.a; S.mrRange = { from: a < b ? a : b, to: a < b ? b : a }; closeSheet(); if (await mrLoad()) render(); break; }
+    case 'mrquick': { const tg = S.mrCal && S.mrCal.tgt, q = tg === 'tm' ? tmQuick(v) : mrQuick(v); S.mrCal = { ym: q.to.slice(0, 7), a: q.from, b: q.to, tgt: tg }; sheetUpdate(mrCalSheet()); break; }
+    case 'mrapply': { const c = S.mrCal; const a = c.a, b = c.b || c.a, rg = { from: a < b ? a : b, to: a < b ? b : a }; closeSheet(); if (c.tgt === 'tm') { S.tmRange = rg; if (await tmLoad()) render(); break; } S.mrRange = rg; if (await mrLoad()) render(); break; }
+    case 'tmcal': { const r = tmRange(); S.mrCal = { ym: r.to.slice(0, 7), a: r.from, b: r.to, tgt: 'tm' }; openSheet(mrCalSheet()); break; }
+    case 'tmq': S.tmRange = tmQuick(v); if (await tmLoad()) render(); break;
+    case 'tmmode': S.tmMode = v; render(); break;
+    case 'tmmet': S.tmMet = v; render(); break;
+    case 'tmpm': S.tmPm = v; render(); break;
+    case 'tmsel': S.tmSel = v; render(); window.scrollTo(0, 0); break;
+    case 'tmback': S.tmSel = null; render(); window.scrollTo(0, 0); break;
     case 'cloall': cloSaveAll(); break;
     case 'closhare': cloShareAll(); break;
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
-    case 'go': S.page = v; closeSheet(); render(); break;
+    case 'go': if (v === 'team') S.tmSel = null; S.page = v; closeSheet(); render(); break;
     case 'me': openSheet(SHEETS.me()); break;
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {}; A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
     case 'attdone': { const left = people().filter(p => !(A().att[p.n] || {}).st); if (left.length) { toast('Mark ' + left.map(p => p.n).join(', ')); break; } const noT = people().filter(p => (A().att[p.n] || {}).st === 'in' && !(A().att[p.n] || {}).in); if (noT.length) { toast('Type the In time for ' + noT.map(p => p.n).join(', ')); const f = document.getElementById('in_' + noT[0].n); if (f) f.focus(); break; }
