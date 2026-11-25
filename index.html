@@ -1559,6 +1559,27 @@ document.addEventListener('focusout', e => { const c = e.target.closest && e.tar
   persist(); meSave(); const nk = e.relatedTarget && e.relatedTarget.dataset ? e.relatedTarget.dataset.mk : null; setTimeout(() => meRedraw(nk), 0); });
 function meReset() { S.settings[meKey()] = {}; persist(); meSave(); meRedraw(); toast('Back to the app numbers'); }
 
+/* ---------------- Excel-style arrow keys in every table: up, down, left and right move to the next cell ----------------
+   Like Excel, a double-click (or F2) on a cell lets the left and right arrows move inside the text instead. */
+const NAVSEL = 'input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=time]):not([type=file]):not(:disabled), select:not(:disabled), textarea, [contenteditable="true"]';
+let navEdit = null;
+const navEd = c => !c ? null : c.matches('[contenteditable="true"]') ? c : c.querySelector(NAVSEL);
+const navCol = c => { let x = 0; for (const k of c.parentElement.cells) { if (k === c) return x; x += k.colSpan || 1; } return x; };
+const navAt = (tr, col) => { let x = 0; for (const k of tr.cells) { const w = k.colSpan || 1; if (col >= x && col < x + w) return k; x += w; } return null; };
+document.addEventListener('focusin', e => { if (e.target !== navEdit) navEdit = null; if (e.target.matches && e.target.matches('td input[type=text], td input:not([type]), td input[inputmode]') && e.target.dataset.navsel) { e.target.select(); delete e.target.dataset.navsel; } }, true);
+document.addEventListener('dblclick', e => { const el = e.target.closest && e.target.closest(NAVSEL); if (el && el.closest('td')) navEdit = el; }, true);
+document.addEventListener('keydown', e => {
+  const el = e.target; if (!el || !el.matches || !el.matches(NAVSEL) || el.closest('.sh')) return;
+  if (e.key === 'F2') { navEdit = el; return; }
+  const k = e.key; if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(k) || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+  const td = el.matches('td') ? el : el.closest('td'); if (!td) return; const tr = td.parentElement, table = tr.closest('table'); if (!table) return;
+  if (navEdit === el && (k === 'ArrowLeft' || k === 'ArrowRight' || el.tagName === 'TEXTAREA')) return;
+  let to = null;
+  if (k === 'ArrowLeft' || k === 'ArrowRight') { const cs = [...tr.cells], d = k === 'ArrowLeft' ? -1 : 1; for (let i = cs.indexOf(td) + d; i >= 0 && i < cs.length && !to; i += d) to = navEd(cs[i]); }
+  else { const rows = [...table.rows], col = navCol(td), d = k === 'ArrowUp' ? -1 : 1; for (let i = rows.indexOf(tr) + d; i >= 0 && i < rows.length && !to; i += d) { const c = navAt(rows[i], col); if (c && c.offsetParent !== null) to = navEd(c); } }
+  if (!to) return; e.preventDefault(); if (to.tagName === 'INPUT') to.dataset.navsel = '1'; to.focus({ preventScroll: true }); to.scrollIntoView({ block: 'nearest', inline: 'nearest' }); if (to.tagName === 'INPUT' || to.tagName === 'TEXTAREA') to.select();
+}, true);
+
 /* ---------------- images for WhatsApp ---------------- */
 async function snapImage(html, label) {
   openSheet(`<h3>${label}</h3><div class="sub">Copy it and paste it in WhatsApp</div><div class="imgbox" id="imgbox"><div class="empty">Making the image…</div></div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Close</button><button class="btn gh" data-a="dlimg">Download</button><button class="btn" data-a="copyimg">Copy image</button></div>`);
