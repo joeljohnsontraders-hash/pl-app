@@ -81,10 +81,10 @@ async function setSetting(q, k, v) { await q`insert into app_settings (key, valu
 /* the small summary of a branch-day (kept with every save) */
 function daySum(att, rep, clo) {
   const sn = rep && rep.snaps && rep.snaps.cl, rws = (sn ? sn.data : rep && rep.rows) || {}, mc = N(sn ? sn.mcAmt : rep && rep.mcAmt);
-  let svc = 0, bills = 0, prod = 0; const st = {}, stB = {}, prods = [];
-  Object.keys(rws).forEach((n) => { const v = rws[n] || {}, s = N(v.svc), bl = N(v.bills); svc += s; bills += bl; if (s) st[n] = s; if (bl) stB[n] = bl;
+  let svc = 0, bills = 0, prod = 0; const st = {}, stB = {}, stM = {}, stR = {}, prods = [];
+  Object.keys(rws).forEach((n) => { const v = rws[n] || {}, s = N(v.svc), bl = N(v.bills); svc += s; bills += bl; if (s) st[n] = s; if (bl) stB[n] = bl; if (N(v.mc)) stM[n] = N(v.mc); if (N(v.rev)) stR[n] = N(v.rev);
     (Array.isArray(v.prod) ? v.prod : []).forEach((p) => { prod += N(p.q) * N(p.p); prods.push({ n: p.n, q: p.q, p: p.p, staff: n, pay: p.pay }); }); });
-  const o = { svc, mc, net: svc + mc, bills, prod, prods, staff: st, staffB: stB, att: att && att.att || {}, status: clo && clo.status || "open", waived: !!(clo && clo.waived), sent: !!(clo && clo.sentAt), slots: Object.keys(rep && rep.snaps || {}) };
+  const o = { svc, mc, net: svc + mc, bills, prod, prods, staff: st, staffB: stB, staffM: stM, staffR: stR, att: att && att.att || {}, status: clo && clo.status || "open", waived: !!(clo && clo.waived), sent: !!(clo && clo.sentAt), slots: Object.keys(rep && rep.snaps || {}) };
   if (clo) { const sumL = (a, f) => (a || []).reduce((t, r) => t + N(r[f]), 0);
     Object.assign(o, { hasClo: true, den: DEN.reduce((t, d) => t + d * N((clo.den || {})[d]), 0), openTyped: String(clo.openTyped || "").trim(), tot: String(clo.totSales || "").trim() !== "" ? N(clo.totSales) : 0,
       exp: sumL(clo.exp, "a"), gp: sumL(clo.gpay, "a"), cd: sumL(clo.card, "a"), accC: sumL(clo.acc, "c"), accD: sumL(clo.acc, "d"),
@@ -229,6 +229,12 @@ const API = {
     });
   },
   /* the manager's own arrangement of the closing tables (kept per branch) */
+  /* month report targets for a branch (service and product, per staff), typed by the manager or the controller */
+  async appMonthTarget(tok, b, ym, T) {
+    const u = await who(tok); can(u, b, true); if (!/^\d{4}-\d{2}$/.test(String(ym))) err("Pick the month."); T = T && typeof T === "object" ? T : {};
+    const clean = {}; Object.keys(T).slice(0, 60).forEach((n) => { const x = T[n] || {}; clean[String(n).slice(0, 60)] = { s: Math.max(0, N(x.s)), p: Math.max(0, N(x.p)) }; });
+    await setSetting(sql, "mtgt|" + b + "|" + ym, clean); return { ok: true, targets: clean };
+  },
   async appLayout(tok, b, L) { const u = await who(tok); can(u, b, true);
     if (L !== null && (typeof L !== "object" || Array.isArray(L) || JSON.stringify(L).length > 4000)) err("This layout could not be saved.");
     await setSetting(sql, "cloLayout|" + b, L); return { ok: true }; },
