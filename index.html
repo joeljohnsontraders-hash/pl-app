@@ -635,6 +635,7 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .tm-bar.off i,.tm-bar.lv i{height:6px!important}.tm-bar.off i{background:#9DB2E6}.tm-bar.lv i{background:#E8A49C}
 .tm-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted);font-weight:700;flex-wrap:wrap}.tm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#1E9E63}.tm-leg i.off{background:#9DB2E6}.tm-leg i.lv{background:#E8A49C}
 .tm-sec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:14px 18px}.tm-sec b{display:block;font-size:14px}.tm-sec small{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}.tm-sec .tm-tg{margin:0}
+.bref-mvh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.bref-mvr{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:4px 0}.bref-mvr .xb{flex:none}.mvd{margin-top:4px}
 .tm-ml{display:none}
 .tm-back{display:inline-flex;align-items:center;gap:6px;color:#C9F3DD;font-weight:800;font-size:13px;margin:-4px 0 10px}
 .tm-mg{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 2px 6px}
@@ -1495,6 +1496,18 @@ function mvNetText() { mvCapture(); const f = S.mvForm; if (!f) return ''; const
   return L.map(l => `<b>${esc(l.to || '?')}</b> gets net <b>${bfmt(r2(num(l.gross) / gstF()))}</b> (gross ${bfmt(num(l.gross))})${num(l.bills) ? ' and ' + pl(num(l.bills), 'bill') : ''}`).join('<br>') + `<br>Taken from <b>${esc(f.from || '?')}</b>: net <b>${bfmt(tot)}</b>${tb ? ' and ' + pl(tb, 'bill') : ''}.`; }
 document.addEventListener('input', e => { if (e.target.dataset && e.target.dataset.mvl || e.target.id === 'mv_fb') { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
 document.addEventListener('change', e => { if (/^mv_(f|t_\d+)$/.test(e.target.id)) { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
+/* a move added from the billing panel after the report was filled: it changes the report straight away */
+function mvApply(m, sign) { const r = R(); r.rows = r.rows || {}; const put = (n, ds, db) => { const row = r.rows[n] = r.rows[n] || blankRow(), sv = r2(num(row.svc) + ds), bl = num(row.bills) + db; row.svc = sv > 0.004 ? String(sv) : ''; row.bills = bl > 0 ? String(bl) : ''; };
+  put(m.from, -sign * mvNet(m), -sign * num(m.fromBills)); m.lines.forEach(l => put(l.to, sign * num(l.net), sign * num(l.bills))); }
+function mvSheet() { const f = S.mvForm, cands = billCands(), rr = R().rows || {}, opts = sel => cands.map(c => `<option value="${esc(c.n)}" ${c.n === sel ? 'selected' : ''}>${esc(c.n)}</option>`).join('');
+  return `<h3>Move a bill</h3><div class="sub">For a bill made under the wrong staff. Only the net (gross less ${gstP()}% GST) moves, and the report changes straight away. The move is kept for the next paste from billing too.</div>
+    <div class="bmv mvd"><div class="bmv-f2 one"><label><span>Billed under</span><select id="mv_f">${opts(f.from)}</select></label><small class="cs" id="mv_have">${esc(mvHave(f.from))}</small></div>
+      <div class="bmv-l">${f.lines.map((l, i) => `<div class="bmv-li"><label><span>${i ? 'And' : 'Who did the work'}</span><select id="mv_t_${i}">${opts(l.to)}</select></label><label><span>Gross amount ₹</span><input id="mv_g_${i}" data-mvl="1" inputmode="decimal" value="${esc(l.gross || '')}" placeholder="e.g. 1150"></label><label><span>Bills</span><input id="mv_b_${i}" data-mvl="1" inputmode="numeric" value="${esc(l.bills)}"></label>${f.lines.length > 1 ? `<button class="xb" data-a="mvrmline" data-v="${i}" aria-label="Remove this person">✕</button>` : '<span></span>'}</div>`).join('')}
+      <button class="btn sm gh" data-a="mvline" style="justify-self:start">${ic('plus')}Add person</button></div>
+      <div class="bmv-n" id="mv_n">${mvNetText()}</div></div>
+    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="mvcancel">Cancel</button><button class="btn" data-a="mvadd">Move it</button></div>`; }
+const mvHave = n => { const x = (R().rows || {})[n] || {}; return n ? `${n} has ${bfmt(num(x.svc))} and ${pl(num(x.bills), 'bill')} in the report now` : ''; };
+document.addEventListener('change', e => { if (e.target.id === 'mv_f') { const h = document.getElementById('mv_have'); if (h) h.textContent = mvHave(e.target.value); } });
 function mvAdd() {
   mvCapture(); const er = document.getElementById('serr'), f = S.mvForm;
   const lines = f.lines.map(l => ({ to: l.to, gross: r2(num(l.gross)), bills: String(l.bills).trim() === '' ? 0 : num(l.bills) })), fb = lines.reduce((t, l) => t + l.bills, 0);
@@ -1507,8 +1520,13 @@ function mvAdd() {
   const net = r2(lines.reduce((t, l) => t + l.net, 0)), F = S.bill ? billFinal(S.bill, S.bill.pick, x => x.pick) : {}, have = F[f.from] || { svc: 0, bills: 0 };
   if (S.bill && net > have.svc + 0.005) { er.textContent = `${f.from} has only ${bfmt(have.svc)} net in billing.`; return; }
   if (S.bill && fb > have.bills) { er.textContent = `${f.from} has only ${pl(have.bills, 'bill')} in billing.`; return; }
-  const t = now();
-  dayMoves().push({ id: Date.now().toString(36), from: f.from, fromBills: fb, lines, at: t, by: S.me.name || '' });
+  if (S.mvDirect) { const have = (R().rows || {})[f.from] || {};
+    if (net > num(have.svc) + 0.005) { er.textContent = `${f.from} has only ${bfmt(num(have.svc))} net in the report.`; return; }
+    if (fb > num(have.bills)) { er.textContent = `${f.from} has only ${pl(num(have.bills), 'bill')} in the report.`; return; } }
+  const t = now(), m = { id: Date.now().toString(36), from: f.from, fromBills: fb, lines, at: t, by: S.me.name || '' };
+  if (S.mvDirect) { m.applied = true; mvApply(m, 1); }
+  dayMoves().push(m);
+  if (S.mvDirect) { S.mvForm = null; S.mvDirect = false; noAttTell(); touch(S.today, 'rep'); closeSheet(); render(); toast('Moved · ' + moveLine(m)); return; }
   S.mvForm = null; touch(S.today, 'rep'); billOpen(true);
 }
 function billFill() {
@@ -1523,6 +1541,7 @@ function billFill() {
   rows.forEach(x => { M[bRowKey(x)] = x.pick; });
   const C2 = {}; ['svc', 'bills', 'mc'].forEach(k => { if (p[k] >= 0) C2[k] = B.cols[p[k]].label; });
   try { ls(billKey(), JSON.stringify(M)); ls(billColKey(), JSON.stringify(C2)); } catch (x) {}
+  dayMoves().forEach(m => { m.applied = true; });
   noAttTell(); touch(S.today, 'rep'); S.bill = null; closeSheet(); render(); toast(Object.keys(F).length + ' staff filled from billing' + (dayMoves().length ? ' · ' + pl(dayMoves().length, 'move') + ' applied' : ''));
 }
 
@@ -1559,7 +1578,7 @@ function brefHTML() {
     <tfoot><tr><td>Total</td><td>${bfmt(T.svc)}</td><td>${T.bills}</td><td>${T.mc || ''}</td></tr></tfoot></table>`; }
   const sw = `<div class="bref-sw"><button class="${!raw && !all ? 'on' : ''}" data-a="brefmode" data-v="fix">${mv.length ? 'After moves' : 'Staff'}</button><button class="${raw && !all ? 'on' : ''}" data-a="brefmode" data-v="raw">As in billing</button><button class="${all ? 'on' : ''}" data-a="brefmode" data-v="all">All columns</button></div>`;
   return `<aside class="bref">${head()}${tabBar}${sw}${body}
-    ${mv.length && !all ? `<div class="bref-mv"><b>Moved today</b>${mv.map(m => `<div>${esc(moveLine(m))}</div>`).join('')}</div>` : ''}
+    ${!all ? `<div class="bref-mv"><div class="bref-mvh"><b>${mv.length ? 'Moved today' : 'Bills under the wrong staff?'}</b><button class="btn sm gh" data-a="mvnew2">${ic('plus')}Move a bill</button></div>${mv.map(m => `<div class="bref-mvr"><span>${esc(moveLine(m))}</span><button class="xb" data-a="mvdel" data-v="${esc(m.id)}" aria-label="Remove this move" title="Remove this move">✕</button></div>`).join('')}</div>` : ''}
     <div class="bref-f"><span class="cs">${!raw && !all ? '<i class="bdot ok"></i>same as the report <i class="bdot df"></i>different' : all ? 'The service sale column is marked.' : 'Exactly as copied from billing.'}</span><button class="btn sm" data-a="brefuse">Fill the report from this</button></div></aside>`;
 }
 function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref-tb tr[data-a=brefgo]').forEach(tr => { const x = r[tr.dataset.v] || {}, a = tr.dataset.svc, b = tr.dataset.bills;
@@ -2124,16 +2143,18 @@ document.addEventListener('click', async e => {
     case 'billopen': S.bill = null; S.mvForm = null; billOpen(); break;
     case 'billagain': S.bill = null; billOpen(); break;
     case 'billfill': billFill(); break;
-    case 'mvnew': { const c = billCands(); S.mvForm = { from: (c[0] || {}).n || '', lines: [{ to: (c[1] || {}).n || '', gross: '', bills: '1' }] }; billOpen(true); const g = document.getElementById('mv_g_0'); if (g) g.focus(); break; }
-    case 'mvline': { mvCapture(); const c = billCands(), used = [S.mvForm.from].concat(S.mvForm.lines.map(l => l.to)); S.mvForm.lines.push({ to: (c.find(x => !used.includes(x.n)) || {}).n || '', gross: '', bills: '0' }); billOpen(true); const g = document.getElementById('mv_g_' + (S.mvForm.lines.length - 1)); if (g) g.focus(); break; }
-    case 'mvrmline': { mvCapture(); S.mvForm.lines.splice(+v, 1); billOpen(true); break; }
-    case 'mvcancel': S.mvForm = null; billOpen(true); break;
+    case 'mvnew': { const c = billCands(); S.mvDirect = false; S.mvForm = { from: (c[0] || {}).n || '', lines: [{ to: (c[1] || {}).n || '', gross: '', bills: '1' }] }; billOpen(true); const g = document.getElementById('mv_g_0'); if (g) g.focus(); break; }
+    case 'mvnew2': { const c = billCands(); S.bill = null; S.mvDirect = true; S.mvForm = { from: (c[0] || {}).n || '', lines: [{ to: (c[1] || {}).n || '', gross: '', bills: '1' }] }; openSheet(mvSheet()); const g = document.getElementById('mv_g_0'); if (g) g.focus(); break; }
+    case 'mvline': { mvCapture(); const c = billCands(), used = [S.mvForm.from].concat(S.mvForm.lines.map(l => l.to)); S.mvForm.lines.push({ to: (c.find(x => !used.includes(x.n)) || {}).n || '', gross: '', bills: '0' }); if (S.mvDirect) sheetUpdate(mvSheet()); else billOpen(true); const g = document.getElementById('mv_g_' + (S.mvForm.lines.length - 1)); if (g) g.focus(); break; }
+    case 'mvrmline': { mvCapture(); S.mvForm.lines.splice(+v, 1); if (S.mvDirect) sheetUpdate(mvSheet()); else billOpen(true); break; }
+    case 'mvcancel': S.mvForm = null; if (S.mvDirect) { S.mvDirect = false; closeSheet(); } else billOpen(true); break;
     case 'mvadd': mvAdd(); break;
-    case 'mvdel': { const L = dayMoves(), i = L.findIndex(m => m.id === v); if (i >= 0) { L.splice(i, 1); touch(S.today, 'rep'); } billOpen(true); break; }
+    case 'mvdel': { const L = dayMoves(), i = L.findIndex(m => m.id === v); if (i >= 0) { const m = L[i]; if (m.applied) mvApply(m, -1); L.splice(i, 1); touch(S.today, 'rep'); }
+      if (S.bill) billOpen(true); else { render(); toast('Move removed · report put back'); } break; }
     case 'brefshow': S.bref = !S.bref; ls('gt_bref', S.bref ? '1' : '0'); render(); if (S.bref) { const z = document.getElementById('brefzone'); if (z) z.focus({ preventScroll: true }); } break;
     case 'brefmode': S.brefAll = v === 'all'; S.brefRaw = v === 'raw'; render(); break;
     case 'brefsel': { const o = brefStore(); o.sel = v; brefSave(o); render(); break; }
-    case 'brefuse': { const ref = brefGet(), B = ref ? parseBilling(ref.text) : null; if (!B) break; B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen(); break; }
+    case 'brefuse': { const ref = brefGet(), B = ref ? parseBilling(ref.text) : null; if (!B) break; S.mvForm = null; S.mvDirect = false; B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen(); break; }
     case 'brefgo': { const f = document.getElementById('x_' + v + '_svc'); if (f) { f.scrollIntoView({ block: 'center', behavior: 'smooth' }); f.focus({ preventScroll: true }); f.select && f.select(); } break; }
     case 'appupdate': el.disabled = true; el.textContent = 'Updating…'; try { await flushNow(); } catch (x) {} location.reload(); break;
     case 'ycl': S.page = 'closing'; S.cdate = S.yday; lastPage = ''; render(); break;
