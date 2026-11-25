@@ -414,5 +414,6 @@ Deno.serve(async (req) => {
     if (OPEN.indexOf(q.fn) < 0 && !(await ready())) throw new Error("NOT_READY");
     out = { result: await API[q.fn].apply(null, q.args || []) };
   } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|NOT_READY|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The )/.test(out.error)) console.error(e); }
+  out.t = Date.now(); /* the server clock: the app uses it instead of the phone clock */
   return new Response(JSON.stringify(out), { headers: CORS });
 });
