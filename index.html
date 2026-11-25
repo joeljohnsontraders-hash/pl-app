@@ -1549,7 +1549,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 1;
+const APP_VER = 2;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
