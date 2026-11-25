@@ -178,6 +178,12 @@ const API = {
         const r = (await tx`select * from app_staff where id = ${f.id || ""} and branch = ${b}`)[0]; if (!r) err("Not found."); if (!f.reason) err("Pick a reason.");
         await tx`update app_staff set status = 'removed', note = ${"removed: " + f.reason + (f.note ? " · " + f.note : "")} where id = ${r.id}`;
         if (role(u) === "manager") await alert(tx, b, "staff", b + " removed " + r.name + " from the staff list: " + f.reason + (f.note ? " · " + f.note : ""));
+      } else if (op === "section") {
+        if (["G", "L", "O", "H"].indexOf(f.g) < 0) err("Pick the section.");
+        const r = (await tx`select * from app_staff where id = ${f.id || ""} and branch = ${b}`)[0]; if (!r) err("Not found.");
+        if (r.section !== f.g) { const SN = { G: "Gents SSP", L: "Ladies SSP", O: "OM", H: "HK" };
+          await tx`update app_staff set section = ${f.g} where id = ${r.id}`;
+          if (role(u) === "manager") await alert(tx, b, "staff", b + " changed " + r.name + " from " + SN[r.section] + " to " + SN[f.g]); }
       } else if (op === "edit" && role(u) === "controller") {
         const r = (await tx`select * from app_staff where id = ${f.id || ""}`)[0]; if (!r) err("Not found.");
         const name = f.name ? String(f.name).trim() : r.name, sec = f.g || r.section, br = f.branch || r.branch, t = f.t === undefined ? r.target : (f.t === "" ? null : N(f.t));
