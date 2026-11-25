@@ -527,7 +527,7 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .bfin{margin-top:10px;display:grid;gap:4px;font-size:13px}.bfin b{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.bfin div{display:flex;justify-content:space-between;gap:10px;font-weight:700}.bfin s{color:var(--muted);font-weight:600}
 .bref-mv{font-size:12px;display:grid;gap:3px;padding:8px 10px;border-radius:10px;background:var(--soft)}.bref-mv b{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 @media(max-width:700px){.bmv-f{grid-template-columns:1fr 1fr}}
-.bmv-f2{display:grid;grid-template-columns:2fr 1fr;gap:8px}.bmv-l{display:grid;gap:8px}.bmv-li{display:grid;grid-template-columns:2fr 1.3fr .8fr 26px;gap:8px;align-items:end}
+.bmv-f2{display:grid;grid-template-columns:2fr 1fr;gap:8px}.bmv-f2.one{grid-template-columns:minmax(0,1fr)}.bmv-l{display:grid;gap:8px}.bmv-li{display:grid;grid-template-columns:2fr 1.3fr .8fr 26px;gap:8px;align-items:end}
 .bmv-f2 label,.bmv-li label{display:grid;gap:4px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.bmv-f2 select,.bmv-f2 input,.bmv-li select,.bmv-li input{font:inherit;font-size:13.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--ink);padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;min-width:0;width:100%}.bmv-li .xb{margin-bottom:6px}
 .bref-tabs{display:flex;gap:4px;flex-wrap:wrap}.bref-tabs button{padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--muted);background:var(--soft)}.bref-tabs button.on{background:var(--navy);color:#fff}
 .bref-sw{display:flex;background:var(--soft);border-radius:10px;padding:3px;gap:2px}.bref-sw button{flex:1;padding:6px 6px;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--muted)}.bref-sw button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(10,26,43,.12)}
@@ -1268,7 +1268,8 @@ document.addEventListener('change', e => { const d = e.target.dataset || {}; if 
   if (d.bm !== undefined && S.bill.rows[+d.bm]) { S.bill.rows[+d.bm].pick = e.target.value; billOpen(true); }
   else if (d.bcol) { S.bill.pick[d.bcol] = +e.target.value; billOpen(true); } });
 /* bills put under another staff: the manager types each bill's gross amount; only the net (gross less GST) moves.
-   One move can go to several staff (a bill shared by two people, or two people's bills under one name). Each person gets their own bill count.
+   One move can go to several staff (a bill shared by two people, or two people's bills under one name). The manager types each person's bills,
+   and the same number of bills comes off the staff it was billed under, so the branch bill total still matches billing.
    Moves are kept with today's report and applied again on every later paste, because billing keeps the bill under the wrong name all day. */
 const gstF = () => 1 + (num(S.settings.gst) || 5) / 100, gstP = () => num(S.settings.gst) || 5;
 const r2 = v => Math.round(v * 100) / 100;
@@ -1313,29 +1314,29 @@ function billSheet() {
     ${Object.keys(used).filter(s => used[s].length > 1).map(s => `<div class="bchk warn">! ${esc(used[s].join(' and '))} are added together for ${esc(s)}.</div>`).join('')}
     <div class="bmv"><div class="bmv-h"><b>Bills put under another staff</b>${mf ? '' : `<button class="btn sm gh" data-a="mvnew">${ic('plus')}Move a bill</button>`}</div>
       ${mv.length ? mv.map(m => `<div class="bmv-r"><span>${esc(moveLine(m))}<small>gross ${bfmt(m.lines.reduce((t, l) => t + num(l.gross), 0))} · ${esc(m.at || '')}${m.by ? ' · ' + esc(m.by) : ''}</small></span><button class="xb" data-a="mvdel" data-v="${esc(m.id)}" aria-label="Remove this move">✕</button></div>`).join('') : (mf ? '' : '<div class="cs">None today. If a bill was made under the wrong staff, move it here. Only the net amount moves.</div>')}
-      ${mf ? `<div class="bmv-f2"><label><span>Billed under</span><select id="mv_f">${opts(mf.from)}</select></label><label><span>Bills in billing</span><input id="mv_fb" inputmode="numeric" value="${esc(mf.fromBills)}"></label></div>
+      ${mf ? `<div class="bmv-f2 one"><label><span>Billed under</span><select id="mv_f">${opts(mf.from)}</select></label></div>
         <div class="bmv-l">${mf.lines.map((l, i) => `<div class="bmv-li"><label><span>${i ? 'And' : 'Who did the work'}</span><select id="mv_t_${i}">${opts(l.to)}</select></label><label><span>Gross amount ₹</span><input id="mv_g_${i}" data-mvl="1" inputmode="decimal" value="${esc(l.gross || '')}" placeholder="e.g. 1150"></label><label><span>Bills</span><input id="mv_b_${i}" data-mvl="1" inputmode="numeric" value="${esc(l.bills)}"></label>${mf.lines.length > 1 ? `<button class="xb" data-a="mvrmline" data-v="${i}" aria-label="Remove this person">✕</button>` : '<span></span>'}</div>`).join('')}
         <button class="btn sm gh" data-a="mvline" style="justify-self:start">${ic('plus')}Add person</button></div>
         <div class="bmv-n" id="mv_n">${mvNetText()}</div><div class="bmv-a"><button class="btn sm gh" data-a="mvcancel">Cancel</button><button class="btn sm" data-a="mvadd">Move it</button></div>` : ''}</div>
     ${changed.length ? `<div class="bfin"><b>Going into the report after moves</b>${changed.map(s => `<div><span>${esc(s)}</span><span class="num">${F[s].mv ? `<s>${bfmt(F[s].base)}</s> ` : ''}${bfmt(F[s].svc)} · ${F[s].mb ? `<s>${F[s].bbase}</s> ` : ''}${pl(F[s].bills, 'bill')}</span></div>`).join('')}</div>` : ''}
     <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn gh" data-a="billagain">Paste again</button><button class="btn" data-a="billfill" ${bad ? 'disabled' : ''}>Fill the report</button></div>`;
 }
-function mvCapture() { if (!S.mvForm || !document.getElementById('mv_f')) return; const f = S.mvForm; f.from = val('mv_f'); f.fromBills = val('mv_fb');
+function mvCapture() { if (!S.mvForm || !document.getElementById('mv_f')) return; const f = S.mvForm; f.from = val('mv_f');
   const el = id => document.getElementById(id); f.lines = f.lines.map((l, i) => el('mv_g_' + i) ? { to: val('mv_t_' + i) || l.to, gross: el('mv_g_' + i).value, bills: el('mv_b_' + i).value } : l); }
 function mvNetText() { mvCapture(); const f = S.mvForm; if (!f) return ''; const L = f.lines.filter(l => num(l.gross) > 0);
   if (!L.length) return `Type the gross amount of each bill. The app takes off ${gstP()}% GST and moves only the net.`;
-  const tot = r2(L.reduce((t, l) => t + r2(num(l.gross) / gstF()), 0));
-  return L.map(l => `<b>${esc(l.to || '?')}</b> gets net <b>${bfmt(r2(num(l.gross) / gstF()))}</b> (gross ${bfmt(num(l.gross))})${num(l.bills) ? ' and ' + pl(num(l.bills), 'bill') : ''}`).join('<br>') + `<br>Taken from <b>${esc(f.from || '?')}</b>: net <b>${bfmt(tot)}</b>${num(f.fromBills) ? ' and ' + pl(num(f.fromBills), 'bill') : ''}.`; }
+  const tot = r2(L.reduce((t, l) => t + r2(num(l.gross) / gstF()), 0)), tb = f.lines.reduce((t, l) => t + num(l.bills), 0);
+  return L.map(l => `<b>${esc(l.to || '?')}</b> gets net <b>${bfmt(r2(num(l.gross) / gstF()))}</b> (gross ${bfmt(num(l.gross))})${num(l.bills) ? ' and ' + pl(num(l.bills), 'bill') : ''}`).join('<br>') + `<br>Taken from <b>${esc(f.from || '?')}</b>: net <b>${bfmt(tot)}</b>${tb ? ' and ' + pl(tb, 'bill') : ''}.`; }
 document.addEventListener('input', e => { if (e.target.dataset && e.target.dataset.mvl || e.target.id === 'mv_fb') { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
 document.addEventListener('change', e => { if (/^mv_(f|t_\d+)$/.test(e.target.id)) { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
 function mvAdd() {
-  mvCapture(); const er = document.getElementById('serr'), f = S.mvForm, fb = String(f.fromBills).trim() === '' ? 0 : num(f.fromBills);
-  const lines = f.lines.map(l => ({ to: l.to, gross: r2(num(l.gross)), bills: String(l.bills).trim() === '' ? 0 : num(l.bills) }));
+  mvCapture(); const er = document.getElementById('serr'), f = S.mvForm;
+  const lines = f.lines.map(l => ({ to: l.to, gross: r2(num(l.gross)), bills: String(l.bills).trim() === '' ? 0 : num(l.bills) })), fb = lines.reduce((t, l) => t + l.bills, 0);
   if (!f.from) { er.textContent = 'Pick who the bill was made under.'; return; }
   if (lines.some(l => !l.to || l.to === f.from)) { er.textContent = 'Each person must be someone other than ' + f.from + '.'; return; }
   if (new Set(lines.map(l => l.to)).size !== lines.length) { er.textContent = 'The same person is picked twice. Put their amount on one line.'; return; }
   if (lines.some(l => !(l.gross > 0))) { er.textContent = 'Type the gross amount for each person.'; return; }
-  if ([fb].concat(lines.map(l => l.bills)).some(b => b < 0 || Math.round(b) !== b)) { er.textContent = 'Bills must be whole numbers.'; return; }
+  if (lines.some(l => l.bills < 0 || Math.round(l.bills) !== l.bills)) { er.textContent = 'Bills must be whole numbers.'; return; }
   lines.forEach(l => { l.net = r2(l.gross / gstF()); });
   const net = r2(lines.reduce((t, l) => t + l.net, 0)), F = S.bill ? billFinal(S.bill, S.bill.pick, x => x.pick) : {}, have = F[f.from] || { svc: 0, bills: 0 };
   if (S.bill && net > have.svc + 0.005) { er.textContent = `${f.from} has only ${bfmt(have.svc)} net in billing.`; return; }
@@ -1675,8 +1676,8 @@ document.addEventListener('click', async e => {
     case 'billopen': S.bill = null; S.mvForm = null; billOpen(); break;
     case 'billagain': S.bill = null; billOpen(); break;
     case 'billfill': billFill(); break;
-    case 'mvnew': { const c = billCands(); S.mvForm = { from: (c[0] || {}).n || '', fromBills: '1', lines: [{ to: (c[1] || {}).n || '', gross: '', bills: '1' }] }; billOpen(true); const g = document.getElementById('mv_g_0'); if (g) g.focus(); break; }
-    case 'mvline': { mvCapture(); const c = billCands(), used = [S.mvForm.from].concat(S.mvForm.lines.map(l => l.to)); S.mvForm.lines.push({ to: (c.find(x => !used.includes(x.n)) || {}).n || '', gross: '', bills: '1' }); billOpen(true); const g = document.getElementById('mv_g_' + (S.mvForm.lines.length - 1)); if (g) g.focus(); break; }
+    case 'mvnew': { const c = billCands(); S.mvForm = { from: (c[0] || {}).n || '', lines: [{ to: (c[1] || {}).n || '', gross: '', bills: '1' }] }; billOpen(true); const g = document.getElementById('mv_g_0'); if (g) g.focus(); break; }
+    case 'mvline': { mvCapture(); const c = billCands(), used = [S.mvForm.from].concat(S.mvForm.lines.map(l => l.to)); S.mvForm.lines.push({ to: (c.find(x => !used.includes(x.n)) || {}).n || '', gross: '', bills: '0' }); billOpen(true); const g = document.getElementById('mv_g_' + (S.mvForm.lines.length - 1)); if (g) g.focus(); break; }
     case 'mvrmline': { mvCapture(); S.mvForm.lines.splice(+v, 1); billOpen(true); break; }
     case 'mvcancel': S.mvForm = null; billOpen(true); break;
     case 'mvadd': mvAdd(); break;
