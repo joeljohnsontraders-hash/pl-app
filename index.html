@@ -634,6 +634,7 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .tm-bar small{font-size:9.5px;color:var(--muted);font-weight:700}
 .tm-bar.off i,.tm-bar.lv i{height:6px!important}.tm-bar.off i{background:#9DB2E6}.tm-bar.lv i{background:#E8A49C}
 .tm-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted);font-weight:700;flex-wrap:wrap}.tm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#1E9E63}.tm-leg i.off{background:#9DB2E6}.tm-leg i.lv{background:#E8A49C}
+.tm-sec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:14px 18px}.tm-sec b{display:block;font-size:14px}.tm-sec small{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}.tm-sec .tm-tg{margin:0}
 .tm-ml{display:none}
 .tm-back{display:inline-flex;align-items:center;gap:6px;color:#C9F3DD;font-weight:800;font-size:13px;margin:-4px 0 10px}
 .tm-mg{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 2px 6px}
@@ -1761,6 +1762,10 @@ VIEWS.team = () => {
   return { eb: 'Team report', title: 'Staff', sub: esc(ME()) + ' · ' + esc(tmRLabel()), right: '', hx, body };
 };
 
+const SECN = { G: 'Gents SSP', L: 'Ladies SSP', O: 'OM', H: 'House keeping' };
+/* the person's section decides where they sit in the timely report (Gents / Ladies); it can be changed here */
+function tmSecRow(n) { const p = people().find(x => x.n === n); if (!p) return '';
+  return `<section class="card tm-sec"><div><b>Section</b><small>Where ${esc(n)} sits in the timely report</small></div>${tmTg('tmsec', p.g, Object.entries(SECN))}</section>`; }
 function tmPerson(n) {
   const D = tmData(), t = D.T[n] || { in: 0, off: 0, lv: 0, svc: 0, bills: 0, prod: 0, pq: 0, mc: 0, rev: 0, items: {} }, g = D.gOf(n), pm = S.tmPm || 'day';
   const hx = `<button class="tm-back" data-a="tmback">← All staff</button>` + tmRangeBar() + `<div class="glass" style="margin-top:14px"><div class="gl"><small>Service sale</small><b>${inr(t.svc)}</b></div><div class="gl"><small>Product sale</small><b>${inr(t.prod)}</b></div><div class="gl"><small>Worked</small><b>${t.in} day${t.in === 1 ? '' : 's'}</b></div></div>`;
@@ -1774,7 +1779,7 @@ function tmPerson(n) {
   const line = (lab, ds, cls) => { let s = 0, b = 0, p = 0, pq = 0, mc = 0, rv = 0, i = 0; ds.forEach(d => { const c = D.at(n, d) || {}; s += c.svc || 0; b += c.bills || 0; p += c.prod || 0; pq += c.pq || 0; mc += c.mc || 0; rv += c.rev || 0; if (c.st === 'in') i++; });
     const c1 = ds.length === 1 ? (D.at(n, ds[0]) || {}) : null;
     const att = c1 ? (!c1.st ? '<span class="cs">Not marked</span>' : c1.st === 'in' ? `<span class="tm-a in">In</span>${c1.in ? ` <span class="cs">${esc(t12(c1.in))}${c1.out ? ' – ' + esc(t12(c1.out)) : ''}</span>` : ''}` : tmAttTag(c1)) : `<b>${i}</b> <span class="cs">worked</span>`;
-    const items = c1 && c1.items.length ? `<div class="tm-it">${c1.items.map(x => `${esc(x.n)} × ${x.q}`).join(', ')}</div>` : '';
+    const items = c1 && c1.items && c1.items.length ? `<div class="tm-it">${c1.items.map(x => `${esc(x.n)} × ${x.q}`).join(', ')}</div>` : '';
     return `<tr class="${cls || ''}"><td class="tm-n"><b>${esc(lab)}</b></td><td class="tm-att">${att}</td><td class="b">${s ? inr(s) : ''}</td><td>${b || ''}</td><td>${b ? fmt(s / b) : ''}</td><td>${p ? inr(p) : ''}${pq ? `<small> · ${pq}</small>` : ''}${items}</td><td>${mc || ''}</td><td>${rv || ''}</td></tr>`; };
   const mline = (lab, ds, cls) => { let s = 0, b = 0, p = 0, pq = 0, mc = 0, rv = 0, i = 0; const its = []; ds.forEach(d => { const c = D.at(n, d) || {}; s += c.svc || 0; b += c.bills || 0; p += c.prod || 0; pq += c.pq || 0; mc += c.mc || 0; rv += c.rev || 0; if (c.st === 'in') i++; if (ds.length === 1) (c.items || []).forEach(x => its.push(x)); });
     const c1 = ds.length === 1 ? (D.at(n, ds[0]) || {}) : null;
@@ -1791,7 +1796,7 @@ function tmPerson(n) {
   const it = Object.entries(t.items).sort((a, b) => b[1].a - a[1].a);
   const prods = `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('box')}</span>Products sold</div><span class="cs">${t.pq} pcs · ${inr(t.prod)}</span></div>${it.length ? it.map(([nm, x]) => `<div class="row"><div class="l"><b>${esc(nm)}</b><small>${x.q} pcs</small></div><b>${inr(x.a)}</b></div>`).join('') : '<div class="empty">No products sold on these dates.</div>'}</section>`;
   return { eb: 'Staff · ' + (GN[g] || ''), title: esc(n), sub: esc(ME()) + ' · ' + esc(tmRLabel()), right: '', hx,
-    body: `${kp}${bars}${table}${prods}` };
+    body: `${tmSecRow(n)}${kp}${bars}${table}${prods}` };
 }
 
 const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + mrId();
@@ -2071,6 +2076,9 @@ document.addEventListener('click', async e => {
     case 'tmpm': S.tmPm = v; render(); break;
     case 'tmsel': S.tmSel = v; render(); window.scrollTo(0, 0); break;
     case 'tmback': S.tmSel = null; render(); window.scrollTo(0, 0); break;
+    case 'tmsec': { const p = people().find(x => x.n === S.tmSel); if (!p || p.g === v) break; el.disabled = true;
+      try { S.staff = await call('appStaffOp', S.tok, ME(), 'section', { id: p.id, g: v }); persist(); render(); toast(p.n + ' is now ' + SECN[v] + (S.me.role === 'manager' ? ' · controller told' : '')); }
+      catch (e) { el.disabled = false; toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } break; }
     case 'cloall': cloSaveAll(); break;
     case 'closhare': cloShareAll(); break;
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
