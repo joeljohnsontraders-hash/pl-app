@@ -538,10 +538,11 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .mrep table{border-collapse:collapse;font-size:17px;font-style:italic;white-space:nowrap}.mrep td{display:table-cell;background:transparent;border:1px solid #2b2b2b;padding:5px 10px;text-align:center;min-width:62px}
 .mrep td.mr-h1{font-size:21px;font-weight:700;padding:12px;font-style:italic}.mrep td.mr-h2{font-weight:700;font-size:18px}.mrep tr.mr-hd td{font-weight:700;white-space:normal;line-height:1.15;max-width:110px;font-size:17px}
 .mrep td.mr-nm{font-weight:700;min-width:120px}.mrep tr:not(.mr-hd):not(.mr-sub):not(.mr-tot):not(.mr-ft) td:not(.mr-h1):not(.mr-h2){background:#fff}.mrep tr.mr-sub td,.mrep tr.mr-tot td{font-weight:700}.mrep tr.mr-ft td{font-weight:700}
-.mrep td.mr-bar{position:relative;min-width:150px;background:#fff}.mrep td.mr-bar i{position:absolute;left:6px;top:5px;bottom:5px;border-radius:2px}.mrep td.mr-bar.mr-g i{background:linear-gradient(90deg,#63BE7B,#E9F6EC);border:1px solid #63BE7B}.mrep td.mr-bar.mr-p i{background:linear-gradient(90deg,#D6007E,#FBE3F0);border:1px solid #D6007E}.mrep td.mr-bar span{position:relative}
 .mrep .mr-st{color:#F4B400;font-style:normal;font-size:20px;letter-spacing:2px}
 .mrbox{margin-top:8px;border-radius:12px}.mrbox .mrep{zoom:.82}
 .btab.mt input{width:130px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;font-weight:600;text-align:right}
+.mr-edit td[contenteditable]{cursor:text;outline:none;position:relative}.mr-edit td[contenteditable]:hover{box-shadow:inset 0 0 0 2px rgba(37,99,235,.25)}.mr-edit td[contenteditable]:focus{box-shadow:inset 0 0 0 2px #2563EB;background:#fff!important}
+.mr-edit td.mr-ov::after{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 9px 9px 0;border-color:transparent #F4B400 transparent transparent}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -605,7 +606,7 @@ const EXEC = 'https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8
 class NetErr extends Error {}
 /* fast server (Supabase) for the daily work; Google keeps logins, people and the P&L books */
 const SBAPI = 'https://wfklonhvjjmugzyquchf.supabase.co/functions/v1/api';
-const FAST = new Set(['appSkipSlot', 'appInbox', 'appMonthTarget', 'appLayout', 'appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend']);
+const FAST = new Set(['appSkipSlot', 'appInbox', 'appMonthTarget', 'appMonthEdit', 'appLayout', 'appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend']);
 const MOVED = 'The app was updated. Close it and open it again.';
 async function post(url, fn, args) {
   let r;
@@ -1128,7 +1129,7 @@ VIEWS.sales = () => {
   const PL = { open: ['Closing not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] };
   const recent = mo.slice().sort((a, b) => a.d < b.d ? 1 : -1).slice(0, 7).map(x => { const s = x.d === S.yday ? S.days[S.yday].clo.status : x.status, pl = PL[s] || PL.open; return `<div class="row"><div class="l"><b>${dLabel(x.d)}</b><small>${inr(x.net)} · ${x.bills} bills</small></div><span class="pill ${pl[1]}">${pl[0]}</span></div>`; }).join('');
   return { eb: monthName(S.today) + ' ' + S.today.slice(0, 4), title: 'Insights', sub: esc(ME()), right: '', hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Month so far</small><b>${inr(tot)}</b></div><div class="gl"><small>Per day</small><b>${mo.length ? inr(sum(mo.map(x => x.net)) / mo.length) : '–'}</b></div><div class="gl"><small>Best day</small><b>${best ? inr(best.net) : '–'}</b></div></div>`,
-    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('sheet')}</span><span>Month report<div class="cs" style="margin-top:2px">till ${dLabel(S.today)} · for the WhatsApp group</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="mtedit">Targets</button><button class="btn sm" data-a="mrimg">${ic('img')}Image</button></span></div><div class="ox mrbox">${monthRepHTML()}</div></section>
+    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('sheet')}</span><span>Month report<div class="cs" style="margin-top:2px">till ${dLabel(S.today)} · for the WhatsApp group</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" id="mereset" data-a="mereset" ${Object.keys(S.settings[meKey()] || {}).length ? '' : 'hidden'}>Undo typed numbers</button><button class="btn sm" data-a="mrimg">${ic('img')}Image</button></span></div><div class="cs" style="margin:2px 0 8px">Click any cell to type over it, like Excel. Totals follow. Clear a cell to bring back the app's number. Yellow corner = typed by hand.</div><div class="ox mrbox">${monthRepHTML(true)}</div></section>
     <div class="g2"><section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Every day</div></div>${calendar(mo, Cc.net)}</section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('staff')}</span>Staff sales</div><span class="cs">this month</span></div>${arr.length ? arr.map(([n, v]) => `<div style="padding:8px 0"><div style="display:flex;justify-content:space-between;font-weight:800"><span>${esc(n)}</span><span class="num">${inr(v)}</span></div><div class="bar"><i style="width:${Math.round(v / mx * 100)}%"></i></div></div>`).join('') : '<div class="empty">Sales show here as the reports come in.</div>'}</section></div>
     ${gCard(gSplit(S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === S.today.slice(0, 7)), [R().rows]), 'this month')}
@@ -1471,53 +1472,57 @@ function cloJoined() {
   return c;
 }
 
-/* ---------------- month report till date: the same sheet they post in the group ---------------- */
-const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7);
+/* ---------------- month report till date: the same sheet they post in the group ----------------
+   Rows are the staff who are in the daily reports (gents and ladies; OM and house keeping go in the unnamed row, as in their Excel).
+   Every cell can be typed over by the manager; totals follow the typed numbers. Clearing a cell brings back the app's number. */
+const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + S.today.slice(0, 7);
 const dmy = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
+const MRC = ['ts', 'svc', 'bills', 'abv', 'pend', 'tp', 'prod', 'ppend', 'rev', 'mc'];
 function monthRep() {
-  const ym = S.today.slice(0, 7), days = S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === ym), rows = R().rows || {}, T = S.settings[mtKey()] || {};
+  const ym = S.today.slice(0, 7), days = S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === ym), rows = R().rows || {}, T = S.settings[mtKey()] || {}, E = S.settings[meKey()] || {};
   liveCalc(); const A = {}, add = (n, k, v) => { v = num(v); if (!n || !v) return; (A[n] = A[n] || { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 })[k] += v; };
   days.forEach(x => { ['staff', 'staffB', 'staffM', 'staffR'].forEach((f, i) => Object.entries(x[f] || {}).forEach(([n, v]) => add(n, ['svc', 'bills', 'mc', 'rev'][i], v))); (x.prods || []).forEach(p => add(p.staff || '?', 'prod', num(p.q) * num(p.p))); });
   Object.entries(rows).forEach(([n, v]) => { add(n, 'svc', v.svc); add(n, 'bills', v.bills); add(n, 'mc', v.mc); add(n, 'rev', v.rev); add(n, 'prod', prodSum(v)); });
-  const dimN = dim(S.today), mine = S.staff.filter(x => x.branch === ME());
-  const tg = n => { const t = T[n] || {}, st = mine.find(x => x.name === n); return { s: t.s !== undefined && t.s !== '' ? num(t.s) : st && st.t ? st.t * dimN : 0, p: num(t.p) }; };
-  const grp = g => { const names = mine.filter(x => x.g === g).map(x => x.name); Object.keys(A).forEach(n => { if (!names.includes(n) && secOf(n) === g) names.push(n); });
-    return names.filter(n => A[n] || tg(n).s || tg(n).p).map(n => Object.assign({ n }, { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 }, A[n] || {}, { ts: tg(n).s, tp: tg(n).p })); };
-  const G = grp('G'), L = grp('L'), inGL = new Set(G.concat(L).map(x => x.n));
-  const others = Object.keys(A).filter(n => !inGL.has(n)), oth = { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 }; others.forEach(n => Object.keys(oth).forEach(k => { oth[k] += A[n][k]; }));
-  const tot = list => list.reduce((t, x) => { ['svc', 'bills', 'prod', 'mc', 'rev', 'ts', 'tp'].forEach(k => { t[k] += num(x[k]); }); return t; }, { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0, ts: 0, tp: 0 });
-  const tG = tot(G), tL = tot(L), all = tot(G.concat(L)); Object.keys(oth).forEach(k => { all[k] += oth[k]; });
-  const mcAmt = sum(days.map(x => num(x.mc))) + num(R().mcAmt), net = all.svc + mcAmt;
-  return { from: ym + '-01', to: S.today, G, L, oth, tG, tL, all, mcAmt, net, gross: Math.round(net * gstF()) };
+  const inReport = new Set(Object.keys(A).concat(present().map(p => p.n))), order = S.staff.filter(x => x.branch === ME()).map(x => x.name);
+  const ov = (k, auto) => E[k] !== undefined && E[k] !== '' ? num(E[k]) : auto, isOv = k => E[k] !== undefined && E[k] !== '';
+  const tgt = n => { const t = T[n] || {}; return { s: num(t.s), p: num(t.p) }; };
+  const mk = (key, base) => { const o = { key, n: base.n }; ['ts', 'svc', 'bills', 'tp', 'prod', 'rev', 'mc'].forEach(c => { o[c] = ov(key + '|' + c, num(base[c])); });
+    o.abv = ov(key + '|abv', o.bills ? Math.round(o.svc / o.bills) : 0); o.pend = ov(key + '|pend', o.ts - o.svc); o.ppend = ov(key + '|ppend', o.tp - o.prod); return o; };
+  const grp = g => [...inReport].filter(n => secOf(n) === g).sort((a, b) => (order.indexOf(a) + 1 || 999) - (order.indexOf(b) + 1 || 999))
+    .map(n => mk(n, Object.assign({ n, ts: tgt(n).s, tp: tgt(n).p }, A[n] || {})));
+  const G = grp('G'), L = grp('L'), inGL = new Set(G.concat(L).map(x => x.n)), oth = { n: '', svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 };
+  Object.keys(A).filter(n => !inGL.has(n)).forEach(n => ['svc', 'bills', 'prod', 'mc', 'rev'].forEach(k => { oth[k] += A[n][k]; }));
+  const O = mk('_O', oth); O.abv = ov('_O|abv', 0); O.pend = ov('_O|pend', 0); O.ppend = ov('_O|ppend', 0);
+  const sumOf = (key, list) => { const b = { n: '' }; ['ts', 'svc', 'bills', 'tp', 'prod', 'rev', 'mc'].forEach(c => { b[c] = list.reduce((t, x) => t + x[c], 0); }); return mk(key, b); };
+  const tG = sumOf('_G', G), tL = sumOf('_L', L), all = sumOf('_T', [tG, tL, O]);
+  const mcAmt = ov('_F|mc', all.mc * mcRate()), prodT = ov('_F|prod', all.prod), net = ov('_F|net', all.svc + mcAmt), gross = ov('_F|gross', Math.round(net * gstF()));
+  return { from: ym + '-01', to: S.today, G, L, O, tG, tL, all, mcAmt, prodT, net, gross, E, isOv, hasO: O.svc || O.prod || O.bills || O.mc || O.rev };
 }
-function monthRepHTML() {
-  const M = monthRep(), staff = M.G.concat(M.L), mxS = Math.max(1, ...staff.map(x => x.svc)), mxP = Math.max(1, ...staff.map(x => x.prod)), R0 = v => Math.round(v);
-  const stars = n => !n ? '' : n <= 5 ? '<span class="mr-st">' + '★'.repeat(n) + '</span>' : `<span class="mr-st">★</span> ${n}`;
-  const bar = (v, mx, c) => v ? `<td class="mr-bar mr-${c}"><i style="width:${Math.max(4, Math.round(v / mx * 100))}%"></i><span>${R0(v)}</span></td>` : '<td></td>';
-  const row = x => `<tr><td class="mr-nm">${esc(x.n)}</td><td>${x.ts ? R0(x.ts) : ''}</td>${bar(x.svc, mxS, 'g')}<td>${x.bills || ''}</td><td>${x.bills ? R0(x.svc / x.bills) : ''}</td><td>${x.ts || x.svc ? R0(x.ts - x.svc) : ''}</td><td>${x.tp ? R0(x.tp) : ''}</td>${bar(x.prod, mxP, 'p')}<td>${x.tp || x.prod ? R0(x.tp - x.prod) : ''}</td><td>${stars(x.rev)}</td><td>${x.mc || ''}</td></tr>`;
-  const sub = (lab, t, cls) => `<tr class="${cls || 'mr-sub'}"><td class="mr-nm">${lab}</td><td>${R0(t.ts)}</td><td>${R0(t.svc)}</td><td>${t.bills}</td><td>${t.bills ? R0(t.svc / t.bills) : ''}</td><td>${R0(t.ts - t.svc)}</td><td>${R0(t.tp)}</td><td>${R0(t.prod)}</td><td>${R0(t.tp - t.prod)}</td><td>${t.rev || ''}</td><td>${t.mc || ''}</td></tr>`;
-  return `<div class="mrep"><table>
-    <tr><td colspan="11" class="mr-h1">🔥 GT-${esc(ME().toUpperCase())} 🔥</td></tr>
-    <tr><td colspan="11" class="mr-h2">${monthName(S.today)} Month Report ${dmy(M.from)} to ${dmy(M.to)}</td></tr>
+function monthRepHTML(edit) {
+  const M = monthRep(), R0 = v => v ? String(Math.round(v)) : '', stars = n => !n ? '' : n <= 5 ? '<span class="mr-st">' + '★'.repeat(n) + '</span>' : `<span class="mr-st">★</span> ${n}`;
+  const cell = (k, shown, cls) => edit ? `<td contenteditable="true" spellcheck="false" data-mk="${esc(k)}" class="${cls || ''} ${M.isOv(k) ? 'mr-ov' : ''}">${shown}</td>` : `<td class="${cls || ''}">${shown}</td>`;
+  const txt = (k, auto, cls) => { const v = M.E[k] !== undefined && M.E[k] !== '' ? M.E[k] : auto; return cell(k, esc(v), cls); };
+  const row = (x, label, cls) => `<tr class="${cls || ''}">${txt(x.key + '|name', label, 'mr-nm')}${cell(x.key + '|ts', R0(x.ts))}${cell(x.key + '|svc', R0(x.svc))}${cell(x.key + '|bills', R0(x.bills))}${cell(x.key + '|abv', R0(x.abv))}${cell(x.key + '|pend', (x.key !== '_O' && (x.ts || x.svc)) || M.isOv(x.key + '|pend') ? String(Math.round(x.pend)) : '')}${cell(x.key + '|tp', R0(x.tp))}${cell(x.key + '|prod', R0(x.prod))}${cell(x.key + '|ppend', (x.key !== '_O' && (x.tp || x.prod)) || M.isOv(x.key + '|ppend') ? String(Math.round(x.ppend)) : '')}${cell(x.key + '|rev', edit ? R0(x.rev) : (cls ? R0(x.rev) : stars(Math.round(x.rev))))}${cell(x.key + '|mc', R0(x.mc))}</tr>`;
+  const ft = (k, lab, v) => `<tr class="mr-ft">${txt(k + '|name', lab, 'mr-nm')}${cell(k, v, '').replace('<td ', '<td colspan="10" ')}</tr>`;
+  return `<div class="mrep ${edit ? 'mr-edit' : ''}"><table>
+    <tr>${txt('_H|h1', '🔥 GT-' + ME().toUpperCase() + ' 🔥', 'mr-h1').replace('<td ', '<td colspan="11" ')}</tr>
+    <tr>${txt('_H|h2', monthName(S.today) + ' Month Report ' + dmy(M.from) + ' to ' + dmy(M.to), 'mr-h2').replace('<td ', '<td colspan="11" ')}</tr>
     <tr class="mr-hd"><td>Staff</td><td>Service target</td><td>Achieved</td><td>No of bills</td><td>Abv</td><td>Pending</td><td>Product target</td><td>Achieved</td><td>Pending</td><td>Review</td><td>Mem card</td></tr>
-    ${M.G.map(row).join('')}${M.G.length ? sub('Gents sales', M.tG) : ''}${M.L.map(row).join('')}${M.L.length ? sub('Ladies sales', M.tL) : ''}
-    ${M.oth.svc || M.oth.prod ? `<tr><td class="mr-nm"></td><td></td><td>${M.oth.svc ? R0(M.oth.svc) : ''}</td><td>${M.oth.bills || ''}</td><td></td><td></td><td></td><td>${M.oth.prod ? R0(M.oth.prod) : ''}</td><td></td><td>${M.oth.rev || ''}</td><td>${M.oth.mc || ''}</td></tr>` : ''}
-    ${sub('Total', M.all, 'mr-tot')}
-    <tr class="mr-ft"><td class="mr-nm">Mem card</td><td colspan="10">${R0(M.mcAmt)}</td></tr><tr class="mr-ft"><td class="mr-nm">Product</td><td colspan="10">${R0(M.all.prod)}</td></tr>
-    <tr class="mr-ft"><td class="mr-nm">Net sales</td><td colspan="10">${R0(M.net)}</td></tr><tr class="mr-ft"><td class="mr-nm">Gross sales</td><td colspan="10">${M.gross.toLocaleString('en-US')}</td></tr></table></div>`;
+    ${M.G.map(x => row(x, x.n)).join('')}${M.G.length ? row(M.tG, 'Gents sales', 'mr-sub') : ''}${M.L.map(x => row(x, x.n)).join('')}${M.L.length ? row(M.tL, 'Ladies sales', 'mr-sub') : ''}
+    ${M.hasO || edit ? row(M.O, '') : ''}${row(M.all, 'Total', 'mr-tot')}
+    ${ft('_F|mc', 'Mem card', R0(M.mcAmt))}${ft('_F|prod', 'Product', R0(M.prodT))}${ft('_F|net', 'Net sales', R0(M.net))}${ft('_F|gross', 'Gross sales', M.gross ? Math.round(M.gross).toLocaleString('en-US') : '')}</table></div>`;
 }
-function mtSheet() {
-  const T = S.settings[mtKey()] || {}, mine = S.staff.filter(x => x.branch === ME() && (x.g === 'G' || x.g === 'L')), d = dim(S.today);
-  return `<h3>Month targets · ${monthName(S.today)}</h3><div class="sub">Service and product targets for the month report. Empty service targets use the day target × ${d} days.</div>
-    <div class="ox"><table class="btab mt"><thead><tr><th>Staff</th><th>Service target ₹</th><th>Product target ₹</th></tr></thead><tbody>
-    ${mine.map((x, i) => { const t = T[x.name] || {}; return `<tr><td><b>${esc(x.name)}</b><small>${x.g === 'G' ? 'Gents' : 'Ladies'}${x.t ? ' · day target ' + x.t : ''}</small></td><td><input id="mt_s_${i}" data-n="${esc(x.name)}" inputmode="numeric" value="${esc(t.s !== undefined && t.s !== '' ? t.s : '')}" placeholder="${x.t ? x.t * d : ''}"></td><td><input id="mt_p_${i}" inputmode="numeric" value="${esc(t.p || '')}" placeholder="0"></td></tr>`; }).join('')}</tbody></table></div>
-    <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="mtsave">Save targets</button></div>`;
-}
-async function mtSave(el) {
-  const T = {}; document.querySelectorAll('[id^=mt_s_]').forEach(inp => { const i = inp.id.slice(5), s = inp.value.trim(), p = (document.getElementById('mt_p_' + i) || {}).value || ''; if (s !== '' || p.trim() !== '') T[inp.dataset.n] = { s: s === '' ? '' : num(s), p: num(p) }; });
-  el.disabled = true; try { const r = await call('appMonthTarget', S.tok, ME(), S.today.slice(0, 7), T); const keep = {}; Object.keys(T).forEach(n => { keep[n] = { s: T[n].s === '' ? '' : r.targets[n].s, p: r.targets[n].p }; }); S.settings[mtKey()] = keep; persist(); closeSheet(); render(); toast('Targets saved'); }
-  catch (e) { const er = document.getElementById('serr'); if (er) er.textContent = e instanceof NetErr ? 'No internet. Try again.' : e.message; el.disabled = false; }
-}
+let meT = 0;
+function meSave() { clearTimeout(meT); meT = setTimeout(() => { call('appMonthEdit', S.tok, ME(), S.today.slice(0, 7), S.settings[meKey()] || {}).catch(() => toast('Not saved. Check the internet.')); }, 500); }
+function meRedraw(focusKey) { const ub = document.getElementById('mereset'); if (ub) ub.hidden = !Object.keys(S.settings[meKey()] || {}).length; const box = document.querySelector('.mrbox'); if (!box) return; const sc = box.scrollLeft; box.innerHTML = monthRepHTML(true); box.scrollLeft = sc;
+  if (focusKey) { const c = box.querySelector(`[data-mk="${CSS.escape(focusKey)}"]`); if (c) { c.focus(); const r = document.createRange(); r.selectNodeContents(c); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } } }
+document.addEventListener('focusin', e => { const c = e.target.closest && e.target.closest('[data-mk]'); if (!c) return; c.dataset.was = c.textContent.trim(); const r = document.createRange(); r.selectNodeContents(c); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+document.addEventListener('keydown', e => { const c = e.target.closest && e.target.closest('[data-mk]'); if (!c) return; if (e.key === 'Enter') { e.preventDefault(); const cells = [...document.querySelectorAll('.mrbox [data-mk]')], i = cells.indexOf(c), col = c.cellIndex; const nx = cells.slice(i + 1).find(x => x.cellIndex === col) || cells[i + 1]; if (nx) nx.focus(); else c.blur(); } if (e.key === 'Escape') { c.textContent = c.dataset.was || ''; c.blur(); } });
+document.addEventListener('focusout', e => { const c = e.target.closest && e.target.closest('[data-mk]'); if (!c) return; const v = c.textContent.replace(/\s+/g, ' ').trim(), k = c.dataset.mk; if (v === (c.dataset.was || '')) return;
+  const E = S.settings[meKey()] = Object.assign({}, S.settings[meKey()] || {}); const numeric = !/\|name$|^_H\|/.test(k);
+  if (v === '') delete E[k]; else E[k] = numeric ? String(num(v.replace(/[★\s]/g, '') || 0)) : v;
+  persist(); meSave(); const nk = e.relatedTarget && e.relatedTarget.dataset ? e.relatedTarget.dataset.mk : null; setTimeout(() => meRedraw(nk), 0); });
+function meReset() { S.settings[meKey()] = {}; persist(); meSave(); meRedraw(); toast('Back to the app numbers'); }
 
 /* ---------------- images for WhatsApp ---------------- */
 async function snapImage(html, label) {
@@ -1710,9 +1715,8 @@ document.addEventListener('click', async e => {
     case 'clo1': cloSave(+v); break;
     case 'clocopy': { const x = (window.__clo || [])[+v]; if (x) copyCanvas(x.cv, x.l + ' copied · paste it in WhatsApp'); break; }
     case 'clocopyall': { const c = cloJoined(); if (c) copyCanvas(c, 'All closing tables copied as one picture · paste it in WhatsApp'); break; }
-    case 'mrimg': snapImage(monthRepHTML(), 'Month report'); break;
-    case 'mtedit': openSheet(mtSheet()); break;
-    case 'mtsave': mtSave(el); break;
+    case 'mrimg': snapImage(monthRepHTML(false), 'Month report'); break;
+    case 'mereset': meReset(); render(); break;
     case 'cloall': cloSaveAll(); break;
     case 'closhare': cloShareAll(); break;
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
