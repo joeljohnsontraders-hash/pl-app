@@ -749,9 +749,12 @@ const FAST = new Set(['appSkipSlot', 'appInbox', 'appMonthTarget', 'appMonthEdit
 const MOVED = 'The app was updated. Close it and open it again.';
 async function post(url, fn, args) {
   let r;
+  const t0 = Date.now();
   try { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn, args }) }); }
   catch (e) { throw new NetErr('offline'); }
-  try { return await r.json(); } catch (e) { throw new NetErr('bad reply'); }
+  let j; try { j = await r.json(); } catch (e) { throw new NetErr('bad reply'); }
+  if (j && typeof j.t === 'number') clockSync(j.t, t0, Date.now());
+  return j;
 }
 async function call(fn, ...args) {
   const fast = !window.__API && FAST.has(fn);
@@ -761,7 +764,14 @@ async function call(fn, ...args) {
   if (j.error) { if (j.error === 'SESSION') { signOut(true); } throw new Error(j.error); }
   return j.result;
 }
+/* time comes from the server, not the phone: a phone clock set wrong must not move reminders, due reports or the day.
+   Each reply carries the server time; the gap to the phone clock is kept (and remembered for the next opening). */
+let clockOff = 0, clockRtt = 1e9;
+function clockSync(srv, t0, t1) { const rtt = t1 - t0; if (rtt > 8000 || rtt > clockRtt + 400) return; clockRtt = Math.min(clockRtt, rtt); const off = Math.round(srv - (t0 + t1) / 2); if (Math.abs(off - clockOff) > 1500) { clockOff = off; ls('gt_clk', String(off)); } else clockOff = off; }
+const nowMs = () => Date.now() + clockOff, nowD = () => new Date(nowMs());
+window.gtClock = () => ({ offsetSec: Math.round(clockOff / 1000), ist: now(), date: istToday() }); /* to check the app's clock from the browser console */
 const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } };
+clockOff = parseFloat(ls('gt_clk')) || 0;
 
 /* ---------------- constants ---------------- */
 const GN = { G: 'Gents', L: 'Ladies', O: 'OM', H: 'HK' };
@@ -779,10 +789,11 @@ const num = v => { const x = parseFloat(String(v == null ? '' : v).replace(/[₹
 const blank = v => v === undefined || v === null || String(v).trim() === '';
 const sum = a => a.reduce((x, y) => x + y, 0);
 const clone = o => JSON.parse(JSON.stringify(o));
-const now = () => { const d = new Date(); let h = d.getHours(), m = d.getMinutes(); const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + ':' + String(m).padStart(2, '0') + ' ' + ap; };
+const istHM = () => new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(nowD()).split(':').map(Number);
+const now = () => { let [h, m] = istHM(); const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + ':' + String(m).padStart(2, '0') + ' ' + ap; };
 const t12 = v => { if (!v) return ''; const m = /^(\d{1,2}):(\d{2})$/.exec(v); if (!m) return v; let h = +m[1]; const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12; return h + ':' + m[2] + ' ' + ap; };
 const ini = n => String(n).split(' ').filter(Boolean).map(x => x[0]).join('').slice(0, 2).toUpperCase();
-const istToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+const istToday = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(nowD());
 const dt = s => { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); };
 const ds = d => d.toISOString().slice(0, 10);
 const addDays = (s, n) => { const d = dt(s); d.setUTCDate(d.getUTCDate() + n); return ds(d); };
@@ -989,7 +1000,7 @@ const loginView = () => `<div class="login"><div class="lcard"><img class="lgo b
   <form class="lf" id="lform"><input id="lph" inputmode="numeric" maxlength="10" placeholder="Mobile number" autocomplete="username"><input id="lpin" inputmode="numeric" maxlength="4" type="password" placeholder="4-digit PIN" autocomplete="current-password"><div class="lerr" id="lerr"></div><button class="lbtn" type="submit" id="lbtn">Sign in</button></form></div></div>`;
 const ring = (pct, label, sub) => { const r = 44, c = 2 * Math.PI * r, off = c * (1 - Math.min(1, pct));
   return `<div class="ring"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="${r}" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/><circle class="v" cx="52" cy="52" r="${r}" fill="none" stroke="#7EE0AE" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" style="--c:${c.toFixed(1)}"/></svg><div class="rv"><b>${label}</b><small>${sub}</small></div></div>`; };
-const greet = () => { const h = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: 'numeric', hourCycle: 'h23' }).format(new Date()); return (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + (S.me.name || '').split(' ')[0]; };
+const greet = () => { const h = +new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: 'numeric', hourCycle: 'h23' }).format(nowD()); return (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', ' + (S.me.name || '').split(' ')[0]; };
 const ebDate = () => `${DOW[dowOf(S.today)]} · ${dnum(S.today)} ${monthName(S.today).slice(0, 3)}`;
 
 
@@ -1490,7 +1501,7 @@ function mvAdd() {
   const net = r2(lines.reduce((t, l) => t + l.net, 0)), F = S.bill ? billFinal(S.bill, S.bill.pick, x => x.pick) : {}, have = F[f.from] || { svc: 0, bills: 0 };
   if (S.bill && net > have.svc + 0.005) { er.textContent = `${f.from} has only ${bfmt(have.svc)} net in billing.`; return; }
   if (S.bill && fb > have.bills) { er.textContent = `${f.from} has only ${pl(have.bills, 'bill')} in billing.`; return; }
-  const t = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' }).format(new Date()).toLowerCase();
+  const t = now();
   dayMoves().push({ id: Date.now().toString(36), from: f.from, fromBills: fb, lines, at: t, by: S.me.name || '' });
   S.mvForm = null; touch(S.today, 'rep'); billOpen(true);
 }
@@ -1514,7 +1525,7 @@ const brefKey = () => 'gt_billref|' + ME() + '|' + S.today;
 const brefSlots = () => SLOTS.map(s => s[0]);
 function brefStore() { let o = null; try { o = JSON.parse(ls(brefKey()) || 'null'); } catch (e) {} if (!o) o = { pastes: {} }; if (o.text) o = { pastes: { [due() || 'cl']: { text: o.text, at: o.at } } }; o.pastes = o.pastes || {}; return o; }
 function brefSave(o) { try { ls(brefKey(), JSON.stringify(o)); } catch (e) {} }
-const brefSet = text => { const o = brefStore(), k = due() || 'cl', at = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' }).format(new Date()).toLowerCase(); o.pastes[k] = { text, at }; o.sel = k; brefSave(o); };
+const brefSet = text => { const o = brefStore(), k = due() || 'cl', at = now(); o.pastes[k] = { text, at }; o.sel = k; brefSave(o); };
 const brefSel = o => { const ks = brefSlots().filter(k => o.pastes[k]); return o.sel && o.pastes[o.sel] ? o.sel : ks[ks.length - 1]; };
 const brefGet = () => { const o = brefStore(), k = brefSel(o); return k ? o.pastes[k] : null; };
 S.bref = ls('gt_bref') === '1';
@@ -1554,7 +1565,7 @@ const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], ba
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
 const outdated = () => num((S.inbox.ver || {}).v) > APP_VER;
-const istMin = () => { const [h, m] = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date()).split(':').map(Number); return h * 60 + m; };
+const istMin = () => { const [h, m] = istHM(); return h * 60 + m; };
 function todos() {
   if (S.asBranch || !S.today || !S.days[S.today] || !S.days[S.yday]) return [];
   const t = [], a = A(), c = S.days[S.today].clo, yc = S.days[S.yday].clo, d = due();
@@ -2330,10 +2341,10 @@ async function pollWatch() { clearTimeout(watchT); if (!S.tok || !isOffice() || 
     if (O.mirror) { const bt = O.watch.beats.find(x => x.role === 'owner'); if (bt) { let ch = false; if (bt.page && bt.page !== S.page && ONAV.owner.some(n => n[0] === bt.page)) { S.page = bt.page; ch = true; } if (bt.sub && bt.sub !== O.ob && (bt.sub === 'All' || BR.includes(bt.sub))) { O.ob = bt.sub; ch = true; } if (ch) render(); } }
     if (S.page === 'live' && !document.querySelector('.ov')) render(); } catch (e) {}
   watchT = setTimeout(pollWatch, S.page === 'live' ? 5000 : 4000); }
-const ago = t => { const s = Math.round((Date.now() - t) / 1000); return s < 60 ? s + ' s ago' : Math.round(s / 60) + ' min ago'; };
+const ago = t => { const s = Math.max(0, Math.round((nowMs() - t) / 1000)); return s < 60 ? s + ' s ago' : Math.round(s / 60) + ' min ago'; };
 const pageName = p => ((NAV.concat(ONAV.owner)).find(n => n[0] === p) || [p, p])[1];
 OVIEWS.live = () => {
-  if (!O.watch) pollWatch(); const W = O.watch || { beats: [], ownerLog: [] }, fresh = W.beats.filter(x => Date.now() - x.at < 120000);
+  if (!O.watch) pollWatch(); const W = O.watch || { beats: [], ownerLog: [] }, fresh = W.beats.filter(x => nowMs() - x.at < 120000);
   const mrow = b => { const x = fresh.find(y => y.role === 'manager' && y.branch === b);
     return `<div class="row"><div class="nm">${bdot(b)}<div><b>${b}</b><small>${x ? `${esc(x.name)} · on <b>${pageName(x.page)}</b> · ${ago(x.at)}` : 'App not open'}</small></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm ${x ? '' : 'gh'}" data-a="asopen" data-v="${b}">${ic('eye')}Open their app</button>${x ? `<button class="btn sm gh" data-a="osend" data-v="${esc(x.id)}">Send to a page</button>` : ''}</div></div>`; };
   const ow = fresh.filter(y => y.role === 'owner');
@@ -2470,7 +2481,7 @@ async function refreshDay() { if (!S.tok || !S.me || !S.booted || !S.today || (S
     if (ch) { persist(); render(); } } catch (e) {} }
 setInterval(() => refreshDay(), 30000); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { refreshDay(); beatNow(); } }); setInterval(() => { if (S.asBranch) refreshDay(); }, 6000);
 const reminded = {};
-setInterval(() => { if (!S.me || S.me.role !== 'manager' || !S.today || !S.days[S.today]) return; const hm = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date()), [h, m] = hm.split(':').map(Number), nowM = h * 60 + m;
+setInterval(() => { if (!S.me || S.me.role !== 'manager' || !S.today || !S.days[S.today]) return; const [h, m] = istHM(), nowM = h * 60 + m;
   slotTimes().forEach((t, i) => { const key = SLOTS[i][0], [th, tm] = t.split(':').map(Number), at = th * 60 + tm, before = num(S.settings.remindMin) || 5; if (R().snaps[key] || (R().skip || {})[key] || reminded[S.today + key] || nowM < at - before || nowM > at + 60) return;
     reminded[S.today + key] = 1; toast(slotName(key) + ' report is due'); try { if (window.Notification && Notification.permission === 'granted') new Notification('Green Trends', { body: slotName(key) + ' report is due' }); } catch (e) {} }); }, 30000);
 document.addEventListener('change', e => { if (e.target.dataset && e.target.dataset.follow) { S.follow = e.target.checked; } });
