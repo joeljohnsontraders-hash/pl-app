@@ -527,6 +527,13 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .bfin{margin-top:10px;display:grid;gap:4px;font-size:13px}.bfin b{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.bfin div{display:flex;justify-content:space-between;gap:10px;font-weight:700}.bfin s{color:var(--muted);font-weight:600}
 .bref-mv{font-size:12px;display:grid;gap:3px;padding:8px 10px;border-radius:10px;background:var(--soft)}.bref-mv b{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 @media(max-width:700px){.bmv-f{grid-template-columns:1fr 1fr}}
+.bmv-f2{display:grid;grid-template-columns:2fr 1fr;gap:8px}.bmv-l{display:grid;gap:8px}.bmv-li{display:grid;grid-template-columns:2fr 1.3fr .8fr 26px;gap:8px;align-items:end}
+.bmv-f2 label,.bmv-li label{display:grid;gap:4px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}.bmv-f2 select,.bmv-f2 input,.bmv-li select,.bmv-li input{font:inherit;font-size:13.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--ink);padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;min-width:0;width:100%}.bmv-li .xb{margin-bottom:6px}
+.bref-tabs{display:flex;gap:4px;flex-wrap:wrap}.bref-tabs button{padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;color:var(--muted);background:var(--soft)}.bref-tabs button.on{background:var(--navy);color:#fff}
+.bref-sw{display:flex;background:var(--soft);border-radius:10px;padding:3px;gap:2px}.bref-sw button{flex:1;padding:6px 6px;border-radius:8px;font-size:11.5px;font-weight:700;color:var(--muted)}.bref-sw button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(10,26,43,.12)}
+.bref-tb td s{display:block;color:var(--muted);font-weight:600;font-size:11px}.bnm{display:inline-flex;align-items:center;white-space:nowrap}.bref-tb td{vertical-align:top}.bmvt{margin-left:6px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#8a5a00;background:var(--warns);border-radius:6px;padding:1px 5px}
+.bref-tb small.bsince{margin-left:14px;color:var(--gt);font-weight:700}
+@media(max-width:700px){.bmv-li{grid-template-columns:1fr 1fr}.bmv-f2{grid-template-columns:1fr 1fr}}
 
 .emb .side,.emb .nav{display:none!important}.emb .main{padding-bottom:30px}
 .eback{display:inline-flex;align-items:center;gap:4px;color:#C9F3DD;font-weight:800;font-size:12.5px;margin:0 0 8px -4px}.eback svg{transform:rotate(180deg)}
@@ -1247,7 +1254,7 @@ function billMatch(x, cands) {
     if (s > bs) { bs = s; best = c.n; } });
   return bs >= 2 ? best : '';
 }
-function billOpen(keepScroll) { if (S.mvForm && document.getElementById('mv_g')) S.mvForm = { from: val('mv_f'), to: val('mv_t'), gross: val('mv_g'), bills: val('mv_b') }; const y = keepScroll ? (document.querySelector('.sh') || {}).scrollTop : 0; openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) { sh.classList.add('wide'); if (y) sh.scrollTop = y; } const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
+function billOpen(keepScroll) { mvCapture(); const y = keepScroll ? (document.querySelector('.sh') || {}).scrollTop : 0; openSheet(billSheet()); const sh = document.querySelector('.sh'); if (sh) { sh.classList.add('wide'); if (y) sh.scrollTop = y; } const z = document.getElementById('bpaste'); if (z) z.focus({ preventScroll: true }); }
 document.addEventListener('paste', e => {
   if (!S.me || S.me.role !== 'manager' || S.page !== 'report' || S.view !== 'live' || (!A().attDone && strictAtt())) return;
   const t = (e.clipboardData && e.clipboardData.getData('text/plain')) || '', B = parseBilling(t), ae = document.activeElement || {}, modal = !!document.querySelector('.ov');
@@ -1260,19 +1267,24 @@ document.addEventListener('paste', e => {
 document.addEventListener('change', e => { const d = e.target.dataset || {}; if (!S.bill) return;
   if (d.bm !== undefined && S.bill.rows[+d.bm]) { S.bill.rows[+d.bm].pick = e.target.value; billOpen(true); }
   else if (d.bcol) { S.bill.pick[d.bcol] = +e.target.value; billOpen(true); } });
-/* bills put under another staff: the manager types the bill's gross amount; only the net (gross less GST) moves.
+/* bills put under another staff: the manager types each bill's gross amount; only the net (gross less GST) moves.
+   One move can go to several staff (a bill shared by two people, or two people's bills under one name). Each person gets their own bill count.
    Moves are kept with today's report and applied again on every later paste, because billing keeps the bill under the wrong name all day. */
-const gstF = () => 1 + (num(S.settings.gst) || 5) / 100;
+const gstF = () => 1 + (num(S.settings.gst) || 5) / 100, gstP = () => num(S.settings.gst) || 5;
 const r2 = v => Math.round(v * 100) / 100;
-const dayMoves = () => (R().moves = Array.isArray(R().moves) ? R().moves : []);
+const mvNorm = m => m.lines ? m : { id: m.id, from: m.from, fromBills: num(m.bills), lines: [{ to: m.to, gross: num(m.gross), net: num(m.net), bills: num(m.bills) }], at: m.at, by: m.by };
+const dayMoves = () => (R().moves = (Array.isArray(R().moves) ? R().moves : []).map(mvNorm));
+const mvNet = m => r2(m.lines.reduce((t, l) => t + num(l.net), 0));
 function billFinal(B, p, pickOf) {
   const map = {}, slot = s => map[s] = map[s] || { svc: 0, bills: 0, mc: 0, n: 0, mv: 0, mb: 0 };
   B.rows.forEach(x => { if (x.total) return; const s = pickOf(x); if (!s) return; const m = slot(s); m.svc += p.svc >= 0 ? x.v[p.svc] : 0; m.bills += p.bills >= 0 ? x.v[p.bills] : 0; m.mc += p.mc >= 0 ? x.v[p.mc] : 0; m.n++; });
-  dayMoves().forEach(mv => { const f = slot(mv.from), t = slot(mv.to); f.svc -= mv.net; t.svc += mv.net; f.bills -= mv.bills; t.bills += mv.bills; f.mv -= mv.net; t.mv += mv.net; f.mb -= mv.bills; t.mb += mv.bills; });
-  Object.values(map).forEach(m => { m.svc = r2(m.svc); m.base = r2(m.svc - m.mv); });
+  dayMoves().forEach(mv => { const f = slot(mv.from), net = mvNet(mv); f.svc -= net; f.mv -= net; f.bills -= num(mv.fromBills); f.mb -= num(mv.fromBills);
+    mv.lines.forEach(l => { const t = slot(l.to); t.svc += num(l.net); t.mv += num(l.net); t.bills += num(l.bills); t.mb += num(l.bills); }); });
+  Object.values(map).forEach(m => { m.svc = r2(m.svc); m.base = r2(m.svc - m.mv); m.bbase = m.bills - m.mb; });
   return map;
 }
-const moveLine = mv => `${bfmt(mv.net)} net${mv.bills ? ' · ' + mv.bills + ' bill' + (mv.bills > 1 ? 's' : '') : ''} from ${mv.from} to ${mv.to}`;
+const pl = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+const moveLine = m => `From ${m.from}${m.fromBills ? ' (' + pl(num(m.fromBills), 'bill') + ')' : ''}: ` + m.lines.map(l => `${l.to} ${bfmt(num(l.net))}${num(l.bills) ? ' · ' + pl(num(l.bills), 'bill') : ''}`).join(', ');
 function billSheet() {
   const B = S.bill;
   if (!B) return `<h3>Fill from billing</h3><div class="sub">In the billing software, select the staff sales table with its headings and copy it (Ctrl + C). Then press Ctrl + V here.</div>
@@ -1285,9 +1297,9 @@ function billSheet() {
   const F = billFinal(B, p, x => x.pick), mv = dayMoves(), neg = Object.keys(F).filter(s => F[s].svc < -0.005 || F[s].bills < 0);
   const colSel = (k, label) => `<label class="bcol"><span>${label}</span><select data-bcol="${k}"><option value="-1">${k === 'svc' ? 'Pick the column' : 'Leave empty'}</option>${B.cols.map(c => `<option value="${c.i}" ${c.i === p[k] ? 'selected' : ''}>${esc(c.label)} · ${esc(String(st[0] ? (Number.isInteger(st[0].v[c.i]) ? st[0].v[c.i] : bfmt(st[0].v[c.i])) : ''))}</option>`).join('')}</select></label>`;
   const W = billCheck(B); neg.forEach(s => W.push(['bad', `The moves take more from ${s} than ${s} has in billing. Check the moves.`]));
-  const bad = W.some(x => x[0] === 'bad'), staffOpts = sel => cands.map(c => `<option value="${esc(c.n)}" ${c.n === sel ? 'selected' : ''}>${esc(c.n)}</option>`).join('');
-  const changed = Object.keys(F).filter(s => F[s].mv || F[s].n > 1);
-  const mf = S.mvForm;
+  const xb = Object.values(F).reduce((t, m) => t + m.mb, 0); if (xb > 0) W.push(['warn', `The report will have ${pl(xb, 'bill')} more than billing, because a shared bill counts once for each person.`]);
+  const bad = W.some(x => x[0] === 'bad'), opts = sel => cands.map(c => `<option value="${esc(c.n)}" ${c.n === sel ? 'selected' : ''}>${esc(c.n)}</option>`).join('');
+  const changed = Object.keys(F).filter(s => F[s].mv || F[s].mb || F[s].n > 1), mf = S.mvForm;
   return `<h3>Fill from billing</h3><div class="sub">Check the columns and the names. The numbers replace what is in the report now. Kids cut, products and Google reviews stay as they are.</div>
     <div class="bcols">${colSel('svc', 'Service sale (net)')}${colSel('bills', 'Bills')}${colSel('mc', 'Mem cards (count)')}</div>
     ${W.map(([t, m]) => `<div class="bchk ${t}">${t === 'ok' ? '✓' : '!'} ${esc(m)}</div>`).join('')}
@@ -1300,28 +1312,36 @@ function billSheet() {
     ${tot ? `<tr class="bt"><td colspan="2">Billing total</td><td class="num">${p.svc >= 0 ? bfmt(tot.v[p.svc]) : '–'}</td><td class="num">${p.bills >= 0 ? tot.v[p.bills] : '–'}</td><td class="num">${p.mc >= 0 && tot.v[p.mc] ? tot.v[p.mc] : ''}</td></tr>` : ''}</tfoot></table></div>
     ${Object.keys(used).filter(s => used[s].length > 1).map(s => `<div class="bchk warn">! ${esc(used[s].join(' and '))} are added together for ${esc(s)}.</div>`).join('')}
     <div class="bmv"><div class="bmv-h"><b>Bills put under another staff</b>${mf ? '' : `<button class="btn sm gh" data-a="mvnew">${ic('plus')}Move a bill</button>`}</div>
-      ${mv.length ? mv.map(m => `<div class="bmv-r"><span>${esc(moveLine(m))}<small>gross ${bfmt(m.gross)} · ${esc(m.at || '')}${m.by ? ' · ' + esc(m.by) : ''}</small></span><button class="xb" data-a="mvdel" data-v="${esc(m.id)}" aria-label="Remove this move">✕</button></div>`).join('') : (mf ? '' : '<div class="cs">None today. If a bill was made under the wrong staff, move it here. Only the net amount moves.</div>')}
-      ${mf ? `<div class="bmv-f"><label><span>From (billed under)</span><select id="mv_f">${staffOpts(mf.from)}</select></label><label><span>To (did the work)</span><select id="mv_t">${staffOpts(mf.to)}</select></label>
-        <label><span>Gross amount ₹</span><input id="mv_g" inputmode="decimal" value="${esc(mf.gross || '')}" placeholder="e.g. 1150"></label><label><span>Bills</span><input id="mv_b" inputmode="numeric" value="${esc(mf.bills === undefined ? '1' : mf.bills)}"></label></div>
+      ${mv.length ? mv.map(m => `<div class="bmv-r"><span>${esc(moveLine(m))}<small>gross ${bfmt(m.lines.reduce((t, l) => t + num(l.gross), 0))} · ${esc(m.at || '')}${m.by ? ' · ' + esc(m.by) : ''}</small></span><button class="xb" data-a="mvdel" data-v="${esc(m.id)}" aria-label="Remove this move">✕</button></div>`).join('') : (mf ? '' : '<div class="cs">None today. If a bill was made under the wrong staff, move it here. Only the net amount moves.</div>')}
+      ${mf ? `<div class="bmv-f2"><label><span>Billed under</span><select id="mv_f">${opts(mf.from)}</select></label><label><span>Bills in billing</span><input id="mv_fb" inputmode="numeric" value="${esc(mf.fromBills)}"></label></div>
+        <div class="bmv-l">${mf.lines.map((l, i) => `<div class="bmv-li"><label><span>${i ? 'And' : 'Who did the work'}</span><select id="mv_t_${i}">${opts(l.to)}</select></label><label><span>Gross amount ₹</span><input id="mv_g_${i}" data-mvl="1" inputmode="decimal" value="${esc(l.gross || '')}" placeholder="e.g. 1150"></label><label><span>Bills</span><input id="mv_b_${i}" data-mvl="1" inputmode="numeric" value="${esc(l.bills)}"></label>${mf.lines.length > 1 ? `<button class="xb" data-a="mvrmline" data-v="${i}" aria-label="Remove this person">✕</button>` : '<span></span>'}</div>`).join('')}
+        <button class="btn sm gh" data-a="mvline" style="justify-self:start">${ic('plus')}Add person</button></div>
         <div class="bmv-n" id="mv_n">${mvNetText()}</div><div class="bmv-a"><button class="btn sm gh" data-a="mvcancel">Cancel</button><button class="btn sm" data-a="mvadd">Move it</button></div>` : ''}</div>
-    ${changed.length ? `<div class="bfin"><b>Going into the report after moves</b>${changed.map(s => `<div><span>${esc(s)}</span><span class="num">${F[s].mv ? `<s>${bfmt(F[s].base)}</s> ` : ''}${bfmt(F[s].svc)} · ${F[s].bills} bill${F[s].bills === 1 ? '' : 's'}</span></div>`).join('')}</div>` : ''}
+    ${changed.length ? `<div class="bfin"><b>Going into the report after moves</b>${changed.map(s => `<div><span>${esc(s)}</span><span class="num">${F[s].mv ? `<s>${bfmt(F[s].base)}</s> ` : ''}${bfmt(F[s].svc)} · ${F[s].mb ? `<s>${F[s].bbase}</s> ` : ''}${pl(F[s].bills, 'bill')}</span></div>`).join('')}</div>` : ''}
     <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn gh" data-a="billagain">Paste again</button><button class="btn" data-a="billfill" ${bad ? 'disabled' : ''}>Fill the report</button></div>`;
 }
-function mvNetText() { const g = num(val('mv_g') || (S.mvForm || {}).gross), f = val('mv_f') || (S.mvForm || {}).from, t = val('mv_t') || (S.mvForm || {}).to;
-  if (!g) return `Type the bill's gross amount. The app takes off ${num(S.settings.gst) || 5}% GST and moves only the net.`;
-  return `Net <b>${bfmt(r2(g / gstF()))}</b> (gross ${bfmt(g)} less ${num(S.settings.gst) || 5}% GST) moves from <b>${esc(f || '?')}</b> to <b>${esc(t || '?')}</b>.`; }
-document.addEventListener('input', e => { if (['mv_g', 'mv_b'].includes(e.target.id)) { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
-document.addEventListener('change', e => { if (['mv_f', 'mv_t'].includes(e.target.id)) { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
+function mvCapture() { if (!S.mvForm || !document.getElementById('mv_f')) return; const f = S.mvForm; f.from = val('mv_f'); f.fromBills = val('mv_fb');
+  const el = id => document.getElementById(id); f.lines = f.lines.map((l, i) => el('mv_g_' + i) ? { to: val('mv_t_' + i) || l.to, gross: el('mv_g_' + i).value, bills: el('mv_b_' + i).value } : l); }
+function mvNetText() { mvCapture(); const f = S.mvForm; if (!f) return ''; const L = f.lines.filter(l => num(l.gross) > 0);
+  if (!L.length) return `Type the gross amount of each bill. The app takes off ${gstP()}% GST and moves only the net.`;
+  const tot = r2(L.reduce((t, l) => t + r2(num(l.gross) / gstF()), 0));
+  return L.map(l => `<b>${esc(l.to || '?')}</b> gets net <b>${bfmt(r2(num(l.gross) / gstF()))}</b> (gross ${bfmt(num(l.gross))})${num(l.bills) ? ' and ' + pl(num(l.bills), 'bill') : ''}`).join('<br>') + `<br>Taken from <b>${esc(f.from || '?')}</b>: net <b>${bfmt(tot)}</b>${num(f.fromBills) ? ' and ' + pl(num(f.fromBills), 'bill') : ''}.`; }
+document.addEventListener('input', e => { if (e.target.dataset && e.target.dataset.mvl || e.target.id === 'mv_fb') { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
+document.addEventListener('change', e => { if (/^mv_(f|t_\d+)$/.test(e.target.id)) { const n = document.getElementById('mv_n'); if (n) n.innerHTML = mvNetText(); } });
 function mvAdd() {
-  const er = document.getElementById('serr'), from = val('mv_f'), to = val('mv_t'), g = num(val('mv_g')), bl = val('mv_b').trim() === '' ? 0 : num(val('mv_b'));
-  S.mvForm = { from, to, gross: val('mv_g'), bills: val('mv_b') };
-  if (!from || !to || from === to) { er.textContent = 'Pick two different staff.'; return; }
-  if (!(g > 0)) { er.textContent = 'Type the gross amount of the bill.'; return; }
-  if (bl < 0 || Math.round(bl) !== bl) { er.textContent = 'Bills must be a whole number.'; return; }
-  const net = r2(g / gstF()), F = S.bill ? billFinal(S.bill, S.bill.pick, x => x.pick) : {}, have = F[from] ? F[from].svc : 0;
-  if (S.bill && net > have + 0.005) { er.textContent = `${from} has only ${bfmt(have)} net in billing.`; return; }
+  mvCapture(); const er = document.getElementById('serr'), f = S.mvForm, fb = String(f.fromBills).trim() === '' ? 0 : num(f.fromBills);
+  const lines = f.lines.map(l => ({ to: l.to, gross: r2(num(l.gross)), bills: String(l.bills).trim() === '' ? 0 : num(l.bills) }));
+  if (!f.from) { er.textContent = 'Pick who the bill was made under.'; return; }
+  if (lines.some(l => !l.to || l.to === f.from)) { er.textContent = 'Each person must be someone other than ' + f.from + '.'; return; }
+  if (new Set(lines.map(l => l.to)).size !== lines.length) { er.textContent = 'The same person is picked twice. Put their amount on one line.'; return; }
+  if (lines.some(l => !(l.gross > 0))) { er.textContent = 'Type the gross amount for each person.'; return; }
+  if ([fb].concat(lines.map(l => l.bills)).some(b => b < 0 || Math.round(b) !== b)) { er.textContent = 'Bills must be whole numbers.'; return; }
+  lines.forEach(l => { l.net = r2(l.gross / gstF()); });
+  const net = r2(lines.reduce((t, l) => t + l.net, 0)), F = S.bill ? billFinal(S.bill, S.bill.pick, x => x.pick) : {}, have = F[f.from] || { svc: 0, bills: 0 };
+  if (S.bill && net > have.svc + 0.005) { er.textContent = `${f.from} has only ${bfmt(have.svc)} net in billing.`; return; }
+  if (S.bill && fb > have.bills) { er.textContent = `${f.from} has only ${pl(have.bills, 'bill')} in billing.`; return; }
   const t = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' }).format(new Date()).toLowerCase();
-  dayMoves().push({ id: Date.now().toString(36), from, to, gross: r2(g), net, bills: bl, at: t, by: S.me.name || '' });
+  dayMoves().push({ id: Date.now().toString(36), from: f.from, fromBills: fb, lines, at: t, by: S.me.name || '' });
   S.mvForm = null; touch(S.today, 'rep'); billOpen(true);
 }
 function billFill() {
@@ -1336,29 +1356,44 @@ function billFill() {
   rows.forEach(x => { M[bRowKey(x)] = x.pick; });
   const C2 = {}; ['svc', 'bills', 'mc'].forEach(k => { if (p[k] >= 0) C2[k] = B.cols[p[k]].label; });
   try { ls(billKey(), JSON.stringify(M)); ls(billColKey(), JSON.stringify(C2)); } catch (x) {}
-  noAttTell(); touch(S.today, 'rep'); S.bill = null; closeSheet(); render(); toast(Object.keys(F).length + ' staff filled from billing' + (dayMoves().length ? ' · ' + dayMoves().length + ' move' + (dayMoves().length > 1 ? 's' : '') + ' applied' : ''));
+  noAttTell(); touch(S.today, 'rep'); S.bill = null; closeSheet(); render(); toast(Object.keys(F).length + ' staff filled from billing' + (dayMoves().length ? ' · ' + pl(dayMoves().length, 'move') + ' applied' : ''));
 }
 
-/* ---------------- billing kept next to the report, to read from while typing ---------------- */
+/* ---------------- billing kept next to the report: one paste per report time, corrected for moves ---------------- */
 const brefKey = () => 'gt_billref|' + ME() + '|' + S.today;
-const brefGet = () => { try { return JSON.parse(ls(brefKey()) || 'null'); } catch (e) { return null; } };
-const brefSet = text => { const at = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' }).format(new Date()).toLowerCase(); try { ls(brefKey(), JSON.stringify({ text, at })); } catch (e) {} };
+const brefSlots = () => SLOTS.map(s => s[0]);
+function brefStore() { let o = null; try { o = JSON.parse(ls(brefKey()) || 'null'); } catch (e) {} if (!o) o = { pastes: {} }; if (o.text) o = { pastes: { [due() || 'cl']: { text: o.text, at: o.at } } }; o.pastes = o.pastes || {}; return o; }
+function brefSave(o) { try { ls(brefKey(), JSON.stringify(o)); } catch (e) {} }
+const brefSet = text => { const o = brefStore(), k = due() || 'cl', at = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit' }).format(new Date()).toLowerCase(); o.pastes[k] = { text, at }; o.sel = k; brefSave(o); };
+const brefSel = o => { const ks = brefSlots().filter(k => o.pastes[k]); return o.sel && o.pastes[o.sel] ? o.sel : ks[ks.length - 1]; };
+const brefGet = () => { const o = brefStore(), k = brefSel(o); return k ? o.pastes[k] : null; };
 S.bref = ls('gt_bref') === '1';
+function brefParsed(text) { const B = text ? parseBilling(text) : null; if (!B) return null; const g = billGuess(B), cands = billCands(); return { B, g, F: billFinal(B, g, x => billMatch(x, cands)) }; }
 function brefHTML() {
-  const ref = brefGet(), B = ref ? parseBilling(ref.text) : null;
-  const head = (right) => `<div class="bref-h"><span class="bref-t">${ic('sheet')}<b>Billing</b>${ref && B ? `<small>pasted ${esc(ref.at)}</small>` : ''}</span><span class="bref-a">${right || ''}<button class="xb" data-a="brefshow" aria-label="Hide billing" title="Hide">✕</button></span></div>`;
-  if (!B) return `<aside class="bref">${head()}<div class="bpaste bsm" id="brefzone" tabindex="0">${ic('sheet')}<b>Paste the billing table here</b><small>Copy the staff table in billing, click here and press Ctrl + V. It stays next to the report while you type.</small></div></aside>`;
-  const g = billGuess(B), cands = billCands(), all = !!S.brefAll, st = B.rows.filter(x => !x.total), tot = B.rows.find(x => x.total), F = billFinal(B, g, x => billMatch(x, cands)), mv = dayMoves();
+  const o = brefStore(), k = brefSel(o), ref = k ? o.pastes[k] : null, P = ref ? brefParsed(ref.text) : null;
+  const tabs = brefSlots().filter(s => o.pastes[s]);
+  const head = right => `<div class="bref-h"><span class="bref-t">${ic('sheet')}<b>Billing</b>${ref && P ? `<small>pasted ${esc(ref.at)}</small>` : ''}</span><span class="bref-a">${right || ''}<button class="xb" data-a="brefshow" aria-label="Hide billing" title="Hide">✕</button></span></div>`;
+  if (!P) return `<aside class="bref">${head()}<div class="bpaste bsm" id="brefzone" tabindex="0">${ic('sheet')}<b>Paste the billing table here</b><small>Copy the staff table in billing, click here and press Ctrl + V. Each report time keeps its own paste.</small></div></aside>`;
+  const { B, g, F } = P, mv = dayMoves(), raw = !!S.brefRaw, all = !!S.brefAll, st = B.rows.filter(x => !x.total), tot = B.rows.find(x => x.total);
+  const ki = tabs.indexOf(k), pk = ki > 0 ? tabs[ki - 1] : null, PP = pk ? brefParsed(o.pastes[pk].text) : null;
+  const tabBar = tabs.length > 1 ? `<div class="bref-tabs">${tabs.map(s => `<button class="${s === k ? 'on' : ''}" data-a="brefsel" data-v="${s}">${slotName(s)}</button>`).join('')}</div>` : '';
   const nv = (x, i) => i < 0 ? '–' : Number.isInteger(x.v[i]) ? String(x.v[i]) : bfmt(x.v[i]);
   let body;
   if (all) body = `<div class="bref-x"><table class="bref-tb all"><thead><tr><th>Name</th>${B.cols.map(c => `<th>${esc(c.label)}</th>`).join('')}</tr></thead><tbody>
     ${B.rows.map(x => `<tr class="${x.total ? 'tot' : ''}"><td>${esc(x.name)}</td>${B.cols.map(c => `<td class="${c.i === g.svc ? 'hl' : ''}">${nv(x, c.i)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  else body = `<table class="bref-tb"><thead><tr><th>Name</th><th>Net</th><th>Bills</th><th>Mem</th></tr></thead><tbody>
-    ${st.map(x => { const m = billMatch(x, cands); return `<tr class="${m ? 'go' : ''}" ${m ? `data-a="brefgo" data-v="${esc(m)}" data-svc="${g.svc >= 0 && F[m] ? F[m].svc : ''}" data-bills="${g.bills >= 0 && F[m] ? F[m].bills : ''}" title="Go to ${esc(m)} in the report"` : ''}><td><i class="bdot"></i><b>${esc(x.name)}</b>${m && bnrm(m) !== bnrm(x.name) ? `<small>${esc(m)}</small>` : ''}</td><td>${g.svc >= 0 ? bfmt(x.v[g.svc]) : '–'}</td><td>${nv(x, g.bills)}</td><td>${g.mc >= 0 && x.v[g.mc] ? nv(x, g.mc) : ''}</td></tr>`; }).join('')}</tbody>
+  else if (raw) body = `<table class="bref-tb"><thead><tr><th>As in billing</th><th>Net</th><th>Bills</th><th>Mem</th></tr></thead><tbody>
+    ${st.map(x => `<tr><td><b>${esc(x.name)}</b></td><td>${g.svc >= 0 ? bfmt(x.v[g.svc]) : '–'}</td><td>${nv(x, g.bills)}</td><td>${g.mc >= 0 && x.v[g.mc] ? nv(x, g.mc) : ''}</td></tr>`).join('')}</tbody>
     ${tot ? `<tfoot><tr><td>Total</td><td>${g.svc >= 0 ? bfmt(tot.v[g.svc]) : '–'}</td><td>${nv(tot, g.bills)}</td><td>${g.mc >= 0 && tot.v[g.mc] ? nv(tot, g.mc) : ''}</td></tr></tfoot>` : ''}</table>`;
-  return `<aside class="bref">${head(`<button class="btn sm gh" data-a="brefall">${all ? 'Short' : 'All columns'}</button>`)}${body}
-    ${mv.length ? `<div class="bref-mv"><b>Moved today</b>${mv.map(m => `<div>${esc(moveLine(m))}</div>`).join('')}</div>` : ''}
-    <div class="bref-f"><span class="cs">${all ? 'The service sale column is marked.' : '<i class="bdot ok"></i>same as the report <i class="bdot df"></i>different'}</span><button class="btn sm" data-a="brefuse">Fill the report from this</button></div></aside>`;
+  else { const names = Object.keys(F).sort((a, b) => F[b].svc - F[a].svc), T = names.reduce((t, s) => ({ svc: t.svc + F[s].svc, bills: t.bills + F[s].bills, mc: t.mc + F[s].mc }), { svc: 0, bills: 0, mc: 0 });
+    body = `<table class="bref-tb"><thead><tr><th>Staff</th><th>Net</th><th>Bills</th><th>Mem</th></tr></thead><tbody>
+    ${names.map(s => { const m = F[s], q = PP && PP.F[s], ds = q ? r2(m.svc - q.svc) : null, db = q ? m.bills - q.bills : null;
+      return `<tr class="go" data-a="brefgo" data-v="${esc(s)}" data-svc="${g.svc >= 0 ? m.svc : ''}" data-bills="${g.bills >= 0 ? m.bills : ''}" title="Go to ${esc(s)} in the report"><td><span class="bnm"><i class="bdot"></i><b>${esc(s)}</b>${m.mv || m.mb ? '<span class="bmvt">moved</span>' : ''}</span>${pk && (ds === null || ds || db) ? `<small class="bsince">${ds === null ? 'new since ' + slotName(pk) : `+${bfmt(ds)}${db ? ' · +' + pl(db, 'bill') : ''} since ${slotName(pk)}`}</small>` : ''}</td>
+        <td>${bfmt(m.svc)}${m.mv ? `<s>${bfmt(m.base)}</s>` : ''}</td><td>${m.bills}${m.mb ? `<s>${m.bbase}</s>` : ''}</td><td>${m.mc || ''}</td></tr>`; }).join('')}</tbody>
+    <tfoot><tr><td>Total</td><td>${bfmt(T.svc)}</td><td>${T.bills}</td><td>${T.mc || ''}</td></tr></tfoot></table>`; }
+  const sw = `<div class="bref-sw"><button class="${!raw && !all ? 'on' : ''}" data-a="brefmode" data-v="fix">${mv.length ? 'After moves' : 'Staff'}</button><button class="${raw && !all ? 'on' : ''}" data-a="brefmode" data-v="raw">As in billing</button><button class="${all ? 'on' : ''}" data-a="brefmode" data-v="all">All columns</button></div>`;
+  return `<aside class="bref">${head()}${tabBar}${sw}${body}
+    ${mv.length && !all ? `<div class="bref-mv"><b>Moved today</b>${mv.map(m => `<div>${esc(moveLine(m))}</div>`).join('')}</div>` : ''}
+    <div class="bref-f"><span class="cs">${!raw && !all ? '<i class="bdot ok"></i>same as the report <i class="bdot df"></i>different' : all ? 'The service sale column is marked.' : 'Exactly as copied from billing.'}</span><button class="btn sm" data-a="brefuse">Fill the report from this</button></div></aside>`;
 }
 function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref-tb tr[data-a=brefgo]').forEach(tr => { const x = r[tr.dataset.v] || {}, a = tr.dataset.svc, b = tr.dataset.bills;
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
@@ -1640,12 +1675,15 @@ document.addEventListener('click', async e => {
     case 'billopen': S.bill = null; S.mvForm = null; billOpen(); break;
     case 'billagain': S.bill = null; billOpen(); break;
     case 'billfill': billFill(); break;
-    case 'mvnew': { const c = billCands(); S.mvForm = { from: (c[0] || {}).n || '', to: (c[1] || {}).n || '', bills: '1' }; billOpen(true); const g = document.getElementById('mv_g'); if (g) g.focus(); break; }
+    case 'mvnew': { const c = billCands(); S.mvForm = { from: (c[0] || {}).n || '', fromBills: '1', lines: [{ to: (c[1] || {}).n || '', gross: '', bills: '1' }] }; billOpen(true); const g = document.getElementById('mv_g_0'); if (g) g.focus(); break; }
+    case 'mvline': { mvCapture(); const c = billCands(), used = [S.mvForm.from].concat(S.mvForm.lines.map(l => l.to)); S.mvForm.lines.push({ to: (c.find(x => !used.includes(x.n)) || {}).n || '', gross: '', bills: '1' }); billOpen(true); const g = document.getElementById('mv_g_' + (S.mvForm.lines.length - 1)); if (g) g.focus(); break; }
+    case 'mvrmline': { mvCapture(); S.mvForm.lines.splice(+v, 1); billOpen(true); break; }
     case 'mvcancel': S.mvForm = null; billOpen(true); break;
     case 'mvadd': mvAdd(); break;
     case 'mvdel': { const L = dayMoves(), i = L.findIndex(m => m.id === v); if (i >= 0) { L.splice(i, 1); touch(S.today, 'rep'); } billOpen(true); break; }
     case 'brefshow': S.bref = !S.bref; ls('gt_bref', S.bref ? '1' : '0'); render(); if (S.bref) { const z = document.getElementById('brefzone'); if (z) z.focus({ preventScroll: true }); } break;
-    case 'brefall': S.brefAll = !S.brefAll; render(); break;
+    case 'brefmode': S.brefAll = v === 'all'; S.brefRaw = v === 'raw'; render(); break;
+    case 'brefsel': { const o = brefStore(); o.sel = v; brefSave(o); render(); break; }
     case 'brefuse': { const ref = brefGet(), B = ref ? parseBilling(ref.text) : null; if (!B) break; B.guess = billGuess(B); B.pick = { svc: B.guess.svc, bills: B.guess.bills, mc: B.guess.mc }; S.bill = B; billOpen(); break; }
     case 'brefgo': { const f = document.getElementById('x_' + v + '_svc'); if (f) { f.scrollIntoView({ block: 'center', behavior: 'smooth' }); f.focus({ preventScroll: true }); f.select && f.select(); } break; }
     case 'appupdate': el.disabled = true; el.textContent = 'Updating…'; try { await flushNow(); } catch (x) {} location.reload(); break;
@@ -1843,7 +1881,8 @@ OVIEWS.rday = () => {
     hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Net sale</small><b>${inr(L2.bill[1])}</b></div><div class="gl"><small>Bills</small><b>${sheet ? sheet.G.bills : '–'}</b></div><div class="gl"><small>${(m.ex || 0) >= 0 ? 'Excess' : 'Short'}</small><b style="color:${!m.ex ? '#7EE0AE' : '#FFC27A'}">${m.ex === null || m.ex === undefined ? '–' : inr(Math.abs(m.ex))}</b></div></div>`,
     body: `<section class="card"><div class="xbar" style="margin:0"><button class="btn sm gh" data-a="ogo" data-v="review">← All days</button><div style="display:flex;gap:8px;flex-wrap:wrap">${can ? `<button class="btn sm gh" data-a="sendback">Send back</button><button class="btn sm" data-a="approve">${ic('send')}Approve into P&L book</button>` : st === 'open' || st === 'back' ? `${!clo.waived && st === 'open' ? `<button class="btn sm gh" data-a="waive">Delete reminder</button>` : ''}<span class="cs">${st === 'back' && clo.note ? 'Your note: ' + esc(clo.note) : 'Not sent yet'}</span>` : `<span class="cs">${st === 'approved' ? 'Approved ' + esc(clo.approvedAt || '') : ''}</span>`}</div></div>
       ${(clo.issues || []).length ? `<div class="note n-warn" style="margin-top:12px"><b>From the manager's app</b><div style="margin-top:4px">${clo.issues.map(i => '• ' + esc(i)).join('<br>')}</div></div>` : ''}</section>
-    ${(rep.moves || []).length ? `<section class="card"><div class="ch"><div class="ct"><span class="ib y">${ic('staff')}</span>Bills moved between staff</div><span class="cs">${rep.moves.length} today</span></div>${rep.moves.map(m => `<div class="row"><div class="l"><b>${fmt(m.net)} net${m.bills ? ' · ' + m.bills + ' bill' + (m.bills > 1 ? 's' : '') : ''}: ${esc(m.from)} → ${esc(m.to)}</b><small>gross ${fmt(m.gross)} · ${esc(m.at || '')}${m.by ? ' · ' + esc(m.by) : ''}</small></div></div>`).join('')}</section>` : ''}
+    ${(rep.moves || []).length ? `<section class="card"><div class="ch"><div class="ct"><span class="ib y">${ic('staff')}</span>Bills moved between staff</div><span class="cs">${rep.moves.length} today</span></div>${rep.moves.map(m0 => { const m = m0.lines ? m0 : { from: m0.from, fromBills: m0.bills, lines: [{ to: m0.to, gross: m0.gross, net: m0.net, bills: m0.bills }], at: m0.at, by: m0.by }, b2 = n => n ? ' · ' + n + ' bill' + (n > 1 ? 's' : '') : '';
+      return `<div class="row"><div class="l"><b>From ${esc(m.from)}${b2(num(m.fromBills))}: ${m.lines.map(l => `${esc(l.to)} ${fmt(l.net)} net${b2(num(l.bills))}`).join(', ')}</b><small>gross ${m.lines.map(l => fmt(l.gross)).join(' + ')} · ${esc(m.at || '')}${m.by ? ' · ' + esc(m.by) : ''}</small></div></div>`; }).join('')}</section>` : ''}
     ${sn ? sheetHTML(b, sn.list || [], sn.data || {}, sn.mcAmt, { edit: false, at: 'closing', date }) : ''}
     <section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('sheet')}</span>Goes into the P&L book</div><span class="cs">${b} · DAY BOOK day ${dnum(date)}</span></div>
       <div class="ox"><table class="rt2"><thead><tr><th class="r">Gross</th><th class="r">Net</th><th class="r">Card</th><th class="r">UPI</th><th class="r">Cash counted</th></tr></thead><tbody><tr>${L2.bill.map(v => `<td class="r">${fmt(v)}</td>`).join('')}</tr></tbody></table></div>
