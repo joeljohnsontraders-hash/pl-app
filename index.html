@@ -877,9 +877,54 @@ html.dark .navin{background:rgba(12,22,36,.88)}
 html.dark .toast{background:rgba(24,38,58,.94)}
 html.dark .sh{box-shadow:0 0 0 1px rgba(255,255,255,.06),0 -20px 50px -20px rgba(0,0,0,.7)}
 .stp button.pl{background-image:var(--gtg)}
+.cig figure{transition:box-shadow .2s}.cig figure.cpn{box-shadow:0 0 0 2px var(--gt)}.cig figure.cpd figcaption>span:first-child::after{content:" · copied";color:var(--gt);font-weight:800}
 html.dark .stp button.pl{background-color:#1FA466;color:#fff}
 @media (max-width:560px){.gl{padding:10px 12px}.gl b{font-size:18px}.gl small{font-size:9px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.next{padding:16px}.next b{font-size:19px}.card{padding:18px}}
 @media (max-width:420px){.glass:not(.g4) .gl b{font-size:16.5px;letter-spacing:-.02em}}
+
+/* ==== light look: an airy header and side menu (the dark look keeps the midnight header) ==== */
+html:not(.dark) .hd{color:#0A1A2B;background:radial-gradient(820px 380px at 96% -25%,rgba(37,184,119,.20),transparent 60%),radial-gradient(620px 320px at -8% 130%,rgba(224,33,122,.09),transparent 60%),radial-gradient(500px 260px at 50% -40%,rgba(84,120,255,.07),transparent 70%),linear-gradient(180deg,#FFFFFF,#F3F5F9)}
+html:not(.dark) .hd::before{border-color:rgba(10,26,43,.05)}
+html:not(.dark) .hd::after{border-color:rgba(30,158,99,.16)}
+html:not(.dark) .hd .hdin::before{background-image:radial-gradient(rgba(10,26,43,.07) 1px,transparent 1.2px)}
+html:not(.dark) .hd .eb{color:#178A55}
+html:not(.dark) .hd .br{color:#0A1A2B;text-shadow:none}
+html:not(.dark) .hd .dt{color:#5A6779}
+html:not(.dark) .av{background:#fff;border:1px solid #E2E7EF;color:#0A1A2B;box-shadow:0 1px 2px rgba(10,26,43,.05),0 6px 14px -8px rgba(10,26,43,.18)}
+html:not(.dark) .hd .pill.p-mu{background:#fff;color:#5A6779;box-shadow:inset 0 0 0 1px #E2E7EF,0 1px 2px rgba(10,26,43,.04);backdrop-filter:none}
+html:not(.dark) .gl{background:#fff;border:1px solid rgba(10,26,43,.06);box-shadow:0 1px 2px rgba(10,26,43,.04),0 14px 30px -16px rgba(10,26,43,.22);backdrop-filter:none;-webkit-backdrop-filter:none}
+html:not(.dark) .gl small{color:#7A8797}
+html:not(.dark) .gl b{color:#0A1A2B}
+html:not(.dark) .ring{background:#fff;border-radius:50%;box-shadow:0 1px 2px rgba(10,26,43,.05),0 14px 30px -14px rgba(10,26,43,.25)}
+html:not(.dark) .ring circle:first-child{stroke:#E8EDF3}
+html:not(.dark) .ring circle.v{stroke:#1E9E63}
+html:not(.dark) .ring .rv small{color:#7A8797}
+html:not(.dark) .seg button{background:#fff;color:#5A6779;border-color:#E2E7EF;box-shadow:0 1px 2px rgba(10,26,43,.04);backdrop-filter:none}
+html:not(.dark) .seg button.on{background:#0A1A2B;color:#fff;border-color:#0A1A2B;box-shadow:0 8px 18px -8px rgba(10,26,43,.5)}
+html:not(.dark) .page{margin-top:-40px}
+@media (min-width:980px){
+  html:not(.dark) .side{background:#fff;color:#0A1A2B;border-right:1px solid #E6EAF0}
+  html:not(.dark) .side:hover,html:not(.dark) .side:focus-within{box-shadow:18px 0 44px rgba(10,26,43,.12)}
+  html:not(.dark) .side button.it{color:#5A6779}
+  html:not(.dark) .side button.it:hover{background:#F3F5F9;color:#0A1A2B}
+  html:not(.dark) .side button.it.on{background:linear-gradient(90deg,#E4F6EC,#F1FAF5);color:#0A1A2B;box-shadow:inset 0 0 0 1px rgba(30,158,99,.14)}
+  html:not(.dark) .side button.it.on svg{color:#1E9E63}
+  html:not(.dark) .side button.it.on::before{background:#1E9E63}
+  html:not(.dark) .side .sl2{color:#9AA6B5}
+  html:not(.dark) .side .who{background:#F3F5F9;color:#5A6779}
+  html:not(.dark) .side .who b{color:#0A1A2B}
+  html:not(.dark) .side .lg2 small{color:#7A8797}
+  html:not(.dark) .side::before{background:linear-gradient(#7A8797,#7A8797) 0 0/100% 2.5px no-repeat,linear-gradient(#7A8797,#7A8797) 0 50%/100% 2.5px no-repeat,linear-gradient(#7A8797,#7A8797) 0 100%/100% 2.5px no-repeat}
+}
+html:not(.dark) .navin{background:rgba(255,255,255,.86);box-shadow:0 0 0 1px rgba(10,26,43,.07),0 18px 40px -12px rgba(10,26,43,.28)}
+html:not(.dark) .navin button{color:#7A8797}
+html:not(.dark) .navin button.on{color:#0A1A2B;background:linear-gradient(180deg,#E4F6EC,#F1FAF5);box-shadow:inset 0 0 0 1px rgba(30,158,99,.16)}
+html:not(.dark) .navin button.on svg{color:#1E9E63}
+html:not(.dark) .hd [style*="color:#FFC27A"]{color:#B86E00!important}
+html:not(.dark) .hd [style*="color:#7EE0AE"]{color:#14804A!important}
+html:not(.dark) .hd [style*="color:#FFB4A8"]{color:#B4362B!important}
+html:not(.dark) .hd [style*="color:#A9B9CA"]{color:#5A6779!important}
+html:not(.dark) .hd .gl small[style]{color:#7A8797}
 </style>
 </head><body>
 <div id="gti" class="hold" aria-hidden="true"><i class="gti-px"><img alt="" width="64" height="64" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2764%27 height=%2764%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230A1A2B%27/%3E%3C/svg%3E">Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon </i><div class="gti-st"><i style="left:10%;animation-delay:0.05s"></i><i style="left:30%;animation-delay:0.2s"></i><i style="left:56%;animation-delay:0s"></i><i style="left:76%;animation-delay:0.15s"></i><i style="left:93%;animation-delay:0.25s"></i></div><div class="gti-in"><div class="gti-stage">
@@ -1333,7 +1378,40 @@ function attImgHTML() {
     <tr><td>${n}</td><td>${dDash(S.today)}</td><td>${esc(a.ebStart || '–')}</td><td>${dDash(S.yday)}</td><td>${esc(a.ebY || '–')}</td></tr>
     <tr class="gh"><td colspan="2">EB units</td><td></td><td colspan="2">${units}</td></tr></table></div>`;
 }
-function monthImgHTML() { const card = monthCard(); return `<div class="ai mi"><div class="mt">${esc(ME())} Attendance · ${monthName(S.today)} ${S.today.slice(0, 4)}</div>${card.slice(card.indexOf('<table class="amon">'), card.indexOf('</table>') + 8)}</div>`; }
+function monthImgHTML() {
+  /* one picture: the day-by-day grid on top and the month totals below (present, week off, leave, total = present + week off) */
+  const days = monthDays(), G = ['G', 'L', 'O', 'H'], GN = { G: 'Gents SSP', L: 'Ladies SSP', O: 'OM', H: 'HK' };
+  const ppl = people().slice().sort((a, b) => G.indexOf(a.g) - G.indexOf(b.g));
+  const F = "font-family:'Plus Jakarta Sans',Arial,sans-serif", NW = 150, CW = 27, W = NW + days.length * CW + 48;
+  const box = (bg, fg, t, bd) => `<span style="display:inline-block;width:21px;height:21px;line-height:21px;border-radius:6px;background:${bg};color:${fg};font-size:10.5px;font-weight:800;text-align:center;${bd ? 'box-shadow:inset 0 0 0 1px ' + bd : ''}">${t}</span>`;
+  const cellOf = (n, d) => { if (d > S.today) return box('#fff', '#fff', '', '#EEF1F5'); const a = attOf(n, d);
+    return a.st === 'in' ? box('#1E9E63', '#fff', '') : a.st === 'off' ? box('#DCE6F7', '#2D4E9E', 'W') : a.st === 'lv' ? box('#F9D6D1', '#B4362B', 'L') : box('#F3F5F8', '#9AA6B5', '', '#E2E7EF'); };
+  const gh = (g, span, pl) => `<tr><td colspan="${span}" style="padding:12px ${pl || 0}px 4px;font-size:10.5px;font-weight:800;letter-spacing:.12em;color:#7A8797;text-transform:uppercase">${GN[g]}</td></tr>`;
+  let grid = '', sum = '', sn = 0;
+  G.forEach(g => { const L = ppl.filter(p => p.g === g); if (!L.length) return;
+    grid += gh(g, days.length + 1);
+    sum += gh(g, 6, 14);
+    L.forEach(p => { const s2 = attSummary(p.n), off = s2.o - s2.extra, tot = s2.w + off; sn++;
+      grid += `<tr><td style="padding:2px 10px 2px 0;font-weight:700;font-size:13.5px;white-space:nowrap">${esc(p.n)}</td>${days.map(d => `<td style="padding:2px 3px;text-align:center">${cellOf(p.n, d)}</td>`).join('')}</tr>`;
+      const z = sn % 2 ? '#fff' : '#F6F8FB', td = 'padding:10px 14px;border-bottom:1px solid #E8ECF2;text-align:center;font-size:15px;font-weight:700';
+      sum += `<tr style="background:${z}"><td style="${td};color:#7A8797;width:60px">${sn}</td><td style="${td};text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:.02em">${esc(p.n)}</td><td style="${td};color:#14804A">${s2.w}</td><td style="${td};color:#2D4E9E">${off}</td><td style="${td};color:${s2.l ? '#B4362B' : '#9AA6B5'}">${s2.l}</td><td style="${td};font-weight:800;font-size:16px">${tot}</td></tr>`; }); });
+  const head = `<tr><td></td>${days.map(d => `<td style="text-align:center;padding:0 0 6px;font-size:10px;font-weight:800;color:${d === S.today ? '#fff' : dowOf(d) === 0 ? '#B7791F' : '#7A8797'}"><div style="${d === S.today ? 'background:#0A1A2B;border-radius:7px;padding:2px 0' : 'padding:2px 0'}">${DOW[dowOf(d)][0]}<div style="font-size:12px;color:${d === S.today ? '#fff' : '#0A1A2B'}">${dnum(d)}</div></div></td>`).join('')}</tr>`;
+  const th = 'padding:11px 14px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;text-align:center';
+  const leg = (b, t) => `<span style="display:inline-flex;align-items:center;gap:6px;margin-left:16px">${b}${t}</span>`;
+  return `<div style="width:${W}px;background:#fff;color:#0A1A2B;${F};padding:0">
+    <div style="background:linear-gradient(120deg,#0A1A2B,#123A52);color:#fff;padding:22px 24px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div><div style="font-size:11px;font-weight:800;letter-spacing:.16em;color:#7EE0AE">${esc(ME()).toUpperCase()} · ATTENDANCE</div><div style="font-size:28px;font-weight:800;margin-top:4px">${monthName(S.today)} ${S.today.slice(0, 4)}</div></div>
+      <div style="font-size:13px;font-weight:700;color:#A9B9CA">Up to ${dLabel(S.today)}</div></div>
+    <div style="padding:20px 24px 8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-size:16px;font-weight:800">Day by day</div>
+        <div style="font-size:12px;font-weight:700;color:#5A6779">${leg(box('#1E9E63', '#fff', ''), 'Present')}${leg(box('#DCE6F7', '#2D4E9E', 'W'), 'Week off')}${leg(box('#F9D6D1', '#B4362B', 'L'), 'Leave')}${leg(box('#F3F5F8', '#9AA6B5', '', '#E2E7EF'), 'Not marked')}</div></div>
+      <table style="border-collapse:collapse">${head}${grid}</table></div>
+    <div style="padding:18px 24px 24px">
+      <div style="font-size:16px;font-weight:800;margin-bottom:10px">Month summary</div>
+      <table style="border-collapse:separate;border-spacing:0;width:100%;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px #E2E7EF">
+        <tr style="background:#0A1A2B"><td style="${th};width:60px">S.No</td><td style="${th};text-align:left">Name</td><td style="${th}">Present</td><td style="${th}">Off</td><td style="${th}">Leave</td><td style="${th}">Total</td></tr>${sum}</table>
+      <div style="font-size:12px;color:#7A8797;font-weight:600;margin-top:10px">Total = present + week offs. Week offs beyond the allowed number are counted as leave.</div></div></div>`;
+}
 function monthCard() {
   const ppl = people(), days = monthDays();
   const head = `<tr><th class="anm">Staff</th>${days.map(d => `<th class="${d === S.today ? 'td' : ''}"><button data-a="attday" data-v="${d}" ${d > S.today ? 'disabled' : ''}>${DOW[dowOf(d)][0]}<b>${dnum(d)}</b></button></th>`).join('')}<th class="sm2">In</th><th class="sm2">W/O</th><th class="sm2">Leave</th></tr>`;
@@ -1539,9 +1617,9 @@ const cloName = l => `${ME()} ${l} ${CD()}.png`;
 async function cloImages() {
   const share = !!(navigator.canShare && window.File && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] }));
   openSheet(`<h3>Closing images</h3><div class="sub">${esc(ME())} · ${dLabel(CD())}</div><div class="cig" id="cig"><div class="empty">Making the images…</div></div><div class="err" id="serr"></div>
-    <div class="cs" style="margin:10px 0 0">Copy all puts every table in one picture, so one paste in WhatsApp sends them all.</div><div class="sha"><button class="btn gh" data-a="close">Close</button>${share ? '<button class="btn gh" data-a="closhare">Share all</button>' : ''}<button class="btn gh" data-a="clocopyall">Copy all</button><button class="btn" data-a="cloall">Download all</button></div>`);
+    <div class="cs" style="margin:10px 0 0">Copy all copies the pictures one by one. Paste in WhatsApp, come back and press Copy next. Each table goes as its own picture.</div><div class="sha"><button class="btn gh" data-a="close">Close</button>${share ? '<button class="btn gh" data-a="closhare">Share all</button>' : ''}<button class="btn gh" data-a="clocopyall" id="clocopyall">Copy all</button><button class="btn" data-a="cloall">Download all</button></div>`);
   if (!window.html2canvas) { document.getElementById('cig').innerHTML = '<div class="empty">The image maker did not load. Check the internet and try again.</div>'; return; }
-  window.__clo = [];
+  window.__clo = []; S.cloStep = 0;
   const hasVal = id => id === 'acc' || (id === 'den' ? denTot() > 0 : !(id === 'card' && C().noCard) && nFilled(id) > 0);
   for (const [id, l] of CLO_PARTS) { if (!hasVal(id)) continue; try { const cv = await cloCanvas(id); if (cv) window.__clo.push({ id, l, cv }); } catch (e) {} }
   const box = document.getElementById('cig'); if (!box) return;
@@ -1797,7 +1875,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 5;
+const APP_VER = 6;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -2359,7 +2437,10 @@ document.addEventListener('click', async e => {
     case 'cloimgs': cloImages(); break;
     case 'clo1': cloSave(+v); break;
     case 'clocopy': { const x = (window.__clo || [])[+v]; if (x) copyCanvas(x.cv, x.l + ' copied · paste it in WhatsApp'); break; }
-    case 'clocopyall': { const c = cloJoined(); if (c) copyCanvas(c, 'All closing tables copied as one picture · paste it in WhatsApp'); break; }
+    case 'clocopyall': { const L = window.__clo || []; if (!L.length) break; const i = (S.cloStep || 0) % L.length, x = L[i];
+      const ok = await copyCanvas(x.cv, (i + 1) + ' of ' + L.length + ' copied · ' + x.l + (i + 1 < L.length ? ' · paste it in WhatsApp, then press Copy next' : ' · paste it in WhatsApp. All done'));
+      if (ok) { S.cloStep = i + 1 >= L.length ? 0 : i + 1; document.querySelectorAll('#cig figure').forEach((f, k) => { f.classList.toggle('cpd', k <= i); f.classList.toggle('cpn', k === i); });
+        el.textContent = S.cloStep ? 'Copy next · ' + (S.cloStep + 1) + ' of ' + L.length : 'Copy all again'; } break; }
     case 'mrimg': snapImage(monthRepHTML(false), 'Month report'); break;
     case 'mereset': meReset(); render(); break;
     case 'mrcal': { const r = mrRange(); S.mrCal = { ym: r.to.slice(0, 7), a: r.from, b: r.to }; openSheet(mrCalSheet()); break; }
