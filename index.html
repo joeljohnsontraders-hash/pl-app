@@ -777,6 +777,109 @@ html.dark .tg button.on.off,html.dark .bref-tabs button.on{background:#2A3D56;co
 html.dark .toast{background:#1E2E47;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 14px 30px rgba(0,0,0,.6)}
 .tli b{white-space:nowrap}
 .page{grid-template-columns:minmax(0,1fr)}.page>*{min-width:0}
+
+/* ==== elegance pass ==== */
+:root{--gtg:linear-gradient(135deg,#1FA466 0%,#13774A 100%);--ring1:rgba(10,26,43,.06);--glow:0 1px 2px rgba(10,26,43,.04),0 18px 40px -18px rgba(10,26,43,.16)}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 420px at 50% -120px,rgba(30,158,99,.07),transparent 70%),var(--ground);background-attachment:fixed}
+#app{--ground:#F3F5F9}
+/* header: midnight aurora with a fine dot grid */
+.hd{background:radial-gradient(700px 340px at 92% -10%,rgba(37,184,119,.42),transparent 62%),radial-gradient(520px 300px at -5% 115%,rgba(224,33,122,.26),transparent 60%),radial-gradient(400px 240px at 55% 140%,rgba(84,120,255,.14),transparent 70%),linear-gradient(180deg,#0B1B2E,#0A1726)}
+.hd .hdin::before{content:"";position:absolute;inset:-40px -40px -80px;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);background-size:18px 18px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);mask-image:linear-gradient(180deg,#000,transparent 85%);pointer-events:none;z-index:-1}
+.hd .eb{letter-spacing:.16em;font-size:10.5px;opacity:.95}
+.hd .br{font-size:30px;font-weight:700;letter-spacing:-.025em}
+.hd .dt{color:#9FB2C6;font-weight:600}
+.av{border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05));border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.hd .pill.p-mu{background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);backdrop-filter:blur(6px)}
+.gl{background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:12px 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.gl small{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#93A8BE;font-weight:800}
+.gl b{font-size:21px;font-weight:600;letter-spacing:-.01em;margin-top:4px}
+.ring .rv b{letter-spacing:-.02em}
+.seg button{backdrop-filter:blur(6px)}
+.seg button.on{box-shadow:0 6px 16px -6px rgba(0,0,0,.4)}
+/* cards */
+.card{border-radius:24px;padding:20px;box-shadow:0 0 0 1px var(--ring1),var(--glow)}
+.ct{font-size:17.5px;font-weight:600;letter-spacing:-.01em}
+.ch{margin-bottom:16px}
+.ib{border-radius:12px;box-shadow:inset 0 0 0 1px rgba(10,26,43,.05),inset 0 1px 0 rgba(255,255,255,.6)}
+.ib.g{background:linear-gradient(145deg,#E6F7EE,#D3F0E1)}.ib.p{background:linear-gradient(145deg,#FDEBF3,#F9D9E8)}.ib.b{background:linear-gradient(145deg,#EBF1FD,#DCE6FA)}.ib.y{background:linear-gradient(145deg,#FEF4E0,#FBE8C4)}.ib.n{background:linear-gradient(145deg,#EEF1F5,#E2E7EE)}
+.cs{font-weight:600;letter-spacing:.005em}
+.row{padding:13px 0}
+.sl2,.sl3,.tm-g td{letter-spacing:.14em!important}
+/* people */
+.ini{border-radius:50%;background:linear-gradient(145deg,#E6F7EE,#CDEEDD);box-shadow:inset 0 0 0 1px rgba(30,158,99,.12)}
+.ini.L{background:linear-gradient(145deg,#FDEBF3,#F7D3E4);box-shadow:inset 0 0 0 1px rgba(224,33,122,.12)}
+.ini.O{background:linear-gradient(145deg,#EBF1FD,#D6E2FA);box-shadow:inset 0 0 0 1px rgba(45,78,158,.12)}
+.ini.H{background:linear-gradient(145deg,#F1F3F6,#E3E7ED);box-shadow:inset 0 0 0 1px rgba(10,26,43,.06)}
+/* buttons */
+.btn{border-radius:13px;letter-spacing:.005em}
+.btn:where(:not(.gh):not(.dk):not(.pk)){background-image:var(--gtg)}
+.next .btn,.next.ywait .btn{background-image:none}
+.btn.sm{border-radius:11px}
+.btn.gh{background-color:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(10,26,43,.05)}
+.btn.gh:hover:not(:disabled){background-color:var(--soft)}
+/* next-up banners */
+.next{border-radius:24px;padding:18px 20px;background:radial-gradient(500px 160px at 100% 0%,rgba(255,255,255,.18),transparent 60%),linear-gradient(120deg,#22B072,#13794B)}
+.next.ywait{background:radial-gradient(500px 160px at 100% 0%,rgba(255,255,255,.2),transparent 60%),linear-gradient(120deg,#F4B652,#DA8019)}
+.next .btn{border-radius:99px;padding-inline:16px;box-shadow:0 6px 14px -6px rgba(0,0,0,.35)}
+/* reports-today tiles */
+.tli{border-radius:18px;padding:12px 8px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line)}
+.tli.due{background:linear-gradient(160deg,#13304B,#0A1A2B);box-shadow:0 10px 22px -10px rgba(10,26,43,.6)}
+.tli.sent{background:linear-gradient(160deg,#E6F7EE,#D6F1E3);box-shadow:inset 0 0 0 1px rgba(30,158,99,.18)}
+.sl{border-radius:16px;box-shadow:inset 0 0 0 1px var(--line)}
+.sl.on{background:linear-gradient(160deg,#13304B,#0A1A2B)}
+/* status chips */
+.ds{box-shadow:0 0 0 1px var(--ring1),0 6px 18px -8px rgba(10,26,43,.18)}
+/* toggles & inputs */
+.tm-tg{border-radius:13px;padding:4px}
+.tm-tg button{border-radius:10px;transition:background-color .15s,color .15s}
+.tm-tg button.on{box-shadow:0 1px 2px rgba(10,26,43,.08),0 4px 10px -4px rgba(10,26,43,.18)}
+.fl input,.fl select{border-radius:13px;border-color:#D9E0E9;transition:box-shadow .15s,border-color .15s}
+/* bottom nav: floating glass with a lit pill */
+.navin{border-radius:26px;background:rgba(9,22,37,.86);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4)}
+.navin button{border-radius:18px}
+.navin button.on{background:linear-gradient(180deg,rgba(37,184,119,.22),rgba(37,184,119,.08));box-shadow:inset 0 0 0 1px rgba(126,224,174,.18)}
+.navin button.on::after{display:none}
+/* side rail */
+.side{background:linear-gradient(180deg,#0B1B2E,#081422)}
+.side button.it{position:relative}
+.side button.it.on{background:linear-gradient(90deg,rgba(37,184,119,.2),rgba(37,184,119,.05));box-shadow:inset 0 0 0 1px rgba(126,224,174,.14)}
+.side button.it.on::before{content:"";position:absolute;left:-12px;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--gth)}
+/* sheets & toast */
+.ov{background:rgba(6,14,24,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sh{border-radius:28px 28px 0 0;box-shadow:0 -20px 50px -20px rgba(0,0,0,.35)}
+@media (max-width:979px){.sh::before{content:"";display:block;width:40px;height:4px;border-radius:4px;background:var(--line);margin:-8px auto 14px}}
+.sh h3{font-weight:600;letter-spacing:-.015em}
+.toast{border-radius:99px;background:rgba(10,26,43,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 0 0 1px rgba(255,255,255,.06),0 16px 34px -10px rgba(10,26,43,.5)}
+.note{border-radius:18px}
+.empty{font-weight:500}
+
+/* ---- dark counterparts of the elegance pass ---- */
+html.dark #app{--ground:#060C14}
+html.dark body{background:radial-gradient(1200px 420px at 50% -120px,rgba(31,164,102,.08),transparent 70%),#060C14}
+html.dark #app,html.dark #layer{--ring1:rgba(255,255,255,.06);--glow:0 18px 40px -16px rgba(0,0,0,.65)}
+html.dark .hd{background:radial-gradient(700px 340px at 92% -10%,rgba(37,184,119,.30),transparent 62%),radial-gradient(520px 300px at -5% 115%,rgba(224,33,122,.18),transparent 60%),radial-gradient(400px 240px at 55% 140%,rgba(84,120,255,.12),transparent 70%),linear-gradient(180deg,#0D1C30,#09141F)}
+html.dark .ib{box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+html.dark .ib.g{background:linear-gradient(145deg,#123A2B,#0E2E22)}html.dark .ib.p{background:linear-gradient(145deg,#3B1630,#2E1126)}html.dark .ib.b{background:linear-gradient(145deg,#1A2D52,#142443)}html.dark .ib.y{background:linear-gradient(145deg,#3A2D12,#2E240E)}html.dark .ib.n{background:linear-gradient(145deg,#1E2D40,#182536)}
+html.dark .ini{background:linear-gradient(145deg,#123A2B,#0E2E22);box-shadow:inset 0 0 0 1px rgba(63,195,131,.2)}
+html.dark .ini.L{background:linear-gradient(145deg,#3B1630,#2E1126);box-shadow:inset 0 0 0 1px rgba(242,95,162,.2)}
+html.dark .ini.O{background:linear-gradient(145deg,#1A2D52,#142443);box-shadow:inset 0 0 0 1px rgba(147,174,245,.2)}
+html.dark .ini.H{background:linear-gradient(145deg,#223246,#1A2738);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+html.dark .btn.gh{background-color:#17243A;box-shadow:inset 0 0 0 1px #2A3D56}
+html.dark .tli{background:#15223A;box-shadow:inset 0 0 0 1px #203149}
+html.dark .tli.due{background:linear-gradient(160deg,#164A33,#0F3424);box-shadow:inset 0 0 0 1.5px #2FBF7A,0 10px 22px -12px rgba(31,164,102,.6)}
+html.dark .tli.sent{background:linear-gradient(160deg,#103325,#0D281D);box-shadow:inset 0 0 0 1px rgba(63,195,131,.25)}
+html.dark .sl{box-shadow:inset 0 0 0 1px #203149}
+html.dark .sl.on{background:linear-gradient(160deg,#164A33,#0F3424);box-shadow:inset 0 0 0 1.5px #2FBF7A}
+html.dark .fl input,html.dark .fl select{border-color:#2A3D53}
+html.dark .side{background:linear-gradient(180deg,#0A1626,#060E18)}
+html.dark .navin{background:rgba(12,22,36,.88)}
+html.dark .toast{background:rgba(24,38,58,.94)}
+html.dark .sh{box-shadow:0 0 0 1px rgba(255,255,255,.06),0 -20px 50px -20px rgba(0,0,0,.7)}
+.stp button.pl{background-image:var(--gtg)}
+html.dark .stp button.pl{background-color:#1FA466;color:#fff}
+@media (max-width:560px){.gl{padding:10px 12px}.gl b{font-size:18px}.gl small{font-size:9px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.next{padding:16px}.next b{font-size:19px}.card{padding:18px}}
+@media (max-width:420px){.glass:not(.g4) .gl b{font-size:16.5px;letter-spacing:-.02em}}
 </style>
 </head><body>
 <div id="gti" class="hold" aria-hidden="true"><i class="gti-px"><img alt="" width="64" height="64" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2764%27 height=%2764%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230A1A2B%27/%3E%3C/svg%3E">Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon </i><div class="gti-st"><i style="left:10%;animation-delay:0.05s"></i><i style="left:30%;animation-delay:0.2s"></i><i style="left:56%;animation-delay:0s"></i><i style="left:76%;animation-delay:0.15s"></i><i style="left:93%;animation-delay:0.25s"></i></div><div class="gti-in"><div class="gti-stage">
@@ -1694,7 +1797,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 4;
+const APP_VER = 5;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -1984,14 +2087,14 @@ VIEWS.settings = () => {
     ${sr('GST', 'Gross sale = net sale + GST', (st.gst === undefined || st.gst === '' ? 5 : num(st.gst)) + '%')}
     ${sr('Trendy Circle card', 'Price of one card', '₹' + fmt(num(st.mcRate) || 95))}
     <div class="cs" style="margin-top:10px">Only the controller can change these. Ask them if something is wrong.</div></section>`;
-  const app = `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('spark')}</span>App</div></div>
+  const app = `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('box')}</span>App</div></div>
     ${sr('Version', outdated() ? 'A newer version is ready' : 'This is the latest version', String(APP_VER))}
     <div class="sha" style="justify-content:flex-start;margin-top:4px">${outdated() ? `<button class="btn sm" data-a="appupdate">Update now</button>` : `<button class="btn sm gh" data-a="appcheck">Check for update</button>`}</div>
     ${notes ? `<div class="sl3">What\u2019s new</div><p class="setnote">${esc(notes)}</p>` : ''}</section>`;
   const acc = S.asBranch ? '' : `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('user')}</span>Account</div></div>
     ${sr(esc(S.me.name), 'Manager · ' + esc(B))}
     <div class="sha" style="justify-content:flex-start"><button class="btn sm gh" data-a="me">Change PIN</button><button class="btn sm gh" data-a="logout">${ic('out')}Sign out</button></div></section>`;
-  return { eb: 'This phone and your branch', title: 'Settings', sub: esc(B), right: '', body: look + rules + app + acc };
+  return { eb: 'This phone', title: 'Settings', sub: esc(B), right: '', body: look + app + acc };
 };
 
 const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + mrId();
