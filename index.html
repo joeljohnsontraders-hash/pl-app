@@ -636,7 +636,7 @@ textarea.mtx{width:100%;min-height:96px;border:1px solid var(--line,#E7EAF0);bor
 .tm-leg{display:flex;gap:14px;margin-top:10px;font-size:11.5px;color:var(--muted);font-weight:700;flex-wrap:wrap}.tm-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#1E9E63}.tm-leg i.off{background:#9DB2E6}.tm-leg i.lv{background:#E8A49C}
 .tm-sec{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;padding:14px 18px}.tm-sec b{display:block;font-size:14px}.tm-sec small{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}.tm-sec .tm-tg{margin:0}
 .bref-mvh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.bref-mvr{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:4px 0}.bref-mvr .xb{flex:none}.mvd{margin-top:4px}
-#app,#layer{zoom:var(--uz,1)}
+
 .dstrip{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
 .ds{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:99px;font-size:12.5px;font-weight:700;background:var(--card);color:var(--ink);box-shadow:0 1px 0 rgba(10,26,43,.04),0 4px 14px rgba(10,26,43,.06);white-space:nowrap}
 button.ds{cursor:pointer}button.ds:hover{filter:brightness(.97)}
@@ -656,6 +656,11 @@ button.ds{cursor:pointer}button.ds:hover{filter:brightness(.97)}
 @keyframes dvIn{from{opacity:0}}@keyframes dvOut{to{opacity:0}}@keyframes dcIn{from{opacity:0;transform:scale(.85)}}@keyframes dvDraw{to{stroke-dashoffset:0}}
 .uiset{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}.uiset b{display:block;font-size:14px}.uiset small{display:block;font-size:12px;color:var(--muted);font-weight:600}.uiset .tm-tg{margin:0}
 .uiset+.f2{margin-top:14px}
+.card .uiset:last-child{border-bottom:0;padding-bottom:0}
+
+.sl3{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:14px 0 2px}
+.row .sv{font-size:14px;text-align:right;white-space:nowrap}
+.setnote{white-space:pre-line;font-size:13.5px;line-height:1.55;color:var(--muted);margin:6px 0 0}
 /* dark look: only the app area changes; the WhatsApp images and the Excel-style sheets keep their colours */
 html.dark{color-scheme:dark}
 html.dark body{background:#0B1522}
@@ -677,8 +682,7 @@ html.dark .tm-wk td,html.dark .tm-wk td.tm-n,html.dark .tm-pd.tm-wk{background:#
 html.dark .tm-today td,html.dark .tm-today td.tm-n,html.dark .tm-pd.tm-today{background:#12301F}
 html.dark .cvs{background-color:#0F1A27}
 html.dark .n-warn{color:#F3C77A}html.dark .n-bad{color:#F5A3A0}html.dark .n-ok{color:#8FE0B8}html.dark .n-info{color:#AFC4F7}
-.nav{zoom:var(--uzi,1)}
-@media(max-width:600px){html.uzl .hd .hrow{flex-wrap:wrap;row-gap:12px}html.uzl .hd .hrow>div:first-child{flex:1 1 100%;order:2}html.uzl .hd .rt{margin-left:auto}}
+
 html.dark .ds.soon{box-shadow:inset 0 0 0 1.5px #7A5A1E}html.dark .ds.late{box-shadow:inset 0 0 0 1.5px #7A3A33}
 .tm-ml{display:none}
 .tm-back{display:inline-flex;align-items:center;gap:6px;color:#C9F3DD;font-weight:800;font-size:13px;margin:-4px 0 10px}
@@ -712,6 +716,67 @@ select.csel{border:1px solid var(--line);border-radius:10px;padding:6px 8px;back
 .side .lg2 small{font-size:11.5px;color:#8EA0B4;font-weight:700;padding-left:4px}
 
 
+
+/* ---- style pass: depth, buttons, motion (both looks) ---- */
+.card{box-shadow:0 0 0 1px rgba(10,26,43,.045),0 1px 2px rgba(10,26,43,.04),0 12px 32px -10px rgba(10,26,43,.12);transition:background-color .25s,box-shadow .25s}
+.btn{background-image:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,0) 60%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 2px rgba(10,26,43,.14),0 4px 12px -4px rgba(10,26,43,.2);transition:transform .15s,filter .15s,box-shadow .15s}
+.btn:hover:not(:disabled){filter:brightness(1.05)}
+.btn.gh{background-image:none}
+.btn.gh:hover:not(:disabled){filter:none;background-color:var(--line)}
+:where(button,a,[tabindex]):focus-visible{outline:2px solid var(--gt);outline-offset:2px;border-radius:10px}
+.fl input:focus,.fl select:focus{box-shadow:0 0 0 4px rgba(30,158,99,.14)}
+.tile,.sl,.row.tap,.ibx,.todo{transition:background-color .18s,transform .18s,box-shadow .18s}
+@media (hover:hover){.tile:hover,.sl:hover{transform:translateY(-1px)}}
+.ib{box-shadow:inset 0 0 0 1px rgba(10,26,43,.04)}
+.next{position:relative;overflow:hidden}
+.next::after{content:"";position:absolute;inset:0;background:radial-gradient(420px 140px at 85% -20%,rgba(255,255,255,.22),transparent 60%);pointer-events:none}
+.next>*{position:relative;z-index:1}
+.navin{box-shadow:0 0 0 1px rgba(255,255,255,.06),0 18px 40px -8px rgba(10,26,43,.45)}
+.navin button{transition:color .2s,background-color .2s}
+.navin button.on::after{content:"";position:absolute;bottom:2px;left:50%;width:16px;height:3px;margin-left:-8px;border-radius:3px;background:var(--gth)}
+.hd .br{text-shadow:0 2px 18px rgba(0,0,0,.18)}
+.pill{letter-spacing:.01em}
+*{scrollbar-width:thin;scrollbar-color:rgba(90,103,121,.35) transparent}
+body{transition:background-color .25s}
+
+/* ---- dark look: calibrated surfaces, contrast and the paper sheets ---- */
+html.dark{scrollbar-color:#2A3D53 transparent}
+html.dark body{background:#060C14}
+html.dark #app,html.dark #layer{--ground:#060C14;--card:#0F1928;--soft:#17243A;--line:#203149;--ink:#E9EFF7;--muted:#93A4B9;--gt:#1FA466;--ok:#3FC383;--gts:#0F2E22;--oks:#0F2E22;--warns:#33280F;--bads:#3A1A19;--infos:#152645;--pinks:#36142B}
+html.dark .hd{background:radial-gradient(640px 320px at 100% 0%,rgba(31,164,102,.30),transparent 65%),radial-gradient(520px 300px at 0% 120%,rgba(224,33,122,.16),transparent 60%),linear-gradient(180deg,#0E1D31,#0A1626);box-shadow:inset 0 -1px 0 rgba(255,255,255,.05)}
+html.dark .side{background:#08111D;border-right-color:rgba(255,255,255,.05)}
+html.dark .card{box-shadow:0 0 0 1px rgba(255,255,255,.055),0 1px 0 rgba(255,255,255,.03) inset,0 16px 36px -12px rgba(0,0,0,.6)}
+html.dark .btn{box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 6px 16px -6px rgba(0,0,0,.6)}
+html.dark .btn.gh{background-color:#17243A;color:var(--ink);box-shadow:inset 0 0 0 1px #2A3D56}
+html.dark .btn.gh:hover:not(:disabled){background-color:#1E2E47}
+html.dark .navin{background:rgba(13,23,37,.92);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 18px 40px -8px rgba(0,0,0,.7)}
+html.dark .tile{background:#15223A}
+html.dark .tile:hover{background:#1A2A44}
+html.dark .sl{background:#15223A}
+html.dark .sl.on{background:#113626;color:var(--ink);box-shadow:inset 0 0 0 1.5px #2FBF7A}
+html.dark .sl.on small{color:#7EE0AE}
+html.dark .segl button.on{background:#2A3D56;border-color:#2A3D56}
+html.dark .seg button.on{background:#1FA466;color:#fff;border-color:#1FA466}
+html.dark .amon th.td button{background:#1FA466}
+html.dark .amon .anm{background:var(--card)}
+html.dark .a-off{background:#1C2C4D;color:#B4C7F7}
+html.dark .a-fut{box-shadow:inset 0 0 0 1px #1C2B40}
+html.dark .a-none{background:#15223A;box-shadow:inset 0 0 0 1px #24364E}
+html.dark .tm-tg button.on{box-shadow:0 1px 3px rgba(0,0,0,.4)}
+html.dark .cvhs{background:var(--card)}
+html.dark .ib{box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+html.dark .next{box-shadow:0 14px 30px -10px rgba(31,164,102,.45)}
+html.dark .next.ywait{box-shadow:0 14px 30px -10px rgba(221,134,28,.4)}
+html.dark .xs,html.dark .mrep,html.dark .ai,html.dark table.xt:not(.xs table.xt){filter:brightness(.87) saturate(.92)}
+html.dark .fl input:focus,html.dark .fl select:focus{box-shadow:0 0 0 4px rgba(31,164,102,.22)}
+html.dark .tli{background:#15223A}
+html.dark .tli.due{background:#113626;color:var(--ink);box-shadow:inset 0 0 0 1.5px #2FBF7A}
+html.dark .tli.sent{background:#0F2E22}
+html.dark .btn.dk{background-color:#2A3D56}
+html.dark .tg button.on.off,html.dark .bref-tabs button.on{background:#2A3D56;color:#fff}
+html.dark .toast{background:#1E2E47;box-shadow:0 0 0 1px rgba(255,255,255,.08),0 14px 30px rgba(0,0,0,.6)}
+.tli b{white-space:nowrap}
+.page{grid-template-columns:minmax(0,1fr)}.page>*{min-width:0}
 </style>
 </head><body>
 <div id="gti" class="hold" aria-hidden="true"><i class="gti-px"><img alt="" width="64" height="64" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2764%27 height=%2764%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230A1A2B%27/%3E%3C/svg%3E">Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon </i><div class="gti-st"><i style="left:10%;animation-delay:0.05s"></i><i style="left:30%;animation-delay:0.2s"></i><i style="left:56%;animation-delay:0s"></i><i style="left:76%;animation-delay:0.15s"></i><i style="left:93%;animation-delay:0.25s"></i></div><div class="gti-in"><div class="gti-stage">
@@ -1017,7 +1082,7 @@ const openingCash = () => { const c = C(); if (!blank(c.openTyped)) return num(c
 const closingBal = () => (openingCash() || 0) + totalSales() + prodSales() + inTot() - exTot() - accDeb() - cdTot() - gpTot();
 
 /* ---------------- shell ---------------- */
-const NAV = [['today', 'Today', 'today'], ['att', 'Attendance', 'staff'], ['report', 'Report', 'sheet'], ['closing', 'Closing', 'wallet'], ['stock', 'Stock', 'box'], ['team', 'Staff', 'user'], ['sales', 'Insights', 'chart'], ['inbox', 'Inbox', 'bell']];
+const NAV = [['today', 'Today', 'today'], ['att', 'Attendance', 'staff'], ['report', 'Report', 'sheet'], ['closing', 'Closing', 'wallet'], ['stock', 'Stock', 'box'], ['team', 'Staff', 'user'], ['sales', 'Insights', 'chart'], ['inbox', 'Inbox', 'bell'], ['settings', 'Settings', 'gear']];
 let lastPage = ''; const SEEN = new Set(); /* pages already opened this session open without the entrance animation */
 function render() {
   const app = document.getElementById('app');
@@ -1036,9 +1101,9 @@ function render() {
       <div class="sl2">Daily work</div>${NAV.slice(0, 5).map(navBtn).join('')}<div class="sl2">Your branch</div>${NAV.slice(5).map(navBtn).join('')}
       <div class="who"><span class="wav">${esc(ini(S.me.name || 'M'))}</span><span><b>${esc(S.me.name)}</b>Manager · ${esc(ME())}</span></div>
       <button class="it" data-a="logout">${ic('out')}Sign out</button></aside>
-    <main class="main">${S.asBranch ? `<div class="asbar"><span>${ic('eye', 15)} ${esc(S.asBranch)} manager app · your changes save into their app</span><span style="display:flex;gap:10px;align-items:center"><label class="cs" style="color:#fff;display:flex;gap:6px;align-items:center"><input type="checkbox" data-follow="1" ${S.follow ? 'checked' : ''}>Follow their page</label><button class="btn sm" data-a="asexit">Back</button></span></div>` : ''}<header class="hd"><div class="hdin"><div class="hrow"><div style="min-width:0"><div class="eb">${V.eb || ''}</div><div class="br">${V.title}</div><div class="dt">${V.sub}</div></div><div class="rt">${V.right !== undefined ? V.right : `<span class="pill ${cst[1]}">${cst[0]}</span>`}<span id="conn" class="pill p-mu">● Saved</span>${S.asBranch ? '' : `<button class="av hbell" data-a="go" data-v="inbox" aria-label="Inbox">${ic('bell')}${inboxCount() ? `<span class="bdg">${inboxCount()}</span>` : ''}</button>`}<button class="av" data-a="me" aria-label="Account">${esc(ini(S.me.name || 'M'))}</button></div></div>${V.hx || ''}</div></header>
+    <main class="main">${S.asBranch ? `<div class="asbar"><span>${ic('eye', 15)} ${esc(S.asBranch)} manager app · your changes save into their app</span><span style="display:flex;gap:10px;align-items:center"><label class="cs" style="color:#fff;display:flex;gap:6px;align-items:center"><input type="checkbox" data-follow="1" ${S.follow ? 'checked' : ''}>Follow their page</label><button class="btn sm" data-a="asexit">Back</button></span></div>` : ''}<header class="hd"><div class="hdin"><div class="hrow"><div style="min-width:0"><div class="eb">${V.eb || ''}</div><div class="br">${V.title}</div><div class="dt">${V.sub}</div></div><div class="rt">${V.right !== undefined ? V.right : `<span class="pill ${cst[1]}">${cst[0]}</span>`}<span id="conn" class="pill p-mu">● Saved</span>${S.asBranch ? '' : `<button class="av hbell" data-a="go" data-v="inbox" aria-label="Inbox">${ic('bell')}${inboxCount() ? `<span class="bdg">${inboxCount()}</span>` : ''}</button>`}<button class="av" data-a="go" data-v="settings" aria-label="Settings">${esc(ini(S.me.name || 'M'))}</button></div></div>${V.hx || ''}</div></header>
       <div class="wrap"><div class="page">${S.page === 'inbox' ? '' : upBar()}${V.body}</div></div></main></div>
-    <nav class="nav"><div class="navin">${NAV.filter(n => n[0] !== 'inbox').map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
+    <nav class="nav"><div class="navin">${NAV.filter(n => n[0] !== 'inbox' && n[0] !== 'settings').map(([id, t, i]) => `<button class="${S.page === id ? 'on' : ''}" data-a="go" data-v="${id}">${ic(i)}${t}${id === 'closing' && S.days[S.today].clo.status === 'back' ? '<span class="bd"></span>' : ''}</button>`).join('')}</div></nav>`;
   setSaved(dirty.size ? 'saving' : 'saved');
   if (S.page === 'closing' && cvOn()) { cvPlace(false); cvWatch(); }
   if (S.page === 'report') brefDots();
@@ -1629,7 +1694,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 3;
+const APP_VER = 4;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -1891,17 +1956,43 @@ function doneShow(title, sub) {
   o.addEventListener('click', bye); document.body.appendChild(o); setTimeout(bye, 2200);
 }
 
-/* ---------------- look: light / dark / same as the phone, and the text size (kept on this device) ---------------- */
-const uiP = () => { try { return Object.assign({ theme: 'light', size: '1' }, JSON.parse(ls('gt_ui') || '{}')); } catch (e) { return { theme: 'light', size: '1' }; } };
+/* ---------------- look: light / dark / same as the phone (kept on this device) ---------------- */
+const uiP = () => { try { return Object.assign({ theme: 'light' }, JSON.parse(ls('gt_ui') || '{}')); } catch (e) { return { theme: 'light' }; } };
 const darkMQ = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : { matches: false, addEventListener() {} };
 function uiApply() { const p = uiP(), dk = p.theme === 'dark' || (p.theme === 'auto' && darkMQ.matches), de = document.documentElement;
-  de.classList.toggle('dark', dk); de.style.setProperty('--uz', String(+p.size || 1)); de.style.setProperty('--uzi', String(1 / (+p.size || 1))); de.classList.toggle('uzl', +p.size > 1); }
+  de.classList.toggle('dark', dk); }
 try { darkMQ.addEventListener('change', uiApply); } catch (e) {}
 uiApply();
 const uiSet = (k, v) => { const p = uiP(); p[k] = v; ls('gt_ui', JSON.stringify(p)); uiApply(); };
-const uiRows = () => { const p = uiP();
-  return `<div class="uiset"><div><b>Look</b><small>Only on this phone or computer</small></div>${tmTg('uitheme', p.theme, [['light', 'Light'], ['dark', 'Dark'], ['auto', 'Same as phone']])}</div>
-    <div class="uiset"><div><b>Text size</b></div>${tmTg('uisize', String(p.size), [['1', 'Normal'], ['1.12', 'Large'], ['1.25', 'Extra large']])}</div>`; };
+const uiRows = () => `<div class="uiset"><div><b>Theme</b><small>Only on this phone or computer</small></div>${tmTg('uitheme', uiP().theme, [['light', 'Light'], ['dark', 'Dark'], ['auto', 'Same as phone']])}</div>`;
+
+/* ---------------- settings page: look, the branch rules the controller set, app version, account ---------------- */
+VIEWS.settings = () => {
+  const st = S.settings, B = ME(), sr = (l, sub, v) => `<div class="row"><div class="l"><b>${l}</b>${sub ? `<small>${sub}</small>` : ''}</div>${v !== undefined ? `<b class="sv">${v}</b>` : ''}</div>`;
+  const times = slotTimes(), rep = SLOTS.filter(([k]) => k !== 'cl').map(([k], i) => sr(esc(slotName(k)) + ' report', '', esc(t12(times[i])))).join('');
+  const upd = S.inbox.items.find(x => x.kind === 'update'), notes = upd ? upd.body : (S.inbox.ver || {}).notes || '';
+  const look = `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('spark')}</span>Look</div></div>${uiRows()}</section>`;
+  const rules = `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('clock')}</span>${esc(B)} rules</div><span class="cs">Set by the controller</span></div>
+    <div class="sl3">Reports</div>${rep}
+    ${sr('Reminder', 'Before each report is due', (num(st.remindMin) || 5) + ' min before')}
+    ${sr('Marked late', 'If a report is not sent by then', (num(st.lateMin) || 30) + ' min after')}
+    ${sr('Yesterday\u2019s closing', 'The controller is alerted if it is not sent by', esc(t12(st.closingAlert || '11:00')))}
+    <div class="sl3">Attendance</div>
+    ${sr('Attendance first', (st.strictAtt || {})[B] ? 'Attendance must be marked before the report' : 'The report can be started before attendance', (st.strictAtt || {})[B] ? 'On' : 'Off')}
+    ${sr('Week offs', 'One week off for every ' + (num(st.woPer) || 6) + ' days worked', 'Up to ' + (num(st.woMax) || 4) + ' a month')}
+    <div class="sl3">Report sheet</div>
+    ${sr('GST', 'Gross sale = net sale + GST', (st.gst === undefined || st.gst === '' ? 5 : num(st.gst)) + '%')}
+    ${sr('Trendy Circle card', 'Price of one card', '₹' + fmt(num(st.mcRate) || 95))}
+    <div class="cs" style="margin-top:10px">Only the controller can change these. Ask them if something is wrong.</div></section>`;
+  const app = `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('spark')}</span>App</div></div>
+    ${sr('Version', outdated() ? 'A newer version is ready' : 'This is the latest version', String(APP_VER))}
+    <div class="sha" style="justify-content:flex-start;margin-top:4px">${outdated() ? `<button class="btn sm" data-a="appupdate">Update now</button>` : `<button class="btn sm gh" data-a="appcheck">Check for update</button>`}</div>
+    ${notes ? `<div class="sl3">What\u2019s new</div><p class="setnote">${esc(notes)}</p>` : ''}</section>`;
+  const acc = S.asBranch ? '' : `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('user')}</span>Account</div></div>
+    ${sr(esc(S.me.name), 'Manager · ' + esc(B))}
+    <div class="sha" style="justify-content:flex-start"><button class="btn sm gh" data-a="me">Change PIN</button><button class="btn sm gh" data-a="logout">${ic('out')}Sign out</button></div></section>`;
+  return { eb: 'This phone and your branch', title: 'Settings', sub: esc(B), right: '', body: look + rules + app + acc };
+};
 
 const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'medit|' + ME() + '|' + mrId();
 const dmy = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
@@ -2007,7 +2098,7 @@ const SHEETS = {
   other() { const o = S.staff.filter(x => x.branch !== ME() && (x.g === 'G' || x.g === 'L')).map(x => [x.branch + '|' + x.name + '|' + x.g, `${x.name} · ${x.branch}`]);
     return `<h3>Staff from another branch</h3><div class="sub">Their sales are saved under their own name</div>${fl('o_s', 'Staff', '', '', [['', 'Pick the staff']].concat(o))}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="other">Add for today</button></div>`; },
   newstaff() { return `<h3>New staff</h3><div class="sub">The controller is told</div>${fl('s_n', 'Name', '')}${fl('s_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newstaff">Add</button></div>`; },
-  me() { return `<h3>${esc(S.me.name)}</h3><div class="sub">Manager · ${esc(ME())}</div>${uiRows()}<div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
+  me() { return `<h3>Change PIN</h3><div class="sub">${esc(S.me.name)} · ${esc(ME())}</div><div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
 };
 const SAVE = {
   async prod() { const n = val('pn'), isNew = val('pp') === '__new', p = isNew ? String(val('pnn') || '').trim().replace(/\s+/g, ' ') : val('pp'), q = num(val('pq')), it = S.stock.find(x => x.branch === ME() && x.n.toLowerCase() === String(p).toLowerCase());
@@ -2188,8 +2279,8 @@ document.addEventListener('click', async e => {
     case 'cvreset': { S.settings[cvKey()] = null; persist(); call('appLayout', S.tok, ME(), null).catch(() => {}); render(); toast('Tables arranged neatly'); break; }
     case 'go': if (v === 'team') S.tmSel = null; S.page = v; closeSheet(); render(); break;
     case 'me': openSheet(SHEETS.me()); break;
-    case 'uitheme': uiSet('theme', v); sheetUpdate(SHEETS.me()); break;
-    case 'uisize': uiSet('size', v); sheetUpdate(SHEETS.me()); break;
+    case 'uitheme': uiSet('theme', v); render(); break;
+    case 'appcheck': el.disabled = true; el.textContent = 'Checking…'; await inboxLoad(); if (outdated()) render(); else { toast('You have the latest version'); render(); } break;
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {};
       if (cur.st === v) { A().att[n] = { st: '', in: cur.in || '', out: cur.out || '' }; touch(S.today, 'att'); render(); break; } /* tapping the chosen option again clears it */
       A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
