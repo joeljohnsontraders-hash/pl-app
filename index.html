@@ -991,6 +991,9 @@ body.cw-drag,body.cw-drag *{cursor:col-resize!important;user-select:none!importa
 .x2 td textarea.ta{text-align:center}
 .acc2 td,.x2 td.pt{text-align:center}
 .xt td.nmc{text-align:center}
+
+.xs.fit{width:max-content;max-width:100%}
+.xs.fit .xsw{overflow-x:auto}
 </style>
 </head><body>
 <div id="gti" class="hold" aria-hidden="true"><i class="gti-px"><img alt="" width="64" height="64" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2764%27 height=%2764%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230A1A2B%27/%3E%3C/svg%3E">Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon </i><div class="gti-st"><i style="left:10%;animation-delay:0.05s"></i><i style="left:30%;animation-delay:0.2s"></i><i style="left:56%;animation-delay:0s"></i><i style="left:76%;animation-delay:0.15s"></i><i style="left:93%;animation-delay:0.25s"></i></div><div class="gti-in"><div class="gti-stage">
@@ -1704,7 +1707,8 @@ function cloClone(id) {
 async function cloCanvas(id) {
   const cl = cloClone(id); if (!cl) return null; const host = document.createElement('div');
   const tw = parseFloat((cl.querySelector('table') || {}).style ? cl.querySelector('table').style.width : 0) || 0;
-  host.style.cssText = `position:fixed;left:-9999px;top:0;background:#fff;width:${Math.max(id === 'acc' ? 760 : id === 'den' ? 460 : 620, tw)}px`; host.appendChild(cl); document.body.appendChild(host);
+  host.style.cssText = `position:fixed;left:-9999px;top:0;background:#fff;width:${tw || (id === 'acc' ? 760 : id === 'den' ? 460 : 620)}px`; host.appendChild(cl); document.body.appendChild(host);
+  if (tw) { const t2 = cl.querySelector('table'); if (t2) host.style.width = Math.ceil(t2.getBoundingClientRect().width) + 'px'; }
   try { return await html2canvas(cl, { scale: 2, backgroundColor: '#ffffff' }); } finally { host.remove(); }
 }
 const cloName = l => `${ME()} ${l} ${CD()}.png`;
@@ -1969,7 +1973,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 11;
+const APP_VER = 12;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -2348,7 +2352,7 @@ document.addEventListener('keydown', e => {
 async function snapImage(html, label) {
   openSheet(`<h3>${label}</h3><div class="sub">Copy it and paste it in WhatsApp</div><div class="imgbox" id="imgbox"><div class="empty">Making the image…</div></div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Close</button><button class="btn gh" data-a="dlimg">Download</button><button class="btn" data-a="copyimg">Copy image</button></div>`);
   const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:-9999px;top:0;background:#fff'; host.innerHTML = html; document.body.appendChild(host);
-  cwApply(host, true); { const tb = host.querySelector('table[data-cw]'), w = tb ? parseFloat(tb.style.width) || 0 : 0, f = host.firstElementChild; if (w && f && w > (parseFloat(f.style.width) || 0)) f.style.width = w + 'px'; }
+  cwApply(host, true); { const tb = host.querySelector('table[data-cw]'), w = tb ? parseFloat(tb.style.width) || 0 : 0, f = host.firstElementChild; if (w && f) { f.style.width = w + 'px'; f.style.width = Math.ceil(tb.getBoundingClientRect().width) + 'px'; } }
   host.querySelectorAll('.xs').forEach(x => x.style.borderRadius = '0'); host.querySelectorAll('.xt td.nmc').forEach(x => x.style.position = 'static');
   try { if (!window.html2canvas) throw 0; const cv = await html2canvas(host.firstElementChild, { scale: 2, backgroundColor: '#ffffff' }); window.__img = cv; window.__imgName = label; const box = document.getElementById('imgbox'); if (box) box.innerHTML = `<img alt="${label}" src="${cv.toDataURL('image/png')}">`; }
   catch (e) { const box = document.getElementById('imgbox'); if (box) box.innerHTML = '<div class="empty">The image could not be made. Check the internet and try again.</div>'; }
@@ -2402,40 +2406,31 @@ const cloSent = () => ['sent', 'approved'].includes(C().status);
 /* ---------------- Excel-like column widths: drag the edge of a heading; double-click it to go back to normal ---------------- */
 const cwKey = () => 'colW|' + ME();
 const cwGet = t => (S.settings[cwKey()] || {})[t] || null;
-/* one column in each table takes up the spare room, so a table always fills its box (screen and image) */
-const CW_FLEX = { rep: 'name', acc: 't', exp: 't', gpay: 'c', card: 'c', den: 'note' };
-function cwFit(tb, skip) {
-  const cols = [...tb.querySelectorAll(':scope > colgroup > col')], fk = CW_FLEX[tb.dataset.cw], f = cols.find(c => c.dataset.k === fk), box = tb.parentElement;
-  if (!f || !box) return; const want = parseFloat(f.dataset.w || 0) || 120;
-  const others = cols.filter(c => c !== f), fixed = others.every(c => parseFloat(c.style.width));
-  if (!fixed) { f.style.width = ''; tb.style.width = ''; tb.style.minWidth = ''; return; }
-  const sumO = others.reduce((t, c) => t + parseFloat(c.style.width), 0), room = box.clientWidth || 0, fw = skip ? parseFloat(f.style.width) || want : Math.max(want, room - sumO);
-  f.style.width = fw + 'px'; tb.style.width = (sumO + fw) + 'px'; tb.style.minWidth = '0';
-}
+/* Excel-like: once widths are set, the table is exactly as wide as its columns, and the sheet box shrinks with it (screen and image) */
+function cwFix(tb, ws) { const cols = [...tb.querySelectorAll(':scope > colgroup > col')]; cols.forEach((c, j) => { if (ws[j]) c.style.width = ws[j] + 'px'; });
+  const tot = cols.reduce((t, c) => t + (parseFloat(c.style.width) || 0), 0); tb.style.width = tot + 'px'; tb.style.minWidth = '0'; const xs = tb.closest('.xs'); if (xs) xs.classList.add('fit'); return tot; }
 function cwApply(root, noHandles) {
   (root || document).querySelectorAll('table[data-cw]').forEach(tb => {
-    const cols = [...tb.querySelectorAll(':scope > colgroup > col')], m = cwGet(tb.dataset.cw), fk = CW_FLEX[tb.dataset.cw]; if (!cols.length) return;
-    if (m && !tb.dataset.cwd) { cols.forEach(c => { const k = c.dataset.k; if (!k || !m[k]) return; if (k === fk) c.dataset.w = Math.min(m[k], 260); else c.style.width = m[k] + 'px'; }); tb.dataset.cwd = '1'; }
-    if (m) cwFit(tb);
+    const cols = [...tb.querySelectorAll(':scope > colgroup > col')], m = cwGet(tb.dataset.cw); if (!cols.length) return;
+    if (m && !tb.dataset.cwd) { tb.dataset.cwd = '1';
+      const ths = [...tb.querySelectorAll(':scope > thead > tr:first-child > th')], cur = ths.map(t => t.getBoundingClientRect().width);
+      cwFix(tb, cols.map((c, j) => c.dataset.k && m[c.dataset.k] ? m[c.dataset.k] : Math.round(parseFloat(c.style.width) || cur[j] || 100))); }
     if (noHandles) return;
     [...tb.querySelectorAll(':scope > thead > tr:first-child > th')].forEach((th, i) => { if (!cols[i] || !cols[i].dataset.k || th.querySelector(':scope > .cwh')) return;
       const h = document.createElement('span'); h.className = 'cwh'; h.dataset.i = i; h.title = 'Drag to change the width · double-click to reset'; th.appendChild(h); });
   });
 }
-window.addEventListener('resize', () => { clearTimeout(cwApply.r); cwApply.r = setTimeout(() => document.querySelectorAll('table[data-cw]').forEach(tb => { if (cwGet(tb.dataset.cw)) cwFit(tb); }), 150); });
 let cwT = null;
 function cwSave(t, m) { const k = cwKey(), all = Object.assign({}, S.settings[k] || {}); if (m) all[t] = m; else delete all[t]; S.settings[k] = all; persist();
   clearTimeout(cwT); cwT = setTimeout(() => call('appColW', S.tok, ME(), S.settings[k]).catch(() => {}), 700); }
 document.addEventListener('pointerdown', e => {
   const h = e.target.closest && e.target.closest('.cwh'); if (!h) return; e.preventDefault(); e.stopPropagation();
   const tb = h.closest('table'), cols = [...tb.querySelectorAll(':scope > colgroup > col')], i = +h.dataset.i, ths = [...tb.querySelectorAll(':scope > thead > tr:first-child > th')];
-  const ws = ths.map(t => t.getBoundingClientRect().width), sum0 = ws.reduce((a, b) => a + b, 0); cols.forEach((c, j) => { c.style.width = ws[j] + 'px'; }); tb.style.width = sum0 + 'px'; tb.style.minWidth = '0';
-  const x0 = e.clientX, w0 = ws[i], fk = CW_FLEX[tb.dataset.cw], isF = cols[i].dataset.k === fk, fc = cols.find(c => c.dataset.k === fk); try { h.setPointerCapture(e.pointerId); } catch (x) {} document.body.classList.add('cw-drag'); h.classList.add('on');
-  if (fc && !fc.dataset.w) fc.dataset.w = Math.round(Math.min(parseFloat(fc.style.width) || 160, 200));
-  const d0 = fc ? parseFloat(fc.dataset.w) : 0;
-  const mv = ev => { if (isF) { fc.dataset.w = Math.max(120, Math.round(d0 + ev.clientX - x0)); cwFit(tb); } else { cols[i].style.width = Math.max(34, Math.round(w0 + ev.clientX - x0)) + 'px'; cwFit(tb); } };
+  const ws = ths.map(t => Math.round(t.getBoundingClientRect().width)); cwFix(tb, ws);
+  const x0 = e.clientX, w0 = ws[i]; try { h.setPointerCapture(e.pointerId); } catch (x) {} document.body.classList.add('cw-drag'); h.classList.add('on');
+  const mv = ev => { ws[i] = Math.max(34, Math.round(w0 + ev.clientX - x0)); cwFix(tb, ws); };
   const up = () => { h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); document.body.classList.remove('cw-drag'); h.classList.remove('on');
-    const m = {}; cols.forEach(c => { if (c.dataset.k) m[c.dataset.k] = Math.round(c.dataset.k === fk ? parseFloat(c.dataset.w || c.style.width) : parseFloat(c.style.width)); }); cwFit(tb); const old = cwGet(tb.dataset.cw) || {}; if (tb.dataset.cw === 'rep' && old.man && !m.man) m.man = old.man; cwSave(tb.dataset.cw, m); };
+    const m = Object.assign({}, cwGet(tb.dataset.cw) || {}); cols.forEach((c, j) => { if (c.dataset.k) m[c.dataset.k] = ws[j]; }); cwSave(tb.dataset.cw, m); };
   h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
 }, true);
 document.addEventListener('dblclick', e => { const h = e.target.closest && e.target.closest('.cwh'); if (!h) return; e.preventDefault(); cwSave(h.closest('table').dataset.cw, null); render(); toast('Column widths back to normal'); });
