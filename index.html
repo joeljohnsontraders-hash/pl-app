@@ -1569,7 +1569,7 @@ VIEWS.report = () => {
   const body = `<section class="card">${chips}</section>
     ${live ? `<div class="rsplit ${S.bref ? 'on' : ''}"><div class="rmain">${sheetHTML(ME(), present(), r.rows, r.mcAmt, { edit: true, prev: last ? r.snaps[last].data : null })}</div>${S.bref ? brefHTML() : ''}</div>` : sheetHTML(ME(), snap.list || [], snap.data || {}, snap.mcAmt, { edit: false, at: 'sent ' + snap.at })}
     <section class="card"><div class="xbar" style="margin:0">${live ? `<span class="saved" id="savedmark">Saved as you type</span>` : `<span class="cs">The ${slotName(S.view)} report as it was sent.</span>`}
-      <div style="display:flex;gap:8px;flex-wrap:wrap">${live ? `<button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button>` : ''}${live && mgrOnly() ? (last ? `<button class="btn sm gh" data-a="img" data-v="${last}">${ic('img')}Image · ${slotName(last)} report</button>` : `<button class="btn sm gh off" data-a="imgwait">${ic('img')}Image after sending</button>`) : `<button class="btn sm gh" data-a="img">${ic('img')}Image for WhatsApp</button>`}${live && d && d !== 'cl' ? `<button class="btn sm" data-a="sendslot">${ic('send')}Send ${slotName(d)} report</button>` : ''}${live && d === 'cl' ? `<button class="btn sm" data-a="go" data-v="closing">Closing report</button>` : ''}</div></div><div id="gwarn"></div></section>`;
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${live ? `<button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button>` : ''}${live && mgrOnly() ? repImgBtn() : `<button class="btn sm gh" data-a="img">${ic('img')}Image for WhatsApp</button>`}${live && d && d !== 'cl' ? `<button class="btn sm" data-a="sendslot">${ic('send')}Send ${slotName(d)} report</button>` : ''}${live && d === 'cl' ? `<button class="btn sm" data-a="go" data-v="closing">Closing report</button>` : ''}</div></div><div id="gwarn"></div></section>`;
   return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body };
 };
 
@@ -1973,7 +1973,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 12;
+const APP_VER = 13;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -2282,7 +2282,7 @@ const mtKey = () => 'mtgt|' + ME() + '|' + S.today.slice(0, 7), meKey = () => 'm
 const dmy = d => d.slice(8, 10) + '/' + d.slice(5, 7) + '/' + d.slice(0, 4);
 const MRC = ['ts', 'svc', 'bills', 'abv', 'pend', 'tp', 'prod', 'ppend', 'rev', 'mc'];
 function monthRep() {
-  const RG = mrRange(), days = mrDays(), withToday = RG.from <= S.today && RG.to >= S.today, rows = withToday ? (R().rows || {}) : {}, T = mrCustom() ? {} : (S.settings[mtKey()] || {}), E = S.settings[meKey()] || {};
+  const RG = mrRange(), days = mrDays(), withToday = RG.from <= S.today && RG.to >= S.today, rows = withToday ? (mgrOnly() ? ((mySnap() || {}).data || {}) : (R().rows || {})) : {}, T = mrCustom() ? {} : (S.settings[mtKey()] || {}), E = S.settings[meKey()] || {};
   liveCalc(); const A = {}, add = (n, k, v) => { v = num(v); if (!n || !v) return; (A[n] = A[n] || { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 })[k] += v; };
   days.forEach(x => { ['staff', 'staffB', 'staffM', 'staffR'].forEach((f, i) => Object.entries(x[f] || {}).forEach(([n, v]) => add(n, ['svc', 'bills', 'mc', 'rev'][i], v))); (x.prods || []).forEach(p => add(p.staff || '?', 'prod', num(p.q) * num(p.p))); });
   Object.entries(rows).forEach(([n, v]) => { add(n, 'svc', sv(v)); add(n, 'bills', v.bills); add(n, 'mc', v.mc); add(n, 'rev', v.rev); add(n, 'prod', prodSum(v)); });
@@ -2402,6 +2402,10 @@ const SAVE = {
 };
 /* ---------------- images only after the report is sent (managers) ---------------- */
 const mgrOnly = () => S.me && S.me.role === 'manager' && !S.asBranch;
+const stab = o => JSON.stringify(o, (k, v) => v && typeof v === 'object' && !Array.isArray(v) ? Object.keys(v).sort().reduce((m, x) => (m[x] = v[x], m), {}) : v);
+const mySnap = () => { const r = R(), k = SLOTS.map(s => s[0]).filter(x => r.snaps[x]).pop(); return k ? Object.assign({ key: k }, r.snaps[k]) : null; };
+const repImgBtn = () => { const l = mySnap(), d = due(); return l && liveSent() ? `<button class="btn sm gh" id="repimg" data-a="img" data-v="${l.key}">${ic('img')}Image · ${slotName(l.key)} report</button>` : `<button class="btn sm gh off" id="repimg" data-a="imgwait" data-v="${d && d !== 'cl' ? d : ''}">${ic('img')}Image after sending</button>`; };
+const liveSent = () => { const l = mySnap(); return !!l && stab(l.data || {}) === stab(R().rows || {}) && num(l.mcAmt) === num(R().mcAmt); };
 const cloSent = () => ['sent', 'approved'].includes(C().status);
 /* ---------------- Excel-like column widths: drag the edge of a heading; double-click it to go back to normal ---------------- */
 const cwKey = () => 'colW|' + ME();
@@ -2567,6 +2571,7 @@ function refreshSheetTotals() {
   if (gt) vals(Cc.G).forEach((v, j) => { if (gt.children[j + 2]) gt.children[j + 2].textContent = v; });
   [['mcamt', num(R().mcAmt)], ['prod', Cc.G.prod], ['net', Cc.net], ['gross', Cc.gross]].forEach(([f, v]) => { const el = t.querySelector(`[data-ft="${f}"]`); if (el) el.textContent = fmt(v); });
   present().forEach(p => { const el = t.querySelector(`[data-abv="${CSS.escape(p.n)}"]`), r = R().rows[p.n]; if (el && r) { const a = abv(sv(r), r.bills); el.textContent = a === '–' ? '' : fmt(a); } });
+  { const ib = document.getElementById('repimg'); if (ib && mgrOnly() && S.view === 'live') { const h = repImgBtn(); if (ib.outerHTML !== h) ib.outerHTML = h; } }
   const gl = document.querySelectorAll('.hd .gl b'); if (gl.length === 3 && S.page === 'report') { gl[0].textContent = inr(Cc.G.tgt); gl[1].textContent = inr(Cc.G.svc); gl[2].textContent = inr(Cc.net); }
 }
 function refreshAccounts() {
@@ -2766,8 +2771,8 @@ document.addEventListener('click', async e => {
     case 'skipask': openSheet(`<h3>Skip the ${slotName(v)} report?</h3><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="skipok" data-v="${v}">Skip it</button></div>`); break;
     case 'skipok': { el.disabled = true; try { const x = await call('appSkipSlot', S.tok, ME(), S.today, v); const r = R(); r.skip = x.skip; r._v = x._v; persist(); closeSheet(); toast(slotName(v) + ' report skipped'); render(); } catch (e) { el.disabled = false; toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } break; }
     case 'sendslot': el.disabled = true; await sendSlot(); el.disabled = false; break;
-    case 'imgwait': toast('Send the report first. The image is ready once it is sent.'); break;
-    case 'img': { const r = R(), vw = v && r.snaps[v] ? v : S.view, snap = vw !== 'live' ? r.snaps[vw] : null; if (!snap && mgrOnly()) { toast('Send the report first. The image is ready once it is sent.'); break; } reportImage(snap ? snap.list : present(), snap ? snap.data : r.rows, snap ? snap.mcAmt : r.mcAmt, snap ? snap.at : now(), (snap ? slotName(vw) : 'Live') + ' report'); break; }
+    case 'imgwait': toast((v ? 'Send the ' + slotName(v) + ' report first.' : 'Send the report first.') + ' The image is ready once it is sent.' + (mySnap() ? ' Sent reports open from the slots above.' : '')); break;
+    case 'img': { const r = R(), vw = v && r.snaps[v] ? v : S.view, snap = vw !== 'live' ? r.snaps[vw] : null; if (mgrOnly() && (!snap || (S.view === 'live' && !liveSent()))) { toast('Send the report first. The image is ready once it is sent.'); break; } reportImage(snap ? snap.list : present(), snap ? snap.data : r.rows, snap ? snap.mcAmt : r.mcAmt, snap ? snap.at : now(), (snap ? slotName(vw) : 'Live') + ' report'); break; }
     case 'copyimg': { const cv = window.__img; if (cv) copyCanvas(cv); break; }
     case 'dlimg': { const cv = window.__img; if (!cv) break; const l = document.createElement('a'); l.download = (window.__imgName || 'report') + ' ' + S.today + '.png'; l.href = cv.toDataURL('image/png'); l.click(); break; }
     case 'splus': { const n = el.dataset.n; el.disabled = true; if (await stockOp('plus', n)) toast('1 × ' + n + ' added · controller told'); break; }
