@@ -1536,7 +1536,7 @@ function attCard() {
 /* ---------------- REPORT: the Excel-style sheet ---------------- */
 function sheetHTML(branch, list, data, mcAmt, opt) {
   const Cc = sheetCalc(list, data, mcAmt), ed = opt.edit, prevD = opt.prev || {}, nc = ed ? 11 : 10;
-  const inp = (n, f, v) => `<input id="x_${esc(n)}_${f}" data-x="${esc(n)}" data-f="${f}" inputmode="numeric" value="${esc(v || '')}" ${ed ? '' : 'disabled'} class="${prevD[n] && !blank(v) && num(v) < num(prevD[n][f]) ? 'low' : ''}" aria-label="${esc(n)} ${f === 'man' ? 'manual service' : f}">`;
+  const inp = (n, f, v) => `<input id="x_${esc(n)}_${f}" data-x="${esc(n)}" data-f="${f}" inputmode="numeric" value="${esc((f === 'svc' || f === 'man') && /\.\d/.test(String(v || '')) ? String(Math.round(num(v))) : (v || ''))}" ${ed ? '' : 'disabled'} class="${prevD[n] && !blank(v) && num(v) < num(prevD[n][f]) ? 'low' : ''}" aria-label="${esc(n)} ${f === 'man' ? 'manual service' : f}">`;
   let sn = 0;
   const row = ({ p, v }) => `<tr><td class="sn">${++sn}</td><td class="nmc">${esc(String(p.n).toUpperCase())}${p.from ? `<span class="fr">${esc(p.from)}</span>` : ''}</td><td class="lk">${ed ? `<input id="x_${esc(p.n)}_tgt" data-x="${esc(p.n)}" data-f="tgt" inputmode="numeric" value="${esc(v.tgt === undefined ? '' : v.tgt)}" placeholder="${p.t ? p.t : ''}" aria-label="${esc(p.n)} target">` : (tgtOf({ p, v }) ? fmt(tgtOf({ p, v })) : '')}</td>
     <td>${ed ? inp(p.n, 'svc', v.svc) : (sv(v) ? fmt(sv(v)) : '')}</td>${ed ? `<td class="man">${inp(p.n, 'man', v.man)}</td>` : ''}<td>${ed ? inp(p.n, 'bills', v.bills) : esc(v.bills || '')}</td><td class="cl" data-abv="${esc(p.n)}">${abv(sv(v), v.bills) === '–' ? '' : fmt(abv(sv(v), v.bills))}</td><td>${ed ? inp(p.n, 'kids', v.kids) : esc(v.kids || '')}</td>
@@ -1969,7 +1969,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 10;
+const APP_VER = 11;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -2402,16 +2402,27 @@ const cloSent = () => ['sent', 'approved'].includes(C().status);
 /* ---------------- Excel-like column widths: drag the edge of a heading; double-click it to go back to normal ---------------- */
 const cwKey = () => 'colW|' + ME();
 const cwGet = t => (S.settings[cwKey()] || {})[t] || null;
+/* one column in each table takes up the spare room, so a table always fills its box (screen and image) */
+const CW_FLEX = { rep: 'name', acc: 't', exp: 't', gpay: 'c', card: 'c', den: 'note' };
+function cwFit(tb, skip) {
+  const cols = [...tb.querySelectorAll(':scope > colgroup > col')], fk = CW_FLEX[tb.dataset.cw], f = cols.find(c => c.dataset.k === fk), box = tb.parentElement;
+  if (!f || !box) return; const want = parseFloat(f.dataset.w || 0) || 120;
+  const others = cols.filter(c => c !== f), fixed = others.every(c => parseFloat(c.style.width));
+  if (!fixed) { f.style.width = ''; tb.style.width = ''; tb.style.minWidth = ''; return; }
+  const sumO = others.reduce((t, c) => t + parseFloat(c.style.width), 0), room = box.clientWidth || 0, fw = skip ? parseFloat(f.style.width) || want : Math.max(want, room - sumO);
+  f.style.width = fw + 'px'; tb.style.width = (sumO + fw) + 'px'; tb.style.minWidth = '0';
+}
 function cwApply(root, noHandles) {
   (root || document).querySelectorAll('table[data-cw]').forEach(tb => {
-    const cols = [...tb.querySelectorAll(':scope > colgroup > col')], m = cwGet(tb.dataset.cw); if (!cols.length) return;
-    if (m && !tb.dataset.cwd) { cols.forEach(c => { if (c.dataset.k && m[c.dataset.k]) c.style.width = m[c.dataset.k] + 'px'; });
-      if (cols.every(c => parseFloat(c.style.width))) { tb.style.width = cols.reduce((t, c) => t + parseFloat(c.style.width), 0) + 'px'; tb.style.minWidth = '0'; } tb.dataset.cwd = '1'; }
+    const cols = [...tb.querySelectorAll(':scope > colgroup > col')], m = cwGet(tb.dataset.cw), fk = CW_FLEX[tb.dataset.cw]; if (!cols.length) return;
+    if (m && !tb.dataset.cwd) { cols.forEach(c => { const k = c.dataset.k; if (!k || !m[k]) return; if (k === fk) c.dataset.w = Math.min(m[k], 260); else c.style.width = m[k] + 'px'; }); tb.dataset.cwd = '1'; }
+    if (m) cwFit(tb);
     if (noHandles) return;
     [...tb.querySelectorAll(':scope > thead > tr:first-child > th')].forEach((th, i) => { if (!cols[i] || !cols[i].dataset.k || th.querySelector(':scope > .cwh')) return;
       const h = document.createElement('span'); h.className = 'cwh'; h.dataset.i = i; h.title = 'Drag to change the width · double-click to reset'; th.appendChild(h); });
   });
 }
+window.addEventListener('resize', () => { clearTimeout(cwApply.r); cwApply.r = setTimeout(() => document.querySelectorAll('table[data-cw]').forEach(tb => { if (cwGet(tb.dataset.cw)) cwFit(tb); }), 150); });
 let cwT = null;
 function cwSave(t, m) { const k = cwKey(), all = Object.assign({}, S.settings[k] || {}); if (m) all[t] = m; else delete all[t]; S.settings[k] = all; persist();
   clearTimeout(cwT); cwT = setTimeout(() => call('appColW', S.tok, ME(), S.settings[k]).catch(() => {}), 700); }
@@ -2419,10 +2430,12 @@ document.addEventListener('pointerdown', e => {
   const h = e.target.closest && e.target.closest('.cwh'); if (!h) return; e.preventDefault(); e.stopPropagation();
   const tb = h.closest('table'), cols = [...tb.querySelectorAll(':scope > colgroup > col')], i = +h.dataset.i, ths = [...tb.querySelectorAll(':scope > thead > tr:first-child > th')];
   const ws = ths.map(t => t.getBoundingClientRect().width), sum0 = ws.reduce((a, b) => a + b, 0); cols.forEach((c, j) => { c.style.width = ws[j] + 'px'; }); tb.style.width = sum0 + 'px'; tb.style.minWidth = '0';
-  const x0 = e.clientX, w0 = ws[i]; try { h.setPointerCapture(e.pointerId); } catch (x) {} document.body.classList.add('cw-drag'); h.classList.add('on');
-  const mv = ev => { const w = Math.max(34, Math.round(w0 + ev.clientX - x0)); cols[i].style.width = w + 'px'; tb.style.width = (sum0 - w0 + w) + 'px'; };
+  const x0 = e.clientX, w0 = ws[i], fk = CW_FLEX[tb.dataset.cw], isF = cols[i].dataset.k === fk, fc = cols.find(c => c.dataset.k === fk); try { h.setPointerCapture(e.pointerId); } catch (x) {} document.body.classList.add('cw-drag'); h.classList.add('on');
+  if (fc && !fc.dataset.w) fc.dataset.w = Math.round(Math.min(parseFloat(fc.style.width) || 160, 200));
+  const d0 = fc ? parseFloat(fc.dataset.w) : 0;
+  const mv = ev => { if (isF) { fc.dataset.w = Math.max(120, Math.round(d0 + ev.clientX - x0)); cwFit(tb); } else { cols[i].style.width = Math.max(34, Math.round(w0 + ev.clientX - x0)) + 'px'; cwFit(tb); } };
   const up = () => { h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); document.body.classList.remove('cw-drag'); h.classList.remove('on');
-    const m = {}; cols.forEach(c => { if (c.dataset.k) m[c.dataset.k] = Math.round(parseFloat(c.style.width)); }); const old = cwGet(tb.dataset.cw) || {}; if (tb.dataset.cw === 'rep' && old.man && !m.man) m.man = old.man; cwSave(tb.dataset.cw, m); };
+    const m = {}; cols.forEach(c => { if (c.dataset.k) m[c.dataset.k] = Math.round(c.dataset.k === fk ? parseFloat(c.dataset.w || c.style.width) : parseFloat(c.style.width)); }); cwFit(tb); const old = cwGet(tb.dataset.cw) || {}; if (tb.dataset.cw === 'rep' && old.man && !m.man) m.man = old.man; cwSave(tb.dataset.cw, m); };
   h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
 }, true);
 document.addEventListener('dblclick', e => { const h = e.target.closest && e.target.closest('.cwh'); if (!h) return; e.preventDefault(); cwSave(h.closest('table').dataset.cw, null); render(); toast('Column widths back to normal'); });
