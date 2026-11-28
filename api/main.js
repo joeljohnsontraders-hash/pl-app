@@ -265,6 +265,10 @@ const API = {
   async appLayout(tok, b, L) { const u = await who(tok); can(u, b, true);
     if (L !== null && (typeof L !== "object" || Array.isArray(L) || JSON.stringify(L).length > 4000)) err("This layout could not be saved.");
     await setSetting(sql, "cloLayout|" + b, L); return { ok: true }; },
+  /* column widths the manager dragged in the report and closing tables (kept per branch) */
+  async appColW(tok, b, W) { const u = await who(tok); can(u, b, true);
+    if (W !== null && (typeof W !== "object" || Array.isArray(W) || JSON.stringify(W).length > 4000)) err("These widths could not be saved.");
+    await setSetting(sql, "colW|" + b, W); return { ok: true }; },
   async appMoves(tok, b) { const u = await who(tok); can(u, b, false); return sql`select ts, date, branch, product, qty, reason, by from app_moves where branch = ${b} order by id desc limit 60`; },
   async appMonthApi(tok, b, ym) { const u = await who(tok); can(u, b, false); return monthSums(await sums(ym, b), b, ym, false); },
   async appAlerts(tok) { const u = await who(tok); if (role(u) === "manager") err("No access."); return alerts(150); },
@@ -515,7 +519,7 @@ Deno.serve(async (req) => {
     if (!Object.prototype.hasOwnProperty.call(API, q.fn)) throw new Error("Unknown call");
     if (OPEN.indexOf(q.fn) < 0 && !(await ready())) throw new Error("NOT_READY");
     out = { result: await API[q.fn].apply(null, q.args || []) };
-  } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|NOT_READY|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The |Before|Count)/.test(out.error)) console.error(e); }
+  } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|NOT_READY|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The |Before|Count|These)/.test(out.error)) console.error(e); }
   out.t = Date.now(); /* the server clock: the app uses it instead of the phone clock */
   return new Response(JSON.stringify(out), { headers: CORS });
 });
