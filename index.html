@@ -925,6 +925,54 @@ html:not(.dark) .hd [style*="color:#7EE0AE"]{color:#14804A!important}
 html:not(.dark) .hd [style*="color:#FFB4A8"]{color:#B4362B!important}
 html:not(.dark) .hd [style*="color:#A9B9CA"]{color:#5A6779!important}
 html:not(.dark) .hd .gl small[style]{color:#7A8797}
+
+/* ==== v7: attendance, report, closing, product needs, assets, close the day ==== */
+.att3 th.asn,.att3 td.asn{width:44px;text-align:center;color:var(--muted);font-weight:700;font-size:12.5px}
+.anm2{display:flex;flex-direction:column;min-width:0}.anm2 b{white-space:nowrap}.anm2 small{font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.obw{font-size:11.5px;color:var(--info);font-weight:700;margin-top:6px;display:flex;align-items:center;gap:5px}
+.tg button.ob.on{background:var(--info);color:#fff}
+.a-ob{background:#CFEAF3;color:#0E6A86}
+html.dark .a-ob{background:#123847;color:#8FD3EA}
+.ini.hp{padding:0;overflow:hidden;background:var(--soft)!important}.ini.hp img{width:100%;height:100%;object-fit:cover;display:block}
+.ai.a3 table{width:560px}.ai .lv2.ob2{background:#CFEAF3}
+.tm-prof{display:grid;gap:16px;margin-bottom:16px}
+.tm-pic{display:flex;gap:16px;align-items:center}.tm-pic .ini{width:76px;height:76px;font-size:24px;flex:none}.tm-pic b{display:block;font-family:var(--fd);font-size:20px;font-weight:600}.tm-pic small{display:block;color:var(--muted);font-weight:600;font-size:12.5px;margin-top:2px}
+.tm-pb{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.tm-pb label{cursor:pointer}
+.tm-sec2{display:flex;gap:18px 28px;flex-wrap:wrap}.tm-sec2>div{display:grid;gap:6px}.tm-sec2 b{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}.tm-sec2 .tm-tg{margin:0}
+table.xt.xr{table-layout:fixed}table.xt.xre{min-width:930px}
+.xt td.sn,.xt th.sn{color:#6B7787;font-weight:700;font-size:12.5px}.xt th.sn{color:var(--bt)}
+.xt td.man{background:rgba(30,158,99,.06)}.xt th.man{background:#0F7A4B;color:#fff}
+table.xt.xl{table-layout:fixed}
+.xsh input.tti{background:transparent;border:0;color:inherit;font:inherit;font-weight:800;text-align:center;width:100%;padding:2px 6px;border-radius:6px;text-transform:uppercase}
+.xsh input.tti:hover,.xsh input.tti:focus{background:rgba(255,255,255,.18);outline:none}
+.xt th input.thd{width:100%;background:transparent;border:0;color:inherit;font:inherit;text-align:center;text-transform:uppercase;padding:4px;border-radius:6px}
+.xt th input.thd::placeholder{color:rgba(255,255,255,.75)}.xt th input.thd:hover,.xt th input.thd:focus{background:rgba(255,255,255,.18);outline:none}
+html.dark .xs .ftag{background:#ECEFF4;color:#5A6779}
+.dcl .dck{display:grid;gap:8px;margin-bottom:14px}
+.dci{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:14px;background:var(--warns);font-weight:700;font-size:13.5px}
+.dci>i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:900;background:var(--warn);color:#fff;flex:none}
+.dci.ok{background:var(--oks)}.dci.ok>i{background:var(--ok)}.dci .dct{flex:1;min-width:160px}
+.dco{display:flex;gap:10px;flex-wrap:wrap;width:100%;padding-left:32px}.dco label{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.btn.off{opacity:.55}
+.dcl.ok .ct{font-size:16px}
+.rq{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);flex-wrap:wrap}.rq:first-of-type{border-top:0}
+.rq .tx{flex:1;min-width:200px}.rq .tx b{display:block}.rq .tx small{color:var(--muted);font-weight:600;font-size:12px}
+.rq.ask{background:linear-gradient(90deg,var(--pinks),transparent 80%);border-radius:14px;padding:12px;border-top:0;margin-bottom:6px}
+.rqb{display:flex;gap:8px}.rqs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.acl{display:grid;gap:8px;max-height:46vh;overflow:auto}
+.acr{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)}.acn{flex:1 1 180px;min-width:0}.acn b{display:block;font-size:13.5px}.acn small{color:var(--muted);font-size:12px;font-weight:600}
+.tm-t.ast td.l,.tm-t.ast th.l{text-align:left}.tm-t.ast td.c,.tm-t.ast th.c{text-align:center}
+
+@media (max-width:700px){
+  .att3,.att3 tbody,.att3 tr,.att3 td{display:block}.att3{min-width:0!important;width:100%}.att3 thead{display:none}
+  .att3 tr:not(.gh5){display:grid;grid-template-columns:30px 1fr 1fr;gap:8px 10px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+  .att3 td{border:0!important;padding:0!important}.att3 td.asn{width:auto;grid-row:1;grid-column:1}.att3 td.atw{grid-row:1;grid-column:2/4}
+  .att3 td:nth-child(3){grid-column:1/4}.att3 td.ati{grid-column:1/3;display:flex;align-items:center;gap:8px}.att3 td.ato{grid-column:3/4;display:flex;align-items:center;gap:8px}
+  .att3 td.ati:empty,.att3 td.ato:empty{display:none}.att3 td.ati:not(:empty)::before{content:"In";font-size:11px;font-weight:800;color:var(--muted)}.att3 td.ato:not(:empty)::before{content:"Out";font-size:11px;font-weight:800;color:var(--muted)}
+  .att3 td.ati .tin,.att3 td.ato .tin{flex:1;min-width:0}
+  .att3 .tg{display:flex;flex-wrap:wrap}.att3 .tg button{flex:1 1 auto}
+  .att3 tr.gh5 td{padding:14px 0 2px!important}
+}
 </style>
 </head><body>
 <div id="gti" class="hold" aria-hidden="true"><i class="gti-px"><img alt="" width="64" height="64" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2764%27 height=%2764%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230A1A2B%27/%3E%3C/svg%3E">Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon </i><div class="gti-st"><i style="left:10%;animation-delay:0.05s"></i><i style="left:30%;animation-delay:0.2s"></i><i style="left:56%;animation-delay:0s"></i><i style="left:76%;animation-delay:0.15s"></i><i style="left:93%;animation-delay:0.25s"></i></div><div class="gti-in"><div class="gti-stage">
@@ -1152,12 +1200,12 @@ async function boot() {
     ls('gt_role', b.me.role);
     if (b.me.role !== 'manager') { S.me = b.me; S.booted = true; if (EMBED) S.page = EPAGE; try { O.all = JSON.parse(ls('gt_office') || 'null'); } catch (x) {} render(); loadAll(); return; }
     const keepDirty = {}; dirty.forEach(key => { const [d, p] = key.split('|'); if (S.days[d] && S.days[d][p]) keepDirty[key] = S.days[d][p]; });
-    S.me = b.me; S.today = b.today; S.yday = b.yday; S.settings = b.settings || {}; S.staff = b.staff || []; S.stock = b.stock || []; S.month = b.month || [];
+    S.me = b.me; S.today = b.today; S.yday = b.yday; S.settings = b.settings || {}; S.staff = b.staff || []; S.stock = b.stock || []; S.month = b.month || []; S.away = b.away || {}; S.reqs = b.reqs || [];
     const old = S.days; S.days = {}; S.used = {};
     [b.day, b.yesterday, b.before].forEach(x => { if (!x) return; S.days[x.date] = { att: x.att, rep: x.rep, clo: x.clo }; S.used[x.date] = !!(x.att || x.rep || x.clo); });
     Object.keys(keepDirty).forEach(key => { const [d, p] = key.split('|'); S.days[d] = S.days[d] || {}; const sv = S.days[d][p] || {}; const loc = keepDirty[key]; loc._v = sv._v || 0; if (p === 'clo') KEEP.forEach(f => { if (sv[f] !== undefined) loc[f] = sv[f]; }); S.days[d][p] = loc; });
     Object.keys(old).forEach(d => { if (!S.days[d] && d >= addDays(b.today, -3)) S.days[d] = old[d]; });
-    S.booted = true; setOffline(false); prepDays(); persist(); render();
+    S.booted = true; setOffline(false); prepDays(); applyAway(); persist(); render(); loadPics(); loadAssets(true);
     if (dirty.size) flush();
   } catch (e) {
     if (e instanceof NetErr) { setOffline(true); if (!S.booted) { document.getElementById('app').innerHTML = `<div class="login"><div class="lcard"><img class="lgo big" src="${LOGO}" alt="Green Trends"><h1>No internet</h1><p>Connect and open the app again.</p><button class="lbtn" onclick="location.reload()">Try again</button></div></div>`; } return; }
@@ -1165,6 +1213,15 @@ async function boot() {
     toast(e.message);
   }
 }
+/* staff that another branch marked as working there today: shown as "Other branch" here when not marked yet */
+function applyAway() { const a = A(); let ch = 0; Object.entries(S.away || {}).forEach(([n, host]) => { if (people().some(p => p.n === n) && !(a.att[n] || {}).st) { a.att[n] = { st: 'ob', at: host, in: '', out: '' }; ch = 1; } }); if (ch) touch(S.today, 'att'); }
+/* staff photos: small pictures kept on this device, fetched only when changed */
+S.pics = (() => { try { return JSON.parse(ls('gt_pics') || '{}'); } catch (e) { return {}; } })();
+async function loadPics() { const need = (S.staff || []).filter(x => x.pv && (!S.pics[x.id] || S.pics[x.id].v !== x.pv)).map(x => x.id); if (!need.length || loadPics.busy) return; loadPics.busy = 1;
+  try { const got = await call('appStaffPics', S.tok, need); need.forEach(id => { const x = S.staff.find(y => y.id === id); S.pics[id] = got[id] || { v: x ? x.pv : 0, d: '' }; }); try { ls('gt_pics', JSON.stringify(S.pics)); } catch (e) {} render(); } catch (e) {} loadPics.busy = 0; }
+function av(n, g, b) { const r = staffRec(n, b), pic = r && S.pics[r.id] && S.pics[r.id].d; return `<span class="ini ${g || ''}${pic ? ' hp' : ''}">${pic ? `<img src="${pic}" alt="">` : esc(ini(n))}</span>`; }
+function picResize(file) { return new Promise((ok, no) => { const im = new Image(), u = URL.createObjectURL(file); im.onload = () => { const z = 200, c = document.createElement('canvas'); c.width = z; c.height = z; const k = Math.min(im.width, im.height), cx = c.getContext('2d');
+  cx.drawImage(im, (im.width - k) / 2, (im.height - k) / 2, k, k, 0, 0, z, z); URL.revokeObjectURL(u); ok(c.toDataURL('image/jpeg', 0.82)); }; im.onerror = () => { URL.revokeObjectURL(u); no(new Error('This photo could not be opened.')); }; im.src = u; }); }
 function prepDays() {
   [S.today, S.yday, addDays(S.today, -2)].forEach(day);
   const a = A(), ya = S.days[S.yday].att;
@@ -1176,18 +1233,20 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 function signOut(expired) { if (EMBED) { parent.postMessage('gt-close', location.origin); return; } ls('gt_role', null); ls('plbook_session', null); S.asBranch = null; O.all = null; O.mirror = false; ls('gt_office', null); const t = S.tok; S.tok = ''; ls('gt_tok', null); ls('gt_cache', null); ls('gt_q', null); dirty.clear(); S.me = null; S.days = {}; closeSheet(); if (t && !expired) call('logout', t).catch(() => {}); render(); if (expired) toast('Please sign in again'); }
 
 /* ---------------- sheet maths (same for every branch) ---------------- */
-const blankRow = () => ({ tgt: '', svc: '', bills: '', kids: '', prod: [], mc: '', rev: '' });
+const blankRow = () => ({ tgt: '', svc: '', man: '', bills: '', kids: '', prod: [], mc: '', rev: '' });
+/* service sale = billed service + manual (free) service: the staff's target counts both */
+const sv = v => num((v || {}).svc) + num((v || {}).man);
 const tgtOf = r => (r.v && !blank(r.v.tgt)) ? num(r.v.tgt) : (r.p.t || 0);
 const prodSum = r => Array.isArray(r.prod) ? sum(r.prod.map(x => x.q * x.p)) : num(r.prod);
 function sheetCalc(list, data, mcAmt) {
   const groups = ['G', 'L', 'O'].map(g => {
     const rows = list.filter(p => p.g === g).map(p => ({ p, v: data[p.n] || blankRow() }));
-    const t = { tgt: sum(rows.map(tgtOf)), svc: sum(rows.map(r => num(r.v.svc))), bills: sum(rows.map(r => num(r.v.bills))), kids: sum(rows.map(r => num(r.v.kids))), prod: sum(rows.map(r => prodSum(r.v))), mc: sum(rows.map(r => num(r.v.mc))), rev: sum(rows.map(r => num(r.v.rev))) };
+    const t = { tgt: sum(rows.map(tgtOf)), svc: sum(rows.map(r => sv(r.v))), man: sum(rows.map(r => num(r.v.man))), bills: sum(rows.map(r => num(r.v.bills))), kids: sum(rows.map(r => num(r.v.kids))), prod: sum(rows.map(r => prodSum(r.v))), mc: sum(rows.map(r => num(r.v.mc))), rev: sum(rows.map(r => num(r.v.rev))) };
     return { g, rows, t };
   }).filter(x => x.rows.length);
-  const G = {}; ['tgt', 'svc', 'bills', 'kids', 'prod', 'mc', 'rev'].forEach(f => G[f] = sum(groups.map(x => x.t[f])));
-  const net = G.svc + num(mcAmt), gross = Math.round(net * (1 + (num(S.settings.gst) || 5) / 100));
-  return { groups, G, net, gross };
+  const G = {}; ['tgt', 'svc', 'man', 'bills', 'kids', 'prod', 'mc', 'rev'].forEach(f => G[f] = sum(groups.map(x => x.t[f])));
+  const gf = 1 + (num(S.settings.gst) || 5) / 100, net = G.svc + num(mcAmt), gross = Math.round(net * gf), paidGross = Math.round((G.svc - G.man + num(mcAmt)) * gf);
+  return { groups, G, net, gross, paidGross };
 }
 const abv = (s, b) => num(b) ? Math.round(num(s) / num(b)) : '–';
 /* gents vs ladies: service sale, bills, ABV, staff — from each day's report rows */
@@ -1195,7 +1254,7 @@ const secOf = n => { const p = S.staff.find(x => x.name === n); return p ? p.g :
 function gSplit(days, liveRows) { const o = { G: { svc: 0, bills: 0, ppl: new Set() }, L: { svc: 0, bills: 0, ppl: new Set() } };
   const add = (n, s, b) => { const g = secOf(n); if (g !== 'G' && g !== 'L') return; o[g].svc += num(s); o[g].bills += num(b); if (num(s) || num(b)) o[g].ppl.add(n); };
   days.forEach(x => { const st = x.staff || {}, sb = x.staffB || {}; new Set(Object.keys(st).concat(Object.keys(sb))).forEach(n => add(n, st[n], sb[n])); });
-  (liveRows || []).forEach(rows => Object.keys(rows || {}).forEach(n => add(n, rows[n].svc, rows[n].bills)));
+  (liveRows || []).forEach(rows => Object.keys(rows || {}).forEach(n => add(n, sv(rows[n]), rows[n].bills)));
   return o; }
 function gCard(o, sub, per) { const tot = o.G.svc + o.L.svc || 1, tile = (g, t, c) => { const x = o[g]; return `<div class="gtile"><span class="gtt"><i style="background:${c}"></i>${t}</span><b>${inr(x.svc)}</b><small>${Math.round(x.svc / tot * 100)}% of sales</small><div class="bmini"><span>Bills <b>${fmt(x.bills)}</b></span><span>ABV <b>${x.bills ? inr(x.svc / x.bills) : '–'}</b></span><span>Staff <b>${x.ppl.size}</b></span></div></div>`; };
   return `<section class="card"><div class="ch"><div class="ct"><span class="ib p">${ic('staff')}</span>Gents vs Ladies</div><span class="cs">${sub}</span></div>
@@ -1204,8 +1263,8 @@ function gCard(o, sub, per) { const tot = o.G.svc + o.L.svc || 1, tile = (g, t, 
 
 /* ---------------- manager model ---------------- */
 const people = () => S.staff.filter(x => x.branch === ME()).map(x => ({ id: x.id, n: x.name, g: x.g, t: x.t, from: '', isNew: x.isNew }));
-const typedIn = n => { const v = (R().rows || {})[n]; return !!v && ['svc', 'bills', 'kids', 'mc', 'rev'].some(f => !blank(v[f])) || !!(v && Array.isArray(v.prod) && v.prod.length); };
-const present = () => people().filter(p => p.g !== 'H' && (typedIn(p.n) || (A().attDone ? (A().att[p.n] || {}).st === 'in' : !['off', 'lv'].includes((A().att[p.n] || {}).st)))).concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
+const typedIn = n => { const v = (R().rows || {})[n]; return !!v && ['svc', 'man', 'bills', 'kids', 'mc', 'rev'].some(f => !blank(v[f])) || !!(v && Array.isArray(v.prod) && v.prod.length); };
+const present = () => people().filter(p => p.g !== 'H' && (typedIn(p.n) || (A().attDone ? (A().att[p.n] || {}).st === 'in' : !['off', 'lv', 'ob'].includes((A().att[p.n] || {}).st)))).concat(A().extra.map(x => ({ n: x.n, g: x.g, t: 0, from: x.from })));
 const strictAtt = () => !!((S.settings.strictAtt || {})[ME()]);
 function noAttTell() { const r = R(); if (A().attDone || r.noAtt || S.asBranch) return; r.noAtt = 1; call('appTell', S.tok, ME(), 'noatt', { date: S.today }).catch(() => { r.noAtt = 0; }); }
 const slotTimes = () => (S.settings.slots || ['12:00', '14:00', '17:00', '19:00']);
@@ -1222,7 +1281,11 @@ const statusPill = c => { const s = ST[c.status] || ST.open; return c.status ===
 const gpTot = () => sum(C().gpay.map(x => num(x.a))), cdTot = () => sum(C().card.map(x => num(x.a))), exTot = () => sum(C().exp.map(x => num(x.a))), inTot = () => sum(C().acc.map(x => num(x.c))), accDeb = () => sum(C().acc.map(x => num(x.d)));
 const prodSales = () => calcOf(CD()).G.prod;
 const denTot = () => sum(DENOM.map(d => d * num(C().den[d])));
-const totalSales = () => num(C().totSales);
+const autoGross = () => calcOf(CD()).paidGross;
+const totalSales = () => blank(C().totSales) ? autoGross() : num(C().totSales);
+/* every product sold that day, from the report: who sold what, how many, paid how */
+const prodLines = d => { const r = repOf(d), sn = r.snaps && r.snaps.cl, data = d === S.today ? R().rows : (sn ? sn.data : r.rows) || {}, out = [];
+  Object.entries(data || {}).forEach(([n, v]) => (Array.isArray(v && v.prod) ? v.prod : []).forEach(x => out.push({ s: n, n: x.n, q: num(x.q), a: num(x.q) * num(x.p), pay: x.pay || '' }))); return out; };
 const isToday = () => CD() === S.today;
 const ydUsed = () => !!S.used[S.yday] || S.days[S.yday].clo.status !== 'open' || S.days[S.yday].clo.exp.some(filled);
 const autoOpening = () => { const p = S.days[addDays(CD(), -1)]; if (!p || !p.clo) return null; const t = sum(DENOM.map(d => d * num(p.clo.den[d]))); return t ? t : null; };
@@ -1342,12 +1405,14 @@ VIEWS.today = () => {
   const next = !a.attDone ? big('Start of day', 'Mark attendance', 'Open', 'att', 'staff')
     : d && d !== 'cl' ? big('Next up', slotName(d) + ' report', 'Open sheet', 'report', 'sheet')
     : ['open', 'changed', 'back'].includes(c.status) ? big('End of day', 'Closing report', 'Open', 'closing', 'wallet')
-    : `<div class="next done"><span class="ib" style="background:rgba(255,255,255,.1);color:#7EE0AE">✓</span><div class="tx"><small>All done</small><b>${c.status === 'approved' ? 'Day approved' : 'Waiting for approval'}</b></div></div>`;
+    : !dayClosed(S.today) ? `<div class="next"><span class="ib" style="background:rgba(255,255,255,.18);color:#fff">${ic('lock')}</span><div class="tx"><small>End of day</small><b>Close the day</b></div><button class="btn sm" data-a="closeday" data-v="${S.today}">Close</button></div>`
+    : `<div class="next done"><span class="ib" style="background:rgba(255,255,255,.1);color:#7EE0AE">✓</span><div class="tx"><small>All done</small><b>Day closed${c.status === 'approved' ? ' · approved' : ''}</b></div></div>`;
   const yc = S.days[S.yday].clo;
   const yb = ydUsed() && ['open', 'back', 'changed'].includes(yc.status) && !yc.waived ? `<div class="next ywait"><span class="ib" style="background:rgba(255,255,255,.22);color:#fff">${ic('wallet')}</span><div class="tx"><small>${yc.status === 'back' ? 'Sent back' : 'Not sent yet'}</small><b>${dLabel(S.yday)} closing</b></div><button class="btn sm" data-a="ycl">Open</button></div>` : '';
   const tl = `<section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Reports today</div><span class="pill p-mu">${SLOTS.filter(s => r.snaps[s[0]]).length} of 5 sent</span></div><div class="tl">${SLOTS.map(([id]) => { const s = r.snaps[id], nm = slotName(id);
     return `<button class="tli ${s ? 'sent' : id === d ? 'due' : ''}" data-a="openslot" data-v="${id}"><b>${nm}</b><small>${s ? '✓ ' + s.at : id === d ? 'Next' : 'Later'}</small></button>`; }).join('')}</div></section>`;
-  return { eb: ebDate(), title: esc(ME()), sub: greet(), hx, body: dayStrip() + notice + `<div class="duo ${yb ? '' : 'one'}">${next}${yb}</div>` + tl };
+  const cl = (closeDue(S.yday) ? closeCard(S.yday) : '') + (closeDue(S.today) || dayClosed(S.today) ? closeCard(S.today) : '');
+  return { eb: ebDate(), title: esc(ME()), sub: greet(), hx, body: dayStrip() + notice + `<div class="duo ${yb ? '' : 'one'}">${next}${yb}</div>` + cl + tl + reqCard() };
 };
 
 /* ---------------- ATTENDANCE ---------------- */
@@ -1359,24 +1424,18 @@ const attOf = (n, d) => d === S.today ? (A().att[n] || {}) : d === S.yday ? ydAt
 const youtCell = p => { const y = ydOut(p.n); if (!y.st) return '<span class="cs">–</span>';
   if (y.st !== 'in') return `<span class="pill ${y.st === 'off' ? 'p-info' : 'p-bad'}">${y.st === 'off' ? 'Week off' : 'Leave'}</span>${(A().ydst || {})[p.n] ? `<button class="xb" data-a="ydst" data-n="${esc(p.n)}" data-v="" aria-label="Undo" title="Undo">↺</button>` : ''}`;
   return `<span class="yo2"><input type="time" class="tin tt ${y.out ? '' : 'need'}" id="yo_${esc(p.n)}" data-yout="${esc(p.n)}" value="${esc(y.out || '')}" aria-label="${esc(p.n)} yesterday out time">${y.unk ? `<button class="ydq" data-a="ydask" data-n="${esc(p.n)}" title="Not working yesterday?">Was off?</button>` : ''}</span>`; };
-const AST = { in: ['In', 'a-in'], off: ['Week off', 'a-off'], lv: ['Leave', 'a-lv'] };
+const AST = { in: ['In', 'a-in'], off: ['Week off', 'a-off'], lv: ['Leave', 'a-lv'], ob: ['At another branch', 'a-ob'] };
 const monthDays = () => [...Array(dim(S.today))].map((_, i) => S.today.slice(0, 8) + String(i + 1).padStart(2, '0'));
-function attSummary(n) { let w = 0, o = 0, l = 0; monthDays().filter(d => d <= S.today).forEach(d => { const a = attOf(n, d); if (a.st === 'in') w++; else if (a.st === 'off') o++; else if (a.st === 'lv') l++; });
+function attSummary(n) { let w = 0, o = 0, l = 0; monthDays().filter(d => d <= S.today).forEach(d => { const a = attOf(n, d); if (a.st === 'in' || a.st === 'ob') w++; else if (a.st === 'off') o++; else if (a.st === 'lv') l++; });
   const allowed = Math.min(num(S.settings.woMax) || 4, Math.floor(w / (num(S.settings.woPer) || 6))), extra = Math.max(0, o - allowed); return { w, o, l: l + extra, allowed, extra }; }
 function attImgHTML() {
-  const a = A(), ppl = people(); let n = 1;
-  const cell = x => x.st === 'in' ? (x.in ? t12(x.in) : '–') : x.st === 'off' ? '<span class="lv2">week off</span>' : x.st === 'lv' ? '<span class="lv2">leave</span>' : '–';
-  const yo = p => { const y = ydOut(p.n); return y.st === 'lv' ? '<span class="lv2">leave</span>' : y.st === 'off' ? '<span class="lv2">week off</span>' : y.out ? t12(y.out) : '–'; };
-  const grp = g => { const L = ppl.filter(p => p.g === g); if (!L.length) return ''; const nm = { G: 'Gents ssp', L: 'Ladies ssp', O: 'OM', H: 'HK' }[g];
-    return `<tr class="gh"><td>S.No</td><td>${nm}</td><td>IN</td><td>${nm}</td><td>OUT</td></tr>` + L.map(p => `<tr><td>${n++}</td><td>${esc(p.n)}</td><td>${cell(a.att[p.n] || {})}</td><td>${esc(p.n)}</td><td>${yo(p)}</td></tr>`).join(''); };
-  const ext = a.extra.length ? `<tr class="gh"><td>S.No</td><td>From other branch</td><td>IN</td><td></td><td></td></tr>` + a.extra.map(x => `<tr><td>${n++}</td><td>${esc(x.n)} (${esc(x.from)})</td><td>in</td><td></td><td></td></tr>`).join('') : '';
-  const units = a.ebStart && a.ebY ? (num(a.ebStart) - num(a.ebY)).toFixed(1) : '';
-  return `<div class="ai"><table><tr><td rowspan="2" class="hh">S.NO</td><td colspan="4" class="tt">${esc(ME())} Attendance ${monthName(S.today)} ${S.today.slice(0, 4)}</td></tr>
-    <tr><td class="hh">Today</td><td class="hh">${dDash(S.today)}</td><td class="hh">Yesterday</td><td class="hh">${dDash(S.yday)}</td></tr>
-    ${['G', 'L', 'O', 'H'].map(grp).join('')}${ext}
-    <tr class="gh"><td></td><td>Today</td><td>STARTING</td><td>Yesterday</td><td>ENDING</td></tr>
-    <tr><td>${n}</td><td>${dDash(S.today)}</td><td>${esc(a.ebStart || '–')}</td><td>${dDash(S.yday)}</td><td>${esc(a.ebY || '–')}</td></tr>
-    <tr class="gh"><td colspan="2">EB units</td><td></td><td colspan="2">${units}</td></tr></table></div>`;
+  const a = A(), ppl = people();
+  const tag = (t, cls) => `<td colspan="2"><span class="lv2 ${cls || ''}">${t}</span></td>`;
+  const cells = x => x.st === 'in' ? `<td>${x.in ? t12(x.in) : '–'}</td><td>${x.out ? t12(x.out) : '–'}</td>` : x.st === 'off' ? tag('Week off') : x.st === 'lv' ? tag('Leave') : x.st === 'ob' ? tag('At ' + esc(x.at || 'another branch'), 'ob2') : '<td>–</td><td>–</td>';
+  const grp = g => { const L = ppl.filter(p => p.g === g); if (!L.length) return '';
+    return `<tr class="gh"><td>${SN[g]}</td><td>IN</td><td>OUT</td></tr>` + L.map(p => `<tr><td>${esc(p.n)}</td>${cells(a.att[p.n] || {})}</tr>`).join(''); };
+  const ext = a.extra.length ? `<tr class="gh"><td>From other branch</td><td>IN</td><td>OUT</td></tr>` + a.extra.map(x => `<tr><td>${esc(x.n)} (${esc(x.from)})</td><td>${x.in ? t12(x.in) : '–'}</td><td>${x.out ? t12(x.out) : '–'}</td></tr>`).join('') : '';
+  return `<div class="ai a3"><table><tr><td colspan="3" class="tt">${esc(ME())} Attendance · ${dDash(S.today)}</td></tr>${['G', 'L', 'O', 'H'].map(grp).join('')}${ext}</table></div>`;
 }
 function monthImgHTML() {
   /* one picture: the day-by-day grid on top and the month totals below (present, week off, leave, total = present + week off) */
@@ -1385,7 +1444,7 @@ function monthImgHTML() {
   const F = "font-family:'Plus Jakarta Sans',Arial,sans-serif", NW = 150, CW = 27, W = NW + days.length * CW + 48;
   const box = (bg, fg, t, bd) => `<span style="display:inline-block;width:21px;height:21px;line-height:21px;border-radius:6px;background:${bg};color:${fg};font-size:10.5px;font-weight:800;text-align:center;${bd ? 'box-shadow:inset 0 0 0 1px ' + bd : ''}">${t}</span>`;
   const cellOf = (n, d) => { if (d > S.today) return box('#fff', '#fff', '', '#EEF1F5'); const a = attOf(n, d);
-    return a.st === 'in' ? box('#1E9E63', '#fff', '') : a.st === 'off' ? box('#DCE6F7', '#2D4E9E', 'W') : a.st === 'lv' ? box('#F9D6D1', '#B4362B', 'L') : box('#F3F5F8', '#9AA6B5', '', '#E2E7EF'); };
+    return a.st === 'in' ? box('#1E9E63', '#fff', '') : a.st === 'ob' ? box('#CFEAF3', '#0E6A86', 'B') : a.st === 'off' ? box('#DCE6F7', '#2D4E9E', 'W') : a.st === 'lv' ? box('#F9D6D1', '#B4362B', 'L') : box('#F3F5F8', '#9AA6B5', '', '#E2E7EF'); };
   const gh = (g, span, pl) => `<tr><td colspan="${span}" style="padding:12px ${pl || 0}px 4px;font-size:10.5px;font-weight:800;letter-spacing:.12em;color:#7A8797;text-transform:uppercase">${GN[g]}</td></tr>`;
   let grid = '', sum = '', sn = 0;
   G.forEach(g => { const L = ppl.filter(p => p.g === g); if (!L.length) return;
@@ -1404,69 +1463,78 @@ function monthImgHTML() {
       <div style="font-size:13px;font-weight:700;color:#A9B9CA">Up to ${dLabel(S.today)}</div></div>
     <div style="padding:20px 24px 8px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-size:16px;font-weight:800">Day by day</div>
-        <div style="font-size:12px;font-weight:700;color:#5A6779">${leg(box('#1E9E63', '#fff', ''), 'Present')}${leg(box('#DCE6F7', '#2D4E9E', 'W'), 'Week off')}${leg(box('#F9D6D1', '#B4362B', 'L'), 'Leave')}${leg(box('#F3F5F8', '#9AA6B5', '', '#E2E7EF'), 'Not marked')}</div></div>
+        <div style="font-size:12px;font-weight:700;color:#5A6779">${leg(box('#1E9E63', '#fff', ''), 'Present')}${leg(box('#DCE6F7', '#2D4E9E', 'W'), 'Week off')}${leg(box('#F9D6D1', '#B4362B', 'L'), 'Leave')}${leg(box('#CFEAF3', '#0E6A86', 'B'), 'Other branch')}${leg(box('#F3F5F8', '#9AA6B5', '', '#E2E7EF'), 'Not marked')}</div></div>
       <table style="border-collapse:collapse">${head}${grid}</table></div>
     <div style="padding:18px 24px 24px">
       <div style="font-size:16px;font-weight:800;margin-bottom:10px">Month summary</div>
       <table style="border-collapse:separate;border-spacing:0;width:100%;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px #E2E7EF">
         <tr style="background:#0A1A2B"><td style="${th};width:60px">S.No</td><td style="${th};text-align:left">Name</td><td style="${th}">Present</td><td style="${th}">Off</td><td style="${th}">Leave</td><td style="${th}">Total</td></tr>${sum}</table>
-      <div style="font-size:12px;color:#7A8797;font-weight:600;margin-top:10px">Total = present + week offs. Week offs beyond the allowed number are counted as leave.</div></div></div>`;
+      <div style="font-size:12px;color:#7A8797;font-weight:600;margin-top:10px">Present includes days at another branch. Total = present + week offs. Week offs beyond the allowed number are counted as leave.</div></div></div>`;
 }
 function monthCard() {
   const ppl = people(), days = monthDays();
   const head = `<tr><th class="anm">Staff</th>${days.map(d => `<th class="${d === S.today ? 'td' : ''}"><button data-a="attday" data-v="${d}" ${d > S.today ? 'disabled' : ''}>${DOW[dowOf(d)][0]}<b>${dnum(d)}</b></button></th>`).join('')}<th class="sm2">In</th><th class="sm2">W/O</th><th class="sm2">Leave</th></tr>`;
   const rows = ppl.map(p => { const s2 = attSummary(p.n);
-    return `<tr><td class="anm"><button data-a="attperson" data-v="${esc(p.n)}"><span class="ini ${p.g}">${esc(ini(p.n))}</span>${esc(p.n)}</button></td>${days.map(d => { const a = attOf(p.n, d), k2 = AST[a.st];
-      return `<td><span class="ac2 ${d > S.today ? 'a-fut' : k2 ? k2[1] : 'a-none'}" title="${dnum(d)} · ${k2 ? k2[0] : d > S.today ? '' : 'Not marked'}${a.in ? ' · in ' + t12(a.in) : ''}">${a.st === 'off' ? 'W' : a.st === 'lv' ? 'L' : ''}</span></td>`; }).join('')}
+    return `<tr><td class="anm"><button data-a="attperson" data-v="${esc(p.n)}">${av(p.n, p.g)}${esc(p.n)}</button></td>${days.map(d => { const a = attOf(p.n, d), k2 = AST[a.st];
+      return `<td><span class="ac2 ${d > S.today ? 'a-fut' : k2 ? k2[1] : 'a-none'}" title="${dnum(d)} · ${k2 ? k2[0] : d > S.today ? '' : 'Not marked'}${a.in ? ' · in ' + t12(a.in) : ''}">${a.st === 'off' ? 'W' : a.st === 'lv' ? 'L' : a.st === 'ob' ? 'B' : ''}</span></td>`; }).join('')}
       <td class="sm2"><b>${s2.w}</b></td><td class="sm2">${s2.o}<small>/${s2.allowed}</small></td><td class="sm2 ${s2.l ? 'bad' : ''}">${s2.l}</td></tr>`; }).join('');
-  return `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('cal')}</span>${monthName(S.today)}</div><button class="btn sm gh" data-a="attimg" data-v="month">${ic('img')}Month image</button><div class="leg" style="width:100%"><span><i class="ac2 a-in"></i>In</span><span><i class="ac2 a-off">W</i>Week off</span><span><i class="ac2 a-lv">L</i>Leave</span><span><i class="ac2 a-none"></i>Not marked</span></div></div>
+  return `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('cal')}</span>${monthName(S.today)}</div><button class="btn sm gh" data-a="attimg" data-v="month">${ic('img')}Month image</button><div class="leg" style="width:100%"><span><i class="ac2 a-in"></i>In</span><span><i class="ac2 a-off">W</i>Week off</span><span><i class="ac2 a-lv">L</i>Leave</span><span><i class="ac2 a-ob">B</i>Other branch</span><span><i class="ac2 a-none"></i>Not marked</span></div></div>
     <div class="ox"><table class="amon"><thead>${head}</thead><tbody>${rows}</tbody></table></div>
     <div class="cs" style="margin-top:10px">W/O: week offs used / earned.</div></section>`;
 }
 VIEWS.att = () => { const a = A(), ppl = people(), cnt = st => ppl.filter(p => (a.att[p.n] || {}).st === st).length;
   return { eb: ebDate(), title: 'Attendance', sub: esc(ME()), right: '', hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>In</small><b>${cnt('in') + a.extra.length}</b></div><div class="gl"><small>Week off</small><b>${cnt('off')}</b></div><div class="gl"><small>Leave</small><b>${cnt('lv')}</b></div></div>`, body: attCard() + monthCard() }; };
+const DES = ['Stylist', 'Hair & Beauty'];
+const SN = { G: 'Gents SSP', L: 'Ladies SSP', O: 'OM', H: 'HK' };
+const wkEnd = d => { const w = dowOf(d); return w === 0 || w === 6; };
+const staffRec = (n, b) => S.staff.find(x => x.name === n && x.branch === (b || ME())) || S.staff.find(x => x.name === n) || null;
+const desOf = (n, b) => (staffRec(n, b) || {}).des || '';
 function attCard() {
-  const a = A(), ppl = people();
+  const a = A(), ppl = people(), ed = !!S.attEdit, we = wkEnd(S.today), cols = ed ? 6 : 5;
   if (!ppl.length) return `<section class="card"><div class="ct">No staff in the list yet</div><div class="empty" style="margin:6px 0 12px">Add your staff once. They stay for every day.</div><button class="btn" data-a="addnew">${ic('plus')}New staff</button></section>`;
-  if (a.attDone) { const c = s => ppl.filter(p => (a.att[p.n] || {}).st === s).length;
-    return `<section class="card" id="attcard"><div class="ch"><div class="ct"><span class="ib g">${ic('staff')}</span><span>Attendance<div class="cs" style="margin-top:2px">${c('in')} in${a.extra.length ? ' + ' + a.extra.length + ' from other branch' : ''} · ${c('off')} week off · ${c('lv')} leave</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="attimg" data-v="day">${ic('img')}Download image</button><button class="btn sm gh" data-a="attedit">Change</button></span></div>
-      <div class="ox"><table class="att2"><thead><tr><th>Staff</th><th>Yesterday out</th><th>Today in</th><th>Today out</th></tr></thead><tbody>${ppl.filter(p => (a.att[p.n] || {}).st === 'in' || ydOut(p.n).st === 'in').map(p => { const x = a.att[p.n] || {};
-        return `<tr><td><span class="nm"><span class="ini ${p.g}" style="width:30px;height:30px;border-radius:10px;font-size:11px">${esc(ini(p.n))}</span><b>${esc(p.n)}</b></span></td><td>${youtCell(p)}</td><td>${x.st === 'in' ? esc(t12(x.in) || '–') : `<span class="pill ${x.st === 'off' ? 'p-info' : 'p-bad'}">${x.st === 'off' ? 'Week off' : 'Leave'}</span>`}</td><td>${x.st === 'in' ? `<input type="time" class="tin tt" id="out_${esc(p.n)}" data-out="${esc(p.n)}" value="${esc(x.out || '')}" aria-label="${esc(p.n)} out time">` : ''}</td></tr>`; }).join('')}
-      <tr><td><span class="nm"><span class="ini H" style="width:30px;height:30px;border-radius:10px">${ic('bolt', 14)}</span><b>EB meter</b></span></td><td>${esc(a.ebY || '–')}</td><td>${esc(a.ebStart)}</td><td><input class="tin" style="width:110px" id="ebe" data-eb="ebEnd" value="${esc(a.ebEnd)}" inputmode="decimal" placeholder="Ending" aria-label="EB ending reading"></td></tr></tbody></table></div>
-      <div class="cs" style="margin-top:10px">Out times and the EB ending typed tonight show as yesterday's tomorrow.</div></section>`; }
-  const ed = !!S.attEdit, cols = ed ? 5 : 4, t3 = (x, n) => `<div class="tg">${[['in', 'In'], ['off', 'Week off'], ['lv', 'Leave']].map(([v, t]) => `<button class="${v} ${x.st === v ? 'on' : ''}" data-a="att" data-n="${esc(n)}" data-v="${v}" aria-pressed="${x.st === v}"${x.st === v ? ' title="Tap again to clear"' : ''}>${t}</button>`).join('')}</div>`;
-  const row = p => { const x = a.att[p.n] || {};
-    return `<tr class="${x.st ? '' : 'unm'}"><td><span class="nm"><span class="ini ${p.g}">${esc(ini(p.n))}</span><b>${esc(p.n)}${p.isNew ? ' <span class="pill p-info">New</span>' : ''}</b></span></td><td>${youtCell(p)}</td><td>${t3(x, p.n)}</td>
-      <td>${x.st === 'in' ? `<input type="time" class="tin tt ${x.in ? '' : 'need'}" id="in_${esc(p.n)}" data-in="${esc(p.n)}" value="${esc(x.in || '')}" aria-label="${esc(p.n)} in time">` : ''}</td>${ed ? `<td><button class="xb" data-a="rmstaff" data-v="${esc(p.id)}" aria-label="Remove ${esc(p.n)}" title="Remove staff">✕</button></td>` : ''}</tr>`; };
-  const left = ppl.filter(p => !(a.att[p.n] || {}).st).length;
-  return `<section class="card" id="attcard"><div class="ch"><div class="ct"><span class="ib g">${ic('staff')}</span><span>Attendance<div class="cs" style="margin-top:2px">${left ? left + ' not marked' : 'All marked'}</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap">${left ? `<button class="btn sm gh" data-a="allin">Mark the rest In</button>` : ''}<button class="btn sm gh" data-a="attimg" data-v="day">${ic('img')}Download image</button></span></div>
-    <div class="ox"><table class="att3"><thead><tr><th>Staff</th><th>Yesterday out</th><th>Today</th><th>In time</th>${ed ? '<th></th>' : ''}</tr></thead><tbody>
-    ${['G', 'L', 'O', 'H'].map(g => ppl.some(p => p.g === g) ? `<tr class="gh5"><td colspan="${cols}">${GN[g]}</td></tr>${ppl.filter(p => p.g === g).map(row).join('')}` : '').join('')}
-    ${a.extra.length ? `<tr class="gh5"><td colspan="${cols}">From other branches</td></tr>${a.extra.map((x, i) => `<tr><td><span class="nm"><span class="ini ${x.g}">${esc(ini(x.n))}</span><b>${esc(x.n)} <small class="cs">${esc(x.from)}</small></b></span></td><td></td><td><span class="pill p-info">Working here today</span></td><td></td>${ed ? `<td><button class="xb" data-a="rmextra" data-v="${i}" aria-label="Remove ${esc(x.n)} for today">✕</button></td>` : ''}</tr>`).join('')}` : ''}
+  const opt = x => [['in', 'Present'], we && x.st !== 'off' ? null : ['off', 'Week off'], ['lv', 'Leave'], ['ob', 'Other branch']].filter(Boolean);
+  const t3 = (x, n) => `<div class="tg">${opt(x).map(([v, t]) => `<button class="${v} ${x.st === v ? 'on' : ''}" data-a="att" data-n="${esc(n)}" data-v="${v}" aria-pressed="${x.st === v}"${x.st === v ? ' title="Tap again to clear"' : ''}>${t}</button>`).join('')}</div>`;
+  const tin = (id, key, n, v, need, lab) => `<input type="time" class="tin tt ${need && !v ? 'need' : ''}" id="${esc(id)}" ${key}="${esc(n)}" value="${esc(v || '')}" aria-label="${esc(lab)}">`;
+  let sn = 0;
+  const who = (n, g, sub, isNew) => `<span class="nm">${av(n, g)}<span class="anm2"><b>${esc(n)}${isNew ? ' <span class="pill p-info">New</span>' : ''}</b><small>${esc(sub)}</small></span></span>`;
+  const row = p => { const x = a.att[p.n] || {}, away = (S.away || {})[p.n];
+    return `<tr class="${x.st ? '' : 'unm'}"><td class="asn">${++sn}</td><td class="atw">${who(p.n, p.g, desOf(p.n) || SN[p.g], p.isNew)}</td>
+      <td>${t3(x, p.n)}${x.st === 'ob' ? `<div class="obw">${ic('send', 12)} Working at ${esc(x.at || 'another branch')} today</div>` : !x.st && away ? `<div class="obw">${esc(away)} marked ${esc(p.n)} as working there</div>` : ''}</td>
+      <td class="ati">${x.st === 'in' ? tin('in_' + p.n, 'data-in', p.n, x.in, 1, p.n + ' in time') : ''}</td><td class="ato">${x.st === 'in' ? tin('out_' + p.n, 'data-out', p.n, x.out, 0, p.n + ' out time') : ''}</td>${ed ? `<td><button class="xb" data-a="rmstaff" data-v="${esc(p.id)}" aria-label="Remove ${esc(p.n)}" title="Remove staff">✕</button></td>` : ''}</tr>`; };
+  const xrow = (x, i) => `<tr><td class="asn">${++sn}</td><td class="atw">${who(x.n, x.g, (desOf(x.n, x.from) || SN[x.g] || '') + ' · from ' + x.from)}</td><td><span class="pill p-info">Working here today</span></td>
+    <td class="ati">${tin('xin_' + i, 'data-xin', i, x.in, 1, x.n + ' in time')}</td><td class="ato">${tin('xout_' + i, 'data-xout', i, x.out, 0, x.n + ' out time')}</td>${ed ? `<td><button class="xb" data-a="rmextra" data-v="${i}" aria-label="Remove ${esc(x.n)} for today">✕</button></td>` : ''}</tr>`;
+  const left = ppl.filter(p => !(a.att[p.n] || {}).st).length, c = s2 => ppl.filter(p => (a.att[p.n] || {}).st === s2).length;
+  const sub = a.attDone ? `${c('in')} present${a.extra.length ? ' + ' + a.extra.length + ' from other branch' : ''} · ${c('off')} week off · ${c('lv')} leave${c('ob') ? ' · ' + c('ob') + ' at other branch' : ''}` : left ? left + ' not marked' : 'All marked';
+  return `<section class="card" id="attcard"><div class="ch"><div class="ct"><span class="ib g">${ic('staff')}</span><span>Attendance<div class="cs" style="margin-top:2px">${sub}${we ? ' · weekend, no week off' : ''}</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap">${left ? `<button class="btn sm gh" data-a="allin">Mark the rest Present</button>` : ''}<button class="btn sm gh" data-a="attimg" data-v="day">${ic('img')}Download image</button></span></div>
+    <div class="ox"><table class="att3"><thead><tr><th class="asn">S.No</th><th>Staff</th><th>Today</th><th>In time</th><th>Out time</th>${ed ? '<th></th>' : ''}</tr></thead><tbody>
+    ${['G', 'L', 'O', 'H'].map(g => ppl.some(p => p.g === g) ? `<tr class="gh5"><td colspan="${cols}">${SN[g]}</td></tr>${ppl.filter(p => p.g === g).map(row).join('')}` : '').join('')}
+    ${a.extra.length ? `<tr class="gh5"><td colspan="${cols}">From other branches</td></tr>${a.extra.map(xrow).join('')}` : ''}
     </tbody></table></div>
-    <div class="gh4">EB meter</div><div class="ar"><div class="nm"><span class="ini H">${ic('bolt', 16)}</span><div><b>EB meter</b><small>${a.ebStart && a.ebY ? (num(a.ebStart) - num(a.ebY)).toFixed(1) + ' units yesterday' : ''}</small></div></div><div class="ac"><span class="yl2"><small>Yesterday ending</small><input class="tin" style="width:120px" id="eby" data-eb="ebY" value="${esc(a.ebY)}" inputmode="decimal"></span><span class="yl2"><small>Today starting</small><input class="tin" style="width:120px" id="ebs" data-eb="ebStart" value="${esc(a.ebStart)}" inputmode="decimal"></span></div></div>
-    <div class="xbar"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button><button class="btn sm gh" data-a="addnew">${ic('plus')}New staff</button><button class="btn sm gh" data-a="attedit2">${ed ? 'Done' : 'Remove staff'}</button></div><button class="btn" data-a="attdone">Save attendance</button></div></section>`;
+    <div class="gh4">EB meter</div><div class="ar"><div class="nm"><span class="ini H">${ic('bolt', 16)}</span><div><b>EB meter</b><small>${a.ebStart && a.ebEnd ? (num(a.ebEnd) - num(a.ebStart)).toFixed(1) + ' units today' : a.ebStart && a.ebY ? (num(a.ebStart) - num(a.ebY)).toFixed(1) + ' units yesterday' : ''}</small></div></div><div class="ac"><span class="yl2"><small>Opening (morning)</small><input class="tin" style="width:120px" id="ebs" data-eb="ebStart" value="${esc(a.ebStart)}" inputmode="decimal" aria-label="EB opening reading"></span><span class="yl2"><small>Closing (night)</small><input class="tin" style="width:120px" id="ebe" data-eb="ebEnd" value="${esc(a.ebEnd)}" inputmode="decimal" aria-label="EB closing reading"></span></div></div>
+    <div class="xbar"><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button><button class="btn sm gh" data-a="addnew">${ic('plus')}New staff</button><button class="btn sm gh" data-a="attedit2">${ed ? 'Done' : 'Remove staff'}</button></div>${a.attDone ? `<span class="saved">Attendance saved · changes save as you type</span>` : `<button class="btn" data-a="attdone">Save attendance</button>`}</div></section>`;
 }
 
 /* ---------------- REPORT: the Excel-style sheet ---------------- */
 function sheetHTML(branch, list, data, mcAmt, opt) {
-  const Cc = sheetCalc(list, data, mcAmt), ed = opt.edit, prevD = opt.prev || {};
-  const inp = (n, f, v) => `<input id="x_${esc(n)}_${f}" data-x="${esc(n)}" data-f="${f}" inputmode="numeric" value="${esc(v)}" ${ed ? '' : 'disabled'} class="${prevD[n] && v !== '' && num(v) < num(prevD[n][f]) ? 'low' : ''}" aria-label="${esc(n)} ${f}">`;
-  const row = ({ p, v }) => `<tr><td class="nmc">${esc(String(p.n).toUpperCase())}${p.from ? `<span class="fr">${esc(p.from)}</span>` : ''}</td><td class="lk">${ed ? `<input id="x_${esc(p.n)}_tgt" data-x="${esc(p.n)}" data-f="tgt" inputmode="numeric" value="${esc(v.tgt === undefined ? '' : v.tgt)}" placeholder="${p.t ? p.t : ''}" aria-label="${esc(p.n)} target">` : (tgtOf({ p, v }) ? fmt(tgtOf({ p, v })) : '')}</td>
-    <td>${inp(p.n, 'svc', v.svc)}</td><td>${inp(p.n, 'bills', v.bills)}</td><td class="cl" data-abv="${esc(p.n)}">${abv(v.svc, v.bills) === '–' ? '' : fmt(abv(v.svc, v.bills))}</td><td>${inp(p.n, 'kids', v.kids)}</td>
-    <td>${ed ? `<button class="pb" data-a="prod" data-v="${esc(p.n)}">${prodSum(v) ? fmt(prodSum(v)) : '<i>+</i>'}</button>` : (prodSum(v) ? fmt(prodSum(v)) : '')}</td><td>${inp(p.n, 'mc', v.mc)}</td>
+  const Cc = sheetCalc(list, data, mcAmt), ed = opt.edit, prevD = opt.prev || {}, nc = ed ? 11 : 10;
+  const inp = (n, f, v) => `<input id="x_${esc(n)}_${f}" data-x="${esc(n)}" data-f="${f}" inputmode="numeric" value="${esc(v || '')}" ${ed ? '' : 'disabled'} class="${prevD[n] && !blank(v) && num(v) < num(prevD[n][f]) ? 'low' : ''}" aria-label="${esc(n)} ${f === 'man' ? 'manual service' : f}">`;
+  let sn = 0;
+  const row = ({ p, v }) => `<tr><td class="sn">${++sn}</td><td class="nmc">${esc(String(p.n).toUpperCase())}${p.from ? `<span class="fr">${esc(p.from)}</span>` : ''}</td><td class="lk">${ed ? `<input id="x_${esc(p.n)}_tgt" data-x="${esc(p.n)}" data-f="tgt" inputmode="numeric" value="${esc(v.tgt === undefined ? '' : v.tgt)}" placeholder="${p.t ? p.t : ''}" aria-label="${esc(p.n)} target">` : (tgtOf({ p, v }) ? fmt(tgtOf({ p, v })) : '')}</td>
+    <td>${ed ? inp(p.n, 'svc', v.svc) : (sv(v) ? fmt(sv(v)) : '')}</td>${ed ? `<td class="man">${inp(p.n, 'man', v.man)}</td>` : ''}<td>${ed ? inp(p.n, 'bills', v.bills) : esc(v.bills || '')}</td><td class="cl" data-abv="${esc(p.n)}">${abv(sv(v), v.bills) === '–' ? '' : fmt(abv(sv(v), v.bills))}</td><td>${ed ? inp(p.n, 'kids', v.kids) : esc(v.kids || '')}</td>
+    <td>${ed ? `<button class="pb" data-a="prod" data-v="${esc(p.n)}">${prodSum(v) ? fmt(prodSum(v)) : '<i>+</i>'}</button>` : (prodSum(v) ? fmt(prodSum(v)) : '')}</td><td>${ed ? inp(p.n, 'mc', v.mc) : esc(v.mc || '')}</td>
     <td>${ed ? inp(p.n, 'rev', v.rev) : (num(v.rev) ? fmt(v.rev) : '')}</td></tr>`;
-  const tot = (lab, t, cls) => `<tr class="${cls}"><td class="nmc">${lab}</td><td>${fmt(t.tgt)}</td><td>${fmt(t.svc)}</td><td>${fmt(t.bills)}</td><td>${t.bills ? fmt(t.svc / t.bills) : '–'}</td><td>${fmt(t.kids)}</td><td>${fmt(t.prod)}</td><td>${fmt(t.mc)}</td><td>${fmt(t.rev)}</td></tr>`;
-  return `<div class="xs ${branch}"><div class="xsh"><b>★ GT-${branch.toUpperCase()} ★</b><span>${dLong(opt.date || S.today)}${opt.at ? ' · ' + opt.at : ''}</span></div><div class="xsw"><table class="xt">
-    <thead><tr><th style="text-align:left;padding-left:10px">SSP name</th><th>Day target</th><th>Service sale</th><th>Bills</th><th>ABV</th><th>Kids cut</th><th>Product</th><th>Mem card</th><th>Google reviews</th></tr></thead><tbody>
+  const tot = (lab, t, cls) => `<tr class="${cls}"><td class="sn"></td><td class="nmc">${lab}</td>${sheetVals(t, ed).map(x => `<td>${x}</td>`).join('')}</tr>`;
+  const ft = (lab, f, v) => `<tr class="ft"><td class="sn"></td><td class="nmc">${lab}</td><td colspan="${nc - 2}" data-ft="${f}">${fmt(v)}</td></tr>`;
+  return `<div class="xs ${branch}"><div class="xsh"><b>★ GT-${branch.toUpperCase()} ★</b><span>${dLong(opt.date || S.today)}${opt.at ? ' · ' + opt.at : ''}</span></div><div class="xsw"><table class="xt xr ${ed ? 'xre' : ''}">
+    <colgroup><col style="width:48px"><col><col style="width:90px"><col style="width:106px">${ed ? '<col style="width:94px">' : ''}<col style="width:64px"><col style="width:76px"><col style="width:66px"><col style="width:104px"><col style="width:74px"><col style="width:84px"></colgroup>
+    <thead><tr><th class="sn">S.No</th><th style="text-align:left;padding-left:10px">SSP name</th><th>Day target</th><th>Service sale</th>${ed ? '<th class="man" title="Free service: no money taken, counts toward the target. Joins the service sale in the image.">Manual</th>' : ''}<th>Bills</th><th>ABV</th><th>Kids cut</th><th>Product</th><th>Mem card</th><th>Google reviews</th></tr></thead><tbody>
     ${Cc.groups.map(gr => gr.rows.map(row).join('') + (gr.g === 'O' ? '' : tot(GN[gr.g] + ' total', gr.t, 'sub'))).join('')}
     ${tot('Grand total', Cc.G, 'gt')}
-    <tr class="ft"><td class="nmc">Mem card ₹</td><td colspan="8" data-ft="mcamt">${fmt(num(mcAmt))}</td></tr>
-    <tr class="ft"><td class="nmc">Product</td><td colspan="8" data-ft="prod">${fmt(Cc.G.prod)}</td></tr>
-    <tr class="ft"><td class="nmc">Service net sale</td><td colspan="8" data-ft="net">${fmt(Cc.net)}</td></tr>
-    <tr class="ft"><td class="nmc">Service gross sale</td><td colspan="8" data-ft="gross">${fmt(Cc.gross)}</td></tr>
+    ${ft('Mem card ₹', 'mcamt', num(mcAmt))}${ft('Product', 'prod', Cc.G.prod)}${ft('Service net sale', 'net', Cc.net)}${ft('Service gross sale', 'gross', Cc.gross)}
   </tbody></table></div></div>`;
 }
+/* the totals row cells after the name: in the editable sheet the service sale is the billed part and Manual has its own column */
+const sheetVals = (x, ed) => [fmt(x.tgt), fmt(ed ? x.svc - x.man : x.svc)].concat(ed ? [fmt(x.man)] : [], [fmt(x.bills), x.bills ? fmt(x.svc / x.bills) : '–', fmt(x.kids), fmt(x.prod), fmt(x.mc), fmt(x.rev)]);
 VIEWS.report = () => {
   const a = A(), r = R(), d = due();
   if (S.view !== 'live' && !r.snaps[S.view]) S.view = 'live';
@@ -1485,7 +1553,10 @@ VIEWS.report = () => {
 
 /* ---------------- CLOSING ---------------- */
 const LCOLS = { acc: [{ k: 't', n: 'Particulars' }, { k: 's', n: 'Advance to', sel: 1 }, { k: 'd', n: 'Debit', r: 1 }, { k: 'c', n: 'Credit', r: 1 }], exp: [{ k: 't', n: 'Particulars' }, { k: 'a', n: 'Amount', r: 1 }],
-  gpay: [{ k: 'b', n: 'Bill no' }, { k: 'c', n: 'Client name' }, { k: 'a', n: 'Amount', r: 1 }], card: [{ k: 'b', n: 'Bill no' }, { k: 'c', n: 'Client name' }, { k: 'a', n: 'Amount', r: 1 }] };
+  gpay: [{ k: 'b', n: 'Bill no', w: 96 }, { k: 'c', n: 'Client name' }, { k: 'x', n: '', hd: 1, w: 150 }, { k: 'a', n: 'Amount', r: 1, w: 112 }], card: [{ k: 'b', n: 'Bill no', w: 96 }, { k: 'c', n: 'Client name' }, { k: 'x', n: '', hd: 1, w: 150 }, { k: 'a', n: 'Amount', r: 1, w: 112 }] };
+LCOLS.exp[1].w = 120;
+const lHead = (key, c) => ((C().heads || {})[key] || {})[c.k] || c.n;
+const lTitle = key => (C().titles || {})[key] || LTITLE(key);
 const LTITLE = key => { const B = ME().toUpperCase(), M3 = monthName(CD()).slice(0, 3).toUpperCase() + '-' + CD().slice(0, 4); return { exp: `${M3} ${B} EXPENSES`, gpay: `GT-${B} "BQR" PAYMENT DETAILS`, card: `GT-${B} "CARD" DETAILS` }[key]; };
 const LSTART = { acc: 6, exp: 8, gpay: 30, card: 6 };
 const blankL = key => Object.fromEntries(LCOLS[key].map(c => [c.k, '']));
@@ -1498,9 +1569,10 @@ function carryOver() { const c = C(); if (!isToday() || c.carried) return; c.car
   touch(CD(), 'clo'); }
 const nFilled = key => C()[key].filter(filled).length;
 function padList(key) { const c = C(), a = c[key]; c.init = c.init || {}; if (!c.init[key]) { c.init[key] = 1; while (a.length < LSTART[key]) a.push(blankL(key)); let tail = 0; for (let i = a.length - 1; i >= 0 && !filled(a[i]); i--) tail++; while (tail < 3) { a.push(blankL(key)); tail++; } } if (!a.length) a.push(blankL(key)); }
-const lrow = (key, i, r, off) => `<tr class="${r.y ? 'yrow' : ''}"><td class="sn">${i + 1 + (off || 0)}</td>${LCOLS[key].map(c => c.sel ? `<td><select id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="asel" aria-label="Advance to ${i + 1}"><option value=""></option>${people().map(p => `<option ${r[c.k] === p.n ? 'selected' : ''}>${esc(p.n)}</option>`).join('')}</select></td>` : key === 'acc' && !c.r ? `<td><textarea rows="1" id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="ta" aria-label="${c.n} ${i + 1}">${esc(r[c.k])}</textarea></td>` : `<td><input id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="${c.r ? 'rt' : 'lf'}" value="${esc(r[c.k])}" ${c.r ? 'inputmode="numeric"' : ''} aria-label="${c.n} ${i + 1}"></td>`).join('')}<td class="dl"><button class="xb" data-a="delrow" data-l="${key}" data-v="${i}" aria-label="Delete row ${i + 1 + (off || 0)}">✕</button></td></tr>`;
-const xlist = (key, extra) => `<div class="cbox"><div class="xs ${ME()} xc"><div class="xsh"><b>${LTITLE(key)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2">
-  <thead><tr><th style="width:52px">S.No</th>${LCOLS[key].map(c => `<th>${c.n}</th>`).join('')}<th style="width:34px"></th></tr></thead>
+const lrow = (key, i, r, off) => `<tr class="${r.y ? 'yrow' : ''}"><td class="sn">${i + 1 + (off || 0)}</td>${LCOLS[key].map(c => c.sel ? `<td><select id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="asel" aria-label="Advance to ${i + 1}"><option value=""></option>${people().map(p => `<option ${r[c.k] === p.n ? 'selected' : ''}>${esc(p.n)}</option>`).join('')}${((((S.days[CD()] || {}).att) || {}).extra || []).filter(x => !people().some(p => p.n === x.n)).map(x => `<option value="${esc(x.n)}" ${r[c.k] === x.n ? 'selected' : ''}>${esc(x.n)} (${esc(x.from)})</option>`).join('')}</select></td>` : key === 'acc' && !c.r ? `<td><textarea rows="1" id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="ta" aria-label="${c.n} ${i + 1}">${esc(r[c.k])}</textarea></td>` : `<td><input id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="${c.r ? 'rt' : 'lf'}" value="${esc(r[c.k])}" ${c.r ? 'inputmode="numeric"' : ''} aria-label="${c.n} ${i + 1}"></td>`).join('')}<td class="dl"><button class="xb" data-a="delrow" data-l="${key}" data-v="${i}" aria-label="Delete row ${i + 1 + (off || 0)}">✕</button></td></tr>`;
+const xlist = (key, extra) => `<div class="cbox"><div class="xs ${ME()} xc"><div class="xsh"><b>${key === 'exp' ? LTITLE(key) : `<input class="tti" data-ttl="${key}" value="${esc(lTitle(key))}" aria-label="Title of the table">`}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 xl">
+  <colgroup><col style="width:52px">${LCOLS[key].map(c => `<col${c.w ? ` style="width:${c.w}px"` : ''}>`).join('')}<col style="width:34px"></colgroup>
+  <thead><tr><th>S.No</th>${LCOLS[key].map(c => c.hd ? `<th class="xh"><input class="thd" data-hd="${key}|${c.k}" value="${esc(lHead(key, c))}" placeholder="Type heading" aria-label="Column heading"></th>` : `<th>${c.n}</th>`).join('')}<th></th></tr></thead>
   <tbody data-lb="${key}">${C()[key].map((r, i) => lrow(key, i, r)).join('')}</tbody>
   <tfoot><tr class="ft"><td colspan="${LCOLS[key].length}" class="tlab">TOTAL</td><td data-ltot="${key}">${fmt(sum(C()[key].map(x => num(x.a))))}</td><td></td></tr></tfoot></table></div></div>
   <div class="xadd"><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addrows" data-v="${key}">${ic('plus')}Add 5 rows</button><button class="btn sm gh" data-a="clearrows" data-v="${key}">Remove empty rows</button></span><span class="cs" data-lcnt="${key}">${nFilled(key)} filled</span></div>${extra || ''}</div>`;
@@ -1510,12 +1582,12 @@ function accHTML() {
   let n = 1; const line = (t, d, cr, cls, tag) => `<tr class="${cls || ''}"><td class="sn">${n++}</td><td class="pt">${t}${tag ? `<span class="ftag">${tag}</span>` : ''}</td><td></td><td>${d === '' ? '' : fmt(d)}</td><td>${cr === '' ? '' : fmt(cr)}</td><td></td></tr>`;
   const band = (t, d, cr, cls) => `<tr class="${cls}"><td colspan="3" class="pt">${t}</td><td>${d === '' ? '' : fmt(d)}</td><td>${cr}</td><td></td></tr>`;
   const ao = autoOpening(), changed = !blank(c.openTyped) && num(c.openTyped) !== ao, otag = changed ? `changed${ao !== null ? ' from ' + fmt(ao) : ''}` : ao === null ? 'type it' : `cash counted ${dnum(addDays(CD(), -1))} ${monthName(CD()).slice(0, 3)}`,
-    head = `<tr class="ro ${changed ? 'chg' : ''}"><td class="sn">${n++}</td><td class="pt">OPENING CASH<span class="ftag">${otag}</span></td><td></td><td></td><td><input id="opentyped" data-ot="1" class="rt" inputmode="numeric" value="${esc(blank(c.openTyped) ? (ao === null ? '' : ao) : c.openTyped)}" placeholder="₹" aria-label="Opening cash"></td><td></td></tr>` + (prodSales() ? line('PRODUCT SALES', '', prodSales(), 'ro', 'from report') : '') + exs.map(x => line(esc(String(x.t || 'Expense').toUpperCase()), num(x.a), '', x.y ? 'ro yl' : 'ro', 'expenses')).join('');
+    head = `<tr class="ro ${changed ? 'chg' : ''}"><td class="sn">${n++}</td><td class="pt">OPENING CASH<span class="ftag">${otag}</span></td><td></td><td></td><td><input id="opentyped" data-ot="1" class="rt" inputmode="numeric" value="${esc(blank(c.openTyped) ? (ao === null ? '' : ao) : c.openTyped)}" placeholder="₹" aria-label="Opening cash"></td><td></td></tr>` + prodLines(CD()).map(x => line(esc(`${x.s} sold ${x.n} × ${x.q}${x.pay ? ' · paid by ' + x.pay : ''}`.toUpperCase()), '', x.a, 'ro', 'from report')).join('') + exs.map(x => line(esc(String(x.t || 'Expense').toUpperCase()), num(x.a), '', x.y ? 'ro yl' : 'ro', 'expenses')).join('');
   const off = n - 1;
   return `<div class="xs ${ME()} xc"><div class="xsh"><b>${ME().toUpperCase()} ACCOUNTS SHEET ${monthName(CD()).toUpperCase()}-${CD().slice(0, 4)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 acc2">
     <thead><tr><th style="width:52px">S.No</th><th>Particulars</th><th style="width:96px">Advance to</th><th style="width:90px">Debit</th><th style="width:96px">Credit</th><th style="width:34px"></th></tr></thead><tbody>${head}</tbody>
     <tbody data-lb="acc" data-off="${off}">${c.acc.map((r, i) => lrow('acc', i, r, off)).join('')}</tbody><tbody>
-    ${band('TOTAL SALES', '', `<input id="totsales" data-ts="1" inputmode="numeric" value="${esc(c.totSales)}" placeholder="Type" aria-label="Total sales" class="${blank(c.totSales) ? 'need' : ''}">`, 'b-sale')}
+    ${band(`TOTAL SALES<span class="ftag">${blank(c.totSales) ? 'from the report' : num(c.totSales) === autoGross() ? 'same as the report' : 'changed · report ' + fmt(autoGross())}</span>`, '', `<input id="totsales" data-ts="1" inputmode="numeric" value="${esc(blank(c.totSales) ? autoGross() : c.totSales)}" aria-label="Total sales">`, 'b-sale')}
     ${band('TOTAL EXPENSES', deb, fmt(cred), 'b-exp')}${band('CARD SALES', cdTot(), fmt(a1), 'b-sale')}${band('G-PAY SALES', gpTot(), fmt(a2), 'b-gp')}
     ${band('CLOSING BALANCE', '', fmt(bal), 'b-bal')}${band('CASH IN DENOMINATIONS', '', fmt(denTot()), 'b-den')}
     ${band(ex >= 0 ? 'EXCESS' : 'SHORT', '', `<span style="color:${ex === 0 ? 'var(--ok)' : 'var(--bad)'}">${fmt(Math.abs(ex))}</span>`, 'b-den')}</tbody></table></div></div>
@@ -1526,6 +1598,7 @@ const denHTML = () => `<div class="xs ${ME()} xc"><div class="xsh"><b>CASH IN DE
   <tfoot><tr class="ft"><td colspan="2" class="tlab">TOTAL</td><td data-acc="den2">${fmt(denTot())}</td></tr></tfoot></table></div></div>`;
 VIEWS.closing = () => {
   const c = C(); carryOver(); LKEYS.forEach(padList);
+  { const ag = autoGross(); if (c.grossAuto !== ag && !['sent', 'approved'].includes(c.status)) { c.grossAuto = ag; touch(CD(), 'clo'); } }
   if (!S.days[addDays(CD(), -1)]) loadDay(addDays(CD(), -1));
   if ((c.photos || []).some(id => !S.photos[id])) loadPhotos(CD());
   const diffBP = gpTot() - num(c.bp), diffSlip = cdTot() - num(c.slip), ex = denTot() - closingBal(), st = statusPill(c);
@@ -1547,6 +1620,7 @@ VIEWS.closing = () => {
   <div class="cgrid">${xlist('gpay', bpExtra)}<div style="display:grid;gap:16px">${xlist('card', cdExtra)}</div></div>
   ${upCard}`}
   <div id="subres"></div>
+  ${['sent', 'approved'].includes(c.status) ? closeCard(CD()) : ''}
   <button class="btn dk wide" data-a="submit">${c.status === 'sent' ? 'Closing sent · waiting for approval' : c.status === 'approved' ? 'Approved' : c.status === 'changed' || c.status === 'back' ? 'Send closing report again' : 'Send closing report'}</button>`;
   return { eb: 'Closing report', title: 'Closing', sub: `${esc(ME())} · ${dLabel(CD())} · saved as you type`, right: `<span class="pill ${st[1]}">${st[0]}</span>`, hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Closing balance</small><b>${inr(closingBal())}</b></div><div class="gl"><small>Cash counted</small><b>${inr(denTot())}</b></div><div class="gl"><small>${ex >= 0 ? 'Excess' : 'Short'}</small><b style="color:${ex === 0 ? '#7EE0AE' : '#FFC27A'}">${inr(Math.abs(ex))}</b></div></div>`, body };
 };
@@ -1560,7 +1634,7 @@ VIEWS.stock = () => {
   if (S.moves === null) loadMoves();
   return { eb: 'Retail products', title: 'Stock', sub: esc(ME()) + (items.some(x => x.locked) ? ' · list locked by controller' : ''), right: items.some(x => x.locked) ? `<span class="pill p-mu">${ic('lock', 13)} Locked</span>` : '',
     hx: `<div class="glass" style="margin-top:18px"><div class="gl"><small>Pieces</small><b>${sum(items.map(x => x.c))}</b></div><div class="gl"><small>Products</small><b>${items.length}</b></div><div class="gl"><small>Running low</small><b style="color:#FFC27A">${items.filter(x => x.c > 0 && x.c <= 2).length}</b></div></div>`,
-    body: `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('box')}</span>Products</div><button class="btn sm gh" data-a="sheet" data-v="newprod">Ask for a new product</button></div>
+    body: assetCard() + `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('box')}</span>Products</div><button class="btn sm gh" data-a="sheet" data-v="newprod">Ask for a new product</button></div>
     ${items.length ? `<div class="fl" style="margin:0 0 6px"><input id="sfind" placeholder="Find a product" autocomplete="off" aria-label="Find a product"></div>` : ''}
     <div id="slist">${items.map(x => `<div class="row" data-sn="${esc(x.n.toLowerCase())}"><div class="l"><b>${esc(x.n)}</b><small>MRP ${inr(x.mrp)}${x.c > 0 && x.c <= 2 ? ' · <span style="color:var(--bad)">running low</span>' : ''}</small></div><div class="stp"><button data-a="sminus" data-n="${esc(x.n)}" aria-label="Remove one ${esc(x.n)}">−</button><b class="${x.c > 0 && x.c <= 2 ? 'lo' : ''}">${x.c}</b><button class="pl" data-a="splus" data-n="${esc(x.n)}" aria-label="Add one ${esc(x.n)}">+</button></div></div>`).join('') || '<div class="empty">No products yet. Ask the controller to add your list.</div>'}</div></section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>Recent changes</div></div>${S.moves && S.moves.length ? S.moves.slice(0, 15).map(x => `<div class="row"><div class="l"><b>${esc(x.product)}</b><small>${esc(x.reason)} · ${esc(x.ts)}</small></div><span class="pill ${num(x.qty) > 0 ? 'p-ok' : 'p-bad'}">${num(x.qty) > 0 ? '+' : ''}${x.qty}</span></div>`).join('') : `<div class="empty">${S.moves === null ? 'Loading…' : 'Product sales, stock received and reductions show here.'}</div>`}</section>` };
@@ -1571,7 +1645,7 @@ async function loadMoves() { S.moves = undefined; try { S.moves = await call('ap
 VIEWS.sales = () => {
   const Cc = liveCalc(), mo = S.month.filter(x => x.date < S.today && x.date.slice(0, 7) === S.today.slice(0, 7)).map(x => ({ d: x.date, net: num(x.svc) + num(x.mc), bills: num(x.bills), staff: x.staff || {}, status: x.status }));
   const tot = sum(mo.map(x => x.net)) + Cc.net, best = mo.reduce((a, x) => !a || x.net > a.net ? x : a, null);
-  const st = {}; mo.forEach(x => Object.keys(x.staff).forEach(n => st[n] = (st[n] || 0) + num(x.staff[n]))); Object.keys(R().rows).forEach(n => st[n] = (st[n] || 0) + num(R().rows[n].svc));
+  const st = {}; mo.forEach(x => Object.keys(x.staff).forEach(n => st[n] = (st[n] || 0) + num(x.staff[n]))); Object.keys(R().rows).forEach(n => st[n] = (st[n] || 0) + sv(R().rows[n]));
   const arr = Object.entries(st).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]), mx = arr.length ? arr[0][1] : 1;
   const PL = { open: ['Closing not sent', 'p-warn'], sent: ['Sent', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed', 'p-warn'] };
   const recent = mo.slice().sort((a, b) => a.d < b.d ? 1 : -1).slice(0, 7).map(x => { const s = x.d === S.yday ? S.days[S.yday].clo.status : x.status, pl = PL[s] || PL.open; return `<div class="row"><div class="l"><b>${dLabel(x.d)}</b><small>${inr(x.net)} · ${x.bills} bills</small></div><span class="pill ${pl[1]}">${pl[0]}</span></div>`; }).join('');
@@ -1604,6 +1678,7 @@ function cloClone(id) {
     let n = +(tb.dataset.off || 0); [...tb.rows].forEach(tr => { const s = tr.querySelector('.sn'); if (s) s.textContent = ++n; }); });
   const last = hd.length - 1; if (last > 0 && !hd[last]) dropCol(tbl, last);
   const adv = hd.indexOf('advance to'); if (adv >= 0) dropCol(tbl, adv);
+  { const xi = [...tbl.querySelectorAll('thead th')].findIndex(th => th.classList.contains('xh')); if (xi >= 0 && [...tbl.querySelectorAll('tbody tr')].every(tr => !String((tr.cells[xi] || {}).textContent || '').trim())) { dropCol(tbl, xi); const cg = tbl.querySelector('colgroup'); if (cg && cg.children[xi]) cg.children[xi].remove(); } }
   cl.querySelectorAll('button,.ftag').forEach(x => x.remove()); cl.querySelectorAll('.yrow,.yl,.need,.low,.chg').forEach(x => x.classList.remove('yrow', 'yl', 'need', 'low', 'chg'));
   cl.style.borderRadius = '0'; cl.querySelectorAll('.xsw').forEach(x => { x.style.overflow = 'visible'; }); cl.querySelectorAll('td.nmc').forEach(x => { x.style.position = 'static'; });
   return cl;
@@ -1875,7 +1950,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 6;
+const APP_VER = 7;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -1887,7 +1962,10 @@ function todos() {
   if (ydUsed() && ['open', 'back', 'changed'].includes(yc.status) && !yc.waived) t.push({ i: 'wallet', t: dLabel(S.yday) + ' closing ' + (yc.status === 'back' ? 'was sent back' : 'is not sent yet'), s: yc.status === 'back' ? yc.note : '', a: 'ycl', v: '', b: 'Open closing' });
   if (c.status === 'back') t.push({ i: 'wallet', t: "Today's closing was sent back", s: c.note, a: 'go', v: 'closing', b: 'Open closing' });
   if (!a.attDone) t.push({ i: 'staff', t: "Mark today's attendance", s: '', a: 'go', v: 'att', b: 'Open' });
-  else if (d && d !== 'cl') { const k = SLOTS.findIndex(x => x[0] === d), tm = slotTimes()[k]; if (tm) { const [h, m] = tm.split(':').map(Number); if (istMin() >= h * 60 + m - (num(S.settings.remindMin) || 5)) t.push({ i: 'sheet', t: slotName(d) + ' report is due', s: '', a: 'go', v: 'report', b: 'Open sheet' }); } }
+  if (closeDue(S.yday)) t.push({ i: 'lock', t: 'Accounts not closed · ' + dLabel(S.yday), s: 'Close the day', a: 'go', v: 'today', b: 'Open' });
+  reqForMe().forEach(x => t.push({ i: 'box', t: x.branch + ' needs ' + x.qty + ' × ' + x.product, s: 'Answer: available or not', a: 'go', v: 'today', b: 'Answer' }));
+  if (assetDue() && [0, 4, 5, 6].includes(dowOf(S.today))) t.push({ i: 'box', t: 'Weekly asset check', s: '', a: 'go', v: 'stock', b: 'Open' });
+  if (!a.attDone) {} else if (d && d !== 'cl') { const k = SLOTS.findIndex(x => x[0] === d), tm = slotTimes()[k]; if (tm) { const [h, m] = tm.split(':').map(Number); if (istMin() >= h * 60 + m - (num(S.settings.remindMin) || 5)) t.push({ i: 'sheet', t: slotName(d) + ' report is due', s: '', a: 'go', v: 'report', b: 'Open sheet' }); } }
   return t;
 }
 const inboxCount = () => S.asBranch ? 0 : unreadN() + todos().length;
@@ -2003,7 +2081,7 @@ function tmData() {
   dates.forEach(d => {
     if (d === S.today) {
       addAtt(A().att, d); (A().extra || []).forEach(x => { const c = cell(x.n, d); if (!c.st) c.st = 'in'; });
-      Object.entries(R().rows || {}).forEach(([n, v]) => { if (!v) return; const c = cell(n, d); c.svc += num(v.svc); c.bills += num(v.bills); c.mc += num(v.mc); c.rev += num(v.rev); (Array.isArray(v.prod) ? v.prod : []).forEach(p => addItem(c, p)); });
+      Object.entries(R().rows || {}).forEach(([n, v]) => { if (!v) return; const c = cell(n, d); c.svc += sv(v); c.bills += num(v.bills); c.mc += num(v.mc); c.rev += num(v.rev); (Array.isArray(v.prod) ? v.prod : []).forEach(p => addItem(c, p)); });
     } else {
       const x = by[d], local = ((S.days[d] || {}).att || {}).att;
       addAtt(x && x.att, d); if (local) addAtt(local, d);
@@ -2015,7 +2093,7 @@ function tmData() {
   const order = people().map(p => p.n), gOf = n => secOf(n) || ((A().extra || []).find(x => x.n === n) || {}).g || 'O';
   const names = order.concat(Object.keys(P).filter(n => !order.includes(n) && n !== '?'));
   const tot = n => { const o = { in: 0, off: 0, lv: 0, none: 0, svc: 0, bills: 0, prod: 0, pq: 0, mc: 0, rev: 0, items: {} };
-    dates.forEach(d => { const c = (P[n] || {})[d]; if (!c || !c.st) o.none++; else if (c.st === 'in') o.in++; else if (c.st === 'off') o.off++; else o.lv++;
+    dates.forEach(d => { const c = (P[n] || {})[d]; if (!c || !c.st) o.none++; else if (c.st === 'in' || c.st === 'ob') o.in++; else if (c.st === 'off') o.off++; else o.lv++;
       if (c) { ['svc', 'bills', 'prod', 'pq', 'mc', 'rev'].forEach(k => { o[k] += c[k]; }); c.items.forEach(it => { const m = o.items[it.n] = o.items[it.n] || { q: 0, a: 0 }; m.q += it.q; m.a += it.a; }); } });
     o.any = o.in + o.off + o.lv + o.svc + o.bills + o.prod + o.mc + o.rev > 0; return o; };
   const T = {}; names.forEach(n => { T[n] = tot(n); });
@@ -2025,7 +2103,7 @@ const tmWeeks = dates => { const w = []; dates.forEach(d => { const k = monOf(d)
 const tmWLabel = w => w.ds.length === 1 ? dShortR(w.ds[0]) : dShortR(w.ds[0]) + ' – ' + dShortR(w.ds[w.ds.length - 1]);
 const TMM = [['svc', 'Service'], ['bills', 'Bills'], ['prod', 'Product'], ['mc', 'Mem card'], ['rev', 'Review'], ['att', 'Attendance']];
 const tmVal = (k, v) => !v ? '' : k === 'svc' || k === 'prod' ? fmt(v) : fmt(v);
-const tmAttTag = c => !c || !c.st ? '' : c.st === 'off' ? '<span class="tm-a off">W/O</span>' : c.st === 'lv' ? '<span class="tm-a lv">Leave</span>' : '';
+const tmAttTag = c => !c || !c.st ? '' : c.st === 'off' ? '<span class="tm-a off">W/O</span>' : c.st === 'lv' ? '<span class="tm-a lv">Leave</span>' : c.st === 'ob' ? '<span class="tm-a in">Other branch</span>' : '';
 
 function tmRangeBar() {
   const q = tmQKey(), Q = [['td', 'Today'], ['yd', 'Yesterday'], ['week', 'This week'], ['lweek', 'Last week'], ['month', 'This month'], ['last', 'Last month']];
@@ -2044,11 +2122,11 @@ VIEWS.team = () => {
     const head = `<div class="ch"><div class="ct"><span class="ib p">${ic('user')}</span><span>Staff<div class="cs" style="margin-top:2px">${esc(tmRLabel())} · ${daysN} day${daysN === 1 ? '' : 's'}</div></span></div>${tmTg('tmmode', mode, [['sum', 'Totals'], ['day', 'Day by day'], ['week', 'Week by week']])}</div>`;
     let inner;
     if (mode === 'sum') {
-      const row = n => { const t = D.T[n], g = D.gOf(n); return `<tr class="tm-r ${t.any ? '' : 'dim'}" data-a="tmsel" data-v="${esc(n)}"><td class="tm-n"><div class="tm-nm"><span class="ini ${g}">${esc(ini(n))}</span><span><b>${esc(n)}</b><small>${GN[g] || ''}</small></span></div></td>
+      const row = n => { const t = D.T[n], g = D.gOf(n); return `<tr class="tm-r ${t.any ? '' : 'dim'}" data-a="tmsel" data-v="${esc(n)}"><td class="tm-n"><div class="tm-nm">${av(n, g)}<span><b>${esc(n)}</b><small>${GN[g] || ''}</small></span></div></td>
         <td>${t.in || ''}</td><td>${t.off || ''}</td><td class="${t.lv ? 'bad' : ''}">${t.lv || ''}</td><td class="b">${t.svc ? inr(t.svc) : ''}</td><td>${t.bills || ''}</td><td>${t.bills ? fmt(t.svc / t.bills) : ''}</td><td>${t.prod ? inr(t.prod) : ''}${t.pq ? `<small> · ${t.pq}</small>` : ''}</td><td>${t.mc || ''}</td><td>${t.rev || ''}</td><td class="tm-go">›</td></tr>`; };
       const grp = ['G', 'L', 'O', 'H'].map(g => { const ns = D.names.filter(n => D.gOf(n) === g); return ns.length ? `<tr class="tm-g"><td colspan="11">${{ G: 'Gents', L: 'Ladies', O: 'Others', H: 'House keeping' }[g]}</td></tr>` + ns.map(row).join('') : ''; }).join('');
       const mrow = n => { const t = D.T[n], g = D.gOf(n), bits = [t.bills ? t.bills + ' bills' : '', t.bills ? 'ABV ' + fmt(t.svc / t.bills) : '', t.prod ? 'Product ' + inr(t.prod) : '', t.mc ? t.mc + ' mem card' : '', t.rev ? t.rev + ' review' : ''].filter(Boolean);
-        return `<button class="tm-mc ${t.any ? '' : 'dim'}" data-a="tmsel" data-v="${esc(n)}"><span class="ini ${g}">${esc(ini(n))}</span><span class="tm-mb"><b>${esc(n)}</b><small>${t.in} worked${t.off ? ' · ' + t.off + ' W/O' : ''}${t.lv ? ` · <em>${t.lv} leave</em>` : ''}</small>${bits.length ? `<small>${bits.join(' · ')}</small>` : ''}</span><span class="tm-ms">${t.svc ? inr(t.svc) : ''}</span><span class="tm-go">›</span></button>`; };
+        return `<button class="tm-mc ${t.any ? '' : 'dim'}" data-a="tmsel" data-v="${esc(n)}">${av(n, g)}<span class="tm-mb"><b>${esc(n)}</b><small>${t.in} worked${t.off ? ' · ' + t.off + ' W/O' : ''}${t.lv ? ` · <em>${t.lv} leave</em>` : ''}</small>${bits.length ? `<small>${bits.join(' · ')}</small>` : ''}</span><span class="tm-ms">${t.svc ? inr(t.svc) : ''}</span><span class="tm-go">›</span></button>`; };
       const mlist = ['G', 'L', 'O', 'H'].map(g => { const ns = D.names.filter(n => D.gOf(n) === g); return ns.length ? `<div class="tm-mg">${{ G: 'Gents', L: 'Ladies', O: 'Others', H: 'House keeping' }[g]}</div>` + ns.map(mrow).join('') : ''; }).join('') + `<div class="tm-mt"><b>Total</b><span>${fmt(all('bills'))} bills · Product ${inr(all('prod'))}</span><b>${inr(all('svc'))}</b></div>`;
       inner = `<div class="tm-ml">${mlist}</div><div class="ox tm-wide"><table class="tm-t"><thead><tr><th class="tm-n">Staff</th><th>Worked</th><th>Week off</th><th>Leave</th><th>Service</th><th>Bills</th><th>ABV</th><th>Product</th><th>Mem card</th><th>Review</th><th></th></tr></thead><tbody>${grp}
         <tr class="tm-tot"><td class="tm-n"><b>Total</b></td><td></td><td></td><td></td><td class="b">${inr(all('svc'))}</td><td>${fmt(all('bills'))}</td><td>${all('bills') ? fmt(all('svc') / all('bills')) : ''}</td><td>${inr(all('prod'))}</td><td>${fmt(all('mc'))}</td><td>${fmt(all('rev'))}</td><td></td></tr></tbody></table></div>
@@ -2073,8 +2151,10 @@ VIEWS.team = () => {
 
 const SECN = { G: 'Gents SSP', L: 'Ladies SSP', O: 'OM', H: 'House keeping' };
 /* the person's section decides where they sit in the timely report (Gents / Ladies); it can be changed here */
-function tmSecRow(n) { const p = people().find(x => x.n === n); if (!p) return '';
-  return `<section class="card tm-sec"><div><b>Section</b><small>Where ${esc(n)} sits in the timely report</small></div>${tmTg('tmsec', p.g, Object.entries(SECN))}</section>`; }
+function tmSecRow(n) { const p = people().find(x => x.n === n); if (!p) return ''; const r = staffRec(n), has = r && S.pics[r.id] && S.pics[r.id].d;
+  return `<section class="card tm-prof"><div class="tm-pic">${av(n, p.g)}<div><b>${esc(n)}</b><small>${esc((r && r.des) || 'No designation yet')} · ${SN[p.g]}</small>
+      <span class="tm-pb"><label class="btn sm gh">${ic('camera')}${has ? 'Change photo' : 'Add photo'}<input type="file" accept="image/*" data-up="pic" hidden></label>${has ? `<button class="btn sm gh" data-a="picrm">Remove photo</button>` : ''}</span></div></div>
+    <div class="tm-sec2"><div><b>Designation</b>${tmTg('tmdes', (r && r.des) || '', DES.map(d => [d, d]))}</div><div><b>Section</b>${tmTg('tmsec', p.g, Object.entries(SECN))}</div></div></section>`; }
 function tmPerson(n) {
   const D = tmData(), t = D.T[n] || { in: 0, off: 0, lv: 0, svc: 0, bills: 0, prod: 0, pq: 0, mc: 0, rev: 0, items: {} }, g = D.gOf(n), pm = S.tmPm || 'day';
   const hx = `<button class="tm-back" data-a="tmback">← All staff</button>` + tmRangeBar() + `<div class="glass" style="margin-top:14px"><div class="gl"><small>Service sale</small><b>${inr(t.svc)}</b></div><div class="gl"><small>Product sale</small><b>${inr(t.prod)}</b></div><div class="gl"><small>Worked</small><b>${t.in} day${t.in === 1 ? '' : 's'}</b></div></div>`;
@@ -2182,7 +2262,7 @@ function monthRep() {
   const RG = mrRange(), days = mrDays(), withToday = RG.from <= S.today && RG.to >= S.today, rows = withToday ? (R().rows || {}) : {}, T = mrCustom() ? {} : (S.settings[mtKey()] || {}), E = S.settings[meKey()] || {};
   liveCalc(); const A = {}, add = (n, k, v) => { v = num(v); if (!n || !v) return; (A[n] = A[n] || { svc: 0, bills: 0, prod: 0, mc: 0, rev: 0 })[k] += v; };
   days.forEach(x => { ['staff', 'staffB', 'staffM', 'staffR'].forEach((f, i) => Object.entries(x[f] || {}).forEach(([n, v]) => add(n, ['svc', 'bills', 'mc', 'rev'][i], v))); (x.prods || []).forEach(p => add(p.staff || '?', 'prod', num(p.q) * num(p.p))); });
-  Object.entries(rows).forEach(([n, v]) => { add(n, 'svc', v.svc); add(n, 'bills', v.bills); add(n, 'mc', v.mc); add(n, 'rev', v.rev); add(n, 'prod', prodSum(v)); });
+  Object.entries(rows).forEach(([n, v]) => { add(n, 'svc', sv(v)); add(n, 'bills', v.bills); add(n, 'mc', v.mc); add(n, 'rev', v.rev); add(n, 'prod', prodSum(v)); });
   const inReport = new Set(Object.keys(A).concat(withToday ? present().map(p => p.n) : [])), order = S.staff.filter(x => x.branch === ME()).map(x => x.name);
   const ov = (k, auto) => E[k] !== undefined && E[k] !== '' ? num(E[k]) : auto, isOv = k => E[k] !== undefined && E[k] !== '';
   const tgt = n => { const t = T[n] || {}; return { s: num(t.s), p: num(t.p) }; };
@@ -2261,7 +2341,7 @@ function openSheet(html) { document.getElementById('layer').innerHTML = `<div cl
 /* change what an open sheet shows without playing its opening animation again */
 function sheetUpdate(html) { const sh = document.querySelector('#layer .sh'); if (!sh) { openSheet(html); return; } const y = sh.scrollTop; sh.innerHTML = html; sh.scrollTop = y; }
 const closeSheet = () => { document.getElementById('layer').innerHTML = ''; };
-const fl = (id, label, v, type, opts) => `<div class="fl"><label for="${id}">${label}</label>${opts ? `<select id="${id}">${opts.map(o => `<option value="${esc(o[0])}" ${String(o[0]) === String(v) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select>` : `<input id="${id}" ${type === 'n' ? 'inputmode="numeric"' : type === 'pin' ? 'inputmode="numeric" maxlength="4" type="password"' : ''} value="${esc(v)}" autocomplete="off">`}</div>`;
+const fl = (id, label, v, type, opts) => `<div class="fl"><label for="${id}">${label}</label>${opts ? `<select id="${id}">${opts.map(o => `<option value="${esc(o[0])}" ${String(o[0]) === String(v) ? 'selected' : ''}>${esc(o[1])}</option>`).join('')}</select>` : `<input id="${id}" ${type === 'n' ? 'inputmode="numeric"' : type === 'pin' ? 'inputmode="numeric" maxlength="4" type="password"' : type === 'time' ? 'type="time"' : ''} value="${esc(v)}" autocomplete="off">`}</div>`;
 const val = id => (document.getElementById(id) || {}).value || '';
 const busy = (on) => { document.querySelectorAll('.sh .btn:not(.gh)').forEach(b => { b.disabled = on; b.style.opacity = on ? .6 : ''; }); };
 const SHEETS = {
@@ -2275,10 +2355,10 @@ const SHEETS = {
     ${fl('x_n', 'Other reason', '')}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="sreason" data-n="${esc(n)}" data-v="">Save other reason</button></div>`; },
   rmstaff(id) { const p = people().find(x => x.id === id) || { n: '' }; return `<h3>Remove ${esc(p.n)}?</h3><div class="sub">They stop showing in attendance and reports. The controller is told.</div>${fl('rm_r', 'Reason', '', '', [['', 'Pick a reason'], ['Left the job', 'Left the job'], ['Moved to another branch', 'Moved to another branch'], ['Added by mistake', 'Added by mistake'], ['Other', 'Other']])}${fl('rm_n', 'Note', '')}<input type="hidden" id="rm_p" value="${esc(id)}">
     <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" style="background:var(--bad)" data-a="save" data-v="rmstaff">Remove</button></div>`; },
-  newprod() { return `<h3>Ask for a new product</h3><div class="sub">The controller adds it to your list</div>${fl('n_p', 'Product name', '')}<div class="f2">${fl('n_m', 'MRP ₹', '', 'n')}${fl('n_q', 'Pieces in hand', '', 'n')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newprod">Send</button></div>`; },
-  other() { const o = S.staff.filter(x => x.branch !== ME() && (x.g === 'G' || x.g === 'L')).map(x => [x.branch + '|' + x.name + '|' + x.g, `${x.name} · ${x.branch}`]);
-    return `<h3>Staff from another branch</h3><div class="sub">Their sales are saved under their own name</div>${fl('o_s', 'Staff', '', '', [['', 'Pick the staff']].concat(o))}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="other">Add for today</button></div>`; },
-  newstaff() { return `<h3>New staff</h3><div class="sub">The controller is told</div>${fl('s_n', 'Name', '')}${fl('s_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newstaff">Add</button></div>`; },
+  newprod() { return `<h3>Ask for a new product</h3><div class="sub">The controller adds it to your list</div>${fl('n_p', 'Product name', '')}${fl('n_note', 'Note (optional)', '')}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newprod">Send</button></div>`; },
+  other() { const o = S.staff.filter(x => x.branch !== ME()).sort((p, q) => p.branch.localeCompare(q.branch) || p.name.localeCompare(q.name)).map(x => [x.branch + '|' + x.name + '|' + x.g, `${x.name} · ${x.des || SN[x.g]} · ${x.branch}`]);
+    return `<h3>Staff from another branch</h3><div class="sub">Working here today. Their attendance is kept here; their sales go to their own name.</div>${fl('o_s', 'Staff', '', '', [['', 'Pick the staff']].concat(o))}${fl('o_in', 'In time', '', 'time')}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="other">Add for today</button></div>`; },
+  newstaff() { return `<h3>New staff</h3><div class="sub">The controller is told</div>${fl('s_n', 'Name', '')}<div class="f2">${fl('s_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}${fl('s_d', 'Designation', '', '', [['', 'Pick']].concat(DES.map(d => [d, d])))}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="newstaff">Add</button></div>`; },
   me() { return `<h3>Change PIN</h3><div class="sub">${esc(S.me.name)} · ${esc(ME())}</div><div class="f2">${fl('p_old', 'Current PIN', '', 'pin')}${fl('p_new', 'New PIN', '', 'pin')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="logout">${ic('out')}Sign out</button><button class="btn" data-a="save" data-v="pin">Change PIN</button></div>`; }
 };
 const SAVE = {
@@ -2289,24 +2369,130 @@ const SAVE = {
     toast(it ? `${p} added` : `${p} added · the controller is told`); if (!it) { const r2 = R().rows[n]; openSheet(SHEETS.prod(n)); } return 'stay'; },
   async rmstaff() { const id = val('rm_p'), r = val('rm_r'); if (!r) throw 'Pick a reason.'; if (r === 'Other' && !val('rm_n').trim()) throw 'Write the reason in the note.';
     const p = people().find(x => x.id === id); S.staff = await call('appStaffOp', S.tok, ME(), 'remove', { id, reason: r, note: val('rm_n').trim() }); if (p) { delete A().att[p.n]; touch(S.today, 'att'); } persist(); toast((p ? p.n : 'Staff') + ' removed · controller told'); return true; },
-  async newprod() { const n = val('n_p').trim(); if (!n) throw 'Write the product name.'; await call('appStockOp', S.tok, ME(), 'ask', { n, mrp: val('n_m'), q: val('n_q') }); toast('Sent to the controller'); return true; },
-  async other() { const v = val('o_s'); if (!v) throw 'Pick the staff.'; const [b, n, g] = v.split('|'); if (A().extra.some(x => x.n === n)) throw n + ' is already added.'; A().extra.push({ n, g, from: b }); touch(S.today, 'att'); toast(n + ' added for today'); return true; },
+  async newprod() { const n = val('n_p').trim(); if (!n) throw 'Write the product name.'; await call('appStockOp', S.tok, ME(), 'ask', { n, note: val('n_note').trim() }); toast('Sent to the controller'); return true; },
+  async other() { const v = val('o_s'); if (!v) throw 'Pick the staff.'; const [b, n, g] = v.split('|'); if (A().extra.some(x => x.n === n)) throw n + ' is already added.'; A().extra.push({ n, g, from: b, in: val('o_in') || '', out: '' }); touch(S.today, 'att'); toast(n + ' added for today'); return true; },
   async newstaff() { const n = val('s_n').trim(); if (!n) throw 'Write the name.'; const el = document.getElementById('s_n');
     const sim = people().find(p => p.n.toLowerCase().replace(/\s/g, '').slice(0, 4) === n.toLowerCase().replace(/\s/g, '').slice(0, 4)); if (sim && el.dataset.ok !== n) { el.dataset.ok = n; throw `Is this ${sim.n}? Press Add again if it's someone new.`; }
-    S.staff = await call('appStaffOp', S.tok, ME(), 'add', { name: n, g: val('s_g') }); persist(); toast(n + ' added · controller told'); return true; },
+    S.staff = await call('appStaffOp', S.tok, ME(), 'add', { name: n, g: val('s_g'), des: val('s_d') }); persist(); toast(n + ' added · controller told'); return true; },
   async pin() { if (!/^\d{4}$/.test(val('p_old'))) throw 'Type your current PIN.'; if (!/^\d{4}$/.test(val('p_new'))) throw 'The new PIN must be 4 digits.'; await call('appMyPin', S.tok, val('p_old'), val('p_new')); toast('PIN changed'); return true; }
 };
+/* ---------------- close the day: attendance with out times, EB closing reading and the closing report must all be in ---------------- */
+function dayChecks(d) {
+  const dy = S.days[d] || {}, a = dy.att || attDef(), c = dy.clo || {};
+  const ins = Object.entries(a.att || {}).filter(([, x]) => x && x.st === 'in').map(([n, x]) => ({ n, x, ex: -1 })).concat((a.extra || []).map((x, i) => ({ n: x.n, x, ex: i })));
+  const noOut = ins.filter(y => !y.x.out);
+  return [{ k: 'att', ok: !!a.attDone, t: 'Attendance saved' },
+    { k: 'out', ok: !!a.attDone && !noOut.length, t: noOut.length ? 'Out time for ' + noOut.map(y => y.n).join(', ') : 'Out time for everyone present', miss: noOut },
+    { k: 'eb', ok: !blank(a.ebEnd), t: 'EB closing reading' },
+    { k: 'clo', ok: ['sent', 'approved'].includes(c.status), t: 'Closing report sent (with the staff report)' }];
+}
+const dayClosed = d => !!(((S.days[d] || {}).clo || {}).closedAt);
+const closeDue = d => !!S.days[d] && !dayClosed(d) && ['sent', 'approved'].includes((S.days[d].clo || {}).status);
+function closeCard(d) {
+  if (!S.days[d]) return '';
+  const today = d === S.today;
+  if (dayClosed(d)) return `<section class="card dcl ok"><div class="ch" style="margin:0"><div class="ct"><span class="ib g">${ic('check')}</span>${today ? 'Day closed' : dLabel(d) + ' closed'}</div><span class="cs">${esc(S.days[d].clo.closedAt)}</span></div></section>`;
+  const ck = dayChecks(d), all = ck.every(x => x.ok), a = S.days[d].att || {};
+  const extra = x => !x.ok && x.k === 'out' && a.attDone ? `<div class="dco">${x.miss.map(y => `<label>${esc(y.n)}<input type="time" class="tin tt need" data-dco="${d}|${y.ex}|${esc(y.n)}" aria-label="${esc(y.n)} out time"></label>`).join('')}</div>`
+    : !x.ok && x.k === 'eb' ? `<input class="tin" style="width:130px" data-dceb="${d}" inputmode="decimal" placeholder="Reading" aria-label="EB closing reading">`
+    : !x.ok && x.k === 'att' && today ? `<button class="btn sm gh" data-a="go" data-v="att">Open</button>`
+    : !x.ok && x.k === 'clo' ? `<button class="btn sm gh" data-a="${today ? 'go' : 'ycl'}" data-v="closing">Open</button>` : '';
+  return `<section class="card dcl" id="dcl_${d}"><div class="ch"><div class="ct"><span class="ib ${all ? 'g' : 'y'}">${ic('lock')}</span><span>${today ? 'Close the day' : 'Accounts not closed · ' + dLabel(d)}<div class="cs" style="margin-top:2px">${ck.filter(x => x.ok).length} of ${ck.length} done${all ? ' · ready to close' : ''}</div></span></div></div>
+    <div class="dck">${ck.map(x => `<div class="dci ${x.ok ? 'ok' : ''}"><i>${x.ok ? '✓' : '!'}</i><span class="dct">${esc(x.t)}</span>${extra(x)}</div>`).join('')}</div>
+    <button class="btn wide ${all ? '' : 'off'}" data-a="closeday" data-v="${d}">${ic('lock')}Close the day${today ? '' : ' · ' + dLabel(d)}</button></section>`;
+}
+async function closeDay(d, el) {
+  const ck = dayChecks(d).filter(x => !x.ok); if (ck.length) { toast('Finish first: ' + ck.map(x => x.t).join(' · ')); const box = document.getElementById('dcl_' + d); if (box) box.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+  if (el) { el.disabled = true; el.textContent = 'Closing…'; }
+  if (!(await flushNow())) { toast('No internet. Try again when online.'); render(); return; }
+  try { const r = await call('appCloseDay', S.tok, ME(), d); const c = S.days[d].clo; c.closedAt = r.closedAt; c._v = r._v; persist(); render(); doneShow('Day closed', dLabel(d) + ' · ' + r.closedAt); }
+  catch (e) { toast(e instanceof NetErr ? 'No internet. Try again when online.' : e.message); render(); }
+}
+
+/* ---------------- product needs between branches ---------------- */
+const reqOpen = () => (S.reqs || []).filter(x => x.status === 'open');
+const reqForMe = () => reqOpen().filter(x => x.branch !== ME() && !(x.replies || {})[ME()]);
+const reqMine = () => (S.reqs || []).filter(x => x.branch === ME() && (x.status === 'open' || nowMs() - (x.ms || 0) < 864e5));
+function reqCard() {
+  const fm = reqForMe(), mine = reqMine(), others = BR.filter(b => b !== ME());
+  const st = (x, b) => { const r = (x.replies || {})[b]; return r ? (r.a ? `<span class="pill p-ok">${b} · has ${r.q}</span>` : `<span class="pill p-mu">${b} · no</span>`) : `<span class="pill p-warn">${b} · waiting</span>`; };
+  return `<section class="card" id="reqs"><div class="ch"><div class="ct"><span class="ib p">${ic('box')}</span><span>Product needs<div class="cs" style="margin-top:2px">${fm.length ? fm.length + ' waiting for your answer' : 'Ask the other branches for a product you don’t have'}</div></span></div><button class="btn sm" data-a="reqnew">${ic('plus')}Ask for a product</button></div>
+    ${fm.map(x => `<div class="rq ask"><div class="tx"><b>${esc(x.branch)} needs ${x.qty} × ${esc(x.product)}</b><small>${x.note ? esc(x.note) + ' · ' : ''}${esc(x.ts)}${x.by ? ' · ' + esc(x.by) : ''}</small></div><div class="rqb"><button class="btn sm" data-a="reqyes" data-v="${esc(x.id)}">Available</button><button class="btn sm gh" data-a="reqno" data-v="${esc(x.id)}">Not available</button></div></div>`).join('')}
+    ${mine.map(x => `<div class="rq"><div class="tx"><b>You asked for ${x.qty} × ${esc(x.product)}${x.status === 'closed' ? ' · closed' : ''}</b><small>${x.note ? esc(x.note) + ' · ' : ''}${esc(x.ts)}</small><div class="rqs">${others.map(b => st(x, b)).join('')}</div></div>${x.status === 'open' ? `<button class="btn sm gh" data-a="reqclose" data-v="${esc(x.id)}">Close</button>` : ''}</div>`).join('')}
+    ${!fm.length && !mine.length ? '<div class="empty">No open requests.</div>' : ''}</section>`;
+}
+async function reqLoad() { if (!S.tok || !S.me || S.me.role !== 'manager' || S.asBranch || !S.booted) return;
+  try { const L = await call('appReq', S.tok, 'list'), was = JSON.stringify(S.reqs || []); S.reqs = L; if (JSON.stringify(L) !== was && ['today', 'inbox'].includes(S.page) && !typing() && !document.querySelector('#layer .ov')) render(); } catch (e) {} }
+setInterval(reqLoad, 90000);
+
+/* ---------------- assets and the weekly check ---------------- */
+S.assets = null;
+async function loadAssets(force) { if (loadAssets.busy || (S.assets && !force) || !S.tok || !S.me || S.me.role !== 'manager') return; loadAssets.busy = 1;
+  try { S.assets = await call('appAssets', S.tok, ME(), 'list'); if (['stock', 'today', 'inbox'].includes(S.page) && !typing() && !document.querySelector('#layer .ov')) render(); } catch (e) {} loadAssets.busy = 0; }
+const assetDone = () => !!S.assets && (S.assets.checks || []).some(c => c.week === S.assets.week);
+const assetDue = () => !!S.assets && S.assets.assets.length > 0 && !assetDone();
+function assetCard() {
+  const X = S.assets; if (!X) { loadAssets(); return `<section class="card" id="assets"><div class="ct"><span class="ib b">${ic('box')}</span>Assets</div><div class="empty">Loading…</div></section>`; }
+  const last = (X.checks || [])[0], done = assetDone();
+  return `<section class="card" id="assets"><div class="ch"><div class="ct"><span class="ib b">${ic('box')}</span><span>Assets<div class="cs" style="margin-top:2px">${done ? `Checked this week · ${esc(last.ts)} · ${esc(last.by)}` : X.assets.length ? 'Weekly check due' + (last ? ' · last ' + esc(last.ts) : '') : 'Add the branch assets once'}</div></span></div><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="assetadd">${ic('plus')}Add asset</button>${X.assets.length ? `<button class="btn sm ${done ? 'gh' : ''}" data-a="assetcheck">${done ? 'Check again' : 'Weekly check'}</button>` : ''}</span></div>
+    ${X.assets.length ? `<div class="ox"><table class="tm-t ast"><thead><tr><th class="c">S.No</th><th class="l">Asset no</th><th class="l">Asset</th><th>Quantity</th><th></th></tr></thead><tbody>${X.assets.map((x, i) => `<tr><td class="c">${i + 1}</td><td class="l">${esc(x.no || '–')}</td><td class="l"><b>${esc(x.name)}</b></td><td class="b">${x.qty}</td><td class="c"><button class="xb" data-a="assetrm" data-v="${esc(x.id)}" aria-label="Remove ${esc(x.name)}">✕</button></td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">No assets yet. Add each one with its number and quantity.</div>'}</section>`;
+}
+
+/* sheets and saves for the new parts */
+Object.assign(SHEETS, {
+  reqnew() { const names = [...new Set(S.stock.filter(x => x.branch === ME()).map(x => x.n))];
+    return `<h3>Ask for a product</h3><div class="sub">The other branches answer: available or not available</div>${fl('rq_p', 'Product', '')}<datalist id="rqdl">${names.map(n => `<option value="${esc(n)}">`).join('')}</datalist><div class="f2">${fl('rq_q', 'How many', '1', 'n')}${fl('rq_n', 'Note (optional)', '')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="reqnew">Ask</button></div>`; },
+  reqyes(id) { const x = (S.reqs || []).find(y => y.id === id) || {}; return `<h3>${esc(x.product || '')} · how many can you give?</h3><div class="sub">${esc(x.branch || '')} needs ${x.qty || ''}</div>${fl('ry_q', 'Available', String(x.qty || 1), 'n')}<input type="hidden" id="ry_id" value="${esc(id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="reqyes">Send</button></div>`; },
+  assetadd() { return `<h3>Add an asset</h3><div class="sub">The controller is told</div><div class="f2">${fl('as_no', 'Asset number', '')}${fl('as_q', 'Quantity', '1', 'n')}</div>${fl('as_n', 'Asset name', '')}<div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="assetadd">Add</button></div>`; },
+  assetrm(id) { const x = ((S.assets || {}).assets || []).find(y => y.id === id) || {}; return `<h3>Remove ${esc(x.name || '')}?</h3><div class="sub">The controller is told</div>${fl('ar_r', 'Reason', '')}<input type="hidden" id="ar_id" value="${esc(id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" style="background:var(--bad)" data-a="save" data-v="assetrm">Remove</button></div>`; },
+  assetcheck() { const L = (S.assets || {}).assets || [], Q = S.acQ = S.acQ || {}, P = S.acPh = S.acPh || [];
+    return `<h3>Weekly asset check</h3><div class="sub">Count each asset and add photos · week of ${esc(dLabel((S.assets || {}).week || S.today))}</div>
+      <div class="acl">${L.map((x, i) => `<div class="acr"><span class="acn"><b>${i + 1}. ${esc(x.name)}</b><small>${esc(x.no || 'No number')} · was ${x.qty}</small></span><input class="tin" style="width:84px" inputmode="numeric" data-acq="${esc(x.id)}" value="${esc(Q[x.id] !== undefined ? Q[x.id] : x.qty)}" aria-label="${esc(x.name)} count"><input class="tin" style="flex:1;min-width:120px" data-acn="${esc(x.id)}" value="${esc((S.acN || {})[x.id] || '')}" placeholder="Note" aria-label="${esc(x.name)} note"></div>`).join('')}</div>
+      <div class="pgrid" style="margin-top:12px">${P.map((id, i) => `<div class="ph"><img src="${S.photos[id] || ''}" alt="Photo ${i + 1}"><button data-a="acphrm" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}<label class="padd">${ic('camera')}<span>${P.length ? 'Add more' : 'Add photos'}</span><input type="file" accept="image/*" multiple data-up="ast"></label></div>
+      <div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="save" data-v="assetcheck">Save the check</button></div>`; }
+});
+Object.assign(SAVE, {
+  async reqnew() { const p = val('rq_p').trim(); if (!p) throw 'Write the product.'; S.reqs = await call('appReq', S.tok, 'add', { product: p, qty: val('rq_q'), note: val('rq_n').trim() }); toast('Asked the other branches'); return true; },
+  async reqyes() { const q = Math.round(num(val('ry_q'))); if (!q || q < 1) throw 'Type how many.'; S.reqs = await call('appReq', S.tok, 'reply', { id: val('ry_id'), avail: true, qty: q }); toast('Sent · the controller is told'); return true; },
+  async assetadd() { const n = val('as_n').trim(); if (!n) throw 'Write the asset name.'; S.assets = await call('appAssets', S.tok, ME(), 'add', { no: val('as_no').trim(), name: n, qty: val('as_q') }); toast(n + ' added'); return true; },
+  async assetrm() { if (!val('ar_r').trim()) throw 'Write the reason.'; S.assets = await call('appAssets', S.tok, ME(), 'remove', { id: val('ar_id'), reason: val('ar_r').trim() }); toast('Removed · controller told'); return true; },
+  async assetcheck() { const L = (S.assets || {}).assets || [], Q = S.acQ || {}; if (!L.length) throw 'No assets yet.';
+    const items = L.map(x => ({ id: x.id, qty: Q[x.id] !== undefined && String(Q[x.id]).trim() !== '' ? Math.round(num(Q[x.id])) : x.qty, was: x.qty, note: (S.acN || {})[x.id] || '' }));
+    if (!(S.acPh || []).length && document.getElementById('serr').dataset.ok !== '1') { document.getElementById('serr').dataset.ok = '1'; throw 'No photos added. Press Save again to save without photos.'; }
+    S.assets = await call('appAssets', S.tok, ME(), 'check', { items, photos: S.acPh || [] }); S.acQ = {}; S.acN = {}; S.acPh = []; doneShow('Asset check saved', items.filter(x => x.qty !== x.was).length ? items.filter(x => x.qty !== x.was).length + ' count(s) changed · the controller is told' : 'All counts as before'); return true; }
+});
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-a]'); if (!el || !S.me || S.me.role !== 'manager') return; const a = el.dataset.a, v = el.dataset.v;
+  if (a === 'closeday') closeDay(v, el);
+  else if (a === 'reqnew') { openSheet(SHEETS.reqnew()); const f = document.getElementById('rq_p'); if (f) f.setAttribute('list', 'rqdl'); }
+  else if (a === 'reqyes') openSheet(SHEETS.reqyes(v));
+  else if (a === 'reqno' || a === 'reqclose') { el.disabled = true; try { S.reqs = await call('appReq', S.tok, a === 'reqno' ? 'reply' : 'close', { id: v, avail: false }); render(); toast(a === 'reqno' ? 'Sent · not available' : 'Closed'); } catch (er) { el.disabled = false; toast(er instanceof NetErr ? 'No internet. Try again.' : er.message); } }
+  else if (a === 'assetadd') openSheet(SHEETS.assetadd());
+  else if (a === 'assetrm') openSheet(SHEETS.assetrm(v));
+  else if (a === 'assetcheck') openSheet(SHEETS.assetcheck());
+  else if (a === 'acphrm') { (S.acPh || []).splice(+v, 1); sheetUpdate(SHEETS.assetcheck()); }
+});
+document.addEventListener('input', e => { const t = e.target, d = t.dataset;
+  if (d.acq) { (S.acQ = S.acQ || {})[d.acq] = t.value.replace(/[^\d]/g, ''); }
+  else if (d.acn) { (S.acN = S.acN || {})[d.acn] = t.value; } });
+document.addEventListener('change', async e => { const t = e.target, d = t.dataset; if (!S.me || S.me.role !== 'manager') return;
+  if (d.dco) { const [dd, ex, n] = d.dco.split('|'), a = S.days[dd] && S.days[dd].att; if (!a || !t.value) return; if (+ex >= 0) { if (a.extra[+ex]) a.extra[+ex].out = t.value; } else { (a.att[n] = a.att[n] || { st: 'in' }).out = t.value; } touch(dd, 'att'); render(); }
+  else if (d.dceb) { const a = S.days[d.dceb] && S.days[d.dceb].att; if (!a || !t.value.trim()) return; a.ebEnd = t.value.trim(); touch(d.dceb, 'att'); render(); }
+  else if (d.up === 'ast' && t.files && t.files.length) { const files = [...t.files]; t.value = ''; S.acPh = S.acPh || []; toast('Uploading ' + files.length + ' photo' + (files.length > 1 ? 's' : '') + '…');
+    for (const f of files) { try { const data = await shrink(f, 1400, .7), r = await call('appPhoto', S.tok, ME(), 'asset-' + ((S.assets || {}).week || S.today), 'add', data); S.photos[r.id] = data; S.acPh.push(r.id); } catch (er) { toast(er instanceof NetErr ? 'No internet. Upload again when online.' : 'A photo could not be uploaded.'); } }
+    sheetUpdate(SHEETS.assetcheck()); }
+});
 const mergeStock = list => S.stock.filter(x => x.branch !== ME()).concat(list || []);
 
 /* ---------------- live updates while typing (no re-render) ---------------- */
 function refreshSheetTotals() {
   const Cc = liveCalc(), t = document.querySelector('.xt'); if (!t) return;
-  const vals = x => [fmt(x.tgt), fmt(x.svc), fmt(x.bills), x.bills ? fmt(x.svc / x.bills) : '–', fmt(x.kids), fmt(x.prod), fmt(x.mc), fmt(x.rev)];
+  const vals = x => sheetVals(x, true);
   const subs = [...t.querySelectorAll('tr.sub')], gt = t.querySelector('tr.gt');
-  Cc.groups.filter(g => g.g !== 'O').forEach((g, i) => { if (subs[i]) vals(g.t).forEach((v, j) => subs[i].children[j + 1].textContent = v); });
-  if (gt) vals(Cc.G).forEach((v, j) => gt.children[j + 1].textContent = v);
+  Cc.groups.filter(g => g.g !== 'O').forEach((g, i) => { if (subs[i]) vals(g.t).forEach((v, j) => { if (subs[i].children[j + 2]) subs[i].children[j + 2].textContent = v; }); });
+  if (gt) vals(Cc.G).forEach((v, j) => { if (gt.children[j + 2]) gt.children[j + 2].textContent = v; });
   [['mcamt', num(R().mcAmt)], ['prod', Cc.G.prod], ['net', Cc.net], ['gross', Cc.gross]].forEach(([f, v]) => { const el = t.querySelector(`[data-ft="${f}"]`); if (el) el.textContent = fmt(v); });
-  present().forEach(p => { const el = t.querySelector(`[data-abv="${CSS.escape(p.n)}"]`), r = R().rows[p.n]; if (el && r) { const a = abv(r.svc, r.bills); el.textContent = a === '–' ? '' : fmt(a); } });
+  present().forEach(p => { const el = t.querySelector(`[data-abv="${CSS.escape(p.n)}"]`), r = R().rows[p.n]; if (el && r) { const a = abv(sv(r), r.bills); el.textContent = a === '–' ? '' : fmt(a); } });
   const gl = document.querySelectorAll('.hd .gl b'); if (gl.length === 3 && S.page === 'report') { gl[0].textContent = inr(Cc.G.tgt); gl[1].textContent = inr(Cc.G.svc); gl[2].textContent = inr(Cc.net); }
 }
 function refreshAccounts() {
@@ -2328,17 +2514,24 @@ document.addEventListener('input', e => {
   else if (d.l) { const L = C()[d.l]; L[+d.i][d.k] = t.value; if (L[+d.i].y) { delete L[+d.i].y; const tr = t.closest('tr'); if (tr) tr.classList.remove('yrow'); } markChanged(); if (+d.i >= L.length - 2 && t.value.trim()) { const st = L.length; for (let i = 0; i < 5; i++) L.push(blankL(d.l)); const tb = document.querySelector(`[data-lb="${d.l}"]`); if (tb) tb.insertAdjacentHTML('beforeend', L.slice(st).map((r, i) => lrow(d.l, st + i, r, +(tb.dataset.off || 0))).join('')); } refreshAccounts(); touch(CD(), 'clo'); }
   else if (d.den) { C().den[d.den] = t.value.replace(/[^\d]/g, ''); if (C().denY) { C().denY = false; document.querySelectorAll('[data-den]').forEach(x => x.classList.remove('yv')); } markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
   else if (d.chk) { C()[d.chk] = t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
-  else if (d.ts) { C().totSales = t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.ts) { C().totSales = t.value.trim() === '' || num(t.value) === autoGross() ? '' : t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
+  else if (d.hd) { const [k2, f] = d.hd.split('|'), c = C(); c.heads = c.heads || {}; c.heads[k2] = c.heads[k2] || {}; c.heads[k2][f] = t.value; markChanged(); touch(CD(), 'clo'); }
+  else if (d.ttl) { const c = C(); c.titles = c.titles || {}; c.titles[d.ttl] = t.value; markChanged(); touch(CD(), 'clo'); }
   else if (d.ot) { C().openTyped = t.value; markChanged(); refreshAccounts(); touch(CD(), 'clo'); }
   else if (d.eb) { A()[d.eb] = t.value; touch(S.today, 'att'); }
   else if (d.in) { (A().att[d.in] = A().att[d.in] || { st: 'in' }).in = t.value; touch(S.today, 'att'); }
   else if (d.out) { (A().att[d.out] = A().att[d.out] || { st: 'in' }).out = t.value; touch(S.today, 'att'); }
+  else if (d.xin !== undefined) { const x = A().extra[+d.xin]; if (x) { x.in = t.value; t.classList.toggle('need', !t.value); touch(S.today, 'att'); } }
+  else if (d.xout !== undefined) { const x = A().extra[+d.xout]; if (x) { x.out = t.value; touch(S.today, 'att'); } }
   else if (d.yout) { A().yout = A().yout || {}; A().yout[d.yout] = t.value; t.classList.toggle('need', !t.value); touch(S.today, 'att'); }
 });
 document.addEventListener('change', async e => {
   const t = e.target; if (!S.me || S.me.role !== 'manager') return;
   if (t.dataset.nocard) { C().noCard = t.checked; markChanged(); touch(CD(), 'clo'); render(); return; }
   if (t.dataset.l && t.tagName === 'SELECT') return;
+  if (t.dataset.up === 'pic' && t.files && t.files.length) { const f = t.files[0], p = people().find(x => x.n === S.tmSel); t.value = ''; if (!p) return; toast('Saving the photo…');
+    try { const d = await picResize(f); S.staff = await call('appStaffOp', S.tok, ME(), 'pic', { id: p.id, pic: d }); const r = S.staff.find(x => x.id === p.id); if (r) { S.pics[r.id] = { v: r.pv, d }; try { ls('gt_pics', JSON.stringify(S.pics)); } catch (e) {} } persist(); render(); toast('Photo saved'); }
+    catch (e) { toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } return; }
   if (t.dataset.up && t.files && t.files.length) { const files = [...t.files]; t.value = ''; await addPhotos(files); return; }
   if (t.id === 'opentyped') { const c = C(), ao = autoOpening(), v = t.value.trim();
     if (v === '' || (ao !== null && num(v) === ao)) { c.openTyped = ''; refreshAccounts(); touch(CD(), 'clo'); return; }
@@ -2409,14 +2602,18 @@ async function submitClosing() {
   const miss = [];
   if (tday) SLOTS.slice(0, 4).forEach(([id]) => { if (!rr.snaps[id]) miss.push(slotName(id) + ((rr.skip || {})[id] ? ' report skipped' : ' report not sent')); });
   if (tday && carriedCount()) miss.push(carriedCount() + ' entries from yesterday not cleared or changed');
-  if (blank(c.totSales)) miss.push('Total sales not typed');
+  const ag = autoGross(), grossChanged = !blank(c.totSales) && num(c.totSales) !== ag;
+  if (!totalSales()) miss.push('Total sales is 0');
+  if (grossChanged) miss.push('Total sales changed from the report (' + inr(ag) + ' → ' + inr(num(c.totSales)) + ')');
   if (!nFilled('gpay')) miss.push('G-Pay list empty');
   if (!c.noCard && !nFilled('card')) miss.push('Card list empty');
   if (!(c.photos || []).length) miss.push('No photos uploaded');
   if (!denTot()) miss.push('Cash not counted');
   if (miss.length && out.dataset.ok !== '1') { out.dataset.ok = '1'; out.innerHTML = `<div class="note n-warn"><b>These are missing or don't match</b><div style="margin:6px 0">${miss.map(x => '• ' + esc(x)).join('<br>')}</div>You can still send it. The controller will be told about each one.</div>`; out.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
   const exv = denTot() - closingBal(); if (denTot()) miss.push(exv === 0 ? 'Cash matches' : (exv > 0 ? 'Excess ' : 'Short ') + inr(Math.abs(exv)));
+  c.grossAuto = ag; if (blank(c.totSales)) { c.totSales = String(ag); c.totAuto = true; }
   if (tday) touch(d, 'rep'); touch(d, 'clo');
+  if (grossChanged) call('appTell', S.tok, ME(), 'gross', { date: d, from: ag, to: num(c.totSales) }).catch(() => {});
   const btn = document.querySelector('[data-a=submit]'); if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
   if (!(await flushNow())) { toast('No internet. Send again when online.'); render(); return; }
   try { await call('appSendClosing', S.tok, ME(), d, miss); const x = await call('appDay', S.tok, ME(), d); S.days[d] = { att: x.att, rep: x.rep, clo: x.clo }; day(d); S.used[d] = true; persist();
@@ -2455,6 +2652,10 @@ document.addEventListener('click', async e => {
     case 'tmpm': S.tmPm = v; render(); break;
     case 'tmsel': S.tmSel = v; render(); window.scrollTo(0, 0); break;
     case 'tmback': S.tmSel = null; render(); window.scrollTo(0, 0); break;
+    case 'tmdes': { const p = people().find(x => x.n === S.tmSel); if (!p) break; const nv = (staffRec(p.n) || {}).des === v ? '' : v; el.disabled = true;
+      try { S.staff = await call('appStaffOp', S.tok, ME(), 'des', { id: p.id, des: nv }); persist(); render(); toast(nv ? p.n + ' · ' + nv : 'Designation cleared'); } catch (e) { el.disabled = false; toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } break; }
+    case 'picrm': { const p = people().find(x => x.n === S.tmSel); if (!p) break; el.disabled = true;
+      try { S.staff = await call('appStaffOp', S.tok, ME(), 'pic', { id: p.id, pic: null }); persist(); await loadPics(); render(); toast('Photo removed'); } catch (e) { el.disabled = false; toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } break; }
     case 'tmsec': { const p = people().find(x => x.n === S.tmSel); if (!p || p.g === v) break; el.disabled = true;
       try { S.staff = await call('appStaffOp', S.tok, ME(), 'section', { id: p.id, g: v }); persist(); render(); toast(p.n + ' is now ' + SECN[v] + (S.me.role === 'manager' ? ' · controller told' : '')); }
       catch (e) { el.disabled = false; toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } break; }
@@ -2466,13 +2667,17 @@ document.addEventListener('click', async e => {
     case 'uitheme': uiSet('theme', v); render(); break;
     case 'appcheck': el.disabled = true; el.textContent = 'Checking…'; await inboxLoad(); if (outdated()) render(); else { toast('You have the latest version'); render(); } break;
     case 'att': { const n = el.dataset.n, cur = A().att[n] || {};
+      if (v === 'ob' && cur.st !== 'ob') { const host = (S.away || {})[n]; if (host) { A().att[n] = { st: 'ob', at: host, in: '', out: '' }; touch(S.today, 'att'); render(); break; }
+        openSheet(`<h3>${esc(n)} is working at</h3><div class="sub">Their sales go to their own name there</div><div class="chips">${BR.filter(b => b !== ME()).map(b => `<button class="btn gh" data-a="attob" data-n="${esc(n)}" data-v="${b}">${b}</button>`).join('')}</div><div class="sha"><button class="btn gh" data-a="close">Cancel</button></div>`); break; }
       if (cur.st === v) { A().att[n] = { st: '', in: cur.in || '', out: cur.out || '' }; touch(S.today, 'att'); render(); break; } /* tapping the chosen option again clears it */
       A().att[n] = { st: v, in: v === 'in' ? (cur.in || '') : '', out: v === 'in' ? (cur.out || '') : '' }; touch(S.today, 'att'); render(); const t = document.getElementById('in_' + n); if (t && v === 'in' && !t.value) t.focus(); break; }
     case 'attdone': { const left = people().filter(p => !(A().att[p.n] || {}).st); if (left.length) { toast('Mark ' + left.map(p => p.n).join(', ')); break; } const noT = people().filter(p => (A().att[p.n] || {}).st === 'in' && !(A().att[p.n] || {}).in); if (noT.length) { toast('Type the In time for ' + noT.map(p => p.n).join(', ')); const f = document.getElementById('in_' + noT[0].n); if (f) f.focus(); break; }
-      A().attDone = true; touch(S.today, 'att'); render(); const yo2 = people().filter(p => ydOut(p.n).st === 'in' && !ydOut(p.n).out).map(p => p.n); toast(yo2.length ? 'Attendance saved · yesterday out still empty: ' + yo2.join(', ') : 'Attendance saved'); break; }
+      const noX = A().extra.filter(x => !x.in); if (noX.length) { toast('Type the In time for ' + noX.map(x => x.n).join(', ')); break; }
+      A().attDone = true; touch(S.today, 'att'); render(); toast('Attendance saved'); break; }
     case 'ydst': { const a = A(); a.ydst = a.ydst || {}; if (v) a.ydst[el.dataset.n] = v; else delete a.ydst[el.dataset.n]; touch(S.today, 'att'); closeSheet(); render(); break; }
     case 'ydask': { const n = el.dataset.n; openSheet(`<h3>${esc(n)} yesterday</h3><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn gh" data-a="ydst" data-n="${esc(n)}" data-v="lv">Leave</button><button class="btn" data-a="ydst" data-n="${esc(n)}" data-v="off">Week off</button></div>`); break; }
     case 'attedit2': S.attEdit = !S.attEdit; render(); break;
+    case 'attob': A().att[el.dataset.n] = { st: 'ob', at: v, in: '', out: '' }; touch(S.today, 'att'); closeSheet(); render(); toast(el.dataset.n + ' · working at ' + v + ' today'); break;
     case 'allin': { people().forEach(p => { if (!(A().att[p.n] || {}).st) A().att[p.n] = { st: 'in', in: '', out: '' }; }); touch(S.today, 'att'); render(); const f = document.querySelector('input[data-in].need'); if (f) f.focus(); break; }
     case 'attedit': A().attDone = false; touch(S.today, 'att'); render(); break;
     case 'rmextra': A().extra.splice(+v, 1); touch(S.today, 'att'); render(); break;
@@ -2495,7 +2700,7 @@ document.addEventListener('click', async e => {
     case 'sreason': { const n = el.dataset.n, r = v || val('x_n').trim(); if (!r) { document.getElementById('serr').textContent = 'Pick a reason or write one.'; break; } closeSheet(); if (await stockOp('minus', n, { reason: r })) toast('1 removed · controller told'); break; }
     case 'attday': { const d = v, list = people().map(p => ({ p, a: attOf(p.n, d) }));
       openSheet(`<h3>${dLabel(d)}</h3><div class="sub">${list.filter(x => x.a.st === 'in').length} in · ${list.filter(x => x.a.st === 'off').length} week off · ${list.filter(x => x.a.st === 'lv').length} leave</div>
-      ${list.map(({ p, a: x }) => `<div class="row"><div class="nm"><span class="ini ${p.g}">${esc(ini(p.n))}</span><div><b>${esc(p.n)}</b><small>${GN[p.g]}</small></div></div><div style="text-align:right">${x.st ? `<span class="pill ${x.st === 'in' ? 'p-gt' : x.st === 'off' ? 'p-info' : 'p-bad'}">${AST[x.st][0]}</span>` : '<span class="pill p-mu">Not marked</span>'}${x.in ? `<div class="cs" style="margin-top:4px">${t12(x.in)} – ${x.out ? t12(x.out) : '…'}</div>` : ''}</div></div>`).join('')}
+      ${list.map(({ p, a: x }) => `<div class="row"><div class="nm">${av(p.n, p.g)}<div><b>${esc(p.n)}</b><small>${GN[p.g]}</small></div></div><div style="text-align:right">${x.st ? `<span class="pill ${x.st === 'in' ? 'p-gt' : x.st === 'off' ? 'p-info' : 'p-bad'}">${AST[x.st][0]}</span>` : '<span class="pill p-mu">Not marked</span>'}${x.in ? `<div class="cs" style="margin-top:4px">${t12(x.in)} – ${x.out ? t12(x.out) : '…'}</div>` : ''}</div></div>`).join('')}
       <div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break; }
     case 'attperson': { const n = v, s2 = attSummary(n); let cal = DOW.map(x => `<div class="dh">${x[0]}</div>`).join('');
       for (let i = 0; i < dowOf(S.today.slice(0, 8) + '01'); i++) cal += '<div></div>';
@@ -2569,7 +2774,7 @@ const oEb = () => `${DOW[dowOf(O.all.today)]} · ${dnum(O.all.today)} ${monthNam
 
 async function loadAll(quiet) {
   try { const r = await call('appAll', S.tok); if (!r.people && O.all && O.all.people) r.people = O.all.people; O.all = r;
-    if (r.me && r.me.role === 'controller') call('appPeople', S.tok).then(p => { if (O.all) { O.all.people = p; ls('gt_office', JSON.stringify(O.all)); if (S.page === 'people') render(); } }).catch(() => {}); S.today = r.today; S.yday = r.yday; S.settings = r.settings; S.staff = r.staff; S.stock = r.stock; ls('gt_office', JSON.stringify(r)); setOffline(false); if (!quiet || !document.querySelector('.ov')) render(); }
+    if (r.me && r.me.role === 'controller') call('appPeople', S.tok).then(p => { if (O.all) { O.all.people = p; ls('gt_office', JSON.stringify(O.all)); if (S.page === 'people') render(); } }).catch(() => {}); S.today = r.today; S.yday = r.yday; S.settings = r.settings; S.staff = r.staff; setTimeout(loadPics, 800); S.stock = r.stock; ls('gt_office', JSON.stringify(r)); setOffline(false); if (!quiet || !document.querySelector('.ov')) render(); }
   catch (e) { if (e instanceof NetErr) { setOffline(true); if (!O.all) { try { O.all = JSON.parse(ls('gt_office') || 'null'); } catch (x) {} render(); } } else if (S.tok) toast(e.message); }
 }
 setInterval(() => { if (S.tok && isOffice() && !S.asBranch && document.visibilityState === 'visible' && !document.querySelector('.ov') && !(document.activeElement && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName))) loadAll(true); }, 60000);
@@ -2660,16 +2865,16 @@ OVIEWS.ocash = () => {
 /* ---------- staff: leaderboard + list ---------- */
 function boardData() { const out = []; obr().forEach(b => S.staff.filter(x => x.branch === b && (x.g === 'G' || x.g === 'L')).forEach(p => { let svc = 0, days = 0, here = 0;
   BR.forEach(b2 => mon(b2).forEach(x => { const v = num((x.staff || {})[p.name]); if (v) { svc += v; if (b2 === b) here += v; } if (b2 === b && (x.att[p.name] || {}).st === 'in') days++; }));
-  BR.forEach(b2 => { const r = (dayOf(b2, O.all.today).rep || {}).rows || {}; const v = num((r[p.name] || {}).svc); svc += v; if (b2 === b) here += v; });
+  BR.forEach(b2 => { const r = (dayOf(b2, O.all.today).rep || {}).rows || {}; const v = sv(r[p.name]); svc += v; if (b2 === b) here += v; });
   out.push({ id: p.id, n: p.name, g: p.g, b, svc, lent: svc - here, tgt: p.t * Math.max(1, days), days }); })); return out.map(x => Object.assign(x, { pct: x.tgt ? Math.round(x.svc / x.tgt * 100) : 0 })); }
 const BKEYS = [['svc', 'Service sale'], ['pct', 'Target %'], ['days', 'Days worked']];
 OVIEWS.ostaff = () => {
   const k2 = O.bk || 'svc', sg = O.sg || 'All', list = boardData().filter(x => sg === 'All' || x.g === sg).sort((a, b) => b[k2] - a[k2]), mx = Math.max(1, ...list.map(x => x[k2])), ctl = oRole() === 'controller';
   const show = (x, kk) => kk === 'pct' ? x.pct + '%' : kk === 'svc' ? inr(x[kk]) : x[kk];
-  const roster = obr().map(b => `<section class="card"><div class="ch"><div class="ct">${bdot(b)}${b} staff</div>${ctl ? `<button class="btn sm gh" data-a="ostaffadd" data-b="${b}">${ic('plus')}Add</button>` : ''}</div>${S.staff.filter(x => x.branch === b).map(p => `<div class="row"><div class="nm"><span class="ini ${p.g}">${esc(ini(p.name))}</span><div><b>${esc(p.name)}${p.isNew ? ' <span class="pill p-info">New</span>' : ''}</b><small>${GN[p.g]}${p.t ? ' · target ' + inr(p.t) : ''}</small></div></div>${ctl ? `<button class="btn sm gh" data-a="ostaffedit" data-v="${esc(p.id)}">Edit</button>` : ''}</div>`).join('') || '<div class="empty">No staff.</div>'}</section>`).join('');
+  const roster = obr().map(b => `<section class="card"><div class="ch"><div class="ct">${bdot(b)}${b} staff</div>${ctl ? `<button class="btn sm gh" data-a="ostaffadd" data-b="${b}">${ic('plus')}Add</button>` : ''}</div>${S.staff.filter(x => x.branch === b).map(p => `<div class="row"><div class="nm">${av(p.name, p.g, p.branch)}<div><b>${esc(p.name)}${p.isNew ? ' <span class="pill p-info">New</span>' : ''}</b><small>${GN[p.g]}${p.t ? ' · target ' + inr(p.t) : ''}</small></div></div>${ctl ? `<button class="btn sm gh" data-a="ostaffedit" data-v="${esc(p.id)}">Edit</button>` : ''}</div>`).join('') || '<div class="empty">No staff.</div>'}</section>`).join('');
   return { eb: monthName(O.all.today) + ' ' + O.all.today.slice(0, 4), title: 'Staff', sub: O.ob === 'All' ? 'All branches' : O.ob, hx: segBar('ob', true),
     body: `<section class="card"><div class="ch"><div class="ct"><span class="ib g">${ic('chart')}</span>Leaderboard</div></div><div class="seg segl" style="margin:0 0 8px">${[['All', 'Everyone'], ['G', 'Gents'], ['L', 'Ladies']].map(([g, t]) => `<button class="${sg === g ? 'on' : ''}" data-a="osg" data-v="${g}">${t}</button>`).join('')}</div><div class="seg segl" style="margin:0 0 12px">${BKEYS.map(([kk, t]) => `<button class="${k2 === kk ? 'on' : ''}" data-a="obk" data-v="${kk}">${t}</button>`).join('')}</div>
-    ${list.map((x, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="nm"><span class="rk ${i < 3 ? 'r' + i : ''}">${i + 1}</span><span class="ini ${x.g}">${esc(ini(x.n))}</span><div><b>${esc(x.n)}</b><small>${GN[x.g]}${O.ob === 'All' ? ' · ' + x.b : ''}${x.lent ? ' · incl. ' + inr(x.lent) + ' at other branches' : ''}</small></div></div><span class="num" style="font-weight:800;font-family:var(--fd);font-size:17px">${show(x, k2)}</span></div>
+    ${list.map((x, i) => `<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div class="nm"><span class="rk ${i < 3 ? 'r' + i : ''}">${i + 1}</span>${av(x.n, x.g, x.b)}<div><b>${esc(x.n)}</b><small>${GN[x.g]}${O.ob === 'All' ? ' · ' + x.b : ''}${x.lent ? ' · incl. ' + inr(x.lent) + ' at other branches' : ''}</small></div></div><span class="num" style="font-weight:800;font-family:var(--fd);font-size:17px">${show(x, k2)}</span></div>
       <div class="bar"><i style="width:${Math.round(x[k2] / mx * 100)}%"></i></div><div class="bmini">${BKEYS.filter(([kk]) => kk !== k2).map(([kk, t]) => `<span>${t} <b>${show(x, kk)}</b></span>`).join('')}</div></div>`).join('') || '<div class="empty">No sales yet.</div>'}</section>${roster}` };
 };
 /* ---------- advances ---------- */
@@ -2689,9 +2894,9 @@ OVIEWS.ostock = () => { const ctl = oRole() === 'controller' && O.ob !== 'All', 
 const STP = { open: ['Not sent', 'p-mu'], sent: ['Waiting for you', 'p-info'], approved: ['Approved', 'p-ok'], back: ['Sent back', 'p-bad'], changed: ['Changed, waiting', 'p-warn'] };
 OVIEWS.review = () => {
   const wait = (O.all.review || []).filter(x => O.ob === 'All' || x.b === O.ob);
-  const recent = []; obr().forEach(b => mon(b).filter(x => x.date < O.all.today && !['sent', 'changed'].includes(x.status)).forEach(x => recent.push({ b, date: x.date, status: x.status, sentAt: x.sentAt, issues: x.issues || [], waived: x.waived })));
+  const recent = []; obr().forEach(b => mon(b).filter(x => x.date < O.all.today && !['sent', 'changed'].includes(x.status)).forEach(x => recent.push({ b, date: x.date, status: x.status, sentAt: x.sentAt, issues: x.issues || [], waived: x.waived, closed: x.closed, hasClo: x.status !== 'open' || !!x.sentAt })));
   recent.sort((p, q) => p.date < q.date ? 1 : -1);
-  const row = x => `<button class="row tap" data-a="rday" data-b="${x.b}" data-v="${x.date}"><div class="nm">${bdot(x.b)}<div><b>${x.b} · ${dLabel(x.date)}</b><small>${x.status === 'open' ? (x.waived ? 'Reminder deleted' : 'Closing not sent yet') : x.sentAt ? 'Sent ' + esc(x.sentAt) : ''}${(x.issues || []).length > 1 ? ' · ' + (x.issues.length - 1) + ' to check' : ''}</small></div></div><span class="pill ${(STP[x.status] || STP.open)[1]}">${(STP[x.status] || STP.open)[0]}</span></button>`;
+  const row = x => `<button class="row tap" data-a="rday" data-b="${x.b}" data-v="${x.date}"><div class="nm">${bdot(x.b)}<div><b>${x.b} · ${dLabel(x.date)}</b><small>${x.status === 'open' ? (x.waived ? 'Reminder deleted' : 'Closing not sent yet') : x.sentAt ? 'Sent ' + esc(x.sentAt) : ''}${(x.issues || []).length > 1 ? ' · ' + (x.issues.length - 1) + ' to check' : ''}</small></div></div><span style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">${x.status !== 'open' ? (x.closed ? `<span class="pill p-ok">Day closed</span>` : `<span class="pill p-warn">Accounts not closed</span>`) : ''}<span class="pill ${(STP[x.status] || STP.open)[1]}">${(STP[x.status] || STP.open)[0]}</span></span></button>`;
   return { eb: 'Controller', title: 'Review & approve', sub: wait.length ? wait.length + ' day' + (wait.length > 1 ? 's' : '') + ' waiting' : 'Nothing waiting', hx: segBar('ob', true),
     body: `<section class="card"><div class="ch"><div class="ct"><span class="ib b">${ic('sheet')}</span>Waiting for you</div></div>${wait.map(row).join('') || '<div class="empty">All caught up.</div>'}</section>
     <section class="card"><div class="ch"><div class="ct"><span class="ib n">${ic('clock')}</span>This month</div></div>${recent.slice(0, 40).map(row).join('') || '<div class="empty">Nothing yet.</div>'}</section>` };
@@ -2828,10 +3033,10 @@ const OACT = {
     O.all.settings = S.settings; toast('Saved'); render(); } catch (e) { toast(e instanceof NetErr ? 'No internet.' : e.message); } },
   async ostrict(el) { const m2 = Object.assign({}, S.settings.strictAtt || {}); m2[el.dataset.v] = !m2[el.dataset.v]; try { S.settings = await call('appSetting', S.tok, 'strictAtt', m2); O.all.settings = S.settings; toast(el.dataset.v + (m2[el.dataset.v] ? ': attendance first' : ': report before attendance allowed')); render(); } catch (e) { toast(e instanceof NetErr ? 'No internet.' : e.message); } },
   async orule(el) { const r = Object.assign({}, S.settings.catRules || {}); delete r[el.dataset.v]; try { S.settings = await call('appSetting', S.tok, 'catRules', r); O.all.settings = S.settings; render(); } catch (e) { toast(e.message); } },
-  ostaffadd(el) { openSheet(`<h3>Add staff · ${esc(el.dataset.b)}</h3>${fl('sa_n', 'Name', '')}<div class="f2">${fl('sa_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}${fl('sa_t', 'Day target ₹', '', 'n')}</div><input type="hidden" id="sa_b" value="${esc(el.dataset.b)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="ostaffsave">Add</button></div>`); },
-  async ostaffsave() { busy(true); try { const b = val('sa_b'); S.staff = await call('appStaffOp', S.tok, b, 'add', { name: val('sa_n').trim(), g: val('sa_g') }); const p = S.staff.filter(x => x.branch === b && x.name === val('sa_n').trim()).pop(); if (p && val('sa_t')) S.staff = await call('appStaffOp', S.tok, b, 'edit', { id: p.id, t: val('sa_t') }); O.all.staff = S.staff; closeSheet(); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
-  ostaffedit(el) { const p = S.staff.find(x => x.id === el.dataset.v); if (!p) return; openSheet(`<h3>${esc(p.name)}</h3><div class="sub">${esc(p.branch)}</div>${fl('se_n', 'Name', p.name)}<div class="f2">${fl('se_g', 'Section', p.g, '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}${fl('se_t', 'Day target ₹', p.t || '', 'n')}</div>${fl('se_b', 'Branch', p.branch, '', BR.map(b => [b, b]))}<input type="hidden" id="se_id" value="${esc(p.id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" style="color:var(--bad)" data-a="ostaffrm">Remove</button><button class="btn" data-a="ostaffupd">Save</button></div>`); },
-  async ostaffupd() { busy(true); try { const p = S.staff.find(x => x.id === val('se_id')); S.staff = await call('appStaffOp', S.tok, p.branch, 'edit', { id: p.id, name: val('se_n').trim(), g: val('se_g'), t: val('se_t'), branch: val('se_b') }); O.all.staff = S.staff; closeSheet(); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
+  ostaffadd(el) { openSheet(`<h3>Add staff · ${esc(el.dataset.b)}</h3>${fl('sa_n', 'Name', '')}<div class="f2">${fl('sa_g', 'Section', 'G', '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}${fl('sa_t', 'Day target ₹', '', 'n')}</div>${fl('sa_d', 'Designation', '', '', [['', '–']].concat(DES.map(d => [d, d])))}<input type="hidden" id="sa_b" value="${esc(el.dataset.b)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="ostaffsave">Add</button></div>`); },
+  async ostaffsave() { busy(true); try { const b = val('sa_b'); S.staff = await call('appStaffOp', S.tok, b, 'add', { name: val('sa_n').trim(), g: val('sa_g'), des: val('sa_d') }); const p = S.staff.filter(x => x.branch === b && x.name === val('sa_n').trim()).pop(); if (p && val('sa_t')) S.staff = await call('appStaffOp', S.tok, b, 'edit', { id: p.id, t: val('sa_t') }); O.all.staff = S.staff; closeSheet(); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
+  ostaffedit(el) { const p = S.staff.find(x => x.id === el.dataset.v); if (!p) return; openSheet(`<h3>${esc(p.name)}</h3><div class="sub">${esc(p.branch)}</div>${fl('se_n', 'Name', p.name)}<div class="f2">${fl('se_g', 'Section', p.g, '', [['G', 'Gents SSP'], ['L', 'Ladies SSP'], ['O', 'OM'], ['H', 'HK']])}${fl('se_t', 'Day target ₹', p.t || '', 'n')}</div><div class="f2">${fl('se_d', 'Designation', p.des || '', '', [['', '–']].concat(DES.map(d => [d, d])))}${fl('se_b', 'Branch', p.branch, '', BR.map(b => [b, b]))}</div><input type="hidden" id="se_id" value="${esc(p.id)}"><div class="err" id="serr"></div><div class="sha"><button class="btn gh" style="color:var(--bad)" data-a="ostaffrm">Remove</button><button class="btn" data-a="ostaffupd">Save</button></div>`); },
+  async ostaffupd() { busy(true); try { const p = S.staff.find(x => x.id === val('se_id')); S.staff = await call('appStaffOp', S.tok, p.branch, 'edit', { id: p.id, name: val('se_n').trim(), g: val('se_g'), t: val('se_t'), branch: val('se_b'), des: val('se_d') }); O.all.staff = S.staff; closeSheet(); render(); } catch (e) { document.getElementById('serr').textContent = e.message; busy(false); } },
   async ostaffrm() { const er = document.getElementById('serr'); if (er.dataset.ok !== '1') { er.dataset.ok = '1'; er.textContent = 'Press Remove again to take them off the list.'; return; } busy(true); try { const p = S.staff.find(x => x.id === val('se_id')); S.staff = await call('appStaffOp', S.tok, p.branch, 'remove', { id: p.id, reason: 'Removed by controller' }); O.all.staff = S.staff; closeSheet(); render(); } catch (e) { er.textContent = e.message; busy(false); } },
   async olock() { try { const list = await call('appStockOp', S.tok, O.ob, 'lock', { n: '' }); S.stock = S.stock.filter(x => x.branch !== O.ob).concat(list); O.all.stock = S.stock; toast('List locked'); render(); } catch (e) { toast(e.message); } },
   oprodadd() { openSheet(`<h3>Add a product · ${esc(O.ob)}</h3>${fl('pa_n', 'Product name', '')}<div class="f2">${fl('pa_m', 'MRP ₹', '', 'n')}${fl('pa_q', 'Pieces in hand', '', 'n')}</div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="oprodsave">Add</button></div>`); },
