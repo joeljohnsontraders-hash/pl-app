@@ -979,6 +979,18 @@ html.dark .xs .ftag{background:#ECEFF4;color:#5A6779}
 .dci .dct b{display:block;font-size:13.5px}.dci .dct small{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-top:1px}
 .dci:not(.ok)>i{background:var(--bad)}.dci:not(.ok){background:var(--bads)}
 .sha .btn[disabled]{opacity:.4;cursor:not-allowed;filter:grayscale(.4)}
+
+/* column widths like Excel + values in the middle */
+table.xt[data-cw]{table-layout:fixed}
+.xt thead th{position:relative}
+.cwh{position:absolute;top:0;right:-5px;width:10px;height:100%;cursor:col-resize;z-index:3;touch-action:none}
+.cwh::after{content:"";position:absolute;top:20%;bottom:20%;left:4px;width:2px;border-radius:2px;background:rgba(255,255,255,.0);transition:background .15s}
+.xt thead th:hover .cwh::after,.cwh.on::after{background:rgba(255,255,255,.85)}
+body.cw-drag,body.cw-drag *{cursor:col-resize!important;user-select:none!important}
+.x2 td input.lf,.x2 td input.rt,.acc2 td input{text-align:center}
+.x2 td textarea.ta{text-align:center}
+.acc2 td,.x2 td.pt{text-align:center}
+.xt td.nmc{text-align:center}
 </style>
 </head><body>
 <div id="gti" class="hold" aria-hidden="true"><i class="gti-px"><img alt="" width="64" height="64" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2764%27 height=%2764%27%3E%3Crect width=%2764%27 height=%2764%27 fill=%27%230A1A2B%27/%3E%3C/svg%3E">Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon Green Trends Unisex Hair and Style Salon </i><div class="gti-st"><i style="left:10%;animation-delay:0.05s"></i><i style="left:30%;animation-delay:0.2s"></i><i style="left:56%;animation-delay:0s"></i><i style="left:76%;animation-delay:0.15s"></i><i style="left:93%;animation-delay:0.25s"></i></div><div class="gti-in"><div class="gti-stage">
@@ -1063,7 +1075,7 @@ const EXEC = 'https://script.google.com/macros/s/AKfycbxm8jk6F32nN2UcBahKh_6RQl8
 class NetErr extends Error {}
 /* fast server (Supabase) for the daily work; Google keeps logins, people and the P&L books */
 const SBAPI = 'https://wfklonhvjjmugzyquchf.supabase.co/functions/v1/api';
-const FAST = new Set(['appSkipSlot', 'appInbox', 'appMonthTarget', 'appMonthEdit', 'appLayout', 'appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend', 'appStaffPics', 'appReq', 'appAssets', 'appCloseDay']);
+const FAST = new Set(['appSkipSlot', 'appInbox', 'appMonthTarget', 'appMonthEdit', 'appLayout', 'appBoot', 'appDay', 'appSave', 'appSendSlot', 'appSendClosing', 'appStaffOp', 'appStockOp', 'appMoves', 'appMonthApi', 'appAlerts', 'appPhoto', 'appTell', 'appAll', 'appReview', 'appAlertDone', 'appSetting', 'appBeat', 'appWatch', 'appSend', 'appStaffPics', 'appReq', 'appAssets', 'appCloseDay', 'appColW']);
 const MOVED = 'The app was updated. Close it and open it again.';
 async function post(url, fn, args) {
   let r;
@@ -1532,8 +1544,8 @@ function sheetHTML(branch, list, data, mcAmt, opt) {
     <td>${ed ? inp(p.n, 'rev', v.rev) : (num(v.rev) ? fmt(v.rev) : '')}</td></tr>`;
   const tot = (lab, t, cls) => `<tr class="${cls}"><td class="sn"></td><td class="nmc">${lab}</td>${sheetVals(t, ed).map(x => `<td>${x}</td>`).join('')}</tr>`;
   const ft = (lab, f, v) => `<tr class="ft"><td class="sn"></td><td class="nmc">${lab}</td><td colspan="${nc - 2}" data-ft="${f}">${fmt(v)}</td></tr>`;
-  return `<div class="xs ${branch}"><div class="xsh"><b>★ GT-${branch.toUpperCase()} ★</b><span>${dLong(opt.date || S.today)}${opt.at ? ' · ' + opt.at : ''}</span></div><div class="xsw"><table class="xt xr ${ed ? 'xre' : ''}">
-    <colgroup><col style="width:48px"><col><col style="width:90px"><col style="width:106px">${ed ? '<col style="width:94px">' : ''}<col style="width:64px"><col style="width:76px"><col style="width:66px"><col style="width:104px"><col style="width:74px"><col style="width:84px"></colgroup>
+  return `<div class="xs ${branch}"><div class="xsh"><b>★ GT-${branch.toUpperCase()} ★</b><span>${dLong(opt.date || S.today)}${opt.at ? ' · ' + opt.at : ''}</span></div><div class="xsw"><table class="xt xr ${ed ? 'xre' : ''}" data-cw="rep">
+    <colgroup><col data-k="sn" style="width:48px"><col data-k="name"><col data-k="tgt" style="width:90px"><col data-k="svc" style="width:106px">${ed ? '<col data-k="man" style="width:94px">' : ''}<col data-k="bills" style="width:64px"><col data-k="abv" style="width:76px"><col data-k="kids" style="width:66px"><col data-k="prod" style="width:104px"><col data-k="mc" style="width:74px"><col data-k="rev" style="width:84px"></colgroup>
     <thead><tr><th class="sn">S.No</th><th style="text-align:left;padding-left:10px">SSP name</th><th>Day target</th><th>Service sale</th>${ed ? '<th class="man" title="Free service: no money taken, counts toward the target. Joins the service sale in the image.">Manual</th>' : ''}<th>Bills</th><th>ABV</th><th>Kids cut</th><th>Product</th><th>Mem card</th><th>Google reviews</th></tr></thead><tbody>
     ${Cc.groups.map(gr => gr.rows.map(row).join('') + (gr.g === 'O' ? '' : tot(GN[gr.g] + ' total', gr.t, 'sub'))).join('')}
     ${tot('Grand total', Cc.G, 'gt')}
@@ -1577,8 +1589,8 @@ function carryOver() { const c = C(); if (!isToday() || c.carried) return; c.car
 const nFilled = key => C()[key].filter(filled).length;
 function padList(key) { const c = C(), a = c[key]; c.init = c.init || {}; if (!c.init[key]) { c.init[key] = 1; while (a.length < LSTART[key]) a.push(blankL(key)); let tail = 0; for (let i = a.length - 1; i >= 0 && !filled(a[i]); i--) tail++; while (tail < 3) { a.push(blankL(key)); tail++; } } if (!a.length) a.push(blankL(key)); }
 const lrow = (key, i, r, off) => `<tr class="${r.y ? 'yrow' : ''}"><td class="sn">${i + 1 + (off || 0)}</td>${LCOLS[key].map(c => c.sel ? `<td><select id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="asel" aria-label="Advance to ${i + 1}"><option value=""></option>${people().map(p => `<option ${r[c.k] === p.n ? 'selected' : ''}>${esc(p.n)}</option>`).join('')}${((((S.days[CD()] || {}).att) || {}).extra || []).filter(x => !people().some(p => p.n === x.n)).map(x => `<option value="${esc(x.n)}" ${r[c.k] === x.n ? 'selected' : ''}>${esc(x.n)} (${esc(x.from)})</option>`).join('')}</select></td>` : key === 'acc' && !c.r ? `<td><textarea rows="1" id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="ta" aria-label="${c.n} ${i + 1}">${esc(r[c.k])}</textarea></td>` : `<td><input id="l_${key}_${i}_${c.k}" data-l="${key}" data-i="${i}" data-k="${c.k}" class="${c.r ? 'rt' : 'lf'}" value="${esc(r[c.k])}" ${c.r ? 'inputmode="numeric"' : ''} aria-label="${c.n} ${i + 1}"></td>`).join('')}<td class="dl"><button class="xb" data-a="delrow" data-l="${key}" data-v="${i}" aria-label="Delete row ${i + 1 + (off || 0)}">✕</button></td></tr>`;
-const xlist = (key, extra) => `<div class="cbox"><div class="xs ${ME()} xc"><div class="xsh"><b>${key === 'exp' ? LTITLE(key) : `<input class="tti" data-ttl="${key}" value="${esc(lTitle(key))}" aria-label="Title of the table">`}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 xl">
-  <colgroup><col style="width:52px">${LCOLS[key].map(c => `<col${c.w ? ` style="width:${c.w}px"` : ''}>`).join('')}<col style="width:34px"></colgroup>
+const xlist = (key, extra) => `<div class="cbox"><div class="xs ${ME()} xc"><div class="xsh"><b>${key === 'exp' ? LTITLE(key) : `<input class="tti" data-ttl="${key}" value="${esc(lTitle(key))}" aria-label="Title of the table">`}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 xl" data-cw="${key}">
+  <colgroup><col data-k="sn" style="width:52px">${LCOLS[key].map(c => `<col data-k="${c.k}"${c.w ? ` style="width:${c.w}px"` : ''}>`).join('')}<col style="width:34px"></colgroup>
   <thead><tr><th>S.No</th>${LCOLS[key].map(c => c.hd ? `<th class="xh"><input class="thd" data-hd="${key}|${c.k}" value="${esc(lHead(key, c))}" placeholder="Type heading" aria-label="Column heading"></th>` : `<th>${c.n}</th>`).join('')}<th></th></tr></thead>
   <tbody data-lb="${key}">${C()[key].map((r, i) => lrow(key, i, r)).join('')}</tbody>
   <tfoot><tr class="ft"><td colspan="${LCOLS[key].length}" class="tlab">TOTAL</td><td data-ltot="${key}">${fmt(sum(C()[key].map(x => num(x.a))))}</td><td></td></tr></tfoot></table></div></div>
@@ -1591,7 +1603,7 @@ function accHTML() {
   const ao = autoOpening(), changed = !blank(c.openTyped) && num(c.openTyped) !== ao, otag = changed ? `changed${ao !== null ? ' from ' + fmt(ao) : ''}` : ao === null ? 'type it' : `cash counted ${dnum(addDays(CD(), -1))} ${monthName(CD()).slice(0, 3)}`,
     head = `<tr class="ro ${changed ? 'chg' : ''}"><td class="sn">${n++}</td><td class="pt">OPENING CASH<span class="ftag">${otag}</span></td><td></td><td></td><td><input id="opentyped" data-ot="1" class="rt" inputmode="numeric" value="${esc(blank(c.openTyped) ? (ao === null ? '' : ao) : c.openTyped)}" placeholder="₹" aria-label="Opening cash"></td><td></td></tr>` + prodLines(CD()).map(x => line(esc(`${x.s} sold ${x.n} × ${x.q}${x.pay ? ' · paid by ' + x.pay : ''}`.toUpperCase()), '', x.a, 'ro', 'from report')).join('') + exs.map(x => line(esc(String(x.t || 'Expense').toUpperCase()), num(x.a), '', x.y ? 'ro yl' : 'ro', 'expenses')).join('');
   const off = n - 1;
-  return `<div class="xs ${ME()} xc"><div class="xsh"><b>${ME().toUpperCase()} ACCOUNTS SHEET ${monthName(CD()).toUpperCase()}-${CD().slice(0, 4)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 acc2">
+  return `<div class="xs ${ME()} xc"><div class="xsh"><b>${ME().toUpperCase()} ACCOUNTS SHEET ${monthName(CD()).toUpperCase()}-${CD().slice(0, 4)}</b><span>${dShort(CD())}</span></div><div class="xsw"><table class="xt x2 acc2" data-cw="acc"><colgroup><col data-k="sn" style="width:52px"><col data-k="t"><col data-k="s" style="width:110px"><col data-k="d" style="width:96px"><col data-k="c" style="width:104px"><col style="width:34px"></colgroup>
     <thead><tr><th style="width:52px">S.No</th><th>Particulars</th><th style="width:96px">Advance to</th><th style="width:90px">Debit</th><th style="width:96px">Credit</th><th style="width:34px"></th></tr></thead><tbody>${head}</tbody>
     <tbody data-lb="acc" data-off="${off}">${c.acc.map((r, i) => lrow('acc', i, r, off)).join('')}</tbody><tbody>
     ${band(`TOTAL SALES<span class="ftag">${blank(c.totSales) ? 'from the report' : num(c.totSales) === autoGross() ? 'same as the report' : 'changed · report ' + fmt(autoGross())}</span>`, '', `<input id="totsales" data-ts="1" inputmode="numeric" value="${esc(blank(c.totSales) ? autoGross() : c.totSales)}" aria-label="Total sales">`, 'b-sale')}
@@ -1600,7 +1612,7 @@ function accHTML() {
     ${band(ex >= 0 ? 'EXCESS' : 'SHORT', '', `<span style="color:${ex === 0 ? 'var(--ok)' : 'var(--bad)'}">${fmt(Math.abs(ex))}</span>`, 'b-den')}</tbody></table></div></div>
     <div class="xadd"><span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm gh" data-a="addrows" data-v="acc">${ic('plus')}Add 5 rows</button><button class="btn sm gh" data-a="clearrows" data-v="acc">Remove empty rows</button></span><span class="cs">Money in as Credit, money out as Debit, or a note</span></div>`;
 }
-const denHTML = () => `<div class="xs ${ME()} xc"><div class="xsh"><b>CASH IN DENOMINATIONS</b><span>Closing · ${dShort(CD())}</span></div><div class="xsw"><table class="xt x2">
+const denHTML = () => `<div class="xs ${ME()} xc"><div class="xsh"><b>CASH IN DENOMINATIONS</b><span>Closing · ${dShort(CD())}</span></div><div class="xsw"><table class="xt x2" data-cw="den"><colgroup><col data-k="note"><col data-k="cnt"><col data-k="amt"></colgroup>
   <thead><tr><th>Note</th><th>Count</th><th>Amount</th></tr></thead><tbody>${DENOM.map(d => `<tr><td class="pt" style="text-align:center">${d}</td><td><input id="dn${d}" data-den="${d}" class="${C().denY ? 'yv' : ''}" inputmode="numeric" value="${esc(C().den[d] || '')}" placeholder="0" aria-label="${d} notes"></td><td data-dv="${d}">${fmt(d * num(C().den[d]))}</td></tr>`).join('')}</tbody>
   <tfoot><tr class="ft"><td colspan="2" class="tlab">TOTAL</td><td data-acc="den2">${fmt(denTot())}</td></tr></tfoot></table></div></div>`;
 VIEWS.closing = () => {
@@ -1685,13 +1697,14 @@ function cloClone(id) {
   const last = hd.length - 1; if (last > 0 && !hd[last]) dropCol(tbl, last);
   const adv = hd.indexOf('advance to'); if (adv >= 0) dropCol(tbl, adv);
   { const xi = [...tbl.querySelectorAll('thead th')].findIndex(th => th.classList.contains('xh')); if (xi >= 0 && [...tbl.querySelectorAll('tbody tr')].every(tr => !String((tr.cells[xi] || {}).textContent || '').trim())) { dropCol(tbl, xi); const cg = tbl.querySelector('colgroup'); if (cg && cg.children[xi]) cg.children[xi].remove(); } }
-  cl.querySelectorAll('button,.ftag').forEach(x => x.remove()); cl.querySelectorAll('.yrow,.yl,.need,.low,.chg').forEach(x => x.classList.remove('yrow', 'yl', 'need', 'low', 'chg'));
+  cl.querySelectorAll('button,.ftag,.cwh').forEach(x => x.remove()); cl.querySelectorAll('.yrow,.yl,.need,.low,.chg').forEach(x => x.classList.remove('yrow', 'yl', 'need', 'low', 'chg'));
   cl.style.borderRadius = '0'; cl.querySelectorAll('.xsw').forEach(x => { x.style.overflow = 'visible'; }); cl.querySelectorAll('td.nmc').forEach(x => { x.style.position = 'static'; });
   return cl;
 }
 async function cloCanvas(id) {
   const cl = cloClone(id); if (!cl) return null; const host = document.createElement('div');
-  host.style.cssText = `position:fixed;left:-9999px;top:0;background:#fff;width:${id === 'acc' ? 760 : id === 'den' ? 460 : 620}px`; host.appendChild(cl); document.body.appendChild(host);
+  const tw = parseFloat((cl.querySelector('table') || {}).style ? cl.querySelector('table').style.width : 0) || 0;
+  host.style.cssText = `position:fixed;left:-9999px;top:0;background:#fff;width:${Math.max(id === 'acc' ? 760 : id === 'den' ? 460 : 620, tw)}px`; host.appendChild(cl); document.body.appendChild(host);
   try { return await html2canvas(cl, { scale: 2, backgroundColor: '#ffffff' }); } finally { host.remove(); }
 }
 const cloName = l => `${ME()} ${l} ${CD()}.png`;
@@ -1956,7 +1969,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 8;
+const APP_VER = 9;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -2335,6 +2348,7 @@ document.addEventListener('keydown', e => {
 async function snapImage(html, label) {
   openSheet(`<h3>${label}</h3><div class="sub">Copy it and paste it in WhatsApp</div><div class="imgbox" id="imgbox"><div class="empty">Making the image…</div></div><div class="err" id="serr"></div><div class="sha"><button class="btn gh" data-a="close">Close</button><button class="btn gh" data-a="dlimg">Download</button><button class="btn" data-a="copyimg">Copy image</button></div>`);
   const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:-9999px;top:0;background:#fff'; host.innerHTML = html; document.body.appendChild(host);
+  cwApply(host, true); { const tb = host.querySelector('table[data-cw]'), w = tb ? parseFloat(tb.style.width) || 0 : 0, f = host.firstElementChild; if (w && f && w > (parseFloat(f.style.width) || 0)) f.style.width = w + 'px'; }
   host.querySelectorAll('.xs').forEach(x => x.style.borderRadius = '0'); host.querySelectorAll('.xt td.nmc').forEach(x => x.style.position = 'static');
   try { if (!window.html2canvas) throw 0; const cv = await html2canvas(host.firstElementChild, { scale: 2, backgroundColor: '#ffffff' }); window.__img = cv; window.__imgName = label; const box = document.getElementById('imgbox'); if (box) box.innerHTML = `<img alt="${label}" src="${cv.toDataURL('image/png')}">`; }
   catch (e) { const box = document.getElementById('imgbox'); if (box) box.innerHTML = '<div class="empty">The image could not be made. Check the internet and try again.</div>'; }
@@ -2382,6 +2396,36 @@ const SAVE = {
     S.staff = await call('appStaffOp', S.tok, ME(), 'add', { name: n, g: val('s_g'), des: val('s_d') }); persist(); toast(n + ' added · controller told'); return true; },
   async pin() { if (!/^\d{4}$/.test(val('p_old'))) throw 'Type your current PIN.'; if (!/^\d{4}$/.test(val('p_new'))) throw 'The new PIN must be 4 digits.'; await call('appMyPin', S.tok, val('p_old'), val('p_new')); toast('PIN changed'); return true; }
 };
+/* ---------------- Excel-like column widths: drag the edge of a heading; double-click it to go back to normal ---------------- */
+const cwKey = () => 'colW|' + ME();
+const cwGet = t => (S.settings[cwKey()] || {})[t] || null;
+function cwApply(root, noHandles) {
+  (root || document).querySelectorAll('table[data-cw]').forEach(tb => {
+    const cols = [...tb.querySelectorAll(':scope > colgroup > col')], m = cwGet(tb.dataset.cw); if (!cols.length) return;
+    if (m && !tb.dataset.cwd) { cols.forEach(c => { if (c.dataset.k && m[c.dataset.k]) c.style.width = m[c.dataset.k] + 'px'; });
+      if (cols.every(c => parseFloat(c.style.width))) { tb.style.width = cols.reduce((t, c) => t + parseFloat(c.style.width), 0) + 'px'; tb.style.minWidth = '0'; } tb.dataset.cwd = '1'; }
+    if (noHandles) return;
+    [...tb.querySelectorAll(':scope > thead > tr:first-child > th')].forEach((th, i) => { if (!cols[i] || !cols[i].dataset.k || th.querySelector(':scope > .cwh')) return;
+      const h = document.createElement('span'); h.className = 'cwh'; h.dataset.i = i; h.title = 'Drag to change the width · double-click to reset'; th.appendChild(h); });
+  });
+}
+let cwT = null;
+function cwSave(t, m) { const k = cwKey(), all = Object.assign({}, S.settings[k] || {}); if (m) all[t] = m; else delete all[t]; S.settings[k] = all; persist();
+  clearTimeout(cwT); cwT = setTimeout(() => call('appColW', S.tok, ME(), S.settings[k]).catch(() => {}), 700); }
+document.addEventListener('pointerdown', e => {
+  const h = e.target.closest && e.target.closest('.cwh'); if (!h) return; e.preventDefault(); e.stopPropagation();
+  const tb = h.closest('table'), cols = [...tb.querySelectorAll(':scope > colgroup > col')], i = +h.dataset.i, ths = [...tb.querySelectorAll(':scope > thead > tr:first-child > th')];
+  const ws = ths.map(t => t.getBoundingClientRect().width), sum0 = ws.reduce((a, b) => a + b, 0); cols.forEach((c, j) => { c.style.width = ws[j] + 'px'; }); tb.style.width = sum0 + 'px'; tb.style.minWidth = '0';
+  const x0 = e.clientX, w0 = ws[i]; try { h.setPointerCapture(e.pointerId); } catch (x) {} document.body.classList.add('cw-drag'); h.classList.add('on');
+  const mv = ev => { const w = Math.max(34, Math.round(w0 + ev.clientX - x0)); cols[i].style.width = w + 'px'; tb.style.width = (sum0 - w0 + w) + 'px'; };
+  const up = () => { h.removeEventListener('pointermove', mv); h.removeEventListener('pointerup', up); h.removeEventListener('pointercancel', up); document.body.classList.remove('cw-drag'); h.classList.remove('on');
+    const m = {}; cols.forEach(c => { if (c.dataset.k) m[c.dataset.k] = Math.round(parseFloat(c.style.width)); }); const old = cwGet(tb.dataset.cw) || {}; if (tb.dataset.cw === 'rep' && old.man && !m.man) m.man = old.man; cwSave(tb.dataset.cw, m); };
+  h.addEventListener('pointermove', mv); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up);
+}, true);
+document.addEventListener('dblclick', e => { const h = e.target.closest && e.target.closest('.cwh'); if (!h) return; e.preventDefault(); cwSave(h.closest('table').dataset.cw, null); render(); toast('Column widths back to normal'); });
+document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.cwh')) { e.preventDefault(); e.stopPropagation(); } }, true);
+new MutationObserver(() => { if (cwApply.q) return; cwApply.q = requestAnimationFrame(() => { cwApply.q = 0; if (S.me && S.me.role === 'manager') cwApply(document.getElementById('app')); }); }).observe(document.getElementById('app'), { childList: true, subtree: true });
+
 /* ---------------- close the day: attendance with out times, EB closing reading and the closing report must all be in ---------------- */
 function dayChecks(d) {
   const dy = S.days[d] || {}, a = dy.att || attDef(), c = dy.clo || {};
