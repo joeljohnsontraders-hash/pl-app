@@ -1566,7 +1566,7 @@ VIEWS.report = () => {
   const body = `<section class="card">${chips}</section>
     ${live ? `<div class="rsplit ${S.bref ? 'on' : ''}"><div class="rmain">${sheetHTML(ME(), present(), r.rows, r.mcAmt, { edit: true, prev: last ? r.snaps[last].data : null })}</div>${S.bref ? brefHTML() : ''}</div>` : sheetHTML(ME(), snap.list || [], snap.data || {}, snap.mcAmt, { edit: false, at: 'sent ' + snap.at })}
     <section class="card"><div class="xbar" style="margin:0">${live ? `<span class="saved" id="savedmark">Saved as you type</span>` : `<span class="cs">The ${slotName(S.view)} report as it was sent.</span>`}
-      <div style="display:flex;gap:8px;flex-wrap:wrap">${live ? `<button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button>` : ''}<button class="btn sm gh" data-a="img">${ic('img')}Image for WhatsApp</button>${live && d && d !== 'cl' ? `<button class="btn sm" data-a="sendslot">${ic('send')}Send ${slotName(d)} report</button>` : ''}${live && d === 'cl' ? `<button class="btn sm" data-a="go" data-v="closing">Closing report</button>` : ''}</div></div><div id="gwarn"></div></section>`;
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${live ? `<button class="btn sm gh" data-a="addother">${ic('plus')}Staff from another branch</button>` : ''}${live && mgrOnly() ? (last ? `<button class="btn sm gh" data-a="img" data-v="${last}">${ic('img')}Image · ${slotName(last)} report</button>` : `<button class="btn sm gh off" data-a="imgwait">${ic('img')}Image after sending</button>`) : `<button class="btn sm gh" data-a="img">${ic('img')}Image for WhatsApp</button>`}${live && d && d !== 'cl' ? `<button class="btn sm" data-a="sendslot">${ic('send')}Send ${slotName(d)} report</button>` : ''}${live && d === 'cl' ? `<button class="btn sm" data-a="go" data-v="closing">Closing report</button>` : ''}</div></div><div id="gwarn"></div></section>`;
   return { eb: 'Day target sheet', title: 'Report', sub: dLabel(S.today) + ' · ' + esc(ME()), hx, body };
 };
 
@@ -1630,9 +1630,9 @@ VIEWS.closing = () => {
     <div class="pzone" tabindex="0" aria-label="Photos. Click here and press Ctrl + V to paste a photo"><div class="phint">${ic('img')}Press Ctrl + V to paste</div><div class="pgrid">${photos.map((id, i) => `<div class="ph">${S.photos[id] ? `<img src="${S.photos[id]}" alt="Photo ${i + 1}" data-a="viewphoto" data-v="${esc(id)}">` : '<div class="spin dk"></div>'}<button data-a="rmphoto" data-v="${i}" aria-label="Remove photo ${i + 1}">✕</button></div>`).join('')}
     <label class="padd">${ic('plus')}<span>${photos.length ? 'Add more' : 'Upload'}</span><input type="file" accept="image/*" multiple data-up="photos"></label></div></div></section>`;
   const body = picker + `${!isToday() && ['open', 'back', 'changed'].includes(c.status) && !(c.waived && c.status === 'open') ? (c.waived ? `<div class="note n-info"><b>The controller cleared the reminder for ${dLabel(CD())}.</b> You can still fill it in and send it.</div>` : `<div class="note n-warn"><b>Closing for ${dLabel(CD())} is still open.</b> It will be marked as sent the next day.</div>`) : ''}${isToday() && carriedCount() ? `<div class="note n-info ybar"><span><b>${carriedCount()} ${carriedCount() === 1 ? 'entry' : 'entries'} from ${dLabel(S.yday)} ${carriedCount() === 1 ? 'is' : 'are'} still here</b> (grey). Keep what repeats, or clear them all.</span><button class="btn sm" data-a="clearall">Clear all</button></div>` : ''}${c.status === 'back' ? `<div class="note n-bad"><b>Sent back:</b> ${esc(c.note)}</div>` : ''}
-  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><span style="display:flex;gap:8px"><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button><button class="btn sm gh" data-a="cvreset">Tidy up</button></span></div>
+  ${cvOn() ? `<div class="cvtools"><span class="cs">Drag a table by its top bar · drag empty space to slide the canvas · Shift + wheel scrolls sideways</span><span style="display:flex;gap:8px"><button class="btn sm gh ${mgrOnly() && !cloSent() ? 'off' : ''}" data-a="cloimgs" title="${mgrOnly() && !cloSent() ? 'Ready once the closing report is sent' : ''}">${ic('camera')}${mgrOnly() && !cloSent() ? 'Images after sending' : 'Download images'}</button><button class="btn sm gh" data-a="cvreset">Tidy up</button></span></div>
   <div class="cvs"><div class="cvc" id="cvc">${cvItem('acc', `<div class="cbox" id="accbox">${accHTML()}</div>`)}${cvItem('exp', xlist('exp'))}${cvItem('den', denHTML())}${cvItem('gpay', xlist('gpay', bpExtra))}${cvItem('card', xlist('card', cdExtra))}${cvItem('photos', upCard)}</div></div><div class="cvhs" id="cvhs"><div id="cvhsi"></div></div>`
-  : `<div class="cvtools"><span></span><button class="btn sm gh" data-a="cloimgs">${ic('camera')}Download images</button></div><div class="cgrid">
+  : `<div class="cvtools"><span></span><button class="btn sm gh ${mgrOnly() && !cloSent() ? 'off' : ''}" data-a="cloimgs" title="${mgrOnly() && !cloSent() ? 'Ready once the closing report is sent' : ''}">${ic('camera')}${mgrOnly() && !cloSent() ? 'Images after sending' : 'Download images'}</button></div><div class="cgrid">
     <div class="cbox" id="accbox">${accHTML()}</div>
     <div style="display:grid;gap:16px">${xlist('exp')}${denHTML()}</div>
   </div>
@@ -1969,7 +1969,7 @@ function brefDots() { const r = R().rows || {}; document.querySelectorAll('.bref
   const same = (a === '' || Math.abs(num(x.svc) - num(a)) < 0.01) && (b === '' || num(x.bills) === num(b)), d = tr.querySelector('.bdot'); if (d) { d.classList.toggle('ok', same); d.classList.toggle('df', !same); } }); }
 
 /* ---------------- inbox: messages from the controller, app updates, and what is still to do ---------------- */
-const APP_VER = 9;
+const APP_VER = 10;
 const IK = { update: ['spark', 'b'], msg: ['chat', 'n'], flag: ['flag', 'r'], back: ['undo', 'r'], ok: ['check', 'g'], stock: ['box', 'p'], info: ['bell', 'n'] };
 S.inbox = { items: [], read: 0, last: 0, ver: { v: 0 }, loaded: false };
 const unreadN = () => S.inbox.items.filter(x => x.seq > S.inbox.read).length;
@@ -2396,6 +2396,9 @@ const SAVE = {
     S.staff = await call('appStaffOp', S.tok, ME(), 'add', { name: n, g: val('s_g'), des: val('s_d') }); persist(); toast(n + ' added · controller told'); return true; },
   async pin() { if (!/^\d{4}$/.test(val('p_old'))) throw 'Type your current PIN.'; if (!/^\d{4}$/.test(val('p_new'))) throw 'The new PIN must be 4 digits.'; await call('appMyPin', S.tok, val('p_old'), val('p_new')); toast('PIN changed'); return true; }
 };
+/* ---------------- images only after the report is sent (managers) ---------------- */
+const mgrOnly = () => S.me && S.me.role === 'manager' && !S.asBranch;
+const cloSent = () => ['sent', 'approved'].includes(C().status);
 /* ---------------- Excel-like column widths: drag the edge of a heading; double-click it to go back to normal ---------------- */
 const cwKey = () => 'colW|' + ME();
 const cwGet = t => (S.settings[cwKey()] || {})[t] || null;
@@ -2694,7 +2697,7 @@ document.addEventListener('click', async e => {
     case 'close': closeSheet(); break;
     case 'logout': signOut(false); break;
     case 'asexit': leaveBranch(); break;
-    case 'cloimgs': cloImages(); break;
+    case 'cloimgs': if (mgrOnly() && !cloSent()) { toast(C().status === 'changed' ? 'Send the closing report again first. The images are ready once it is sent.' : 'Send the closing report first. The images are ready once it is sent.'); break; } cloImages(); break;
     case 'clo1': cloSave(+v); break;
     case 'clocopy': { const x = (window.__clo || [])[+v]; if (x) copyCanvas(x.cv, x.l + ' copied · paste it in WhatsApp'); break; }
     case 'clocopyall': { const L = window.__clo || []; if (!L.length) break; const i = (S.cloStep || 0) % L.length, x = L[i];
@@ -2755,7 +2758,8 @@ document.addEventListener('click', async e => {
     case 'skipask': openSheet(`<h3>Skip the ${slotName(v)} report?</h3><div class="sha"><button class="btn gh" data-a="close">Cancel</button><button class="btn" data-a="skipok" data-v="${v}">Skip it</button></div>`); break;
     case 'skipok': { el.disabled = true; try { const x = await call('appSkipSlot', S.tok, ME(), S.today, v); const r = R(); r.skip = x.skip; r._v = x._v; persist(); closeSheet(); toast(slotName(v) + ' report skipped'); render(); } catch (e) { el.disabled = false; toast(e instanceof NetErr ? 'No internet. Try again.' : e.message); } break; }
     case 'sendslot': el.disabled = true; await sendSlot(); el.disabled = false; break;
-    case 'img': { const r = R(), snap = S.view !== 'live' ? r.snaps[S.view] : null; reportImage(snap ? snap.list : present(), snap ? snap.data : r.rows, snap ? snap.mcAmt : r.mcAmt, snap ? snap.at : now(), (snap ? slotName(S.view) : 'Live') + ' report'); break; }
+    case 'imgwait': toast('Send the report first. The image is ready once it is sent.'); break;
+    case 'img': { const r = R(), vw = v && r.snaps[v] ? v : S.view, snap = vw !== 'live' ? r.snaps[vw] : null; if (!snap && mgrOnly()) { toast('Send the report first. The image is ready once it is sent.'); break; } reportImage(snap ? snap.list : present(), snap ? snap.data : r.rows, snap ? snap.mcAmt : r.mcAmt, snap ? snap.at : now(), (snap ? slotName(vw) : 'Live') + ' report'); break; }
     case 'copyimg': { const cv = window.__img; if (cv) copyCanvas(cv); break; }
     case 'dlimg': { const cv = window.__img; if (!cv) break; const l = document.createElement('a'); l.download = (window.__imgName || 'report') + ' ' + S.today + '.png'; l.href = cv.toDataURL('image/png'); l.click(); break; }
     case 'splus': { const n = el.dataset.n; el.disabled = true; if (await stockOp('plus', n)) toast('1 × ' + n + ' added · controller told'); break; }
@@ -2791,7 +2795,7 @@ document.addEventListener('click', async e => {
     case 'clearall': { const c = C(); LKEYS.forEach(kk => { c[kk] = c[kk].filter(r => !r.y && filled(r)); }); if (c.denY) { c.den = {}; c.denY = false; } c.init = {}; touch(CD(), 'clo'); render(); toast("Yesterday's entries cleared"); break; }
     case 'rmphoto': { const c = C(), id = c.photos[+v]; c.photos.splice(+v, 1); markChanged(); touch(CD(), 'clo'); render(); call('appPhoto', S.tok, ME(), CD(), 'remove', id).catch(() => {}); toast('Photo removed'); break; }
     case 'viewphoto': openSheet(`<div class="imgbox"><img src="${S.photos[v]}" alt="Photo"></div><div class="sha"><button class="btn gh" data-a="close">Close</button></div>`); break;
-    case 'attimg': snapImage(v === 'month' ? monthImgHTML() : attImgHTML(), v === 'month' ? 'Month attendance' : 'Attendance today'); break;
+    case 'attimg': if (mgrOnly() && !A().attDone) { toast('Save the attendance first. The image is ready once it is saved.'); break; } snapImage(v === 'month' ? monthImgHTML() : attImgHTML(), v === 'month' ? 'Month attendance' : 'Attendance today'); break;
     case 'cdate': S.cdate = v; render(); break;
     case 'delrow': { const L = C()[el.dataset.l]; L.splice(+v, 1); if (!L.length) L.push(blankL(el.dataset.l)); markChanged(); touch(CD(), 'clo'); render(); break; }
     case 'clearrows': { const c = C(), before = c[v].length; c[v] = c[v].filter(filled); if (!c[v].length) c[v].push(blankL(v)); touch(CD(), 'clo'); render(); toast((before - c[v].length) + ' empty rows removed'); break; }
