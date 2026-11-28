@@ -50,7 +50,7 @@ const lock = (key, fn) => sql.begin(async (tx) => { await tx`select pg_advisory_
 
 /* ---------- data ---------- */
 async function settings(q = sql) { const o = Object.assign({}, DEFAULTS); (await q`select key, value from app_settings`).forEach((r) => { o[r.key] = r.value; }); return o; }
-async function staff(q = sql) { return (await q`select * from app_staff where status = 'active' order by ord`).map((x) => ({ id: x.id, branch: x.branch, name: x.name, g: x.section, t: x.target == null ? 0 : Number(x.target) || 0,
+async function staff(q = sql) { return (await q`select id, branch, name, section, target, added_by, note, des, pv from app_staff where status = 'active' order by ord`).map((x) => ({ id: x.id, branch: x.branch, name: x.name, g: x.section, t: x.target == null ? 0 : Number(x.target) || 0, des: x.des || "", pv: Number(x.pv) || 0,
   isNew: x.added_by !== "set-up" && x.added_by !== "controller" && String(x.note || "").indexOf("new") === 0 })); }
 async function stock(b, q = sql) { const rows = b ? await q`select * from app_stock where branch = ${b} order by ord` : await q`select * from app_stock order by ord`;
   return rows.map((x) => ({ branch: x.branch, n: x.product, mrp: Number(x.mrp) || 0, c: Number(x.count) || 0, locked: !!x.locked, by: x.added_by || "" })); }
@@ -78,17 +78,25 @@ async function note(q, b, kind, title, body, by, key) {
 const dNice = (d) => { const p = String(d || "").split("-"); return p.length === 3 ? +p[2] + " " + ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][+p[1] - 1] : d; };
 async function setSetting(q, k, v) { await q`insert into app_settings (key, value) values (${k}, ${J(v)}) on conflict (key) do update set value = excluded.value`; }
 
+/* my staff that another branch marked as working there today: { name: host branch } */
+async function awayOf(b, d, q = sql) { const out = {};
+  (await q`select branch, att from app_days where date = ${d} and branch <> ${b}`).forEach((r) => { ((r.att || {}).extra || []).forEach((x) => { if (x && x.from === b && x.n) out[x.n] = r.branch; }); });
+  return out; }
+/* product needs between branches (open ones and the last week's closed ones) */
+async function reqList(q = sql) { return (await q`select id, branch, ts, by, product, qty, note, status, replies, extract(epoch from at) * 1000 as ms from app_reqs where status = 'open' or at > now() - interval '7 days' order by seq desc limit 60`).map((r) => Object.assign({}, r, { ms: Number(r.ms), qty: Number(r.qty) || 0 })); }
+const weekOf = (d) => { const x = new Date(d + "T00:00:00Z"), k = (x.getUTCDay() + 6) % 7; x.setUTCDate(x.getUTCDate() - k); return x.toISOString().slice(0, 10); };
+
 /* the small summary of a branch-day (kept with every save) */
 function daySum(att, rep, clo) {
   const sn = rep && rep.snaps && rep.snaps.cl, rws = (sn ? sn.data : rep && rep.rows) || {}, mc = N(sn ? sn.mcAmt : rep && rep.mcAmt);
   let svc = 0, bills = 0, prod = 0; const st = {}, stB = {}, stM = {}, stR = {}, prods = [];
-  Object.keys(rws).forEach((n) => { const v = rws[n] || {}, s = N(v.svc), bl = N(v.bills); svc += s; bills += bl; if (s) st[n] = s; if (bl) stB[n] = bl; if (N(v.mc)) stM[n] = N(v.mc); if (N(v.rev)) stR[n] = N(v.rev);
+  Object.keys(rws).forEach((n) => { const v = rws[n] || {}, s = N(v.svc) + N(v.man), bl = N(v.bills); svc += s; bills += bl; if (s) st[n] = s; if (bl) stB[n] = bl; if (N(v.mc)) stM[n] = N(v.mc); if (N(v.rev)) stR[n] = N(v.rev);
     (Array.isArray(v.prod) ? v.prod : []).forEach((p) => { prod += N(p.q) * N(p.p); prods.push({ n: p.n, q: p.q, p: p.p, staff: n, pay: p.pay }); }); });
   const o = { svc, mc, net: svc + mc, bills, prod, prods, staff: st, staffB: stB, staffM: stM, staffR: stR, att: att && att.att || {}, status: clo && clo.status || "open", waived: !!(clo && clo.waived), sent: !!(clo && clo.sentAt), slots: Object.keys(rep && rep.snaps || {}) };
   if (clo) { const sumL = (a, f) => (a || []).reduce((t, r) => t + N(r[f]), 0);
-    Object.assign(o, { hasClo: true, den: DEN.reduce((t, d) => t + d * N((clo.den || {})[d]), 0), openTyped: String(clo.openTyped || "").trim(), tot: String(clo.totSales || "").trim() !== "" ? N(clo.totSales) : 0,
+    Object.assign(o, { hasClo: true, den: DEN.reduce((t, d) => t + d * N((clo.den || {})[d]), 0), openTyped: String(clo.openTyped || "").trim(), tot: String(clo.totSales || "").trim() !== "" ? N(clo.totSales) : N(clo.grossAuto),
       exp: sumL(clo.exp, "a"), gp: sumL(clo.gpay, "a"), cd: sumL(clo.card, "a"), accC: sumL(clo.acc, "c"), accD: sumL(clo.acc, "d"),
-      adv: (clo.acc || []).filter((r) => r.s && N(r.d)).map((r) => ({ n: r.s, a: N(r.d), t: r.t || "" })), issues: clo.issues || [], note: clo.note || "", sentAt: clo.sentAt || "" }); }
+      adv: (clo.acc || []).filter((r) => r.s && N(r.d)).map((r) => ({ n: r.s, a: N(r.d), t: r.t || "" })), issues: clo.issues || [], note: clo.note || "", sentAt: clo.sentAt || "", closed: clo.closedAt || "" }); }
   return o;
 }
 async function sums(ym, b, q = sql) {
@@ -98,7 +106,7 @@ async function sums(ym, b, q = sql) {
 }
 function monthSums(list0, b, ym, full) {
   const list = list0.filter((x) => x.branch === b && String(x.date).slice(0, 7) === ym).sort((p, q) => p.date < q.date ? -1 : 1); let prev = null;
-  const cashKeys = ["den", "openTyped", "tot", "exp", "gp", "cd", "accC", "accD", "adv", "issues", "note", "sentAt"];
+  const cashKeys = ["den", "openTyped", "tot", "exp", "gp", "cd", "accC", "accD", "adv", "issues", "note", "sentAt", "closed"];
   return list.map((x) => { const o = Object.assign({}, x); delete o.branch; delete o.hasClo;
     if (x.hasClo) { if (full) { const open = x.openTyped !== "" ? N(x.openTyped) : (prev || 0), bal = open + x.tot + x.prod + x.accC - x.exp - x.accD - x.cd - x.gp;
         Object.assign(o, { open, opened: x.openTyped !== "", bal, ex: x.den ? x.den - bal : null }); } if (x.den) prev = x.den; }
@@ -114,8 +122,8 @@ const API = {
     const out = { me, today, yday, now: istTime(), branches: BR };
     if (me.role === "manager") {
       if (!me.branch) err("No branch is set for you yet. Ask the controller.");
-      const [s, st, sk, d0, d1, d2, m] = await Promise.all([settings(), staff(), stock(me.branch), getDay(me.branch, today), getDay(me.branch, yday), getDay(me.branch, before), sums(today.slice(0, 7), me.branch)]);
-      Object.assign(out, { settings: s, staff: st, stock: sk, day: d0, yesterday: d1, before: d2, month: monthSums(m, me.branch, today.slice(0, 7), false) });
+      const [s, st, sk, d0, d1, d2, m, aw, rq] = await Promise.all([settings(), staff(), stock(me.branch), getDay(me.branch, today), getDay(me.branch, yday), getDay(me.branch, before), sums(today.slice(0, 7), me.branch), awayOf(me.branch, today), reqList()]);
+      Object.assign(out, { settings: s, staff: st, stock: sk, day: d0, yesterday: d1, before: d2, month: monthSums(m, me.branch, today.slice(0, 7), false), away: aw, reqs: rq });
     } else { const [s, st, sk, al] = await Promise.all([settings(), staff(), stock(), alerts(80)]); Object.assign(out, { settings: s, staff: st, stock: sk, alerts: al }); }
     return out;
   },
@@ -172,7 +180,7 @@ const API = {
     return lock("staff", async (tx) => {
       if (op === "add") {
         const n = String(f.name || "").trim(); if (!n) err("Write the name."); if (["G", "L", "O", "H"].indexOf(f.g) < 0) err("Pick the section.");
-        await tx`insert into app_staff (id, branch, name, section, target, status, added_by, added_at, note) values (${uid()}, ${b}, ${n}, ${f.g}, null, 'active', ${u.name || u.id}, ${new Date().toISOString()}, 'new')`;
+        await tx`insert into app_staff (id, branch, name, section, target, status, added_by, added_at, note, des) values (${uid()}, ${b}, ${n}, ${f.g}, null, 'active', ${u.name || u.id}, ${new Date().toISOString()}, 'new', ${String(f.des || "").slice(0, 40)})`;
         if (role(u) === "manager") await alert(tx, b, "staff", b + " added new staff: " + n + " (" + ({ G: "Gents SSP", L: "Ladies SSP", O: "OM", H: "HK" })[f.g] + ")");
       } else if (op === "remove") {
         const r = (await tx`select * from app_staff where id = ${f.id || ""} and branch = ${b}`)[0]; if (!r) err("Not found."); if (!f.reason) err("Pick a reason.");
@@ -184,10 +192,17 @@ const API = {
         if (r.section !== f.g) { const SN = { G: "Gents SSP", L: "Ladies SSP", O: "OM", H: "HK" };
           await tx`update app_staff set section = ${f.g} where id = ${r.id}`;
           if (role(u) === "manager") await alert(tx, b, "staff", b + " changed " + r.name + " from " + SN[r.section] + " to " + SN[f.g]); }
+      } else if (op === "des") {
+        const r = (await tx`select id from app_staff where id = ${f.id || ""} and branch = ${b}`)[0]; if (!r) err("Not found.");
+        await tx`update app_staff set des = ${String(f.des || "").slice(0, 40)} where id = ${r.id}`;
+      } else if (op === "pic") {
+        const r = (await tx`select id from app_staff where id = ${f.id || ""} and (branch = ${b} or ${role(u) === "controller"})`)[0]; if (!r) err("Not found.");
+        const pic = f.pic ? String(f.pic) : null; if (pic && (!/^data:image\/(jpeg|png|webp);base64,/.test(pic) || pic.length > 120000)) err("This photo could not be saved.");
+        await tx`update app_staff set pic = ${pic}, pv = coalesce(pv, 0) + 1 where id = ${r.id}`;
       } else if (op === "edit" && role(u) === "controller") {
         const r = (await tx`select * from app_staff where id = ${f.id || ""}`)[0]; if (!r) err("Not found.");
         const name = f.name ? String(f.name).trim() : r.name, sec = f.g || r.section, br = f.branch || r.branch, t = f.t === undefined ? r.target : (f.t === "" ? null : N(f.t));
-        await tx`update app_staff set name = ${name}, section = ${sec}, branch = ${br}, target = ${t}, note = '' where id = ${r.id}`;
+        await tx`update app_staff set name = ${name}, section = ${sec}, branch = ${br}, target = ${t}, note = '', des = ${f.des === undefined ? r.des : String(f.des).slice(0, 40)} where id = ${r.id}`;
       } else err("Unknown change.");
       return staff(tx);
     });
@@ -198,7 +213,7 @@ const API = {
       const r = (await tx`select * from app_stock where branch = ${b} and product = ${f.n || ""}`)[0];
       const move = (qty, reason) => tx`insert into app_moves (ts, date, branch, product, qty, reason, by) values (${stamp()}, ${istDay()}, ${b}, ${f.n}, ${qty}, ${reason}, ${u.name || u.id})`;
       if (op === "ask") { const n = String(f.n || "").trim(); if (!n) err("Write the product name.");
-        await alert(tx, b, "product", b + " asked to add \"" + n + "\" to the product list" + (f.mrp ? " · MRP ₹" + f.mrp : "") + (f.q ? " · " + f.q + " in hand" : "")); return stock(b, tx); }
+        await alert(tx, b, "product", b + " asked to add \"" + n + "\" to the product list" + (f.note ? " · " + String(f.note).slice(0, 200) : "")); return stock(b, tx); }
       if (op === "add" && role(u) === "controller") { if (r) err("Already in the list.");
         await tx`insert into app_stock (branch, product, mrp, count, locked, updated) values (${b}, ${f.n}, ${N(f.mrp)}, ${Math.round(N(f.q))}, true, ${stamp()})`; await move(Math.round(N(f.q)), "Added by controller"); return stock(b, tx); }
       if (op === "lock" && role(u) === "controller") { await tx`update app_stock set locked = true where branch = ${b}`; return stock(b, tx); }
@@ -267,8 +282,89 @@ const API = {
     const u = await who(tok); can(u, b, true); f = f || {};
     if (type === "opening") await alert(sql, b, "opening", b + " changed the " + f.date + " opening cash" + (f.from !== "" && f.from != null ? " from ₹" + f.from : "") + " to ₹" + f.to, "open|" + b + "|" + f.date);
     else if (type === "noatt") await alert(sql, b, "noatt", b + ": the " + f.date + " report was started before attendance", "noatt|" + b + "|" + f.date);
+    else if (type === "gross") await alert(sql, b, "gross", b + " changed the " + f.date + " closing gross from ₹" + N(f.from) + " (the report) to ₹" + N(f.to), "gross|" + b + "|" + f.date);
     else err("Unknown.");
     return { ok: true };
+  },
+  /* staff photos (kept out of the staff list so it stays small); ids = the ones the app has not got yet */
+  async appStaffPics(tok, ids) {
+    await who(tok); const want = (Array.isArray(ids) ? ids : []).map(String).slice(0, 200); if (!want.length) return {};
+    const out = {}; (await sql`select id, pic, pv from app_staff where id = any(${sql.array(want)}) and pic is not null`).forEach((r) => { out[r.id] = { v: Number(r.pv) || 0, d: r.pic }; }); return out;
+  },
+  /* close the day: everything for the day must be in */
+  async appCloseDay(tok, b, d, f) {
+    const u = await who(tok); can(u, b, true); f = f || {};
+    return lock(b + "|" + d, async (tx) => {
+      const day = await getDay(b, d, tx), clo = day.clo || {}, att = day.att || {}, miss = [];
+      if (!att.attDone) miss.push("attendance");
+      const ppl = Object.keys(att.att || {}).filter((n) => (att.att[n] || {}).st === "in").concat((att.extra || []).map((x) => x.n));
+      const noOut = ppl.filter((n) => { const x = (att.att || {})[n] || ((att.extra || []).find((y) => y.n === n) || {}); return !x.out; }); if (noOut.length) miss.push("out time for " + noOut.join(", "));
+      if (String(att.ebEnd || "").trim() === "") miss.push("EB closing reading");
+      if (["sent", "approved"].indexOf(clo.status) < 0) miss.push("closing report");
+      if (miss.length) err("Before closing the day, finish: " + miss.join(" · "));
+      clo.closedAt = istTime() + (d !== istDay() ? ", next day" : ""); clo.closedBy = u.name || u.id; clo._v = (clo._v || 0) + 1;
+      await putPart(tx, b, d, "clo", clo, u.name || u.id);
+      await alert(tx, b, "dayclose", b + " closed the day · " + dNice(d) + " · " + clo.closedAt, "dc|" + b + "|" + d);
+      return { ok: true, closedAt: clo.closedAt, _v: clo._v };
+    });
+  },
+  /* product needs: a branch asks, the other branches answer available (how many) or not available */
+  async appReq(tok, op, f) {
+    const u = await who(tok), r = role(u); f = f || {};
+    if (op === "list") return reqList();
+    if (r === "owner") err("The owner app is view only.");
+    const b = r === "manager" ? u.branch : String(f.b || ""); if (BR.indexOf(b) < 0) err("Pick the branch.");
+    if (op === "add") {
+      const p = String(f.product || "").trim().slice(0, 80), qn = Math.max(1, Math.round(N(f.qty) || 1)); if (!p) err("Write the product.");
+      await sql`insert into app_reqs (id, branch, ts, by, product, qty, note) values (${uid()}, ${b}, ${stamp()}, ${u.name || u.id}, ${p}, ${qn}, ${String(f.note || "").trim().slice(0, 200)})`;
+      await alert(sql, b, "req", b + " needs " + qn + " × " + p + (f.note ? " · " + String(f.note).trim() : ""));
+      return reqList();
+    }
+    return lock("req|" + String(f.id || ""), async (tx) => {
+      const x = (await tx`select * from app_reqs where id = ${String(f.id || "")}`)[0]; if (!x) err("Not found.");
+      if (op === "reply") {
+        if (x.branch === b) err("This is your own request."); if (x.status !== "open") err("This request is closed.");
+        const rep = x.replies || {}, av = !!f.avail, qn = av ? Math.max(1, Math.round(N(f.qty) || 1)) : 0;
+        rep[b] = { a: av, q: qn, by: u.name || u.id, ts: stamp() };
+        await tx`update app_reqs set replies = ${J(rep)} where id = ${x.id}`;
+        await alert(tx, b, "req", b + (av ? " has " + qn + " × " + x.product : " does not have " + x.product) + " (" + x.branch + " asked for " + x.qty + ")", "rq|" + x.id + "|" + b);
+        if (av) await note(tx, x.branch, "stock", b + " has " + x.product, qn + " available · answered by " + (u.name || b), u.name || "", "rqn|" + x.id + "|" + b);
+        const others = BR.filter((y) => y !== x.branch);
+        if (others.every((y) => rep[y]) && others.every((y) => !rep[y].a)) {
+          await alert(tx, x.branch, "reqnone", "No branch has " + x.product + " · " + x.branch + " needs " + x.qty, "rqx|" + x.id);
+          await note(tx, x.branch, "stock", "No branch has " + x.product, "All branches answered not available. The owner has been told.", "", "rqx|" + x.id); }
+      } else if (op === "close") {
+        if (r === "manager" && x.branch !== b) err("Only the branch that asked can close it.");
+        await tx`update app_reqs set status = 'closed', closed_at = now() where id = ${x.id}`;
+      } else err("Unknown change.");
+      return reqList(tx);
+    });
+  },
+  /* assets and the weekly check (count + photos) */
+  async appAssets(tok, b, op, f) {
+    const u = await who(tok); can(u, b, op !== "list"); f = f || {}; const wk = weekOf(istDay());
+    const list = async (q = sql) => { const [a, c] = await Promise.all([q`select id, no, name, qty from app_assets where branch = ${b} and status = 'active' order by ord`, q`select week, ts, by, items, photos from app_asset_checks where branch = ${b} order by week desc limit 6`]);
+      return { assets: a.map((x) => Object.assign({}, x, { qty: Number(x.qty) || 0 })), checks: c, week: wk }; };
+    if (op === "list") return list();
+    return lock("asset|" + b, async (tx) => {
+      if (op === "add") { const n = String(f.name || "").trim().slice(0, 80); if (!n) err("Write the asset name.");
+        await tx`insert into app_assets (id, branch, no, name, qty, added_by, ts) values (${uid()}, ${b}, ${String(f.no || "").trim().slice(0, 30)}, ${n}, ${Math.max(0, Math.round(N(f.qty)))}, ${u.name || u.id}, ${stamp()})`;
+        if (role(u) === "manager") await alert(tx, b, "asset", b + " added an asset: " + n + (f.no ? " (" + f.no + ")" : "") + " · " + Math.max(0, Math.round(N(f.qty)))); }
+      else if (op === "edit") { const x = (await tx`select * from app_assets where id = ${String(f.id || "")} and branch = ${b}`)[0]; if (!x) err("Not found.");
+        await tx`update app_assets set no = ${String(f.no == null ? x.no : f.no).trim().slice(0, 30)}, name = ${String(f.name || x.name).trim().slice(0, 80)} where id = ${x.id}`; }
+      else if (op === "remove") { const x = (await tx`select * from app_assets where id = ${String(f.id || "")} and branch = ${b}`)[0]; if (!x) err("Not found."); if (!String(f.reason || "").trim()) err("Write the reason.");
+        await tx`update app_assets set status = 'removed' where id = ${x.id}`; await alert(tx, b, "asset", b + " removed an asset: " + x.name + " · " + String(f.reason).trim()); }
+      else if (op === "check") {
+        const items = (Array.isArray(f.items) ? f.items : []).slice(0, 300).map((x) => ({ id: String(x.id), qty: Math.max(0, Math.round(N(x.qty))), was: Math.round(N(x.was)), note: String(x.note || "").slice(0, 120) }));
+        const photos = (Array.isArray(f.photos) ? f.photos : []).map(String).slice(0, 30);
+        if (!items.length) err("Count the assets first.");
+        for (const x of items) await tx`update app_assets set qty = ${x.qty} where id = ${x.id} and branch = ${b}`;
+        await tx`insert into app_asset_checks (id, branch, week, ts, by, items, photos) values (${uid()}, ${b}, ${wk}, ${stamp()}, ${u.name || u.id}, ${J(items)}, ${J(photos)}) on conflict (branch, week) do update set ts = excluded.ts, by = excluded.by, items = excluded.items, photos = excluded.photos, at = now()`;
+        const diff = items.filter((x) => x.qty !== x.was).length;
+        await alert(tx, b, "asset", b + " finished the weekly asset check" + (diff ? " · " + diff + " count" + (diff > 1 ? "s" : "") + " changed" : " · all as before"), "ac|" + b + "|" + wk); }
+      else err("Unknown change.");
+      return list(tx);
+    });
   },
   /* controller + owner: everything for all four branches (the people list comes from Google separately) */
   async appAll(tok, ym) {
@@ -279,10 +375,10 @@ const API = {
     const out = { me: meOf(u), today, yday, now: istTime(), ym, branches: BR, settings: s, staff: st, stock: sk, month: {}, days: {}, review: [] };
     BR.forEach((b) => { out.month[b] = monthSums(sm, b, ym, true); });
     dd.forEach((x) => { out.days[x.branch + "|" + x.date] = { att: x.att, rep: x.rep, clo: x.clo }; });
-    sm.forEach((x) => { if (x.status === "sent" || x.status === "changed") out.review.push({ b: x.branch, date: x.date, status: x.status, sentAt: x.sentAt || "", issues: x.issues || [] }); });
+    sm.forEach((x) => { if (x.status === "sent" || x.status === "changed") out.review.push({ b: x.branch, date: x.date, status: x.status, sentAt: x.sentAt || "", issues: x.issues || [], closed: x.closed || "" }); });
     out.review.sort((p, q) => p.date < q.date ? -1 : 1);
     const al = all.filter((a) => !a.done);
-    out.alerts = (r === "controller" ? al : al.filter((a) => a.type === "opening" || a.type === "closing" || a.type === "skip")).slice(0, 120).map((a) => ({ id: a.id, ts: a.ts, b: a.branch, type: a.type, text: a.text, key: a.key }));
+    out.alerts = (r === "controller" ? al : al.filter((a) => a.type === "opening" || a.type === "closing" || a.type === "skip" || a.type === "reqnone")).slice(0, 120).map((a) => ({ id: a.id, ts: a.ts, b: a.branch, type: a.type, text: a.text, key: a.key }));
     if (r === "controller") { out.noatt = {}; all.forEach((a) => { const k = String(a.key || ""); if (k.indexOf("noatt|") === 0 && String(k.split("|")[2]).slice(0, 7) === ym) out.noatt[a.branch] = (out.noatt[a.branch] || 0) + 1; }); }
     return out;
   },
@@ -419,7 +515,7 @@ Deno.serve(async (req) => {
     if (!Object.prototype.hasOwnProperty.call(API, q.fn)) throw new Error("Unknown call");
     if (OPEN.indexOf(q.fn) < 0 && !(await ready())) throw new Error("NOT_READY");
     out = { result: await API[q.fn].apply(null, q.args || []) };
-  } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|NOT_READY|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The )/.test(out.error)) console.error(e); }
+  } catch (e) { out = { error: String(e && e.message || e) }; if (!/^(SESSION|NOT_READY|Unknown|Only|This|Pick|Write|No |You |Too|Product|Pieces|Already|Not found|Four|The |Before|Count)/.test(out.error)) console.error(e); }
   out.t = Date.now(); /* the server clock: the app uses it instead of the phone clock */
   return new Response(JSON.stringify(out), { headers: CORS });
 });
